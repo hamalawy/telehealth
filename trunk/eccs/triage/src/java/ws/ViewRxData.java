@@ -6,12 +6,8 @@
 package ws;
 
 import javax.jws.*;
-import com.sun.xml.ws.api.*;
-import java.util.*;
-import java.text.*;
 import java.sql.*;
-import javax.swing.*;
-
+import java.io.*;
 /**
  *
  * @author User
@@ -224,42 +220,36 @@ public class ViewRxData {
         return item;
     }
     
-  /*  @WebMethod
-    public String fileDownload(@WebParam(name="name")String name, @WebParam(name="caseid")String caseid) {
+  @WebMethod
+  public String fileDownload(@WebParam(name="name")String name, @WebParam(name="caseid")String caseid) {
       
         File someFile = new File(name);
         ResultSetNet rs = null;
+        String s = null;
         
         try {
         // Convert a byte array to base64 string
         byte[] buf = new byte[]{0x12, 0x23};
-        
-        // Convert base64 string to a byte array
-        buf = new sun.misc.BASE64Decoder().decodeBuffer(data);
-        
         
         FileOutputStream fos = new FileOutputStream(someFile);
         fos.write(buf);
         fos.flush();
         fos.close();
     
-    } catch (IOException e) {
-    }
-
-    
         SqlNet connect = new SqlNet();
-        String s = new String();
+        
 
         String sql = new String("SELECT edfcontent from triage.rxdata WHERE referralid = " + caseid);
         
         rs = connect.query(sql);
         
         Blob blob = rs.getResulta().getBlob("edfcontent"); //get Blob obj by the photo field
-        ImageIcon icon = new ImageIcon(blob.getBytes(1, (int)blob.length())); //read bytes from first byte to the end
+        //ImageIcon icon = new ImageIcon(blob.getBytes(1, (int)blob.length())); //read bytes from first byte to the end
         s = new sun.misc.BASE64Encoder().encode(blob.getBytes(1, (int)blob.length()));
         rs.getResulta().close(); //close resources 
-        
-        return;
+    } catch (Exception e) {
+    }
+        return s;
     }
     
     /* USABLE METHOD */
