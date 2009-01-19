@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.3.1-hudson-417-SNAPSHOT. --><xs:schema xmlns:tns="http://ws/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws/">
+
+<xs:element name="getCreatemsg" type="tns:getCreatemsg"></xs:element>
+
+<xs:element name="getCreatemsgResponse" type="tns:getCreatemsgResponse"></xs:element>
+
+<xs:element name="newCreatemsg" type="tns:newCreatemsg"></xs:element>
+
+<xs:element name="newCreatemsgResponse" type="tns:newCreatemsgResponse"></xs:element>
+
+<xs:element name="sendRxData" type="tns:sendRxData"></xs:element>
+
+<xs:element name="sendRxDataResponse" type="tns:sendRxDataResponse"></xs:element>
+
+<xs:complexType name="sendRxData">
+<xs:sequence>
+<xs:element name="userkey" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="referralid" type="xs:int"></xs:element>
+<xs:element name="ecgtime" type="xs:double" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="ecgy" type="xs:double" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="bloodox" type="xs:double"></xs:element>
+<xs:element name="bpressureu" type="xs:double"></xs:element>
+<xs:element name="bpressured" type="xs:double"></xs:element>
+<xs:element name="heartrate" type="xs:double"></xs:element>
+<xs:element name="ecgsize" type="xs:int"></xs:element>
+<xs:element name="timestamp" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sendRxDataResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCreatemsg">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCreatemsgResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="newCreatemsg">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="newCreatemsgResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
