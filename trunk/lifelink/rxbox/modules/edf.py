@@ -11,11 +11,22 @@ Authors: Julius Miguel J. Broma
          University of the Philippines - Diliman
          
 """
+import sys, binascii
+sys.path.append('webservices/')
+from CreateCaseService_client import *
+from CreatePatientService_client import *
+from ViewCaseService_client import *
+from ViewPatientService_client import *
+from SendRxDataService_client import *
+#from ViewRxDataService_client import *
+
+USERKEY	= "DUmmy"
+
 
 class Patient:
     """contains information about the patient"""
 
-    def __init__(self, ID, firstname, middlename, lastname, maidenname, gender, birthday, age):
+    def __init__(self, ID, firstname, middlename, lastname, maidenname, gender, birthday, age, agevalidity="", location=""):
         # gender = 'Male' or 'Female'
         # birthday = mm.dd.yy
         
@@ -28,6 +39,11 @@ class Patient:
         self.Birthday = birthday
         self.Age = str(age)
         self.LocalPatientID = ''
+	
+	#Extra information for triage use
+	self.cases = []
+	self.agevalidity = agevalidity
+	self.location = location
        
         
 
@@ -59,6 +75,60 @@ class Patient:
         # converts the list to a string with no separator in between elements
         self.LocalPatientID = ''.join(LocalPatientIDlist)                   
         
+    #Triage functions	
+    def saveToTriage(self):
+	loc = CreatePatientServiceLocator()
+	port = loc.getCreatePatientPort()
+	req = createPatient()
+	
+	req.Age=int(self.Age)
+	req.Agevalidity=self.agevalidity
+	req.Birthdate=self.Birthday
+	req.Firstname=self.FirstName
+	req.Lastname=self.LastName
+	req.Location=self.location
+	req.Middlename=self.MiddleName
+	req.Patientid=self.ID
+	req.Sex=self.Gender
+	req.Userkey=USERKEY
+	
+	resp = port.createPatient(req)
+	return resp.Result
+	
+    
+    def getFromTriage(self, patientid=None):
+	loc = ViewPatientServiceLocator()
+	port = loc.getViewPatientPort()
+	req = viewPatient()
+	
+	if (patientid == None):
+	    req.Patientid = self.ID
+	else:
+	    req.Patientid = patientid
+	    
+	resp = port.viewPatient(req)
+	return resp.Result
+    
+    def searchFromTriage(self, lastname, firstname):
+	loc = ViewPatientServiceLocator()
+	port = loc.getViewPatientPort()
+	req = searchPatients()
+	req.Firstname = firstname
+	req.Lastname = lastname
+	
+	resp = port.searchPatients(req)
+	return resp.Result
+    
+    def searchCasesFromTriage(self, patientid=None):
+	pass
+	    
+    def saveCaseToTriage(self, patientid=None):
+	pass
+    	    
+    def getCaseFromTriage(self, caseid=None):
+	pass
+    
+    
 class BioSignal:
     """contains the biomedical signals of the patient as well as their technical information"""
 
@@ -238,9 +308,83 @@ class EDF:
         edffile.close()
 
 
-        
+    #Triage functions
+    def sendToTriage(self, caseid, filename=None):
+	#If filename is not given, send  parsed version of biomedical data
+	#else, send edf file given
+	if (parsed == False):
+	    pass
+	else:
+	    loc = SendRxDataServiceLocator()
+	    port = loc.getSendRxDataPort()
+  	    req = fileUpload()
+
+	    f=open(filename, "rb")
+	    data = binascii.b2a_base64(f.read())
+	    f.close()
+
+	    #TODO: req.Name should be req.caseid. Coordinate with Pepz
+	    req.Data = data
+	    req.Name = "temporary"
+	    resp = port.fileUpload(req)
+   
+    def getFromTriage(self, parsed=False):
+	pass
 
 
-        
-            
-
+#Triage
+class Case():
+	def __init__(self, patientid=None, description=None, reason=None, institutionid=None, doctor=None, docnumber=None):
+		self.patientid = patientid
+		self.description = description
+		self.reason = reason
+		self.institutionid = institutionid
+		self.doctor = doctor
+		self.docnumber = docnumber
+		
+	def setAll(self, patientid, description, reason, institutionid, doctor, docnumber):
+		self.patientid = patientid
+		self.description = description
+		self.reason = reason
+		self.institutionid = institutionid
+		self.doctor = doctor
+		self.docnumber = docnumber
+	
+	def search(self, patientid = None):
+		loc = ViewCaseServiceLocator()
+		port = loc.getViewCasePort()
+		req = getCases()
+		if (patientid == None):
+		    req.Patientid = self.patientid
+		else :
+		    req.Patientid = patientid
+		
+		resp = port.getCases(req)
+		return resp.Result
+	
+	def saveToTriage(self):
+		loc = CreateCaseServiceLocator()
+		port = loc.getCreateCasePort()
+		req = createCase()
+		
+		req.Patientid = self.patientid
+		req.Description = self.description
+		req.Reason = self.reason
+		req.Institutionid = self.institutionid
+		req.Docname = self.doctor
+		req.Docnum = self.docnumber
+		req.Userkey = USERKEY
+		
+		resp = port.createCase(req)
+		return resp.Result
+	
+	def getFromTriage(self, caseid):
+		loc = ViewCaseServiceLocator()
+		port = loc.getViewCasePort()
+		req = viewCase()		
+		req.Caseid = caseid
+		
+		resp = port.viewCase(req)
+		return resp.Result
+		
+		
