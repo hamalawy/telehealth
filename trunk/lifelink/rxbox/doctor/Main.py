@@ -150,7 +150,7 @@ class MyPanel(wx.Panel):
         sizer_3.Add(sizer_6, 1, wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         sizer_1.Add((20, 2), 0, wx.EXPAND, 0)
         sizer_1.Add(sizer_2, 0, wx.ALL|wx.EXPAND, 4)
-        sizer_1.Add((20, 2), 0, wx.EXPAND, 0)
+        sizer_1.Add((20, 2), 1, wx.EXPAND, 0)
         sizer_1.Add(sizer_3, 1, wx.EXPAND, 0)
         self.SetSizer(sizer_1)
         sizer_1.Fit(self)
@@ -327,12 +327,10 @@ class MyFrame(wx.Frame):
         self.im_panel       = wx.Panel(self, -1, style=wx.TAB_TRAVERSAL)
         self.video_panel   = wx.Panel(self, -1, style=wx.TAB_TRAVERSAL)
         self.reply_text     = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE|wx.TE_PROCESS_ENTER)
-        self.reply_button   = wx.Button(self, -1, "Reply")
         self.im_messages  = wx.TextCtrl(self.im_panel, -1, style=wx.TE_MULTILINE)
 	self.im_messages.SetEditable(False)
 
         self.stop_button.Enable(False)
-        self.reply_button.Enable(False)
         self.start_button.Enable(False)
 
     def __set_properties(self):
@@ -460,10 +458,11 @@ class MyFrame(wx.Frame):
         self.video_button.SetBackgroundColour(wx.Colour(252, 255, 111))
         self.video_button.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
 	self.video_button.Enable(False)
-        self.im_panel.SetMinSize((270, 150))
+        self.im_panel.SetMinSize((270, 190))
         self.video_panel.SetMinSize((352, 288))
         self.reply_text.SetMinSize((275, 45))
-        self.im_messages.SetMinSize((270, 150))
+	self.im_messages.SetBackgroundColour(wx.Colour(255, 252, 239))
+        self.im_messages.SetMinSize((270, 185))
         self.im_messages.SetFont(wx.Font(IMFONTSIZE, wx.MODERN, wx.NORMAL, wx.NORMAL, 0, "Courier"))
 
     def __do_layout(self):
@@ -477,17 +476,9 @@ class MyFrame(wx.Frame):
         sizer_19    = wx.StaticBoxSizer(self.sizer_19_staticbox, wx.VERTICAL)
         sizer_4     = wx.BoxSizer(wx.VERTICAL)
         sizer_12    = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_4_im = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_3_im = wx.BoxSizer(wx.HORIZONTAL)
-	
-	sizer_4     = wx.BoxSizer(wx.VERTICAL)
-
-        #sizer_5     = wx.StaticBoxSizer(self.sizer_5_staticbox, wx.VERTICAL)
-        #sizer_6     = wx.BoxSizer(wx.HORIZONTAL)
-        #sizer_10    = wx.BoxSizer(wx.HORIZONTAL)
-        #sizer_7     = wx.BoxSizer(wx.VERTICAL)
-        #sizer_9     = wx.BoxSizer(wx.HORIZONTAL)
-        #sizer_8     = wx.BoxSizer(wx.HORIZONTAL)     
+        sizer_4_im = wx.BoxSizer(wx.VERTICAL)
+        sizer_3_im = wx.BoxSizer(wx.VERTICAL)
+	sizer_4     = wx.BoxSizer(wx.VERTICAL)     
         
         # copy to __do_layout of Telemed 2 code : start
         sizer_5 = wx.BoxSizer(wx.VERTICAL)
@@ -552,22 +543,6 @@ class MyFrame(wx.Frame):
         sizer_2.Add((20, 10), 0, wx.EXPAND, 0)
         sizer_3.Add((10, 10), 0, wx.EXPAND, 0)
         
-        #sizer_5.Add(self.patient_header, 0, wx.ALL|wx.EXPAND, 0)
-        #sizer_8.Add(self.name, 0, 0, 0)
-        #sizer_8.Add(self.name_text, 0, wx.ALL|wx.EXPAND, 4)
-        #sizer_7.Add(sizer_8, 0, wx.EXPAND, 0)
-        #sizer_9.Add(self.age, 0, 0, 0)
-        #sizer_9.Add(self.age_text, 0, wx.ALL|wx.EXPAND, 4)
-        #sizer_9.Add((5, 10), 0, wx.EXPAND, 0)
-        #sizer_9.Add(self.gender, 0, 0, 0)
-        #sizer_9.Add(self.gender_text, 0, wx.ALL|wx.EXPAND, 4)
-        #sizer_7.Add(sizer_9, 0, wx.EXPAND, 0)
-        #sizer_6.Add(sizer_7, 1, wx.EXPAND, 0)
-        #sizer_10.Add(self.cond, 0, 0, 0)
-        #sizer_10.Add(self.cond_text, 0, wx.ALL|wx.EXPAND, 4)
-        #sizer_6.Add(sizer_10, 0, wx.EXPAND, 0)
-        #sizer_5.Add(sizer_6, 0, wx.EXPAND, 0)
-        
         sizer_4.Add(sizer_5, 0, wx.EXPAND, 0)
         sizer_4.Add((20, 10), 0, wx.EXPAND, 0)
         sizer_4.Add(self.datapanel, 0, wx.EXPAND)
@@ -579,8 +554,7 @@ class MyFrame(wx.Frame):
         sizer_18.Add((20, 10), 0, wx.EXPAND, 0)
         sizer_3_im.Add(self.im_messages, 0, wx.ALL|wx.EXPAND, 4)
         self.im_panel.SetSizer(sizer_3_im)
-        sizer_4_im.Add(self.reply_text, 0, wx.ALL, 4)
-        sizer_4_im.Add(self.reply_button, 0, wx.ALL, 4)
+        sizer_4_im.Add(self.reply_text, 0, wx.ALL|wx.EXPAND, 4)
         sizer_20.Add(self.im_header, 0, wx.ALL|wx.EXPAND|wx.GROW, 4)
         sizer_20.Add(self.im_panel, 1, wx.EXPAND, 0)
         sizer_19.Add(self.video_panel, 1, wx.EXPAND, 0)
@@ -625,7 +599,6 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,    self.onStopAcquire_MenuClick,       self.stop_button)
         self.Bind(wx.EVT_BUTTON,    self.onSaveToFile_MenuClick,        self.save_button)
         self.Bind(wx.EVT_BUTTON,      self.onStartVideoconf_MenuClick,    self.video_button)
-        self.Bind(wx.EVT_BUTTON,    self.onIMReply_ButtonClick,         self.reply_button)
         self.Bind(wx.EVT_TEXT_ENTER,self.onIMReply_ButtonClick,         self.reply_text)
         self.Bind(wx.EVT_CLOSE,     self.onCloseWindow)
 
@@ -647,13 +620,7 @@ class MyFrame(wx.Frame):
     def onCallAnswered(self, event):
 	self.video_button.SetLabel(label='Disengage')
 	self.im_messages.Clear()
-	
-	#Reset IM messages
-	self.text =''
-	self.text_count = 0
-	self.text_list = []
-        
-	
+	        
 	
     def onCallTerminated(self, event):
         self.video_button.SetLabel(label='Awaiting call..')
@@ -800,7 +767,7 @@ class MyApp(wx.PySimpleApp):
 
         self.frame_1 = MyFrame(None, -1, "")
         self.SetTopWindow(self.frame_1)
-        self.frame_1.Show()
+        self.frame_1.ShowFullScreen(True, style=wx.FULLSCREEN_NOTOOLBAR|wx.FULLSCREEN_NOBORDER|wx.FULLSCREEN_NOCAPTION)
 	self.frame_1.startPhone()
 
         return 1
