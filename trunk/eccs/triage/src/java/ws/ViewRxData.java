@@ -78,7 +78,7 @@ public class ViewRxData {
         return expired;
     }
     
-    @WebMethod
+ /*   @WebMethod
     public boolean openCase(@WebParam(name="caseid") String caseid) {
         
          if (!doctor.DocLoggedIn()) {
@@ -101,7 +101,7 @@ public class ViewRxData {
         return true;
 
     }
-    
+    */
     public int getRowSize(ResultSetNet rs)
     {
         int rowsize = 0;
@@ -139,7 +139,7 @@ public class ViewRxData {
 
     /* USABLE METHOD */
 
-    @WebMethod
+ /*   @WebMethod
     public String[] getCases(@WebParam(name="patientid")String patientid) {
         
     /*     if (!doctor.DocLoggedIn()) {
@@ -153,7 +153,7 @@ public class ViewRxData {
             System.out.println(errormsg);
             return false;
         }*/
-         
+  /*       
         ResultSetNet rs;
         String sql = new String("SELECT * FROM triage.referral WHERE patientid = '" + patientid + "';");
         SqlNet user = new SqlNet();
@@ -177,7 +177,7 @@ public class ViewRxData {
             }
            
         */
-            
+  /*          
             while (cases.getResulta().next()) {
               
                caseid[x] = getCaseItem("referralid");
@@ -193,8 +193,7 @@ public class ViewRxData {
         return caseid;
 
     }
-    
-    
+  */  
     @WebMethod
     public String viewRxData(@WebParam(name="caseid") String caseid) {
         
@@ -221,7 +220,7 @@ public class ViewRxData {
     }
     
   @WebMethod
-  public String fileDownload(@WebParam(name="name")String name, @WebParam(name="caseid")String caseid) {
+    public String fileDownload(@WebParam(name="name")String name, @WebParam(name="caseid")String caseid) {
       
         File someFile = new File(name);
         ResultSetNet rs = null;
@@ -229,23 +228,21 @@ public class ViewRxData {
         
         try {
         // Convert a byte array to base64 string
-        byte[] buf = new byte[]{0x12, 0x23};
-        
-        FileOutputStream fos = new FileOutputStream(someFile);
-        fos.write(buf);
-        fos.flush();
-        fos.close();
-    
         SqlNet connect = new SqlNet();
-        
 
-        String sql = new String("SELECT edfcontent from triage.rxdata WHERE referralid = " + caseid);
+        String sql = new String("SELECT edfcontent from triage.rxdata WHERE dataid = " + caseid + ";");
         
         rs = connect.query(sql);
-        
+        rs.getResulta().next();
         Blob blob = rs.getResulta().getBlob("edfcontent"); //get Blob obj by the photo field
         //ImageIcon icon = new ImageIcon(blob.getBytes(1, (int)blob.length())); //read bytes from first byte to the end
         s = new sun.misc.BASE64Encoder().encode(blob.getBytes(1, (int)blob.length()));
+        
+        FileOutputStream fos = new FileOutputStream(someFile);
+        fos.write(blob.getBytes(1, (int)blob.length()));
+        fos.flush();
+        fos.close();
+        
         rs.getResulta().close(); //close resources 
     } catch (Exception e) {
     }
