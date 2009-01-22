@@ -219,9 +219,6 @@ class MyFrame(wx.Frame):
         self.rcvPatientAddress = ''
         self.rcvPatientNumber = ''
         
-        self.text = ''
-        self.text_list = []
-        self.text_count = 0
 
         # copy to __init__ of Telemed 2 code : start
         self.Tab_General = wx.Notebook(self, -1, style=0)
@@ -327,13 +324,12 @@ class MyFrame(wx.Frame):
         self.save_button    = wx.Button(self, -1, "Save")
         self.video_button   = wx.Button(self, -1, "Awaiting call..")
         self.datapanel      = MyPanel(self, -1)
-        self.im_panel       = wx.ScrolledWindow(self, -1, style=wx.TAB_TRAVERSAL)
-	#FIXME: Virtual size Should adjust automatically whenever IM lines reaches limit
-	self.im_panel.SetScrollbars(20, 20, 50, 50) 
+        self.im_panel       = wx.Panel(self, -1, style=wx.TAB_TRAVERSAL)
         self.video_panel   = wx.Panel(self, -1, style=wx.TAB_TRAVERSAL)
         self.reply_text     = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE|wx.TE_PROCESS_ENTER)
         self.reply_button   = wx.Button(self, -1, "Reply")
-        self.im_statictext  = wx.StaticText(self.im_panel, -1, self.text)
+        self.im_messages  = wx.TextCtrl(self.im_panel, -1, style=wx.TE_MULTILINE)
+	self.im_messages.SetEditable(False)
 
         self.stop_button.Enable(False)
         self.reply_button.Enable(False)
@@ -467,8 +463,8 @@ class MyFrame(wx.Frame):
         self.im_panel.SetMinSize((270, 150))
         self.video_panel.SetMinSize((352, 288))
         self.reply_text.SetMinSize((275, 45))
-        self.im_statictext.SetMinSize((270, 150))
-        self.im_statictext.SetFont(wx.Font(IMFONTSIZE, wx.MODERN, wx.NORMAL, wx.NORMAL, 0, "Courier"))
+        self.im_messages.SetMinSize((270, 150))
+        self.im_messages.SetFont(wx.Font(IMFONTSIZE, wx.MODERN, wx.NORMAL, wx.NORMAL, 0, "Courier"))
 
     def __do_layout(self):
         # begin wxGlade: MyFrame.__do_layout
@@ -483,6 +479,8 @@ class MyFrame(wx.Frame):
         sizer_12    = wx.BoxSizer(wx.HORIZONTAL)
         sizer_4_im = wx.BoxSizer(wx.HORIZONTAL)
         sizer_3_im = wx.BoxSizer(wx.HORIZONTAL)
+	
+	sizer_4     = wx.BoxSizer(wx.VERTICAL)
 
         #sizer_5     = wx.StaticBoxSizer(self.sizer_5_staticbox, wx.VERTICAL)
         #sizer_6     = wx.BoxSizer(wx.HORIZONTAL)
@@ -579,7 +577,7 @@ class MyFrame(wx.Frame):
         sizer_19.Add(self.video_header, 0, wx.ALL|wx.EXPAND, 4)
         sizer_18.Add(sizer_19, 0, wx.EXPAND, 0)
         sizer_18.Add((20, 10), 0, wx.EXPAND, 0)
-        sizer_3_im.Add(self.im_statictext, 0, wx.ALL|wx.EXPAND, 4)
+        sizer_3_im.Add(self.im_messages, 0, wx.ALL|wx.EXPAND, 4)
         self.im_panel.SetSizer(sizer_3_im)
         sizer_4_im.Add(self.reply_text, 0, wx.ALL, 4)
         sizer_4_im.Add(self.reply_button, 0, wx.ALL, 4)
@@ -648,6 +646,7 @@ class MyFrame(wx.Frame):
 
     def onCallAnswered(self, event):
 	self.video_button.SetLabel(label='Disengage')
+	self.im_messages.Clear()
 	
 	#Reset IM messages
 	self.text =''
@@ -780,20 +779,12 @@ class MyFrame(wx.Frame):
         self.Choice_PatientGender.SetSelection(int(self.rcvPatientGender))
         
     def UpdateIMText(self, msg):
-	self.text_count += 1
-	self.text = self.im_statictext.GetLabel() + '\n' + 'RXBOX: ' + msg
-        self.im_statictext.SetLabel(self.text)
+	self.im_messages.AppendText('PGH: ' + msg + '\n')
         self.reply_text.Clear()
 
-    def UpdateIMRcvText(self, msg):
-	#self.text_list.append(msg)
-	self.text_count += 1
-
-	#print "--------", msg, "----------"
-
-	self.text = self.im_statictext.GetLabel() + '\n' + 'PGH: ' + msg
-	
-        self.im_statictext.SetLabel(self.text)
+    def UpdateIMRcvText(self, msg):	
+	if (msg is not None):
+        	self.im_messages.AppendText('RXBOX: ' + msg + '\n')
        
     def raiseMessage(self, message):
         wx.MessageBox(message,"TeleMed v2", wx.OK | wx.ICON_EXCLAMATION, self)
