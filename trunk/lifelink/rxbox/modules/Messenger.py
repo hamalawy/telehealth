@@ -17,20 +17,20 @@ class Messenger(threading.Thread):
 	self.password = password
        	self.jid=xmpp.protocol.JID(jid)
        	self.client = xmpp.Client(self.jid.getDomain(), debug=[])
+
+	print "Connecting to Messenger server..."
+        if self.client.connect() == "":
+                print "not connected"
+                sys.exit(0)
+
+        if self.client.auth(self.jid.getNode(),self.password) == None:
+               print "authentication failed"
+               sys.exit(0)
                                
     def stop(self):
         self.stopEvent.set()
         
     def run(self):
-	print "Running Messenger"
-       	if self.client.connect() == "":
-        	print "not connected"
-               	sys.exit(0)
-
-       	if self.client.auth(self.jid.getNode(),self.password) == None:
-               print "authentication failed"
-               sys.exit(0)
-       
        	self.client.RegisterHandler('message', self.messageCB)
        	self.client.sendInitPresence()
         
@@ -52,6 +52,8 @@ class Messenger(threading.Thread):
 	else:
 		self.client.send(xmpp.protocol.Message(recipient,msg))
 	wx.CallAfter(self.wxParent.UpdateIMText, msg)	
+	#print "sendM mesg: ", msg
+	#print "sendM recpient self: ", recipient, self.recipient
 	
     def setRecipient(self, rec_jid):
 	self.recipient = rec_jid

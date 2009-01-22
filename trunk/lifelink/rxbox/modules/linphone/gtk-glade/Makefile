@@ -37,7 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
-bin_PROGRAMS = linphone-3$(EXEEXT)
+#bin_PROGRAMS = linphone-3$(EXEEXT)
 subdir = gtk-glade
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -59,20 +59,20 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am__linphone_3_SOURCES_DIST = main.c propertybox.c friendlist.c \
 	support.c chat.c calllogs.c logging.c linphone.h
-am_linphone_3_OBJECTS = main.$(OBJEXT) \
-	propertybox.$(OBJEXT) \
-	friendlist.$(OBJEXT) support.$(OBJEXT) \
-	chat.$(OBJEXT) calllogs.$(OBJEXT) \
-	logging.$(OBJEXT)
+#am_linphone_3_OBJECTS = main.$(OBJEXT) \
+#	propertybox.$(OBJEXT) \
+#	friendlist.$(OBJEXT) support.$(OBJEXT) \
+#	chat.$(OBJEXT) calllogs.$(OBJEXT) \
+#	logging.$(OBJEXT)
 linphone_3_OBJECTS = $(am_linphone_3_OBJECTS)
 am__DEPENDENCIES_1 =
-linphone_3_DEPENDENCIES =  \
-	$(top_builddir)/oRTP/src/libortp.la \
-	$(top_builddir)/mediastreamer2/src/libmediastreamer.la \
-	$(top_builddir)/coreapi/liblinphone.la \
-	$(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+#linphone_3_DEPENDENCIES =  \
+#	$(top_builddir)/oRTP/src/libortp.la \
+#	$(top_builddir)/mediastreamer2/src/libmediastreamer.la \
+#	$(top_builddir)/coreapi/liblinphone.la \
+#	$(am__DEPENDENCIES_1) \
+#	$(am__DEPENDENCIES_1) \
+#	$(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -97,22 +97,22 @@ DATA = $(glade_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/jerome/Desktop/linphone-3.0.0/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/jerome/Desktop/WORKAREA/telehealth/trunk/lifelink/rxbox/modules/linphone/missing --run aclocal-1.9
 ALL_LINGUAS = fr it de ja es pl cs nl sv pt_BR hu
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jerome/Desktop/linphone-3.0.0/missing --run tar
+AMTAR = ${SHELL} /home/jerome/Desktop/WORKAREA/telehealth/trunk/lifelink/rxbox/modules/linphone/missing --run tar
 AR = ar
 ARMBUILD_FALSE = 
 ARMBUILD_TRUE = #
-AUTOCONF = ${SHELL} /home/jerome/Desktop/linphone-3.0.0/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jerome/Desktop/linphone-3.0.0/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jerome/Desktop/linphone-3.0.0/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/jerome/Desktop/WORKAREA/telehealth/trunk/lifelink/rxbox/modules/linphone/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/jerome/Desktop/WORKAREA/telehealth/trunk/lifelink/rxbox/modules/linphone/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/jerome/Desktop/WORKAREA/telehealth/trunk/lifelink/rxbox/modules/linphone/missing --run automake-1.9
 AWK = mawk
 BUILD_CONSOLE_FALSE = #
 BUILD_CONSOLE_TRUE = 
-BUILD_GLADE_UI_FALSE = #
-BUILD_GLADE_UI_TRUE = 
+BUILD_GLADE_UI_FALSE = 
+BUILD_GLADE_UI_TRUE = #
 BUILD_TRUESPEECH_FALSE = 
 BUILD_TRUESPEECH_TRUE = #
 CC = gcc
@@ -178,10 +178,10 @@ INTLTOOL_XML_RULE = %.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(t
 INTL_MACOSX_LIBS = 
 IPV6_CFLAGS = -DINET6
 LDFLAGS = 
-LIBGLADE_CFLAGS = -I/usr/include/libglade-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libxml2 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/pixman-1  
-LIBGLADE_LIBS = -lglade-2.0 -lgtk-x11-2.0 -lxml2 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0  
-LIBGTK_CFLAGS = -pthread -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/pixman-1  
-LIBGTK_LIBS = -pthread -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lgthread-2.0 -lrt -lglib-2.0  
+LIBGLADE_CFLAGS = 
+LIBGLADE_LIBS = 
+LIBGTK_CFLAGS = 
+LIBGTK_LIBS = 
 LIBICONV = -liconv
 LIBINTL = 
 LIBLINPHONE_SO_VERSION = 3:0:0
@@ -195,7 +195,7 @@ LN_S = ln -s
 LTLIBICONV = -liconv
 LTLIBINTL = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/jerome/Desktop/linphone-3.0.0/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/jerome/Desktop/WORKAREA/telehealth/trunk/lifelink/rxbox/modules/linphone/missing --run makeinfo
 MS2_VERSION = 2.2.2
 MSGFMT = /usr/bin/msgfmt
 MSGFMT_015 = /usr/bin/msgfmt
@@ -263,7 +263,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /home/jerome/Desktop/linphone-3.0.0/install-sh
+install_sh = /home/jerome/Desktop/WORKAREA/telehealth/trunk/lifelink/rxbox/modules/linphone/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -301,24 +301,24 @@ EXTRA_DIST = $(PIXMAPS) \
 		linphone.iss \
 		linphone.dev
 
-linphone_3_SOURCES = main.c\
-			propertybox.c \
-			friendlist.c \
-			support.c \
-			chat.c \
-			calllogs.c \
-			logging.c \
-			linphone.h
+#linphone_3_SOURCES = main.c\
+#			propertybox.c \
+#			friendlist.c \
+#			support.c \
+#			chat.c \
+#			calllogs.c \
+#			logging.c \
+#			linphone.h
 
-linphone_3_LDADD = $(top_builddir)/oRTP/src/libortp.la \
-		$(top_builddir)/mediastreamer2/src/libmediastreamer.la \
-		$(top_builddir)/coreapi/liblinphone.la \
-			$(LIBGTK_LIBS) $(INTLLIBS) \
-			$(LIBGLADE_LIBS)
+#linphone_3_LDADD = $(top_builddir)/oRTP/src/libortp.la \
+#		$(top_builddir)/mediastreamer2/src/libmediastreamer.la \
+#		$(top_builddir)/coreapi/liblinphone.la \
+#			$(LIBGTK_LIBS) $(INTLLIBS) \
+#			$(LIBGLADE_LIBS)
 
-linphone_3_LDFLAGS = -export-dynamic
-gladedir = $(datadir)/linphone
-glade_DATA = $(GLADE_FILES) $(PIXMAPS)
+#linphone_3_LDFLAGS = -export-dynamic
+#gladedir = $(datadir)/linphone
+#glade_DATA = $(GLADE_FILES) $(PIXMAPS)
 
 #all-local:	gtk-linphone.ui	
 

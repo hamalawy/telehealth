@@ -15,8 +15,6 @@ import matplotlib
 import Dialogs
 import AcquireData
 import Video
-import IMReceive_DW
-import IMSend_DW
 
 matplotlib.use('WXAgg')
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
@@ -645,7 +643,8 @@ class MyFrame(wx.Frame):
         self.video_button.Enable(True)
 	self.video_button.SetLabel(label='Answer incoming call')
 	
-	self.messenger.setRecipient(event.caller + PGH_DOMAIN)
+	self.messenger.setRecipient(event.caller + '@' + PGH_DOMAIN)
+	
 
     def onCallAnswered(self, event):
 	self.video_button.SetLabel(label='Disengage')
@@ -716,7 +715,11 @@ class MyFrame(wx.Frame):
 
     def onIMReply_ButtonClick(self, event):
         msg = self.reply_text.GetValue()
-	self.messenger.sendMessage(msg)
+
+	if(self.phone.isOnCall() == True):
+		self.messenger.sendMessage(msg)
+	else:
+		self.UpdateIMText("No RxBox is connected.")
 
     def onClickStart(self):
         self.Start_Acquire.Enable(False)
@@ -785,6 +788,9 @@ class MyFrame(wx.Frame):
     def UpdateIMRcvText(self, msg):
 	#self.text_list.append(msg)
 	self.text_count += 1
+
+	#print "--------", msg, "----------"
+
 	self.text = self.im_statictext.GetLabel() + '\n' + 'PGH: ' + msg
 	
         self.im_statictext.SetLabel(self.text)
