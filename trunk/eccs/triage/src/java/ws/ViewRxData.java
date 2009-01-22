@@ -78,30 +78,7 @@ public class ViewRxData {
         return expired;
     }
     
- /*   @WebMethod
-    public boolean openCase(@WebParam(name="caseid") String caseid) {
-        
-         if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-         
-        String name = doctor.getUser();
-         
-        String sql = new String("UPDATE telemedicine.cases SET referstatus = 'open' WHERE docname = '" + name + "' AND caseid = " + caseid + " AND referstatus = 'new';");
-        SqlNet user = new SqlNet();
-        
-         if (caseid.equals("")) {
-            errormsg = new String("REFER ERROR: Please enter a value for 'caseid'.");
-            return false;
-        }
-        
-        user.queryUpdate(sql);
-        return true;
-
-    }
-    */
+ 
     public int getRowSize(ResultSetNet rs)
     {
         int rowsize = 0;
@@ -220,9 +197,9 @@ public class ViewRxData {
     }
     
   @WebMethod
-    public String fileDownload(@WebParam(name="name")String name, @WebParam(name="caseid")String caseid) {
+    public String fileDownload(@WebParam(name="timestamp")long timestamp, @WebParam(name="caseid")String caseid) {
       
-        File someFile = new File(name);
+        //File someFile = new File(name);
         ResultSetNet rs = null;
         String s = null;
         
@@ -230,367 +207,33 @@ public class ViewRxData {
         // Convert a byte array to base64 string
         SqlNet connect = new SqlNet();
 
-        String sql = new String("SELECT edfcontent from triage.rxdata WHERE dataid = " + caseid + ";");
+        String sql = new String("SELECT * from triage.rxdata WHERE referralid = '" + caseid + "' AND timestamp >= FROM_UNIXTIME(" + timestamp + ") ORDER BY timestamp asc;");
         
-        rs = connect.query(sql);
-        rs.getResulta().next();
-        Blob blob = rs.getResulta().getBlob("edfcontent"); //get Blob obj by the photo field
+        data = rs = connect.query(sql);
+        data.getResulta().next();
+        Blob blob = data.getResulta().getBlob("edfcontent"); //get Blob obj by the photo field
         //ImageIcon icon = new ImageIcon(blob.getBytes(1, (int)blob.length())); //read bytes from first byte to the end
         s = new sun.misc.BASE64Encoder().encode(blob.getBytes(1, (int)blob.length()));
-        
-        FileOutputStream fos = new FileOutputStream(someFile);
-        fos.write(blob.getBytes(1, (int)blob.length()));
-        fos.flush();
-        fos.close();
+        System.out.println("dataid: " + data.getResulta().getInt("dataid"));
+        //FileOutputStream fos = new FileOutputStream(someFile);
+        //fos.write(blob.getBytes(1, (int)blob.length()));
+        //fos.flush();
+        //fos.close();
         
         rs.getResulta().close(); //close resources 
     } catch (Exception e) {
+        System.out.println("Got a downloadex");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
     }
         return s;
     }
     
-    /* USABLE METHOD */
-	
-    @WebMethod
-    public boolean initCaseRxData() {
-        
-    /*     if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-         
-         if (!doctor.getUser().equals("admin")) {
-            this.errormsg = "ACCESS DENIED: YOU ARE NOT AUTHORIZED.";
-            System.out.println(errormsg);
-            return false;
-        }*/
-         
-        ResultSetNet rs;
-        String sql = new String("SELECT * FROM triage.rxdata;");
-        SqlNet user = new SqlNet();
-        
-        rs = user.query(sql);
-        
-        data = rs;
-        
-        try {
-            
-        if (data.getResulta().next()) {
-            data.getResulta().beforeFirst();
-            return true;
-        } else {
-            this.errormsg = "YOU HAVE NO CASES.";
-        }
-        
-        } catch (Exception ex) {}
-        
-        return false;
-
-    }
-    
-    @WebMethod
-    public boolean initCase() {
-        
-         if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-         
-        String name = doctor.getUser();
-         
-        ResultSetNet rs;
-        String sql = new String("SELECT * FROM telemedicine.cases WHERE referrer = '" + name + "' OR docname = '" + name + "';");
-        SqlNet user = new SqlNet();
-        
-        rs = user.query(sql);
-        
-        if (dateExpired(rs)) {
-            rs = user.query(sql);
-        }
-        
-        cases = rs;
-        
-        try {
-            
-        if (cases.getResulta().next()) {
-            cases.getResulta().beforeFirst();
-            return true;
-        } else {
-            this.errormsg = "YOU HAVE NO CASES.";
-        }
-        
-        } catch (Exception ex) {}
-        
-        return false;
-
-    }
-    
-    @WebMethod
-    public boolean initSpecCase(@WebParam(name="caseid") String caseid) {
-        
-         if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-         
-        ResultSetNet rs;
-        String name = doctor.getUser();
-        String sql;
-        
-        if (!doctor.getUser().equals("admin")) {
-            sql = new String("SELECT * FROM telemedicine.cases WHERE caseid = " + caseid + 
-                    " AND (SELECT * FROM telemedicine.cases WHERE referrer = '" + name + "' OR docname = '" + name + "');");
-        } else {
-            sql = new String("SELECT * FROM telemedicine.cases WHERE caseid = " + caseid + ";");
-        }
-        
-        SqlNet user = new SqlNet();
-        
-        rs = user.query(sql);
-        
-        if (dateExpired(rs)) {
-            rs = user.query(sql);
-        }
-        
-        single = rs;
-        
-        try {
-            
-        if (single.getResulta().first()) {
-            return true;
-        } else {
-            this.errormsg = "CASE DOES NOT EXIST.";
-        }
-        
-        } catch (Exception ex) {}
-        
-        return false;
-
-    }
-    
-    @WebMethod
-    public boolean initJournal(@WebParam(name="caseid") String caseid) {
-        
-        if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-        
-        ResultSetNet rs;
-        String name = doctor.getUser();
-        String sql;
-        
-        if (!doctor.getUser().equals("admin")) {
-            sql = new String("SELECT * FROM telemedicine.journal WHERE caseid = " + caseid + 
-                    " AND (SELECT * FROM telemedicine.cases WHERE referrer = '" + name + "' OR docname = '" + name + "');");
-        } else {
-            sql = new String("SELECT * FROM telemedicine.journal WHERE caseid = " + caseid + ";");
-        }
-        
-        SqlNet user = new SqlNet();
-        
-        rs = user.query(sql);
-        
-        journal = rs;
-        
-        try {
-            
-        if (journal.getResulta().next()) {
-            journal.getResulta().beforeFirst();
-            return true;
-        } else {
-            this.errormsg = "YOU HAVE NO JOURNAL UPDATES.";
-        }
-        
-        } catch (Exception ex) {}
-        
-        return false;
-
-    }
-     
-    @WebMethod
-    public String getCaseMsg() {
-        
-        String message = this.errormsg;
-        
-        this.errormsg = "";
-        
-        return message;
-    }
-    
-    @WebMethod
-    public boolean initInCase(String status) {
-        
-        if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-        
-        String name = doctor.getUser();
-        
-        ResultSetNet rs;
-        String sql = new String("SELECT * FROM telemedicine.cases WHERE docname = '" + name + "' AND referstatus = '" + status + "';");
-        SqlNet user = new SqlNet();
-        
-        rs = user.query(sql);
-        
-        if (dateExpired(rs)) {
-            rs = user.query(sql);
-        }
-        
-        cases = rs;
-        
-        try {
-            
-        if (cases.getResulta().next()) {
-            cases.getResulta().beforeFirst();
-            return true;
-        } else {
-            this.errormsg = new String("YOU HAVE NO " + status.toUpperCase() + " CASES.");
-        }
-        
-        } catch (Exception ex) {}
-        
-        return false;
-
-    }
-    @WebMethod
-    public boolean initPatientCase(String patientid) {
-        
-        if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-        
-        String name = doctor.getUser();
-        String sql;
-        
-        ResultSetNet rs;
-        
-        if (!doctor.getUser().equals("admin")) {
-            sql = new String("SELECT * FROM telemedicine.cases WHERE patientid = " + patientid + " AND referrer = '" + name + "';");
-        } else {
-            sql = new String("SELECT * FROM telemedicine.cases WHERE patientid = " + patientid + ";");
-        }
-        
-        SqlNet user = new SqlNet();
-        
-        rs = user.query(sql);
-        
-        if (dateExpired(rs)) {
-            rs = user.query(sql);
-        }
-        
-        cases = rs;
-        
-        try {
-            
-        if (cases.getResulta().next()) {
-            cases.getResulta().beforeFirst();
-            return true;
-        } else {
-            this.errormsg = new String("THIS PATIENT HAS NO CASES.");
-        }
-        
-        } catch (Exception ex) {}
-        
-        return false;
-
-    }
+  
     
    
-    @WebMethod
-    public boolean initOutCase(String status) {
-        
-        if (!doctor.DocLoggedIn()) {
-            this.errormsg = "ACCESS DENIED: PLEASE LOG-IN FIRST.";
-            System.out.println(errormsg);
-            return false;
-        }
-        
-        String name = doctor.getUser();
-        
-        ResultSetNet rs;
-        String sql = new String("SELECT * FROM telemedicine.cases WHERE referrer = '" + name + "' AND status = '" + status + "';");
-        SqlNet user = new SqlNet();
-        
-        rs = user.query(sql);
-        
-        if (dateExpired(rs)) {
-            rs = user.query(sql);
-        }
-        
-        cases = rs;
-        
-        try {
-            
-        if (cases.getResulta().next()) {
-            cases.getResulta().beforeFirst();
-            return true;
-        } else {
-            this.errormsg = new String("YOU HAVE NO " + status.toUpperCase() + " CASES.");
-        }
-        
-        } catch (Exception ex) {}
-        
-        return false;
-
-    }
-    
     /* USABLE METHOD */
 
-    @WebMethod
-    public boolean getNextCase() {
-        
-        try 
-        {
-            if (cases.getResulta().next()) {
-                return true;
-            } 
-        }
-        catch (Exception ex) {}
-        
-        return false;
-    }
-    
-    /* USABLE METHOD */
-
-    @WebMethod
-    public boolean getNextData() {
-        
-        try 
-        {
-            if (data.getResulta().next()) {
-                return true;
-            } 
-        }
-        catch (Exception ex) {}
-        
-        return false;
-    }
-    
-    
-    @WebMethod
-    public boolean getNextJournal() {
-        
-        try 
-        {
-            if (journal.getResulta().next()) {
-                return true;
-            } 
-        }
-        catch (Exception ex) {}
-        
-        return false;
-    }
-    
-    /* USABLE METHOD */
 
     @WebMethod
     public String getCaseItem(String item){
