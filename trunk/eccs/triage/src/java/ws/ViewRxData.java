@@ -116,7 +116,8 @@ public class ViewRxData {
 
     /* USABLE METHOD */
 
- /*   @WebMethod
+ /*   @WebMethod()
+  @WebResult(name="result")
     public String[] getCases(@WebParam(name="patientid")String patientid) {
         
     /*     if (!doctor.DocLoggedIn()) {
@@ -171,7 +172,8 @@ public class ViewRxData {
 
     }
   */  
-    @WebMethod
+    @WebMethod()
+    @WebResult(name="result")
     public String viewRxData(@WebParam(name="caseid") String caseid) {
         
         ResultSetNet rs;
@@ -196,7 +198,8 @@ public class ViewRxData {
         return item;
     }
     
-  @WebMethod
+  @WebMethod()
+  @WebResult(name="result")
     public String fileDownload(@WebParam(name="timestamp")long timestamp, @WebParam(name="caseid")String caseid) {
       
         //File someFile = new File(name);
@@ -235,7 +238,8 @@ public class ViewRxData {
     /* USABLE METHOD */
 
 
-    @WebMethod
+    @WebMethod()
+    @WebResult(name="result")
     public String getCaseItem(String item){
         
         String name = "";
@@ -255,7 +259,8 @@ public class ViewRxData {
         return name ;
     }
     
-    @WebMethod
+    @WebMethod()
+    @WebResult(name="result")
     public String getJournalItem(String item){
         
         String name = "";
@@ -277,7 +282,8 @@ public class ViewRxData {
     
     /* USABLE METHOD */
 
-     @WebMethod
+     @WebMethod()
+     @WebResult(name="result")
     public String getDataItem(String item){
         
         String name = "";
