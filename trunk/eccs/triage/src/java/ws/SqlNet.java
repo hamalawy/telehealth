@@ -33,7 +33,7 @@ public class SqlNet
             
             Class.forName("org.gjt.mm.mysql.Driver").newInstance();
     
-            connection = new ConnectionService(DriverManager.getConnection("jdbc:mysql://localhost/triage?user=triageuser&password=cuv4xtriage"));
+            connection = new ConnectionService(DriverManager.getConnection("jdbc:mysql://localhost/triage?user=coy&password=caballes"));
         }
         
         catch (Exception exception)
@@ -146,12 +146,11 @@ public class SqlNet
         return update;
 
     }
-     public int queryBlob(String sql, byte[] edfcontent) 
+     public int queryBlob(String sql, String caseid, byte[] edfcontent) 
     {
        
         ConnectionService connection = null;
         PreparedStatement pstmt = null;
-        String yes = "yeah";
         int update = -2;
         
       try
@@ -162,10 +161,9 @@ public class SqlNet
             //connection.getConnection().setAutoCommit(false);
             pstmt = connection.getConnection().prepareStatement(sql);
             System.out.println("Prepared!");
-/*            FileInputStream fis = new FileInputStream(edfcontent); //get inputStream of this file
-            //pstmt.setInt(1,yes);
-*/            
-            pstmt.setString(1,yes); 
+         
+
+            pstmt.setString(1, caseid); 
             pstmt.setObject(2, edfcontent, java.sql.Types.BLOB); //set parameter of blob type
             pstmt.execute(); //execute update statment
             System.out.println("Executed!");
