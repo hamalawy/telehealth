@@ -90,32 +90,27 @@ class Triage:
 
 
     def sendEDF(self, caseid, edfbin):
-        #If filename is not given, send  parsed version of biomedical data
-        #else, send edf file given
-        if (parsed == False):
-            pass
-        else:
-            loc = SendRxDataServiceLocator()
-            port = loc.getSendRxDataPort()
-            req = fileUpload()
+        loc = SendRxDataServiceLocator()
+        port = loc.getSendRxDataPort()
+        req = fileUpload()
 
-            data = binascii.b2a_base64(edfbin)
+        data = binascii.b2a_base64(edfbin)
 
-            #TODO: req.Name should be req.caseid. Coordinate with Pepz
-            req.Data = data
-            req.Name = "temporary"
-            resp = port.fileUpload(req)
+	#print dir(req)
+        req.Data = data
+        req.Caseid = caseid
+        resp = port.fileUpload(req)
 
     def getB64EDF(self, caseid, timestamp):
-            loc = ViewRxDataServiceLocator()
-            port = loc.getViewRxDataPort()
-            req = fileDownload()
+        loc = ViewRxDataServiceLocator()
+        port = loc.getViewRxDataPort()
+        req = fileDownload()
 
-            req.Timestamp = timestamp
-            req.Caseid = caseid
-            resp = port.fileDownload(req)
+        req.Timestamp = timestamp
+        req.Caseid = caseid
+        resp = port.fileDownload(req)
 
-            return resp.Result
+        return resp.Result
 
     def getBinEDF(self, caseid, timestamp):
-	return binascii.a2b_base64(getB64EDF(caseid, timestamp))
+	return binascii.a2b_base64(self.getB64EDF(caseid, timestamp))
