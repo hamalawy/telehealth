@@ -1,5 +1,5 @@
 """
-LifeLink edf Module
+Project LifeLink: edf Module v1.0
 Contains classes and methods used in encapsulating acquired raw biomedical signals
 into European Data Format (EDF) - a standard used for the exchange and storage of
 medical time-series recordings. It produces a .edf file which can be tested using
@@ -7,15 +7,20 @@ available edf viewer software.
 
 Authors: Julius Miguel J. Broma
          Arlan Roie A. Santos
+         Luis G. Sison, PhD
+         ------------------------------------------------
          Instrumentation, Robotics and Control Laboratory
          University of the Philippines - Diliman
-         
+         ------------------------------------------------
+         January 2008
 """
 
 class Patient:
     """contains information about the patient"""
 
-    def __init__(self, ID, firstname, middlename, lastname, maidenname, gender, birthday, age):
+    def __init__(self, ID = 0, firstname = 'First Name', middlename = 'Middle Name', \
+                 lastname = 'Last Name', maidenname = 'Maiden Name', gender = 'Gender',\
+                 birthday = '01.01.01', age = 0):
         # gender = 'Male' or 'Female'
         # birthday = mm.dd.yy
         
@@ -28,9 +33,10 @@ class Patient:
         self.Birthday = birthday
         self.Age = str(age)
         self.LocalPatientID = ''
-       
-        
 
+        # call the createLocalID() method 
+        self.createLocalID()
+        
     def createLocalID(self):
         """encodes the patient information to the LocalPatientID in the EDF header record field"""
 
@@ -57,12 +63,20 @@ class Patient:
                 LocalPatientIDlist[i] = LocalPatientIDlist[i].ljust(maxlen)
                 
         # converts the list to a string with no separator in between elements
-        self.LocalPatientID = ''.join(LocalPatientIDlist)                   
+        self.LocalPatientID = ''.join(LocalPatientIDlist)
+
+    def get(self):
+        """ returns the LocalPatientID attribute """
+
+        return self.LocalPatientID
+        
         
 class BioSignal:
     """contains the biomedical signals of the patient as well as their technical information"""
 
-    def __init__(self, Label, TransducerType, PhyDimension, PhyMin, PhyMax, DigMin, DigMax, Prefiltering,NRsamples, RawBioSignal):
+    def __init__(self, Label = 'Label', TransducerType = None, PhyDimension = 'Dimension',\
+                 PhyMin = -32767, PhyMax = 32767, DigMin = -32767, DigMax = 32767, Prefiltering = None,\
+                 NRsamples = None, RawBioSignal = None):
         # Label = Standard: 'TypeOfSignal Sensor'
         # DigMin > -32767
         # DigMax <  32767
@@ -83,6 +97,9 @@ class BioSignal:
         
         self.TechnicalInfolist = []                     # list containing 256 bytes of characters describing the technical characteristics of each signal
         self.RawBioSignal = RawBioSignal                # the biomedical signal itself
+
+        # calls the createTechInfo() method 
+        self.createTechInfo()
         
     def createTechInfo(self):
         """encodes the biomedical signal technical information to the EDF header record"""
@@ -116,7 +133,8 @@ class BioSignal:
 class EDF:
     """manipulates the Patient and BioSignal objects to create an EDF file"""
 
-    def __init__(self, StartDate, StartTime, Location, nDataRecord, DurationDataRecord, Patient, BioSignals, EDFfileCount):
+    def __init__(self, StartDate = '01.01.01', StartTime = '01.59.59', Location = None,\
+                 nDataRecord = -1, DurationDataRecord = None, Patient = None, BioSignals = None):
         # StartDate = dd.mm.yy
         # StartTime = hh.mm.ss
         
@@ -124,7 +142,7 @@ class EDF:
 
         # fields defined in the EDF format
         self.Version = '0'                                   # 0 is the only version number allowed
-        self.LocalPatientID = Patient.LocalPatientID    
+        self.LocalPatientID = Patient.get()   
         self.LocalRecordingID = 'Startdate ' + Location      # Location should contain a date (DD-MMM-YYYY) and the location of the patient
         self.StartDate = StartDate
         self.StartTime = StartTime
@@ -133,14 +151,17 @@ class EDF:
         self.EDFPlus = Reserved
         self.nDataRecord = str(nDataRecord)                  # if unknown, default value is -1 (prior or during recording)
         self.DurationDataRecord = str(DurationDataRecord)
-        self.EDFfileCount = str(EDFfileCount)  # counts the number of edf files produced
 
-        self.Patient = Patient
         self.BioSignals = BioSignals
         self.HeaderRecord = ''                               # contains the header record information of the EDF data
         self.DataRecord = ''                                 # contains the 2-byte ASCII encided data record values of the BioSignals
-        self.EDFFile = ''                                    # contains the EDF file of a patient and will be saved as .EDF
-        
+        self.EDFFile = ''                                    # contains the EDF file of a patient and will be saved as .edf
+
+        # calls the createHeaderRecord()method 
+        self.createHeaderRecord()
+        # calls the createDataRecord() method 
+        self.createDataRecord()
+
         
     def createHeaderRecord(self):
         """creates the header record fields of the EDF file"""
@@ -225,17 +246,13 @@ class EDF:
         # when all BioSignal objects are accessed and encoded, converts the list to a string
         self.DataRecord = ''.join(DataRecordlist)
 
-      
-    def createEDF(self):
-        """integrates the created Header Record field with the Data Record field to create a complete EDF file"""
-        
+    def get(self):
+
         self.EDFFile = self.HeaderRecord + self.DataRecord
+        return self.EDFFile
 
-#        filename = raw_input('Enter filename to save the file: ')
+      
 
-        edffile = open('C:/Users/ARLAN ROIE SANTOS/Desktop/' + 'testfile' + self.EDFfileCount + '.edf', 'wb+')    # temporarily stores to Desktop (in Windows)
-        edffile.write(self.EDFFile)
-        edffile.close()
 
 
         
