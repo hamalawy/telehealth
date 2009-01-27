@@ -33,8 +33,7 @@ class Patient:
         self.Birthday = birthday
         self.Age = str(age)
         self.LocalPatientID = ''
-
-        # call the createLocalID() method 
+ 
         self.createLocalID()
         
     def createLocalID(self):
@@ -74,9 +73,9 @@ class Patient:
 class BioSignal:
     """contains the biomedical signals of the patient as well as their technical information"""
 
-    def __init__(self, Label = 'Label', TransducerType = None, PhyDimension = 'Dimension',\
-                 PhyMin = -32767, PhyMax = 32767, DigMin = -32767, DigMax = 32767, Prefiltering = None,\
-                 NRsamples = None, RawBioSignal = None):
+    def __init__(self, Label = 'Label', TransducerType = '', PhyDimension = 'Dimension',\
+                 PhyMin = -32767, PhyMax = 32767, DigMin = -32767, DigMax = 32767, Prefiltering = '',\
+                 NRsamples = 1, RawBioSignal = []):
         # Label = Standard: 'TypeOfSignal Sensor'
         # DigMin > -32767
         # DigMax <  32767
@@ -95,10 +94,9 @@ class BioSignal:
         self.NRsamples = str(NRsamples)
         self.Reserved = Reserved
         
-        self.TechnicalInfolist = []                     # list containing 256 bytes of characters describing the technical characteristics of each signal
+        self.TechInfo = []                     # list containing 256 bytes of characters describing the technical characteristics of each signal
         self.RawBioSignal = RawBioSignal                # the biomedical signal itself
 
-        # calls the createTechInfo() method 
         self.createTechInfo()
         
     def createTechInfo(self):
@@ -116,25 +114,25 @@ class BioSignal:
         lenNRsamples = 8
         lenReserved = 32
 
-        self.TechnicalInfolist = [self.Label, self.TransducerType, self.PhyDimension, self.PhyMin, self.PhyMax, self.DigMin, self.DigMax, self.Prefiltering,\
+        self.TechInfo = [self.Label, self.TransducerType, self.PhyDimension, self.PhyMin, self.PhyMax, self.DigMin, self.DigMax, self.Prefiltering,\
                              self.NRsamples, self.Reserved]
-        lenTechnicalInfo = [lenLabel, lenTransducerType, lenPhyDimension, lenPhyMin, lenPhyMax, lenDigMin, lenDigMax, lenPrefiltering, lenNRsamples, lenReserved]
+        lenTechInfo = [lenLabel, lenTransducerType, lenPhyDimension, lenPhyMin, lenPhyMax, lenDigMin, lenDigMax, lenPrefiltering, lenNRsamples, lenReserved]
 
-        for i in range(len(self.TechnicalInfolist)):
-            maxlen = lenTechnicalInfo[i]
-            if len(self.TechnicalInfolist[i]) > maxlen:
+        for i in range(len(self.TechInfo)):
+            maxlen = lenTechInfo[i]
+            if len(self.TechInfo[i]) > maxlen:
                 # truncates the string if length is greater than limit
-                self.TechnicalInfolist[i] = self.TechnicalInfolist[i][:maxlen]      
+                self.TechInfo[i] = self.TechInfo[i][:maxlen]      
             else:
                 
-                self.TechnicalInfolist[i] = self.TechnicalInfolist[i].ljust(maxlen)
+                self.TechInfo[i] = self.TechInfo[i].ljust(maxlen)
 
 
 class EDF:
     """manipulates the Patient and BioSignal objects to create an EDF file"""
 
-    def __init__(self, StartDate = '01.01.01', StartTime = '01.59.59', Location = None,\
-                 nDataRecord = -1, DurationDataRecord = None, Patient = None, BioSignals = None):
+    def __init__(self,  Patient, BioSignals, StartDate = '01.01.01', StartTime = '01.59.59', Location = '',\
+                 nDataRecord = -1, DurationDataRecord = 1, ):
         # StartDate = dd.mm.yy
         # StartTime = hh.mm.ss
         
@@ -142,7 +140,7 @@ class EDF:
 
         # fields defined in the EDF format
         self.Version = '0'                                   # 0 is the only version number allowed
-        self.LocalPatientID = Patient.get()   
+        self.LocalPatientID = Patient.get()  
         self.LocalRecordingID = 'Startdate ' + Location      # Location should contain a date (DD-MMM-YYYY) and the location of the patient
         self.StartDate = StartDate
         self.StartTime = StartTime
@@ -156,10 +154,8 @@ class EDF:
         self.HeaderRecord = ''                               # contains the header record information of the EDF data
         self.DataRecord = ''                                 # contains the 2-byte ASCII encided data record values of the BioSignals
         self.EDFFile = ''                                    # contains the EDF file of a patient and will be saved as .edf
-
-        # calls the createHeaderRecord()method 
+ 
         self.createHeaderRecord()
-        # calls the createDataRecord() method 
         self.createDataRecord()
 
         
@@ -195,10 +191,10 @@ class EDF:
         # converts the list to a string with no separator in between elements
         self.HeaderRecord = ''.join(HeaderInfolist)                 
 
-        # concatenates each BioSignal TechnicalInfo to the Header Record string
-        for i in range(len(self.BioSignals[0].TechnicalInfolist)):
+        # concatenates each BioSignal TechInfo to the Header Record string
+        for i in range(len(self.BioSignals[0].TechInfo)):
             for x in range(len(self.BioSignals)):
-                self.HeaderRecord = self.HeaderRecord + self.BioSignals[x].TechnicalInfolist[i]
+                self.HeaderRecord = self.HeaderRecord + self.BioSignals[x].TechInfo[i]
 
 
     def createDataRecord(self):
