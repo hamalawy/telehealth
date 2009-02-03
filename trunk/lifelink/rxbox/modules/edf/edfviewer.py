@@ -1,3 +1,19 @@
+"""
+Project LifeLink: edfviewer Module
+Contains classes and methods used in viewing an EDF file. It displays
+the header record and plots the signals in the data record using
+matplotlib.
+
+Authors: Julius Miguel J. Broma
+         Arlan Roie A. Santos
+         Luis G. Sison, PhD
+         ------------------------------------------------
+         Instrumentation, Robotics and Control Laboratory
+         University of the Philippines - Diliman
+         ------------------------------------------------
+         January 2008
+"""
+
 import matplotlib.pyplot
 
 class BioSignal:
@@ -33,6 +49,8 @@ class EDF_File(BioSignal):
         self.TechnicalInfo = ''
         self.DataRecord    = ''
         self.BioSignals    = []
+        # list of integers version of self.DataRecord
+        self.DataRecord_int = []
 
         # Header Record fields
         self.Version            = 0
@@ -47,30 +65,31 @@ class EDF_File(BioSignal):
         self.nSignals           = 0
         
         # open the EDF file with the given filename
+        try:
+            self.file     = open(self.filename, 'rb')
+            self.values   = self.file.read()
+            self.file.close()
+        except TypeError:
+            self.values   = self.filename
 
-        self.file     = open(self.filename, 'rb')
-        self.values   = self.file.read()
-        self.file.close()
-        print self.filename, 'opened'
-
-        self.getHeaderRecord()
+        self.getPatientInfo()
         self.getTechnicalInfo()
-        self.plotDataRecords()
-        
-    def getHeaderRecord(self):
-        """ gets the Header Record part of the EDF file """
+
+
+    def getPatientInfo(self):
+        """ gets the Patient's information and the recording details of the EDF file """
 
         self.nBytesHeader = int(self.values[184:192])
         self.HeaderRecord = self.values[:self.nBytesHeader]
 
-        self.Version            = int(self.HeaderRecord[0:8])
+        self.Version            = self.HeaderRecord[0:8]
         self.LocalPatientID     = self.HeaderRecord[8:88]
         self.LocalRecordingID   = self.HeaderRecord[88:168]
         self.StartDate          = self.HeaderRecord[168:176]
         self.StartTime          = self.HeaderRecord[176:184]
         self.EDFPlus            = self.HeaderRecord[192:236]
-        self.nDataRecord        = int(self.HeaderRecord[236:244])
-        self.DurationDataRecord = int(self.HeaderRecord[244:252])
+        self.nDataRecord        = self.HeaderRecord[236:244]
+        self.DurationDataRecord = self.HeaderRecord[244:252]
         self.nSignals           = int(self.HeaderRecord[252:256])
         
         print 'Version              :', self.Version
@@ -85,7 +104,7 @@ class EDF_File(BioSignal):
         print 'N Signals            :', self.nSignals
 
     def getTechnicalInfo(self):
-        """ gets the technical information of each signals """
+        """ gets the technical information of each signal """
 
         self.TechnicalInfo = self.values[256:self.nBytesHeader]
         self.TechInfotext  = ['Signal Label       :',\
@@ -123,6 +142,7 @@ class EDF_File(BioSignal):
             for i in range(len(self.TechInfotext)):
                 print self.TechInfotext[i] + self.BioSignals[x].TechInfolist[i]
 
+        
     def plotDataRecords(self):
         """ plots each signal in the data record """
         
@@ -144,25 +164,23 @@ class EDF_File(BioSignal):
             tempDataRecord.remove(tempDataRecord[i])
             tempDataRecord.insert(i,binvalue)
 
-        DataRecord_int = []
-
         for i in range(0,len(tempDataRecord),2):
             LSByte = tempDataRecord[i]
             MSByte = tempDataRecord[i+1]
             int_2bytedata = int(MSByte + LSByte,2)
 
             if int_2bytedata <= 32767:
-                DataRecord_int.append(int_2bytedata)
+                self.DataRecord_int.append(int_2bytedata)
 
             else:
                 negative_num = int_2bytedata - (2**16-1)
-                DataRecord_int.append(negative_num)
-
-        # no x-axis values yet.
-        # no subplots yet.
-        matplotlib.pyplot.plot(DataRecord_int)
-        matplotlib.pyplot.show()
+                self.DataRecord_int.append(negative_num)
         
+        # FIX ME:no x-axis values yet.
+        # FIX ME:no subplots yet.
+        matplotlib.pyplot.plot(self.DataRecord_int)
+        matplotlib.pyplot.show()
+
             
                 
         
