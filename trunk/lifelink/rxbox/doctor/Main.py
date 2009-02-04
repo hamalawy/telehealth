@@ -306,22 +306,6 @@ class MyFrame(wx.Frame):
         self.SetSize((1000, 700))       # changed from 640 to 700
         self.SetBackgroundColour(wx.Colour(239, 235, 239))
 
-        #self.patient_header.SetMinSize((60, 20))
-        #self.patient_header.SetBackgroundColour(wx.Colour(226, 226, 116))
-        #self.patient_header.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        #self.name.SetMinSize((50, 20))
-        #self.name.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        #self.name_text.SetMinSize((218, 20))
-        #self.age.SetMinSize((50, 20))
-        #self.age.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        #self.age_text.SetMinSize((70, 20))
-        #self.gender.SetMinSize((60, 20))
-        #self.gender.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        #self.gender_text.SetMinSize((75, 20))
-        #self.cond.SetMinSize((80, 20))
-        #self.cond.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        #self.cond_text.SetMinSize((186, 40))
-
         # copy to __set_properties of Telemed 2 code : start
         self.Label_ReferralTopic.SetMinSize((140, 16))
         self.Label_ReferralTopic.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
@@ -421,7 +405,7 @@ class MyFrame(wx.Frame):
         self.save_button.SetMinSize((79, 30))
         self.save_button.SetBackgroundColour(wx.Colour(185, 209, 255))
         self.save_button.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        self.video_button.SetMinSize((130, 30))
+        self.video_button.SetMinSize((160, 30))
         self.video_button.SetBackgroundColour(wx.Colour(252, 255, 111))
         self.video_button.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
 	self.video_button.Enable(False)
@@ -445,8 +429,8 @@ class MyFrame(wx.Frame):
         sizer_12    = wx.BoxSizer(wx.HORIZONTAL)
         sizer_4_im = wx.BoxSizer(wx.VERTICAL)
         sizer_3_im = wx.BoxSizer(wx.VERTICAL)
-	sizer_4     = wx.BoxSizer(wx.VERTICAL)     
-        
+	sizer_4     = wx.BoxSizer(wx.VERTICAL)
+
         # copy to __do_layout of Telemed 2 code : start
         sizer_5 = wx.BoxSizer(wx.VERTICAL)
         sizer_11 = wx.BoxSizer(wx.VERTICAL)
