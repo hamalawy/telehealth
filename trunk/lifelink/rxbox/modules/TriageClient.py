@@ -1,5 +1,4 @@
 import sys, binascii
-sys.path.append('webservices/')
 from CreateCaseService_client import *
 from CreatePatientService_client import *
 from ViewCaseService_client import *
@@ -114,3 +113,30 @@ class Triage:
 
     def getBinEDF(self, caseid, timestamp):
 	return binascii.a2b_base64(self.getB64EDF(caseid, timestamp))
+    
+    
+    ### START: Temporary Methods###
+    def getLatestPatient(self):
+        loc = ViewPatientServiceLocator()
+        port = loc.getViewPatientPort()
+        req = getLatestPatient()
+
+        resp = port.getLatestPatient(req)
+        return resp.Result
+
+    def getLatestCase(self):
+        loc = ViewCaseServiceLocator()
+        port = loc.getViewCasePort()
+        req = getLatestCase()
+
+        resp = port.getLatestCase(req)
+        return resp.Result
+    
+    def getLatestEDF(self):
+        loc = ViewRxDataServiceLocator()
+        port = loc.getViewRxDataPort()
+        req = getLatestEDF()
+        resp = port.getLatestEDF(req)
+
+	return binascii.a2b_base64(resp.Result)
+    ### END: Temporary Methods ###

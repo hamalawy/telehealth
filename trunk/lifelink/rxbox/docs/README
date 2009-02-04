@@ -4,7 +4,11 @@
 2) Build ZSI in modules/zsi
 	python setup.py build
 	python setup.py install
-3) Generate python web services using included script in modules/webservices.
+3) Generate python web services using included script in modules/.
 	vim generateservices.py (change ip address of the server)
-	./generateservies.py
+	./generateservices.py
+
+NOTES:
+* Currently the way to determine the latest telemetry is by getting the last row in rxdata table and by polling every 15 seconds. This is temporary. This will be replaced by a implementing signalling protocol which will be implemented using XMPP. (4Feb2009 --jerome)
+
 

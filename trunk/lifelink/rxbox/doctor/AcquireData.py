@@ -43,7 +43,7 @@ class AcquireDataThr(threading.Thread):
        
     def run(self):
         input_method = self.setInputSource()
-        print 'SetInputSource: transmit_addr = ', self.window.transmit_addr
+        #print 'SetInputSource: transmit_addr = ', self.window.transmit_addr
 
         if (input_method == 'Serial Port'):
             while True:
@@ -61,7 +61,9 @@ class AcquireDataThr(threading.Thread):
         elif (input_method == 'USB Port'):
             print 'USB Port not Ready'            
         elif (input_method == 'Web Service'):
-            INPUT_FILE = tc.Triage().getBinEDF('39309',1232986728)
+	    #This web service method is temporary until a signaling protocol
+	    # is drafted --jerome
+            INPUT_FILE = tc.Triage().getLatestEDF()
             x = edf.EDF_File(INPUT_FILE)
             self.ecg_data = x.parseDataRecords()
             t = self.window.datapanel.ecg_plotter.t
