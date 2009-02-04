@@ -183,6 +183,24 @@ public class ViewPatient {
         
         return item;
     }
+
+    //TEMPORARY METHOD: --jerome
+    @WebMethod()
+    @WebResult(name="result")
+    public String[] getLatestPatient() {
+        
+        ResultSetNet rs;
+        String sql = new String("SELECT patientid FROM triage.patient;");
+        SqlNet user = new SqlNet();
+        rs = user.query(sql);
+        nameSet = rs;
+        
+        try {
+            nameSet.getResulta().last();
+        } catch (Exception ex) {}
+        
+        return viewPatient(getPatientItem("patientid"));
+    }
     
     @WebMethod()
     @WebResult(name="result")

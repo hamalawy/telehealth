@@ -215,13 +215,8 @@ public class ViewRxData {
         data = rs = connect.query(sql);
         data.getResulta().next();
         Blob blob = data.getResulta().getBlob("edfcontent"); //get Blob obj by the photo field
-        //ImageIcon icon = new ImageIcon(blob.getBytes(1, (int)blob.length())); //read bytes from first byte to the end
         s = new sun.misc.BASE64Encoder().encode(blob.getBytes(1, (int)blob.length()));
         System.out.println("dataid: " + data.getResulta().getInt("dataid"));
-        //FileOutputStream fos = new FileOutputStream(someFile);
-        //fos.write(blob.getBytes(1, (int)blob.length()));
-        //fos.flush();
-        //fos.close();
         
         rs.getResulta().close(); //close resources 
     } catch (Exception e) {
@@ -231,8 +226,37 @@ public class ViewRxData {
     }
         return s;
     }
-    
+   
   
+  //TEMPORARY METHOD: --jerome
+  @WebMethod()
+  @WebResult(name="result")
+    public String getLatestEDF() {
+      
+        //File someFile = new File(name);
+        ResultSetNet rs = null;
+        String s = null;
+        
+        try {
+        // Convert a byte array to base64 string
+        SqlNet connect = new SqlNet();
+
+        String sql = new String("SELECT edfcontent from triage.rxdata ORDER BY dataid DESC LIMIT 1");
+        
+        data = rs = connect.query(sql);
+        data.getResulta().next();
+        Blob blob = data.getResulta().getBlob("edfcontent"); //get Blob obj by the photo field
+        s = new sun.misc.BASE64Encoder().encode(blob.getBytes(1, (int)blob.length()));
+        System.out.println("dataid: " + data.getResulta().getInt("dataid"));
+        
+        rs.getResulta().close(); //close resources 
+    } catch (Exception e) {
+        System.out.println("Got a downloadex");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+    }
+        return s;
+    }  
     
    
     /* USABLE METHOD */

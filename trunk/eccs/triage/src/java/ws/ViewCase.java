@@ -222,6 +222,25 @@ public class ViewCase {
         return item;
     }
     
+    //TEMPORARY METHOD: --jerome
+    @WebMethod()
+    @WebResult(name="result")
+    public String[] getLatestCase() {
+        
+        ResultSetNet rs;
+        String sql = new String("SELECT referralid FROM triage.referral;");
+        SqlNet user = new SqlNet();
+        rs = user.query(sql);
+        cases = rs;
+        
+        try {
+            cases.getResulta().last();
+        } catch (Exception ex) {}
+        
+        return viewCase(getCaseItem("referralid"));
+    }
+    
+    
     /* USABLE METHOD */
 	
     @WebMethod()
