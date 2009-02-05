@@ -1,8 +1,6 @@
-import sys
+import sys, os, time
 import xmpp
-import os
 import signal
-import time
 import wx
 import threading
 
@@ -35,6 +33,10 @@ class Messenger(threading.Thread):
        	self.client.sendInitPresence()
         
 	while True:
+		# Keep alive
+		if int(time.time()) % 150 == 0:
+			self.client.sendPresence()
+
 		if self.stopEvent.isSet():
 			self.client.disconnect()
 			break
