@@ -154,6 +154,7 @@ class EDF:
         self.HeaderRecord = ''                               # contains the header record information of the EDF data
         self.DataRecord = ''                                 # contains the 2-byte ASCII encided data record values of the BioSignals
         self.EDFFile = ''                                    # contains the EDF file of a patient and will be saved as .edf
+        
  
         self.createHeaderRecord()
         self.createDataRecord()
@@ -200,7 +201,12 @@ class EDF:
     def createDataRecord(self):
         """creates the data record fields of the EDF file"""
 
+        counter = 0
         DataRecordlist = []
+        end = []
+        offset = []
+        start = []
+        temp = []
 
         def DecToBin(num):
             # converts a decimal number to its 16-bit binary representation
@@ -214,34 +220,50 @@ class EDF:
             return BinStr
 
         for i in range(len(self.BioSignals)):
-            for x in range(len(self.BioSignals[i].RawBioSignal)):       
-                intRawValue = self.BioSignals[i].RawBioSignal[x]
+            offset.append(int(self.BioSignals[i].NRsamples))
+            start.append(0)
+            end.append(0)
 
-                if intRawValue >= 0:
-                    # if positive-valued, convert to binary
-                    binRawValue = DecToBin(intRawValue)
-                else:
-                    # if negative, get the positive representation by adding (2**16-1)
-                    # these are the numbers from 32768-65535
-                    negRawValue = intRawValue + (2**16-1)
-                    # then convert to binary
-                    binRawValue = DecToBin(negRawValue)
+        while (counter < int(self.nDataRecord)):
+            
+            for x in range(len(self.BioSignals)):
 
-                # divide the 16-bit binary number to two 8-bit binary numbers (MSByte and LSByte)
-                MSByte = binRawValue[:8]
-                LSByte = binRawValue[8:]
+                end[x] = start[x] + offset[x]
+                temp =  self.BioSignals[x].RawBioSignal[start[x]:end[x]]
 
-                # convert each byte to decimal then get its ASCII representation 
-                chrMSByte = chr(int(MSByte,2))
-                chrLSByte = chr(int(LSByte,2))
+                for i in range(len(temp)):
+                    intRawValue = temp[i]
 
-                # each value in the data record is a 2-byte 2's complement integer represented by its ASCII character
-                # it is arranged as: Value = LSB,MSB
-                DataRecordlist.extend([chrLSByte, chrMSByte])
+                    if intRawValue >= 0:
+                        # if positive-valued, convert to binary
+                        binRawValue = DecToBin(intRawValue)
+                    else:
+                        # if negative, get the positive representation by adding (2**16-1)
+                        # these are the numbers from 32768-65535
+                        negRawValue = intRawValue + (2**16-1)
+                        # then convert to binary
+                        binRawValue = DecToBin(negRawValue)
+
+                    # divide the 16-bit binary number to two 8-bit binary numbers (MSByte and LSByte)
+                    MSByte = binRawValue[:8]
+                    LSByte = binRawValue[8:]
+
+                    # convert each byte to decimal then get its ASCII representation 
+                    chrMSByte = chr(int(MSByte,2))
+                    chrLSByte = chr(int(LSByte,2))
+
+                    # each value in the data record is a 2-byte 2's complement integer represented by its ASCII character
+                    # it is arranged as: Value = LSB,MSB
+                    DataRecordlist.extend([chrLSByte, chrMSByte])
+
+                # update the pointer for the next set of data records
+                start[x] = end[x]
+
+            counter += 1
 
         # when all BioSignal objects are accessed and encoded, converts the list to a string
         self.DataRecord = ''.join(DataRecordlist)
-
+            
     def get(self):
 
         self.EDFFile = self.HeaderRecord + self.DataRecord
