@@ -14,7 +14,7 @@ Authors: Julius Miguel J. Broma
          January 2008
 """
 
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
 
 class BioSignal:
     """ contains the technical characteristics of a biosignal """
@@ -32,18 +32,18 @@ class BioSignal:
         self.Prefiltering   = ''
         self.NRsamples      = 0
         self.Reserved       = ''
+        self.RawBioSignal   = []
 
         self.TechInfolist = [self.Label, self.TransducerType, self.PhyDimension,\
                              self.PhyMin, self.PhyMax, self.DigMin, self.DigMax,\
                              self.Prefiltering, self.NRsamples, self.Reserved]
         
-class EDF_File(BioSignal):
+class EDF_File:
     """ manipulates an EDF file """
 
     def __init__(self, filename):
         """ opens the desired EDF file with the given filename and sets the attributes of the class """
 
-        BioSignal.__init__(self)
         self.filename      = filename
         self.HeaderRecord  = ''
         self.TechnicalInfo = ''
@@ -51,6 +51,8 @@ class EDF_File(BioSignal):
         self.BioSignals    = []
         # list of integers version of self.DataRecord
         self.DataRecord_int = []
+        # parsed DataRecord per signal
+        self.RawBioSignal = []
 
         # Header Record fields
         self.Version            = 0
@@ -143,8 +145,15 @@ class EDF_File(BioSignal):
                 print self.TechInfotext[i] + self.BioSignals[x].TechInfolist[i]
 
         
-    def plotDataRecords(self):
+    def parseDataRecords(self):
         """ plots each signal in the data record """
+
+        counter = 0
+        end = []
+        offset = []
+        start = 0
+        temp = []
+        
         
         self.DataRecord = self.values[self.nBytesHeader:]
         tempDataRecord = list(self.DataRecord)
@@ -175,11 +184,33 @@ class EDF_File(BioSignal):
             else:
                 negative_num = int_2bytedata - (2**16-1)
                 self.DataRecord_int.append(negative_num)
-        
-        # FIX ME:no x-axis values yet.
-        # FIX ME:no subplots yet.
-        matplotlib.pyplot.plot(self.DataRecord_int)
-        matplotlib.pyplot.show()
+
+        for i in range(len(self.BioSignals)):
+            offset.append(int(self.BioSignals[i].TechInfolist[8]))
+            end.append(0)
+            self.RawBioSignal.append([])
+
+        while (counter < int(self.nDataRecord)):
+            
+            for i in range(len(self.BioSignals)):
+
+                end[i] = start + offset[i]
+                temp = self.DataRecord_int[start:end[i]]
+                self.RawBioSignal[i].extend(temp)
+                start = end[i]
+                
+            counter += 1
+                
+        return (self.RawBioSignal)
+
+    def plotDataRecords(self):
+
+        for i in range(len(self.RawBioSignal)):
+
+            plt.subplot(len(self.RawBioSignal),1,i + 1)
+            plt.plot(self.RawBioSignal[i])
+
+        plt.show()    
 
             
                 
