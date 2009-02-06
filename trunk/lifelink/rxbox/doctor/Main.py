@@ -174,8 +174,8 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kwds)
 
         self.phone = Linphone(self)
-	self.messenger = Messenger(self, PGH_JID, PGH_PWD)
-	self.messenger.start()
+	#self.messenger = Messenger(self, PGH_JID, PGH_PWD)
+	#self.messenger.start()
         self.threads = []
         self.video_threads = []
         self.conn_threads = []
@@ -298,7 +298,7 @@ class MyFrame(wx.Frame):
 	self.im_messages.SetEditable(False)
 
         self.stop_button.Enable(False)
-        self.start_button.Enable(False)
+        #self.start_button.Enable(False)
 
     def __set_properties(self):
         # begin wxGlade: MyFrame.__set_properties
@@ -488,7 +488,7 @@ class MyFrame(wx.Frame):
         self.Tab_General.AddPage(self.Tab_Interlocutor, "Interlocutor")
         self.Tab_General.AddPage(self.Tab_Hospital, "Hospital/Institution/Organization")
         self.Tab_General.AddPage(self.Tab_Patient, "Patient's Information")
-        sizer_5.Add(self.Tab_General, 0, wx.ALL, 4)
+        sizer_5.Add(self.Tab_General, 0, wx.ALL|wx.EXPAND, 4)
         # copy to __do_layout of Telemed 2 code : end
         
         sizer_2.Add((20, 10), 0, wx.EXPAND, 0)
@@ -498,7 +498,7 @@ class MyFrame(wx.Frame):
         sizer_4.Add((20, 10), 0, wx.EXPAND, 0)
         sizer_4.Add(self.datapanel, 0, wx.EXPAND)
         sizer_4.Add(sizer_12, 0, wx.EXPAND, 0)
-        sizer_3.Add(sizer_4, 0, wx.EXPAND, 0)
+        sizer_3.Add(sizer_4, 2, wx.EXPAND, 0)
         sizer_3.Add((20, 10), 0, wx.EXPAND, 0)
         sizer_19.Add(self.video_header, 0, wx.ALL|wx.EXPAND, 4)
         sizer_18.Add(sizer_19, 0, wx.EXPAND, 0)
@@ -565,7 +565,7 @@ class MyFrame(wx.Frame):
         self.video_button.Enable(True)
 	self.video_button.SetLabel(label='Answer incoming call')
 	
-	self.messenger.setRecipient(event.caller + '@' + PGH_DOMAIN)
+	#self.messenger.setRecipient(event.caller + '@' + PGH_DOMAIN)
 	
 	## While ringinng, patient info should be fetched ##
 	## FIXME: Patient id and case id should come from the signalling protocol ##
@@ -669,20 +669,21 @@ class MyFrame(wx.Frame):
 
     def onIMReply_ButtonClick(self, event):
         msg = self.reply_text.GetValue()
-
+        '''
 	if(self.phone.isOnCall() == True):
 		self.messenger.sendMessage(msg)
 	else:
 		self.UpdateIMText("No RxBox is connected.")
-
+        '''
     def onClickStart(self):
-        self.Start_Acquire.Enable(False)
+        #self.Start_Acquire.Enable(False)
         self.Stop_Acquire.Enable(True)
         self.Save_To_File.Enable(False)
         self.start_button.Enable(False)
         self.stop_button.Enable(True)
         self.save_button.Enable(False)
-    
+   
+ 
     def onClickStop(self):
         self.Start_Acquire.Enable(True)
         self.Stop_Acquire.Enable(False)
