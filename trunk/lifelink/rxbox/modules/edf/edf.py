@@ -269,10 +269,59 @@ class EDF:
         self.EDFFile = self.HeaderRecord + self.DataRecord
         return self.EDFFile
 
-      
+if __name__ == "__main__":
+    patientArgs = {}
+    biosignalArgs = {}
+    edfArgs = {}
+    biosignals = []
+    state = '[PATIENT]'
+    import sys, binascii
+    line = sys.stdin.readline()
+    while line != "\n":
+        if state == '[PATIENT]':
+            if line.strip().upper() in ["[BIOSIGNAL]","[EDF]"]: # switch state
+                patient = Patient(**patientArgs)
+                state = line.strip().upper()
+            elif line.strip().upper() == '[PATIENT]':
+                pass
+            else:
+                key, separator, value = line.strip().partition(':')
+                key = key.strip()
+                value = value.strip()
+                if key in ['age','id']:
+                    patientArgs[key] = int(value)
+                else:
+                    patientArgs[key] = value
+        elif state == '[BIOSIGNAL]':
+            if line.strip().upper() in ["[BIOSIGNAL]","[EDF]"]: # new biosignal
+                if biosignalArgs != {}:
+                    biosignal = BioSignal(**biosignalArgs)
+                    biosignals.append(biosignal)
+                biosignalArgs = {}
+                state = line.strip().upper()
+            else:
+                key, separator, value = line.strip().partition(':')
+                key = key.strip()
+                value = value.strip()
+                if key in ['PhyMin', 'PhyMax', 'DigMin', 'DigMax', 'NRsamples']:
+                    biosignalArgs[key] = int(value)
+                elif key == 'RawBioSignal':
+                    biosignalArgs[key] = [int(i) for i in value.split(',')]
+                else:
+                    biosignalArgs[key] = value
+        elif state == "[EDF]":
+            key, separator, value = line.strip().partition(':')
+            key = key.strip()
+            value = value.strip()
+            if key in ['nDataRecord', 'DurationDataRecord']:
+                edfArgs[key] = int(value)
+            else:
+                edfArgs[key] = value
+        line = sys.stdin.readline()
 
-
-
+    print biosignals
+    edf = EDF(patient, biosignals, **edfArgs)
+    sys.stdout.write(binascii.b2a_base64(edf.get()))
         
 
 
