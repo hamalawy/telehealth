@@ -1,3 +1,5 @@
+#!/bin/env python
+
 """
 Project LifeLink: edf Module v1.0
 Contains classes and methods used in encapsulating acquired raw biomedical signals
