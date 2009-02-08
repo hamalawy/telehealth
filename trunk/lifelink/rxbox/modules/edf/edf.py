@@ -323,7 +323,6 @@ if __name__ == "__main__":
                 edfArgs[key] = value
         line = sys.stdin.readline()
 
-    print biosignals
     edf = EDF(patient, biosignals, **edfArgs)
     sys.stdout.write(binascii.b2a_base64(edf.get()))
         
