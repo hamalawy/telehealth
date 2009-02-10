@@ -24,7 +24,8 @@ from matplotlib.numerix import arange
 
 from Linphone import Linphone
 from Messenger import Messenger
-from TriageClient import Triage
+from TriageClient import Triage as tc
+import edfviewer as edf
 
 LINEWIDTH       = 3.0           # line width for the plot
 LINECOLOR       = '#FF351A'     # line color for the plot (red color)
@@ -64,7 +65,9 @@ class Plotter():
         self.data = [0.0 for i in range (SAMPLES)]
         self.line, = self.axes.plot(self.t, self.data, 'r', linewidth = LINEWIDTH, color = LINECOLOR)
         self.canvas = FigureCanvas(parent, -1, self.figure)
-        self.axes.grid(True)
+        self.axes.grid(False)
+        self.axes.set_xticklabels('')
+        self.axes.set_yticklabels('')
 
 
 class MyPanel(wx.Panel):
@@ -92,8 +95,8 @@ class MyPanel(wx.Panel):
         self.__set_properties()
         self.__do_layout()
         self.Bind(wx.EVT_PAINT, self.updatePlots)
-	
-    # updates the value of SpO2, BPM and ECG data   
+        
+        # updates the value of SpO2, BPM and ECG data   
     def updatePlots(self, event):
         self.ecg_plotter.canvas.draw()
         if event is not None:
@@ -157,9 +160,9 @@ class MyPanel(wx.Panel):
         sizer_6.Add(self.bpm_header, 0, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 2)
         sizer_6.Add(self.bpm, 0, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 2)
         sizer_6.Add(self.bpm_unit, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 2)
-        sizer_3.Add(sizer_4, 1, wx.LEFT|wx.BOTTOM|wx.EXPAND, 4)
         sizer_3.Add(sizer_5, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         sizer_3.Add(sizer_6, 1, wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
+        sizer_3.Add(sizer_4, 1, wx.LEFT|wx.BOTTOM|wx.EXPAND, 4)
         sizer_1.Add((20, 2), 0, wx.EXPAND, 0)
         sizer_1.Add(sizer_2, 0, wx.ALL|wx.EXPAND, 4)
         sizer_1.Add((20, 2), 1, wx.EXPAND, 0)
@@ -172,10 +175,10 @@ class MyFrame(wx.Frame):
     def __init__(self, *args, **kwds):
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
-
+        
         self.phone = Linphone(self)
-	#self.messenger = Messenger(self, PGH_JID, PGH_PWD)
-	#self.messenger.start()
+        #self.messenger = Messenger(self, PGH_JID, PGH_PWD)
+        #self.messenger.start()
         self.threads = []
         self.video_threads = []
         self.conn_threads = []
@@ -295,7 +298,7 @@ class MyFrame(wx.Frame):
         self.video_panel   = wx.Panel(self, -1, style=wx.TAB_TRAVERSAL)
         self.reply_text     = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE|wx.TE_PROCESS_ENTER)
         self.im_messages  = wx.TextCtrl(self.im_panel, -1, style=wx.TE_MULTILINE)
-	self.im_messages.SetEditable(False)
+        self.im_messages.SetEditable(False)
 
         self.stop_button.Enable(False)
         #self.start_button.Enable(False)
@@ -408,11 +411,11 @@ class MyFrame(wx.Frame):
         self.video_button.SetMinSize((160, 30))
         self.video_button.SetBackgroundColour(wx.Colour(252, 255, 111))
         self.video_button.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-	self.video_button.Enable(False)
+        self.video_button.Enable(False)
         self.im_panel.SetMinSize((270, 190))
         self.video_panel.SetMinSize((352, 288))
         self.reply_text.SetMinSize((275, 45))
-	self.im_messages.SetBackgroundColour(wx.Colour(255, 252, 239))
+        self.im_messages.SetBackgroundColour(wx.Colour(255, 252, 239))
         self.im_messages.SetMinSize((270, 185))
         self.im_messages.SetFont(wx.Font(IMFONTSIZE, wx.MODERN, wx.NORMAL, wx.NORMAL, 0, "Courier"))
 
@@ -429,7 +432,7 @@ class MyFrame(wx.Frame):
         sizer_12    = wx.BoxSizer(wx.HORIZONTAL)
         sizer_4_im = wx.BoxSizer(wx.VERTICAL)
         sizer_3_im = wx.BoxSizer(wx.VERTICAL)
-	sizer_4     = wx.BoxSizer(wx.VERTICAL)
+        sizer_4     = wx.BoxSizer(wx.VERTICAL)
 
         # copy to __do_layout of Telemed 2 code : start
         sizer_5 = wx.BoxSizer(wx.VERTICAL)
@@ -563,78 +566,83 @@ class MyFrame(wx.Frame):
     def onCallIncoming(self, event):
         self.Start_Videoconf.Enable(True)
         self.video_button.Enable(True)
-	self.video_button.SetLabel(label='Answer incoming call')
-	
-	#self.messenger.setRecipient(event.caller + '@' + PGH_DOMAIN)
-	
-	## While ringinng, patient info should be fetched ##
-	## FIXME: Patient id and case id should come from the signalling protocol ##
-	#The following are temporary methods:
-	#triage.getLatestPatient()
-	#triage.getLatestCase(ofpatient)
-	
-	#This web service method is temporary until a signaling protocol
-	# is drafted --jerome
-	data = Triage().getLatestPatient()
-	self.TextCtrl_PatientLastName.SetValue(data[3])
+        self.video_button.SetLabel(label='Answer incoming call')
+        
+        #self.messenger.setRecipient(event.caller + '@' + PGH_DOMAIN)
+        
+        ## While ringinng, patient info should be fetched ##
+        ## FIXME: Patient id and case id should come from the signalling protocol ##
+        #The following are temporary methods:
+        #triage.getLatestPatient()
+        #triage.getLatestCase(ofpatient)
+        
+        #This web service method is temporary until a signaling protocol
+        # is drafted --jerome
+        '''
+        data = Triage().getLatestPatient()
+        self.TextCtrl_PatientLastName.SetValue(data[3])
         self.TextCtrl_PatientFirstName.SetValue(data[1])
         self.TextCtrl_PatientMI.SetValue(data[2])
         self.TextCtrl_PatientAge.SetValue(data[7])
         self.Choice_PatientAgeValidity.SetStringSelection(data[8])
         self.Choice_PatientGender.SetStringSelection(data[5])
         self.TextCtrl_PatientAddress.SetValue(data[9])
-	
-	#This web service method is temporary until a signaling protocol
-	# is drafted --jerome
-	data = Triage().getLatestCase()
-	self.TextCtrl_ReferralTopic.SetValue(data[1])
-	self.Choice_ReferralReason.SetValue(data[2])
-	self.TextCtrl_HospitalName.SetValue(data[5])       
-
-	
+        
+        #This web service method is temporary until a signaling protocol
+        # is drafted --jerome
+        data = Triage().getLatestCase()
+        self.TextCtrl_ReferralTopic.SetValue(data[1])
+        self.Choice_ReferralReason.SetValue(data[2])
+        self.TextCtrl_HospitalName.SetValue(data[5])       
+        '''
+        
 
     def onCallAnswered(self, event):
-	self.video_button.SetLabel(label='Disengage')
-	self.im_messages.Clear()
-	
-	## Start acquiring telemetry data ##
-	self.count += 1
+        self.video_button.SetLabel(label='Disengage')
+        self.im_messages.Clear()
+        
+        ## Start acquiring telemetry data ##
+        self.count += 1
         print 'count = ', self.count
         self.statusbar.SetStatusText("Acquiring Data...", 0)
-      
+        
         # creating a thread
         thread = AcquireData.AcquireDataThr(self.count, self)
         self.threads.append(thread)
         # starting the thread
         thread.start()
         self.onClickStart()
-	        
-	
+        
+        
     def onCallTerminated(self, event):
         self.video_button.SetLabel(label='Awaiting call..')
-	self.Start_Videoconf.Enable(False)
+        self.Start_Videoconf.Enable(False)
         self.video_button.Enable(False)
-	
+        
     def onCallFailed(self, event):
         self.video_button.SetLabel(label='Awaiting call..')
-	
-	
+        
+        
     def startPhone(self):
-	os.environ['SDL_VIDEODRIVER']='x11'
+        os.environ['SDL_VIDEODRIVER']='x11'
         os.environ['SDL_WINDOWID']=str(self.video_panel.GetHandle())
-	self.phone.start()
+        self.phone.start()
 
     def onStartAcquire_MenuClick(self, event):
         self.count += 1
         print 'count = ', self.count
         self.statusbar.SetStatusText("Acquiring Data...", 0)
-      
+        
+        '''
         # creating a thread
         thread = AcquireData.AcquireDataThr(self.count, self)
         self.threads.append(thread)
         # starting the thread
         thread.start()
+        '''
         self.onClickStart()
+        
+        #self.OnOpenReferral(FormID='', defdata=dict())
 
     def onStopAcquire_MenuClick(self, event):
         self.stopThreads()
@@ -663,17 +671,17 @@ class MyFrame(wx.Frame):
                       "TeleMed II", wx.OK | wx.ICON_INFORMATION, self)
     def onCloseWindow(self, event):
         #self.stopThreads()
-	self.phone.stop()
+        self.phone.stop()
         print "Main Window Closed"
         self.Destroy()
 
     def onIMReply_ButtonClick(self, event):
         msg = self.reply_text.GetValue()
         '''
-	if(self.phone.isOnCall() == True):
-		self.messenger.sendMessage(msg)
-	else:
-		self.UpdateIMText("No RxBox is connected.")
+        if(self.phone.isOnCall() == True):
+            self.messenger.sendMessage(msg)
+        else:
+            self.UpdateIMText("No RxBox is connected.")
         '''
     def onClickStart(self):
         #self.Start_Acquire.Enable(False)
@@ -682,7 +690,56 @@ class MyFrame(wx.Frame):
         self.start_button.Enable(False)
         self.stop_button.Enable(True)
         self.save_button.Enable(False)
-   
+        
+        print 'starting!!'
+        data = tc().getLatestPatient()
+        print data
+        windata = dict()
+        windata['PatLName'] = data[3]
+        windata['PatFName'] = data[1]
+        windata['PatMI'] = data[2]
+        windata['PatAge'] = data[7]
+        windata['PatAgeValid'] = data[8]
+        windata['PatAddr'] = data[9]
+        
+        self.TextCtrl_PatientLastName.SetValue(data[3])
+        self.TextCtrl_PatientFirstName.SetValue(data[1])
+        self.TextCtrl_PatientMI.SetValue(data[2])
+        self.TextCtrl_PatientAge.SetValue(data[7])
+        self.Choice_PatientAgeValidity.SetStringSelection(data[8])
+        self.Choice_PatientGender.SetStringSelection(data[5])
+        self.TextCtrl_PatientAddress.SetValue(data[9])
+        
+        #This web service method is temporary until a signaling protocol
+        # is drafted --jerome
+        data = tc().getLatestCase()
+        print data
+        windata['RflTopic'] = data[1]
+        windata['CommReason'] = data[2]
+        windata['OrgName'] = data[5]
+        
+        self.TextCtrl_ReferralTopic.SetValue(data[1])
+        self.Choice_ReferralReason.SetStringSelection(data[2])
+        self.TextCtrl_HospitalName.SetValue(data[5])       
+        
+        INPUT_FILE = tc().getLatestEDF()
+        try:
+            x = edf.EDF_File(INPUT_FILE)
+            self.ecg_data = x.parseDataRecords()
+            t = self.datapanel.ecg_plotter.t
+        
+            self.datapanel.ecg_plotter.line.set_data(range(len(self.ecg_data)), self.ecg_data)
+            a = min(self.ecg_data)
+            b = max(self.ecg_data)
+            c = 0.05*abs(b-a)
+            self.datapanel.ecg_plotter.axes.set_ylim(a - c, b + c)
+            self.datapanel.updatePlots(None)
+        except:
+            pass
+        
+        print 'opening new form'
+        self.OnOpenReferral(FormID='', defdata=windata)
+        self.onClickStop()
  
     def onClickStop(self):
         self.Start_Acquire.Enable(True)
@@ -701,11 +758,11 @@ class MyFrame(wx.Frame):
             self.threads.remove(thread)
         
     def UpdateIMText(self, msg):
-	self.im_messages.AppendText('PGH: ' + msg + '\n')
+        self.im_messages.AppendText('PGH: ' + msg + '\n')
         self.reply_text.Clear()
 
     def UpdateIMRcvText(self, msg):	
-	if (msg is not None):
+        if (msg is not None):
         	self.im_messages.AppendText('RXBOX: ' + msg + '\n')
        
     def raiseMessage(self, message):
@@ -713,7 +770,13 @@ class MyFrame(wx.Frame):
     
     def raiseStatus(self, message):
         self.statusbar.SetStatusText(message, 0)
-    
+        
+    def OnOpenReferral(self, FormID, defdata):
+        try:
+            self.GetParent().OnOpenReferral(FormID, defdata)
+            pass
+        except AttributeError:
+            pass
 
 class MyApp(wx.PySimpleApp):
     def OnInit(self):
@@ -723,7 +786,7 @@ class MyApp(wx.PySimpleApp):
         self.frame_1 = MyFrame(None, -1, "")
         self.SetTopWindow(self.frame_1)
         self.frame_1.ShowFullScreen(True, style=wx.FULLSCREEN_NOTOOLBAR|wx.FULLSCREEN_NOBORDER|wx.FULLSCREEN_NOCAPTION)
-	self.frame_1.startPhone()
+        self.frame_1.startPhone()
 
         return 1
 
