@@ -112,7 +112,7 @@ class Linphone:
                 if not isinstance(arg, basestring):
                     raise TypeError("args should either be a tuple or list of\
                                      strings")
-        self._command = ["../modules/linphone/console/linphonec", "-V"]
+        self._command = ["linphonec", "-V"]
         self._command.extend(args)
 
 
