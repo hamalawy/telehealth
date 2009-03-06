@@ -200,7 +200,7 @@ public class ViewRxData {
     
   @WebMethod()
   @WebResult(name="result")
-    public String fileDownload(@WebParam(name="timestamp")long timestamp, @WebParam(name="caseid")String caseid) {
+    public String fileDownload(@WebParam(name="dataid")int dataid, @WebParam(name="caseid")String caseid) {
       
         //File someFile = new File(name);
         ResultSetNet rs = null;
@@ -210,7 +210,7 @@ public class ViewRxData {
         // Convert a byte array to base64 string
         SqlNet connect = new SqlNet();
 
-        String sql = new String("SELECT * from triage.rxdata WHERE referralid = '" + caseid + "' AND timestamp >= FROM_UNIXTIME(" + timestamp + ") ORDER BY timestamp asc;");
+        String sql = new String("SELECT * from triage.rxdata WHERE referralid = '" + caseid + "' AND dataid = '" + dataid + "';");
         
         data = rs = connect.query(sql);
         data.getResulta().next();

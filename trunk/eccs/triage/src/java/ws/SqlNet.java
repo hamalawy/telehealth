@@ -71,11 +71,18 @@ public class SqlNet
         return rs;
     }
   
-    public int queryUpdate(String sql)
+    public int queryUpdate(String sql) 
     {
+        return queryUpdate(sql, false);
+    }
+    
+    public int queryUpdate(String sql, Boolean getlastid)
+    {
+        //Returns last inserted id if getlastid is true
         ConnectionService connection = null;
         Statement stmt = null;
         int update = -2;
+        int lastinsertid = -1;
       try
         {
             System.out.println(sql);
@@ -83,7 +90,19 @@ public class SqlNet
             System.out.println("Connected!");
             stmt = connection.getConnection().createStatement();
             System.out.println("Created!");
-            update = stmt.executeUpdate(sql);
+            if (getlastid == true) {
+                ResultSet rs = null;
+                update = stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+                rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    lastinsertid = rs.getInt(1);
+                } else {
+                    // throw an exception from here
+                }
+                rs.close();
+                rs = null;
+            }
+            else update = stmt.executeUpdate(sql);
             System.out.println("Executed!");
         }
         catch (Exception exception) {
@@ -96,7 +115,10 @@ public class SqlNet
             try { stmt.close(); } catch (Exception exception) { }
             try { connection.getConnection().close(); } catch (Exception exception) { }
         }
-        return update;
+        if (getlastid == true)
+            return lastinsertid;
+        else 
+            return update;
     }
   
     public int queryArray(String sql, String referralid, String ecgtime,
@@ -152,6 +174,8 @@ public class SqlNet
         ConnectionService connection = null;
         PreparedStatement pstmt = null;
         int update = -2;
+        int lastinsertid = -1;
+        ResultSet rs = null;
         
       try
         {
@@ -159,13 +183,23 @@ public class SqlNet
             connection = getConnection();
             System.out.println("Connected!");
             //connection.getConnection().setAutoCommit(false);
-            pstmt = connection.getConnection().prepareStatement(sql);
+            pstmt = connection.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             System.out.println("Prepared!");
          
 
             pstmt.setString(1, caseid); 
             pstmt.setObject(2, edfcontent, java.sql.Types.BLOB); //set parameter of blob type
             pstmt.execute(); //execute update statment
+           
+           rs = pstmt.getGeneratedKeys();
+           if (rs.next()) {
+                lastinsertid = rs.getInt(1);
+           } else {
+                    // throw an exception from here
+           }
+           rs.close();
+           rs = null;
+           
             System.out.println("Executed!");
             pstmt.close(); //close resources
             //fis.close();
@@ -181,7 +215,7 @@ public class SqlNet
             System.out.println("UPDATE: " + update);
             try { connection.getConnection().close(); } catch (Exception exception) { }
         }
-        return update;
+        return lastinsertid;
     }
     
          

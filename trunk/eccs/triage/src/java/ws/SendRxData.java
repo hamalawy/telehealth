@@ -162,9 +162,10 @@ public class SendRxData {
     // Use @XmlMimeType to map to DataHandler on the client side
     @WebMethod()
     @WebResult(name="result")
-    public void fileUpload(@WebParam(name="caseid")String caseid, @WebParam(name="data")String data) {
+    public int fileUpload(@WebParam(name="caseid")String caseid, @WebParam(name="data")String data) {
       
         byte[] buf = new byte[]{0x12, 0x23};
+        int toReturn = -1;
         try {        
             // Convert base64 string to a byte array
             buf = new sun.misc.BASE64Decoder().decodeBuffer(data);
@@ -181,9 +182,8 @@ public class SendRxData {
         sql = new String("INSERT INTO triage.rxdata" +
                  "(referralid, edfcontent) VALUES (?,?);");
         
-        connect.queryBlob(sql, caseid, buf);
-        
-        return;
+        toReturn = connect.queryBlob(sql, caseid, buf);     
+        return toReturn;
     }
     
 }
