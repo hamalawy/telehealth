@@ -1,4 +1,5 @@
 import sys, binascii
+from Messenger import Messenger
 from CreateCaseService_client import *
 from CreatePatientService_client import *
 from ViewCaseService_client import *
@@ -9,8 +10,12 @@ from ViewRxDataService_client import *
 USERKEY = "DUmmy"
 
 class Triage:
-    def __init__(self):
-	pass
+    def __init__(self, messenger=None):
+	if (messenger is None):
+		self.messenger = None
+		print 'Warning: No messenger initialized. Signaling is disabled.'
+	else:
+		self.messenger = messenger
 
     def savePatient(self, *args, **kwds):
         loc = CreatePatientServiceLocator()
@@ -29,6 +34,9 @@ class Triage:
         req.Userkey=USERKEY
 
         resp = port.createPatient(req)
+	if (self.messenger is not None):
+		stat = 'PatientSaved,'+ req.Patientid
+		self.messenger.sendMessage(stat, None, 'rxbstat')
         return resp.Result
 
 
@@ -40,6 +48,10 @@ class Triage:
         req.Patientid = patientid
 
         resp = port.viewPatient(req)
+	
+	if (self.messenger is not None):
+		stat = 'PatientOpened,'+ req.Patientid
+		self.messenger.sendMessage(stat, None, 'rxbstat')
         return resp.Result
 
     def searchPatient(self, lastname, firstname):
@@ -66,6 +78,10 @@ class Triage:
         req.Userkey = USERKEY
 
         resp = port.createCase(req)
+	
+	if (self.messenger is not None and resp.Result is not -1):
+		stat = 'CaseSaved,' + resp.Result + ',' + req.Patientid
+		self.messenger.sendMessage(stat, None, 'rxbstat')
         return resp.Result
 
     def searchCase(self, patientid):
@@ -85,6 +101,9 @@ class Triage:
         req.Caseid = caseid
 
         resp = port.viewCase(req)
+	if (self.messenger is not None):
+		stat = 'CaseOpened,'+ req.Caseid
+		self.messenger.sendMessage(stat, None, 'rxbstat')
         return resp.Result
 
 
@@ -99,20 +118,27 @@ class Triage:
         req.Data = data
         req.Caseid = caseid
         resp = port.fileUpload(req)
+	if (self.messenger is not None and resp.Result is not -1):
+		stat = 'DataSaved,' + resp.Result + ',' + req.Caseid
+		self.messenger.sendMessage(stat, None, 'rxbstat')
+	return resp.Result
 
-    def getB64EDF(self, caseid, timestamp):
+    def getB64EDF(self, caseid, dataid):
         loc = ViewRxDataServiceLocator()
         port = loc.getViewRxDataPort()
         req = fileDownload()
 
-        req.Timestamp = timestamp
+        req.Dataid = dataid
         req.Caseid = caseid
         resp = port.fileDownload(req)
-
+	
+	if (self.messenger is not None):
+		stat = 'DataOpened,'+ req.Dataid
+		self.messenger.sendMessage(stat, None, 'rxbstat')
         return resp.Result
 
-    def getBinEDF(self, caseid, timestamp):
-	return binascii.a2b_base64(self.getB64EDF(caseid, timestamp))
+    def getBinEDF(self, caseid, dataid):
+	return binascii.a2b_base64(self.getB64EDF(caseid, dataid))
     
     
     ### START: Temporary Methods###
