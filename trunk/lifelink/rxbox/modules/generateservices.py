@@ -2,7 +2,8 @@
 
 import os
 
-URL 		= "http://10.32.148.253:81/Triage/"
+#URL 		= "http://192.168.0.102:81/Triage/"
+URL 		= "http://192.168.0.102:8080/Triage/"
 services	= ["CreatePatient", "CreateCase", "SendRxData", \
 			"ViewPatient", "ViewCase", "ViewRxData"]
 
