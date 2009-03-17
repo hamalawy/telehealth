@@ -10,26 +10,36 @@ import threading
 import serial
 import os
 import time
+import datetime
+import edf
+import edfviewer
+import rxsensor
+import makeEDF
 import matplotlib
 
-import Dialogs
-import AcquireData
+#import Dialogs
+#import AcquireData
 
 matplotlib.use('WXAgg')
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg,Toolbar
 
-from matplotlib.figure  import Figure
-from matplotlib.numerix import arange
+from matplotlib.dates import drange
+from matplotlib.figure import Figure
+#from matplotlib.pyplot import axes
+from matplotlib.ticker import LinearLocator
+import matplotlib.widgets
+from pylab import date2num, num2date
 
 from Linphone import Linphone
 from Messenger import Messenger
 
 
-LINEWIDTH       = 3.0           # line width for the plot
+LINEWIDTH       = 1.0           # line width for the plot
 LINECOLOR       = '#FF351A'     # line color for the plot (red color)
-SAMPLES         = 1000          # x-axis
+SAMPLES         = 1500          # x-axis
 BUF_SAMPLES     = 30            # number of buffer samples before redrawing the matplotlib canvas
+ECG_BUFFER = 300
 
 SERIAL_PORT     = '/dev/ttyS1'
 BAUDRATE        = 57600
@@ -51,35 +61,127 @@ CONN_TIMEOUT    = 20
 DATA_TIMEOUT    = 10
 
 PGH_EXTENSION	= '2001'
-PGH_JID		= '2001@192.168.0.102'
+PGH_JID		= '2001@openfire'
 RXBOX_EXTENSION	= '2002'
-RXBOX_JID	= '2002@192.168.0.102'
+RXBOX_JID	= '2002@openfire'
 RXBOX_PWD	= '12345'
 IMFONTSIZE	= 10
 
+# for Timer
+TIMER_ID = wx.NewId()
 
-
-class Plotter():    # pang-plot lang 'to
+class Plotter():
     def __init__(self, parent):
-
+	self.parent = parent
         # instantiation of matplotlib.figure.Figure which is a CLASS
         self.figure = Figure()
         # insertion of plot
-        self.axes = self.figure.add_subplot(111)
-        # creates an array for the x-axis value; arange (start,end,increment)
-        self.t = arange(0.0, SAMPLES, 1)
-        # one thousand 0.0
-        self.data = [0.0 for i in range (SAMPLES)]
-        # plot function (x,y,color,linewidth,....
-        self.line, = self.axes.plot(self.t, self.data, 'r', linewidth = LINEWIDTH, color = LINECOLOR)  
-        self.canvas = FigureCanvas(parent, -1, self.figure)
-        self.axes.grid(True)
+        self.a = self.figure.add_subplot(111)
+        self.figure.subplots_adjust(bottom=0.25)
+        self.canvas = FigureCanvas(self.parent, -1, self.figure)
 
+        self.fw, self.fh = self.canvas.GetSizeTuple()
+
+#        self.figmgr = FigureManager(self.canvas, 1, self)
+
+#        self.sizer = BoxSizer(VERTICAL)
+#        self.sizer.Add(self.canvas, 1, LEFT|TOP|GROW)
+        
+        
+#        self.SetSizer(self.sizer)
+#        self.Fit()
+#        self.Layout()
+        self.ECGbuffer = []
+        self.xvalues = []
+        self.yvalues = []
+        self.counter = 0
+        
+        self.init_plot_data()
+
+    def init_plot_data(self):
+
+#        self.myECG = edfviewer.EDF_File('ECGv2.edf')
+#        self.datarecords = self.myECG.parseDataRecords()
+#        self.samples = self.datarecords[0][0:300]
+#        self.samples = self.parent.parent.RawBioSignals
+#        self.ECGsamples = [sample * self.gain for sample in self.samples]
+        
+        self.xMajor = LinearLocator(numticks = 16)
+        self.xMinor = LinearLocator(numticks = 76)
+        self.yMajor = LinearLocator(numticks = 13)
+        self.yMinor = LinearLocator(numticks = 61)
+
+        self.starttime = datetime.datetime.today()
+        self.endtime = self.starttime + datetime.timedelta(seconds = 3)
+        self.lasttime = self.starttime + datetime.timedelta(seconds = 15)
+
+        # To initialize:
+        self.xvalues.append(self.starttime)
+        self.yvalues.append(0)
+        self.lines = self.a.plot(self.xvalues,self.yvalues,'r-')
+
+        # Set tick properties:
+        self.a.xaxis.set_major_locator(self.xMajor)
+        self.a.xaxis.set_minor_locator(self.xMinor)
+        self.a.yaxis.set_major_locator(self.yMajor)
+        self.a.yaxis.set_minor_locator(self.yMinor)
+
+        self.a.set_xlim((date2num(self.starttime),date2num(self.endtime)))
+        self.a.xaxis.set_ticklabels(self.createXTickLabels(self.endtime), rotation = 30, ha = "right", size = 'smaller', name = 'Calibri')
+
+
+        self.a.set_ylim(-4,2)
+        self.a.yaxis.set_ticklabels(self.createYTickLabels(), size = 'smaller', name = 'Calibri')
+
+        self.a.grid(color = 'lightgrey', linewidth = 0.05, linestyle = ':', which = 'minor')
+        self.a.grid(color = 'slategrey', linewidth = 0.5, linestyle = '-', which = 'major')
+
+#       self.t = Timer(self, TIMER_ID)
+#       self.t.Start(1)
+        self.once = 0
+
+    def createXTickLabels(self, endtime):
+        """" in seconds relative to the start time of recording """
+        ticklabels = []
+
+        startInSec = str(self.starttime.second)
+        startInmSec = str(self.starttime.microsecond/1000)
+        start = float(startInSec + '.' + startInmSec)
+
+        endInSec = str(endtime.second)
+        endInmSec = str(endtime.microsecond/1000)
+        end = float(endInSec + '.' + endInmSec)
+
+        delta = end - start
+        
+        for i in range(16):
+            ticklabels.insert(0, '%.2f' % delta)
+            delta -= 0.2
+        return ticklabels
+
+    def createYTickLabels(self, x = -4):
+        ticklabels = []
+        for i in range(18):
+            ticklabels.append(x)
+            x += 0.5
+        return ticklabels
+
+    def add_slider(self):
+        self.axtime = self.figure.add_axes([0.125, 0.1, 0.775, 0.03])
+        self.time_scroller = matplotlib.widgets.Slider(self.axtime, 'Time Scroller', date2num(self.starttime), date2num(self.lasttime), valinit = date2num(self.starttime))
+        self.time_scroller.on_changed(self.updateWindow)
+
+    def updateWindow(self, val):
+        self.updatestarttime = self.time_scroller.val
+        self.updateendtime = date2num(num2date(self.updatestarttime) + datetime.timedelta(seconds = 3))
+        self.a.set_xlim((self.updatestarttime, self.updateendtime))
+        self.a.xaxis.set_ticklabels(self.createXTickLabels(num2date(self.updateendtime)), rotation = 30, ha = "right", size = 'smaller', name = 'Calibri')
+        self.canvas.draw()
+        self.canvas.gui_repaint()
 
 class MyPanel(wx.Panel): # the whole panel of data plotting
-    def __init__(self, *args, **kwds):
+    def __init__(self, parent, *args, **kwds):
         wx.Panel.__init__(self, *args, **kwds)
-
                 
         self.sizer_4     = wx.StaticBox(self, -1, "")
         self.sizer_5     = wx.StaticBox(self, -1, "")
@@ -87,7 +189,7 @@ class MyPanel(wx.Panel): # the whole panel of data plotting
         self.sizer_2     = wx.StaticBox(self, -1, "")
         self.ecg_header  = wx.StaticText(self, -1, "ECG Waveform", style=wx.ALIGN_CENTRE)
         self.spo2_header = wx.StaticText(self, -1, "Blood-Oxygen \nSaturation", style=wx.ALIGN_CENTRE)
-        self.spo2        = wx.StaticText(self, -1, "00", style=wx.ALIGN_CENTRE)
+        self.spo2        = wx.StaticText(self, -1, "97", style=wx.ALIGN_CENTRE)
         self.spo2_unit   = wx.StaticText(self, -1, "%SpO2", style=wx.ALIGN_RIGHT)
         self.bp_header   = wx.StaticText(self, -1, "Blood Pressure", style=wx.ALIGN_CENTRE)
         self.bp          = wx.StaticText(self, -1, "0/0", style=wx.ALIGN_CENTRE)
@@ -95,17 +197,88 @@ class MyPanel(wx.Panel): # the whole panel of data plotting
         self.bpm_header  = wx.StaticText(self, -1, "Heart Rate", style=wx.ALIGN_CENTRE)
         self.bpm         = wx.StaticText(self, -1, "00", style=wx.ALIGN_CENTRE)
         self.bpm_unit    = wx.StaticText(self, -1, "bpm", style=wx.ALIGN_RIGHT)
-
+        self.parent = parent
+        self.ECGsamples = []
+        self.gain = float(30780+30774)/(32767+32768)/100
         self.ecg_plotter = Plotter(self)
-        self.ecg_plotter.axes.set_ylim(0.1, 2.1)
         self.__set_properties()
         self.__do_layout()
-        self.Bind(wx.EVT_PAINT, self.updatePlots)
+        self.Bind(wx.EVT_TIMER,self.onTimer)
+        self.t = wx.Timer(self, TIMER_ID)
 
-    # updates the value of SpO2, BPM and ECG data   
-    def updatePlots(self, event):
-        self.ecg_plotter.canvas.draw()
-        event.Skip()
+    def onTimer(self, evt):
+
+        print ' On Timer Called ' 
+        x = 0
+        
+        # Execute ONCE only
+        if self.ecg_plotter.once == 0:
+            self.Biosignal_ECG = ''
+            self.samples = self.parent.RawBioSignals[0]
+            self.ECGsamples = [sample * self.gain for sample in self.samples]
+            self.ecg_plotter.starttime = datetime.datetime.today()
+            self.ecg_plotter.endtime = self.ecg_plotter.starttime + datetime.timedelta(seconds = 3)
+            self.ecg_plotter.lasttime = self.ecg_plotter.starttime + datetime.timedelta(seconds = 15)
+            self.ecg_plotter.a.set_xlim((date2num(self.ecg_plotter.starttime),date2num(self.ecg_plotter.endtime)))
+            self.ecg_plotter.timevalues = num2date(drange(self.ecg_plotter.starttime, self.ecg_plotter.lasttime, datetime.timedelta(milliseconds = 10)))
+            self.ecg_plotter.a.xaxis.set_ticklabels(self.ecg_plotter.createXTickLabels(self.ecg_plotter.endtime), rotation = 30, ha = "right", size = 'smaller', name = 'Calibri')
+
+            self.ecg_plotter.add_slider()
+            
+            self.ecg_plotter.once = 1
+
+
+        try:
+#            print 'tried'
+            while(x < ECG_BUFFER):
+#                print ' entered while x < ECG_BUFFER loop '
+                self.ecg_plotter.ECGbuffer.append(self.ECGsamples[self.ecg_plotter.counter])
+                self.ecg_plotter.xvalues.append(self.ecg_plotter.timevalues[self.ecg_plotter.counter])
+                self.ecg_plotter.counter += 1
+                x += 1
+#                print "x =", x
+
+            #print x
+            
+            self.ecg_plotter.yvalues.extend(self.ecg_plotter.ECGbuffer)
+            # timenow = datetime.datetime.today()
+            self.ecg_plotter.ECGbuffer = []
+            
+            self.ecg_plotter.lines[0].set_data(self.ecg_plotter.xvalues, self.ecg_plotter.yvalues)
+            #print self.ecg_plotter.counter
+            if (self.ecg_plotter.counter > 300):
+                # set the new endtime (the present instant)
+                self.ecg_plotter.newendtime = self.ecg_plotter.timevalues[self.ecg_plotter.counter]
+                self.ecg_plotter.newstarttime = self.ecg_plotter.newendtime + datetime.timedelta(seconds = -3)
+                self.ecg_plotter.a.set_xlim((date2num(self.ecg_plotter.newstarttime), date2num(self.ecg_plotter.newendtime)))
+                self.ecg_plotter.a.xaxis.set_ticklabels(self.ecg_plotter.createXTickLabels(self.ecg_plotter.newendtime), rotation = 30, ha = "right", size = 'smaller', name = 'Calibri')
+
+            self.ecg_plotter.canvas.draw()
+            self.ecg_plotter.canvas.gui_repaint()                
+            print 'repainted'
+
+        except IndexError:
+            print 'IndexError reached'
+            print self.ecg_plotter.counter
+
+            self.ecg_plotter.newendtime = self.ecg_plotter.timevalues[self.ecg_plotter.counter-1]
+            self.ecg_plotter.newstarttime = self.ecg_plotter.newendtime + datetime.timedelta(seconds = -3)
+            self.ecg_plotter.a.set_xlim((date2num(self.ecg_plotter.newstarttime), date2num(self.ecg_plotter.newendtime)))
+            self.ecg_plotter.a.xaxis.set_ticklabels(self.ecg_plotter.createXTickLabels(self.ecg_plotter.newendtime), rotation = 30, ha = "right", size = 'smaller', name = 'Calibri')
+
+            self.ecg_plotter.canvas.draw()
+            self.ecg_plotter.canvas.gui_repaint()
+
+            self.ecg_plotter.counter = 0
+            self.ecg_plotter.ECGbuffer = []
+
+            self.t.Stop()
+
+            self.Biosignal_ECG = edf.BioSignal('ECG Lead II', 'AgAgCl electrodes', 'uV', -30774, 30780, -32768, 32767, 'BP:1.6-35Hz', 100, self.samples)
+            self.parent.BioSignals.append(self.Biosignal_ECG)
+            print 'Returning Biosignal_ECG'
+
+
 
     def UpdateSpO2Display(self, data):
         self.spo2.SetLabel(data)
@@ -114,7 +287,7 @@ class MyPanel(wx.Panel): # the whole panel of data plotting
         self.bpm.SetLabel(data)
 
     def __set_properties(self):
-        self.ecg_plotter.canvas.SetMinSize((100, 200))
+        self.ecg_plotter.canvas.SetMinSize((100, 315))
         self.SetBackgroundColour(wx.Colour(236, 233, 216))
         self.ecg_header.SetMinSize((60, 20))
         self.ecg_header.SetBackgroundColour(wx.Colour(216, 191, 216))
@@ -155,6 +328,7 @@ class MyPanel(wx.Panel): # the whole panel of data plotting
         sizer_4 = wx.StaticBoxSizer(self.sizer_4, wx.VERTICAL)
         sizer_2 = wx.StaticBoxSizer(self.sizer_2, wx.VERTICAL)
         sizer_2.Add(self.ecg_header, 0, wx.ALL|wx.EXPAND, 2)
+        # embedd the canvas of the ecg plotter in the DAQ panel
         sizer_2.Add(self.ecg_plotter.canvas, 1, wx.ALL|wx.EXPAND, 2) # add canvas
         sizer_4.Add(self.spo2_header, 0, wx.ALL|wx.EXPAND, 2)
         sizer_4.Add(self.spo2, 0, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 2)
@@ -170,7 +344,8 @@ class MyPanel(wx.Panel): # the whole panel of data plotting
         sizer_3.Add(sizer_6, 1, wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         sizer_1.Add((20, 2), 0, wx.EXPAND, 0)
         sizer_1.Add(sizer_2, 0, wx.ALL|wx.EXPAND, 4)
-        sizer_1.Add((20, 2), 1, wx.EXPAND, 0)
+        # Previously a Spacer between the plotter and the 3-reading box
+#        sizer_1.Add((20, 2), 1, wx.EXPAND, 0)
         sizer_1.Add(sizer_3, 1, wx.EXPAND, 0)
         self.SetSizer(sizer_1)
         sizer_1.Fit(self)
@@ -184,14 +359,16 @@ class MyFrame(wx.Frame):
         self.phone = Linphone(self)
 	self.messenger = Messenger(self, RXBOX_JID, RXBOX_PWD)
 	self.messenger.start()
-	self.threads = []
-        self.video_threads = []
-        self.conn_threads = []
+        self.AcquireThread = []         # contains threads for data acquisition
+        self.makeEDFThr = []            # contains threads for edf file generation
+                    # contains BioSignal objects
+        self.RawBioSignals = []         # contains the raw measurements
+        self.StartEndToggle = 0
+        self.StartTime = ''
         self.count = 0
         self.video_count = 0
         self.im_count = 0
         self.conn_count = 0
-	
         self.user_config = {'input_method':'USB Port',
                             'serial_port':SERIAL_PORT,
                             'baud_rate':str(BAUDRATE),
@@ -212,14 +389,13 @@ class MyFrame(wx.Frame):
         self.Tab_Interlocutor = wx.Panel(self.Tab_General, -1, style=wx.SIMPLE_BORDER|wx.TAB_TRAVERSAL)
         self.Tab_Referral = wx.Panel(self.Tab_General, -1, style=wx.SIMPLE_BORDER|wx.TAB_TRAVERSAL)
         # copy to __init__ of Telemed 2 code : end
-		
+
         self.__set_menu()               # define menu bar
         self.__set_init_statusdisplay() # status bar
         self.__set_textdisplay()        # define text display & sizers
         self.__set_properties()         # set display properties
         self.__do_layout()              # gui layout
         self.__bind_events()
-
 
     # configures the menu bar
     def __set_menu(self):
@@ -302,19 +478,19 @@ class MyFrame(wx.Frame):
         self.Label_PatientNumber = wx.StaticText(self.Tab_Patient, -1, "Phone Number")
         self.TextCtrl_PatientNumber = wx.TextCtrl(self.Tab_Patient, -1, "phone number")
         # copy to __set_textdisplay of Telemed 2 code : end
-        
+
         self.video_header   = wx.StaticText(self, -1, "Video Conference", style=wx.ALIGN_CENTRE)
         self.im_header      = wx.StaticText(self, -1, "Instant Messenger", style=wx.ALIGN_CENTRE)
         self.start_button   = wx.Button(self, -1, "Start")
         self.stop_button    = wx.Button(self, -1, "Stop")
         self.save_button    = wx.Button(self, -1, "Save")
         self.connect_button = wx.Button(self, -1, "Connect to Doctor")
-        self.datapanel      = MyPanel(self, -1)
+        self.datapanel      = MyPanel(self, self, -1)
         self.im_panel       = wx.Panel(self, -1, style=wx.TAB_TRAVERSAL)
         self.video_panel   = wx.Panel(self, -1, style=wx.TAB_TRAVERSAL)
         self.reply_text     = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE|wx.TE_PROCESS_ENTER)
         self.im_messages  = wx.TextCtrl(self.im_panel, -1, style=wx.TE_MULTILINE)
-	self.im_messages.SetEditable(False)
+        self.im_messages.SetEditable(False)
 
         self.stop_button.Enable(False)
         self.Stop_Acquire.Enable(False)
@@ -408,7 +584,7 @@ class MyFrame(wx.Frame):
         self.Tab_General.SetBackgroundColour(wx.Colour(255, 255, 255))
         self.Tab_General.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
         # copy to __set_properties of Telemed 2 code : end
-        
+
         self.video_header.SetMinSize((60, 20))
         self.video_header.SetBackgroundColour(wx.Colour(255, 251, 159))
         self.video_header.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
@@ -430,12 +606,9 @@ class MyFrame(wx.Frame):
         self.im_panel.SetMinSize((270, 190))
         self.video_panel.SetMinSize((352, 288))
         self.reply_text.SetMinSize((275, 45))
-	self.im_messages.SetBackgroundColour(wx.Colour(255, 252, 239))
+        self.im_messages.SetBackgroundColour(wx.Colour(255, 252, 239))
         self.im_messages.SetMinSize((270, 185))
         self.im_messages.SetFont(wx.Font(IMFONTSIZE, wx.MODERN, wx.NORMAL, wx.NORMAL, 0, "Courier"))
-
-
-
 
     def __do_layout(self):
         sizer_1     = wx.BoxSizer(wx.VERTICAL)
@@ -449,7 +622,7 @@ class MyFrame(wx.Frame):
         sizer_12    = wx.BoxSizer(wx.HORIZONTAL)
         sizer_4_im = wx.BoxSizer(wx.VERTICAL)
         sizer_3_im = wx.BoxSizer(wx.VERTICAL)
-	sizer_4     = wx.BoxSizer(wx.VERTICAL)
+        sizer_4     = wx.BoxSizer(wx.VERTICAL)
 
         # copy to __do_layout of Telemed 2 code : start
         sizer_5 = wx.BoxSizer(wx.VERTICAL)
@@ -552,7 +725,6 @@ class MyFrame(wx.Frame):
         self.Layout()
 
 
-
     def __bind_events(self):
         self.Bind(wx.EVT_MENU,      self.onStartAcquire_MenuClick,      self.Start_Acquire)
         self.Bind(wx.EVT_MENU,      self.onStopAcquire_MenuClick,       self.Stop_Acquire)
@@ -600,35 +772,65 @@ class MyFrame(wx.Frame):
 	self.phone.start()
 
     def onStartAcquire_MenuClick(self, event):                      # kukuha na ng data from serial, usb or saved file
-        self.count += 1
-        print "count = ", self.count
-        print 'SA: transmit_addr = ', self.transmit_addr
+        self.BioSignals = []
+        self.RawBioSignals = []
         
-        if self.user_config['input_method'] == 'Serial Port':       # pang serial port lang
-            if self.user_config['serial_port'] == '':
-                print 'No serial port selected'
-                print 'SA2: transmit_addr = ', self.transmit_addr
-                self.setUserConfig()
-                return
-            self.statusbar.SetStatusText("Acquiring Data...", 0)    
-        elif self.user_config['input_method'] == 'Saved File':      # pang saved file lang
-            if self.user_config['file_input'] == '':
-                print 'No input file selected'
-                self.setUserConfig()
-                return
-            self.statusbar.SetStatusText("Acquiring Data...", 0)
+        if self.StartEndToggle == 0:
+
+            self.start_button.SetLabel("Exit")
+            self.StartEndToggle = 1
+
+            myEDF = edfviewer.EDF_File('ECG_SPO2_BPMv2.edf')
+            self.RawBioSignals = myEDF.parseDataRecords()
+            print self.RawBioSignals
+
+#            self.AcquireThread.append(rxsensor.ECG(self))
+#            self.AcquireThread.append(rxsensor.SPO2(self))
+            self.AcquireThread.append(rxsensor.PulseRate(self))
+            for thread in self.AcquireThread:
+                thread.start()
+
+            self.StartTime = time.strftime("%H.%M.%S")
+
+            self.makeEDFThr.append(makeEDF.makeEDFThr(self, self.StartTime))
+            for thread in self.makeEDFThr:
+                thread.start()
+
+            self.datapanel.t.Start(10)
+#        elif self.StartEndToggle == 1:
+#            self.start_end.SetLabel("Exit")
+#            self.stopThreads()
+#            self.StartEndToggle = 2
+            
+        else:
+            self.stopThreads()
+            self.Close()
         
-        # creating a thread
-        thread = AcquireData.AcquireDataThr(self.count, self)
-        self.threads.append(thread)
-        # starting the thread
-        thread.start()
+
         self.onClickStart()
 
     def onStopAcquire_MenuClick(self, event):
         self.onClickStop()
         self.stopThreads()
-        
+
+    def ContinueDAQ(self):
+##ADDED
+        print 'Continuing DAQ'
+#        for thread in self.AcquireThread:
+#            thread.stop()
+#        self.AcquireThread = []
+
+        while self.AcquireThread:
+            thread = self.AcquireThread[0]
+            thread.stop()
+            self.AcquireThread.remove(thread)
+
+        self.AcquireThread.append(rxsensor.ECG(self))
+#        self.AcquireThread.append(rxsensor.SPO2(self))
+        self.AcquireThread.append(rxsensor.PulseRate(self))
+        for thread in self.AcquireThread:
+            thread.start()
+##ADDED            
     def onConfig_MenuClick(self,event):
         self.setUserConfig()
 
@@ -704,10 +906,8 @@ class MyFrame(wx.Frame):
         if result == wx.ID_OK:
             mypath = dialog.GetPath()
         dialog.Destroy()
-        
         if result == wx.ID_CANCEL:
             return
-        
         self.user_config['file_output'] = mypath
         self.save_button.Enable(False)
         self.Save_To_File.Enable(False)
@@ -783,11 +983,17 @@ class MyFrame(wx.Frame):
         self.statusbar.SetStatusText("Program Ready", 0)
 
     def stopThreads(self):
-        while self.threads:
-            thread = self.threads[0]
+##ADDED
+        while self.AcquireThread:
+            thread = self.AcquireThread[0]
             thread.stop()
-            self.threads.remove(thread)
-            
+            self.AcquireThread.remove(thread)
+
+        while self.makeEDFThr:
+            thread = self.makeEDFThr[0]
+            thread.stop()
+            self.makeEDFThr.remove(thread)
+##ADDED
 
     def UpdateIMText(self, msg):
 	self.im_messages.AppendText('RXBOX: ' + msg + '\n')
@@ -811,25 +1017,21 @@ class MyFrame(wx.Frame):
     
     def raiseStatus(self, message):
         self.statusbar.SetStatusText(message, 0)
-       
+    
 
 class MyApp(wx.PySimpleApp):
     def OnInit(self):
         wx.InitAllImageHandlers()
         print 'Starting TeleMed II - RxBox...\n'
-		
 
 
         self.frame_1 = MyFrame(None, -1, "")
         self.SetTopWindow(self.frame_1)
-        self.frame_1.ShowFullScreen(True, style=wx.FULLSCREEN_NOTOOLBAR|wx.FULLSCREEN_NOBORDER|wx.FULLSCREEN_NOCAPTION)
+        self.frame_1.Show()
+#        self.frame_1.ShowFullScreen(True, style=wx.FULLSCREEN_NOTOOLBAR|wx.FULLSCREEN_NOBORDER|wx.FULLSCREEN_NOCAPTION)
 	self.frame_1.startPhone()
-        
-
 
         return 1
-
-
 
 if __name__ == "__main__":
     app = MyApp(0)
