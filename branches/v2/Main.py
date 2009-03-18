@@ -262,10 +262,16 @@ class MyFrame(wx.Frame):
         self.sizer_2.Add(self.ReferPanel, 1, wx.ALL|wx.EXPAND, 4)
         # refresh the GUI
         self.Layout()
+	
+	#Messenger start
+	#TODO: Check if connect()is succesful before starting messenger
+	self.ReferPanel.messenger.connect()
+	self.ReferPanel.messenger.start()
 
     def DestroyReferPanel(self):
 
         try:
+            self.ReferPanel.messenger.stop() 	#Messenger stop
             self.ReferPanel.Destroy()
             self.Layout()
 

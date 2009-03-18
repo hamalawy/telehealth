@@ -1,28 +1,34 @@
 import wx
+from wxMessenger import wxMessenger
 # added for photosnapshot
 import opencv
 from opencv import highgui
 # added for photosnapshot
+
+PGH_EXTENSION	= '2001'
+PGH_JID		= '2001@openfire'
+RXBOX_EXTENSION	= '2002'
+RXBOX_JID	= '2002@openfire'
+RXBOX_PWD	= '12345'
 
 class MyPanel(wx.Panel):
     def __init__(self, *args, **kwds):
         # begin wxGlade: MyPanel.__init__
         kwds["style"] = wx.TAB_TRAVERSAL
         wx.Panel.__init__(self, *args, **kwds)
+	self.messenger = wxMessenger(RXBOX_JID, RXBOX_PWD, self, -1,)
         self.Videoconf_Label = wx.StaticText(self, -1, "Video Conference", style=wx.ALIGN_CENTRE)
         self.Videoconf_Panel = wx.Panel(self, -1)
         self.Photoshot_Label = wx.StaticText(self, -1, "Photo Snapshot", style=wx.ALIGN_CENTRE)
         self.Photoshot_Panel = wx.Panel(self, -1)
         # added for photosnapshot
         self.Capture_Button = wx.Button(self, -1, "CAPTURE!")
-        self.camera = highgui.cvCreateCameraCapture(1)
+        self.camera = highgui.cvCreateCameraCapture(0)
         self.image_counter = 0
         # added for photosnapshot
         
         self.static_line_5 = wx.StaticLine(self, -1)
         self.IM_Label = wx.StaticText(self, -1, "Instant Messaging", style=wx.ALIGN_CENTRE)
-        self.IMtexts_Text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE|wx.TE_READONLY)
-        self.IMreply_Text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE)
         self.Remarks_Label = wx.StaticText(self, -1, "Remarks", style=wx.ALIGN_CENTRE)
         self.Remarks_Text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE)
 
@@ -32,6 +38,7 @@ class MyPanel(wx.Panel):
         # added for photosnapshot
         self.Bind(wx.EVT_BUTTON, self.onCapture, self.Capture_Button)
         # end wxGlade
+	
 
     def __set_properties(self):
         # begin wxGlade: MyPanel.__set_properties
@@ -46,8 +53,6 @@ class MyPanel(wx.Panel):
         self.IM_Label.SetMinSize((620, 20))
         self.IM_Label.SetBackgroundColour(wx.Colour(253, 255, 191))
         self.IM_Label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        self.IMtexts_Text.SetBackgroundColour(wx.Colour(255, 255, 255))
-        self.IMreply_Text.SetBackgroundColour(wx.Colour(255, 255, 255))
         self.Remarks_Label.SetMinSize((620, 20))
         self.Remarks_Label.SetBackgroundColour(wx.Colour(253, 255, 191))
         self.Remarks_Label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
@@ -60,7 +65,6 @@ class MyPanel(wx.Panel):
         sizer_13 = wx.BoxSizer(wx.HORIZONTAL)
         sizer_19 = wx.BoxSizer(wx.VERTICAL)
         sizer_14 = wx.BoxSizer(wx.VERTICAL)
-        sizer_18 = wx.BoxSizer(wx.VERTICAL)
         sizer_10 = wx.BoxSizer(wx.HORIZONTAL)
         sizer_12 = wx.BoxSizer(wx.VERTICAL)
         sizer_11 = wx.BoxSizer(wx.VERTICAL)
@@ -75,9 +79,7 @@ class MyPanel(wx.Panel):
         sizer_6.Add(sizer_10, 5, wx.ALL|wx.EXPAND, 4)
         sizer_6.Add(self.static_line_5, 0, wx.EXPAND, 0)
         sizer_14.Add(self.IM_Label, 1, wx.RIGHT|wx.EXPAND, 1)
-        sizer_18.Add(self.IMtexts_Text, 3, wx.TOP|wx.EXPAND, 1)
-        sizer_18.Add(self.IMreply_Text, 0, wx.TOP|wx.EXPAND, 4)
-        sizer_14.Add(sizer_18, 8, wx.EXPAND, 0)
+        sizer_14.Add(self.messenger, 8, wx.EXPAND, 0)
         sizer_13.Add(sizer_14, 1, wx.EXPAND, 0)
         sizer_19.Add(self.Remarks_Label, 1, wx.LEFT|wx.EXPAND, 1)
         sizer_19.Add(self.Remarks_Text, 8, wx.TOP|wx.EXPAND, 1)
@@ -87,6 +89,7 @@ class MyPanel(wx.Panel):
         sizer_6.Fit(self)
         # end wxGlade
 
+	
     def onCapture(self, event):
 
         self.buffer = highgui.cvQueryFrame(self.camera)
