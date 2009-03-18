@@ -12,6 +12,7 @@ integrated Patient Information Tab
 import wx
 import rxpanel
 import referpanel
+import subprocess
 
 class MyDialog(wx.Dialog):
     def __init__(self, parent, *args, **kwds):
@@ -198,6 +199,8 @@ class MyFrame(wx.Frame):
 
         # call the Modal Window
         self.TextEntry("Please enter username:", "username")
+        # call the recordmyDesktop subprocess
+        self.recorder = subprocess.Popen('gtk-recordMyDesktop')
         
     def __set_properties(self):
         # begin wxGlade: MyFrame.__set_properties
