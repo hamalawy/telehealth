@@ -241,7 +241,7 @@ class MyFrame(wx.Frame):
         sizer_4.Add(sizer_5, 1, wx.EXPAND, 0)
         sizer_3.Add(sizer_4, 1, wx.ALL|wx.EXPAND, 4)
         # add RxPanel
-        sizer_3.Add(self.RxPanel, 5, wx.RIGHT|wx.TOP|wx.BOTTOM|wx.EXPAND, 4)
+        sizer_3.Add(self.RxPanel, 5, wx.ALL|wx.EXPAND, 4)
         self.sizer_2.Add(sizer_3, 1, wx.ALL|wx.EXPAND, 4)
         self.sizer_2.Add(self.static_line_6, 0, wx.EXPAND, 0)
         # add ReferPanel

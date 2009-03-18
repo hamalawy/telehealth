@@ -43,12 +43,15 @@ class MyPanel(wx.Panel):
         self.bpm_label = wx.StaticText(self, -1, "Heart Rate", style=wx.ALIGN_CENTRE)
         self.bpmvalue_label = wx.StaticText(self, -1, "--", style=wx.ALIGN_CENTRE)
         self.bpmunit_label = wx.StaticText(self, -1, "bpm", style=wx.ALIGN_RIGHT)
-        self.spo2_label = wx.StaticText(self, -1, "Blood Oxygen \nSaturation", style=wx.ALIGN_CENTRE)
+        self.spo2_label = wx.StaticText(self, -1, "Blood Oxygen Saturation", style=wx.ALIGN_CENTRE)
         self.spo2value_label = wx.StaticText(self, -1, "--", style=wx.ALIGN_CENTRE)
         self.bpmunit_label_copy = wx.StaticText(self, -1, "%SpO2", style=wx.ALIGN_RIGHT)
 
         # embed ecg plotter
         self.ecgplotter = ecgplotter.Plotter(self)
+
+        ### changed this after migrating to linux
+        self.ecgplotter.canvas.SetSize((520, 350))
         
 
         ### ADDED for FINAL GUI
@@ -144,6 +147,7 @@ class MyPanel(wx.Panel):
         sizer_5.Add(self.ecg_label, 0, wx.ALL|wx.EXPAND, 4)
         # embed ecg plotter
         sizer_5.Add(self.ecgplotter.canvas, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
+        print self.ecgplotter.canvas.GetSize(), "size nung canvas"
         #print sizer_5.GetSize(), "Size nung container nung plotter"
         #sizer_5.SetMinSize((1335,500))
         sizer_3.Add(sizer_5, 5, wx.EXPAND, 0)
@@ -275,39 +279,44 @@ class MyPanel(wx.Panel):
 # end of class MyPanel1
 
 
-class MyFrame2(wx.Frame):
-    def __init__(self, *args, **kwds):
+#class MyFrame2(wx.Frame):
+#    def __init__(self, *args, **kwds):
         # begin wxGlade: MyFrame2.__init__
-        kwds["style"] = wx.DEFAULT_FRAME_STYLE
-        wx.Frame.__init__(self, *args, **kwds)
+#        kwds["style"] = wx.DEFAULT_FRAME_STYLE
+#        wx.Frame.__init__(self, *args, **kwds)
 
-        self.myRxPanel = MyPanel(self, self, -1)
+#        self.myRxPanel = MyPanel(self, self, -1)
 
-        self.__set_properties()
-        self.__do_layout()
+#        self.__set_properties()
+#        self.__do_layout()
         # end wxGlade
 
-    def __set_properties(self):
+#    def __set_properties(self):
         # begin wxGlade: MyFrame2.__set_properties
-        self.SetTitle("frame_3")
+#        self.SetTitle("frame_3")
+        #x = self.myRxPanel.GetSize()
+        #print x
+        #self.myRxPanel.SetMinSize((1335,450))
+        #y = self.myRxPanel.GetSize()
+        #print y
         # end wxGlade
 
-    def __do_layout(self):
+#    def __do_layout(self):
         # begin wxGlade: MyFrame2.__do_layout
-        sizer_11 = wx.BoxSizer(wx.VERTICAL)
-        sizer_11.Add(self.myRxPanel, 0, wx.RIGHT|wx.TOP|wx.BOTTOM|wx.EXPAND, 4)
-        self.SetSizer(sizer_11)
-        sizer_11.Fit(self)
-        self.Layout()
+#        sizer_11 = wx.BoxSizer(wx.VERTICAL)
+#        sizer_11.Add(self.myRxPanel, 0, wx.RIGHT|wx.TOP|wx.BOTTOM|wx.EXPAND, 4)
+#        self.SetSizer(sizer_11)
+#        sizer_11.Fit(self)
+#        self.Layout()
         # end wxGlade
 
 # end of class MyFrame2
 
 
-if __name__ == "__main__":
-    app = wx.PySimpleApp(0)
-    wx.InitAllImageHandlers()
-    frame_3 = MyFrame2(None, -1, "")
-    app.SetTopWindow(frame_3)
-    frame_3.Show()
-    app.MainLoop()
+#if __name__ == "__main__":
+#    app = wx.PySimpleApp(0)
+#    wx.InitAllImageHandlers()
+#    frame_3 = MyFrame2(None, -1, "")
+#    app.SetTopWindow(frame_3)
+#    frame_3.Show()
+#    app.MainLoop()

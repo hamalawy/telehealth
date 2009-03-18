@@ -9,6 +9,8 @@ class MyPanel(wx.Panel):
         self.Videoconf_Panel = wx.Panel(self, -1)
         self.Photoshot_Label = wx.StaticText(self, -1, "Photo Snapshot", style=wx.ALIGN_CENTRE)
         self.Photoshot_Panel = wx.Panel(self, -1)
+        # added for photosnapshot
+        self.Capture_Button = wx.Button(self, -1, "CAPTURE!")
         self.static_line_5 = wx.StaticLine(self, -1)
         self.IM_Label = wx.StaticText(self, -1, "Instant Messaging", style=wx.ALIGN_CENTRE)
         self.IMtexts_Text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE|wx.TE_READONLY)
@@ -18,6 +20,9 @@ class MyPanel(wx.Panel):
 
         self.__set_properties()
         self.__do_layout()
+
+        # added for photosnapshot
+        self.Bind(wx.EVT_BUTTON, self.onCapture, self.Capture_Button)
         # end wxGlade
 
     def __set_properties(self):
@@ -56,6 +61,8 @@ class MyPanel(wx.Panel):
         sizer_10.Add(sizer_11, 1, wx.EXPAND, 0)
         sizer_12.Add(self.Photoshot_Label, 1, wx.LEFT|wx.EXPAND, 1)
         sizer_12.Add(self.Photoshot_Panel, 8, wx.LEFT|wx.TOP|wx.EXPAND, 1)
+        # added for photosnapshot
+        sizer_12.Add(self.Capture_Button, 1, wx.EXPAND, 0)
         sizer_10.Add(sizer_12, 1, wx.EXPAND, 0)
         sizer_6.Add(sizer_10, 5, wx.ALL|wx.EXPAND, 4)
         sizer_6.Add(self.static_line_5, 0, wx.EXPAND, 0)
@@ -71,6 +78,10 @@ class MyPanel(wx.Panel):
         self.SetSizer(sizer_6)
         sizer_6.Fit(self)
         # end wxGlade
+
+    def onCapture(self, event):
+        print "Put capture code here!"
+        event.Skip()
 
 # end of class MyPanel
 
@@ -237,3 +248,5 @@ class MyDialog(wx.Dialog):
                                                '\nAddress: ' + Address + '\nPhone: ' + Phone)
 
         self.Destroy()
+
+
