@@ -1,4 +1,8 @@
 import wx
+# added for photosnapshot
+import opencv
+from opencv import highgui
+# added for photosnapshot
 
 class MyPanel(wx.Panel):
     def __init__(self, *args, **kwds):
@@ -11,6 +15,10 @@ class MyPanel(wx.Panel):
         self.Photoshot_Panel = wx.Panel(self, -1)
         # added for photosnapshot
         self.Capture_Button = wx.Button(self, -1, "CAPTURE!")
+        self.camera = highgui.cvCreateCameraCapture(1)
+        self.image_counter = 0
+        # added for photosnapshot
+        
         self.static_line_5 = wx.StaticLine(self, -1)
         self.IM_Label = wx.StaticText(self, -1, "Instant Messaging", style=wx.ALIGN_CENTRE)
         self.IMtexts_Text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE|wx.TE_READONLY)
@@ -80,8 +88,22 @@ class MyPanel(wx.Panel):
         # end wxGlade
 
     def onCapture(self, event):
-        print "Put capture code here!"
-        event.Skip()
+
+        self.buffer = highgui.cvQueryFrame(self.camera)
+        self.im = highgui.cvQueryFrame(self.camera)
+        self.im = opencv.cvGetMat(self.im)
+        self.im = opencv.adaptors.Ipl2PIL(self.im)
+        filename = 'img' + str(self.image_counter) + '.jpg'
+        self.im.save('Photos/'+filename)
+        raw = wx.Image('Photos/'+filename)
+        # (308, 267) is the size of the picture after getting the
+        # size of the panel
+        bmp = raw.Rescale(308,267)
+        bmp = bmp.ConvertToBitmap()
+        wx.StaticBitmap(self.Photoshot_Panel, -1, bmp)
+        self.image_counter += 1
+        
+        
 
 # end of class MyPanel
 
