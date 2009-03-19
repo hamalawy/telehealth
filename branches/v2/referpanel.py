@@ -1,5 +1,6 @@
-import wx
+import wx, os
 from wxMessenger import wxMessenger
+from Linphone import Linphone
 # added for photosnapshot
 import opencv
 from opencv import highgui
@@ -17,6 +18,7 @@ class MyPanel(wx.Panel):
         kwds["style"] = wx.TAB_TRAVERSAL
         wx.Panel.__init__(self, *args, **kwds)
 	self.messenger = wxMessenger(RXBOX_JID, RXBOX_PWD, self, -1,)
+	self.phone = Linphone(self)
         self.Videoconf_Label = wx.StaticText(self, -1, "Video Conference", style=wx.ALIGN_CENTRE)
         self.Videoconf_Panel = wx.Panel(self, -1)
         self.Photoshot_Label = wx.StaticText(self, -1, "Photo Snapshot", style=wx.ALIGN_CENTRE)
@@ -38,6 +40,9 @@ class MyPanel(wx.Panel):
         # added for photosnapshot
         self.Bind(wx.EVT_BUTTON, self.onCapture, self.Capture_Button)
         # end wxGlade
+	
+	os.environ['SDL_VIDEODRIVER']='x11'
+        os.environ['SDL_WINDOWID']=str(self.Videoconf_Panel.GetHandle())
 	
 
     def __set_properties(self):

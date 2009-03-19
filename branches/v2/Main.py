@@ -265,12 +265,15 @@ class MyFrame(wx.Frame):
 	
 	#Messenger start
 	#TODO: Check if connect()is succesful before starting messenger
-	self.ReferPanel.messenger.connect()
-	self.ReferPanel.messenger.start()
+	self.ReferPanel.phone.spawn()
+	self.ReferPanel.phone.start()
+	if self.ReferPanel.messenger.connect() is True:
+		self.ReferPanel.messenger.start()
 
     def DestroyReferPanel(self):
 
         try:
+	    self.ReferPanel.phone.stop()
             self.ReferPanel.messenger.stop() 	#Messenger stop
             self.ReferPanel.Destroy()
             self.Layout()
