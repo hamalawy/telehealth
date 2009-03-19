@@ -12,7 +12,7 @@ integrated Patient Information Tab
 import wx
 import rxpanel
 import referpanel
-import subprocess
+import subprocess, time
 
 class MyDialog(wx.Dialog):
     def __init__(self, parent, *args, **kwds):
@@ -267,14 +267,17 @@ class MyFrame(wx.Frame):
 	#TODO: Check if connect()is succesful before starting messenger
 	self.ReferPanel.phone.spawn()
 	self.ReferPanel.phone.start()
+	self.ReferPanel.phone.call('2001')
 	if self.ReferPanel.messenger.connect() is True:
 		self.ReferPanel.messenger.start()
 
     def DestroyReferPanel(self):
 
         try:
-	    self.ReferPanel.phone.stop()
+	    self.ReferPanel.phone.terminateCall()
             self.ReferPanel.messenger.stop() 	#Messenger stop
+	    self.ReferPanel.phone.stop()
+	    time.sleep(3)
             self.ReferPanel.Destroy()
             self.Layout()
 
@@ -283,7 +286,6 @@ class MyFrame(wx.Frame):
 
     def TextEntry(self, message, text):
         self.username = "lifelink"
-        
         dlg = wx.TextEntryDialog(self, message, "RxBox - Philippine General Hospital: User Authentication", defaultValue = text)
         dlg.CenterOnScreen()
         #dlg.SetValue("username")
