@@ -25,7 +25,7 @@ class MyPanel(wx.Panel):
         self.Photoshot_Panel = wx.Panel(self, -1)
         # added for photosnapshot
         self.Capture_Button = wx.Button(self, -1, "CAPTURE!")
-        self.camera = highgui.cvCreateCameraCapture(0)
+        self.camera = highgui.cvCreateCameraCapture(1)
         self.image_counter = 0
         # added for photosnapshot
         
@@ -42,6 +42,7 @@ class MyPanel(wx.Panel):
         # end wxGlade
 	
 	os.environ['SDL_VIDEODRIVER']='x11'
+	os.environ['SDL_VIDEO_YUV_HWACCEL']='0'
         os.environ['SDL_WINDOWID']=str(self.Videoconf_Panel.GetHandle())
 	
 
