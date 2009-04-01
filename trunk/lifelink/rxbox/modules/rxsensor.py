@@ -39,6 +39,7 @@ class ECG:
         self.ecg_leadII = []                # "dynamic" list that continuously accommodates lead II readings
         self.ecg_leadIII = []               # "dynamic" list that continuously accommodates lead III readings
         self.daqduration = 15               # DAQ duration in seconds
+        self.actual_readings = []           # 1500 samples for plotting
      
         #checksum parameters (for updating CRC)
         self.CRC = [0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,\
@@ -85,6 +86,12 @@ class ECG:
         self.STOP_ECG_TRANSMISSION = [0x05, 0x09, 0x00]
         
         self.parentPanel = parent
+
+        # open port 'self.port w/ baudrate=self.baud & timeout=self.timeout:
+        try:
+            self.ecg = serial.Serial(self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)      
+        except serial.SerialException:
+            print "Unable to open COM port", 3, "\nPlease check serial port settings."
         
     def status(self):
         """check connectivity; confirm if device is ready"""
@@ -456,12 +463,14 @@ class ECG:
             for number in range(0, -(excess_nr_samples)):
                 self.leadII_values.append(0)
                 #self.leadIII_values.append(0)
-        actual_readings = self.real_val(self.leadII_values)
+        self.actual_readings = self.real_val(self.leadII_values)
         Biosignal_ECG = BioSignal('II',  'CM',        'mV',      -43,    43,      0,     32767,   'None',   100,     self.leadII_values)
         #########################   ^      ^            ^          ^      ^        ^       ^         ^       ^               ^
         ######################### label sensor-type   phys.     phys.   phys.   digi.    digi.     pre-    Nsamples    digital readings
         #########################                   dimension   min     max     min      max     filtering            for edf generation
 
+        self.parentPanel.BioSignals.append(Biosignal_ECG)
+        print "Returned ECG"
         print "DAQ ended at:", time.ctime()                      # get end time
 
     def real_val(self, digital_readings):
@@ -493,11 +502,7 @@ class ECG:
         """acquire ecg readings from EMI12 ECG module every 15 seconds"""
         
         if self.start_flag == 0:                                # send start_ecg request only once
-            # open port 'self.port w/ baudrate=self.baud & timeout=self.timeout:
-            try:
-                self.ecg = serial.Serial(self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)      
-            except serial.SerialException:
-                print "Unable to open COM port", 3, "\nPlease check serial port settings."
+            
             self.reset()
             self.config_analog()
             self.set_ecm_threshold()
@@ -528,13 +533,12 @@ class ECG:
             self.stop_ecg()
             self.ecg.close()
             print "Serial port for EMI12 ECG closed."
-            self.start_flag = 0
-            
+            #self.start_flag = 0
 
 class SPO2:
     """manages data request and acquistion from the ChipOx OEM module"""
     
-    def __init__(self, parent, port=8,baud=9600,timeout=None):
+    def __init__(self, parent, port=11,baud=9600,timeout=None):
         """initialize port settings and request according to the specified setting for ChipOx"""
 
         #self.parentFrame = parent
@@ -555,7 +559,8 @@ class SPO2:
         self.signal_quality = 0
         self.Request = ''                                           #initialize request as a string
         self.start_flag = 0
-        
+        self.stop_flag = 0
+    
         self.parentPanel = parent
 
         try:
@@ -694,7 +699,7 @@ class SPO2:
                 else:                                               # if self.spo2 list does not contain anything yet
                     prev_spo2 = 0
                     prev_pulse_rate = 0
-                print "Warning: Signal quality is erroneous. Get previous readings"
+                #print "Warning: Signal quality is erroneous. Get previous readings"
                 #print "Previous spo2 reading:", prev_spo2
                 #print "Previous pulse_rate:", prev_pulse_rate, "bpm"
                 spo2 = prev_spo2
@@ -702,7 +707,7 @@ class SPO2:
                 
         elif CHIPOX_channel == 13:                                  # SYSTEM ERROR channel
             sig_quality = 0
-            print "Signal quality not determined."
+            #print "Signal quality not determined."
             if len(self.spo2_values)>0:                             # if self.spo2 list already contains something
                 prev_spo2 = self.spo2[len(self.spo2)-1]
                 prev_pulse_rate = self.pulserate_values[len(self.pulserate_values)-1]
@@ -739,46 +744,50 @@ class SPO2:
         count = 0
         self.spo2_values = []
         self.pulserate_values = []
-        while (time.time() - basetime <= self.daqduration):
+        while (time.time() - basetime <= self.daqduration) and (self.stop_flag != 1 ):
             raw_packet = self.spo2reply()                           # get reply packet; raw_packet is a string
             packet = self.byte_destuff(raw_packet)                  # raw_packet undergoes byte-destuffing
             self.reply_parser(packet)                               # updates values for self.spo2 and self.pulse_rate
             self.spo2_values.append(self.spo2)
             self.pulserate_values.append(self.pulse_rate)
             count = count + 1
-        #print "spo2 count:", count
-        actual_nr_samples = len(self.spo2_values)
-        #print "ACTUAL SpO2 in list:", actual_nr_samples
-        excess_nr_samples = ( actual_nr_samples - self.required_nr_samples )
-        #print "EXCESS SpO2 in list:", excess_nr_samples
+            
+        if self.stop_flag == 1:
+            print "Stopped SpO2 DAQ."
+        elif self.stop_flag == 0:
+            #print "spo2 count:", count
+            actual_nr_samples = len(self.spo2_values)
+            #print "ACTUAL SpO2 in list:", actual_nr_samples
+            excess_nr_samples = ( actual_nr_samples - self.required_nr_samples )
+            #print "EXCESS SpO2 in list:", excess_nr_samples
         
-        # if number of samples > required, remove the excess
-        if excess_nr_samples > 0:                           
-            for number in range(0, excess_nr_samples):
-                self.spo2_values.pop()
-                self.pulserate_values.pop()
+            # if number of samples > required, remove the excess
+            if excess_nr_samples > 0:                           
+                for number in range(0, excess_nr_samples):
+                    self.spo2_values.pop()
+                    self.pulserate_values.pop()
                                        
-        # if number of samples < required, pad with zeros
-        elif excess_nr_samples < 0:
-            for number in range(0, -(excess_nr_samples)):
-                self.spo2_values.append(0)
-                self.pulserate_values.append(0)     
+            # if number of samples < required, pad with zeros
+            elif excess_nr_samples < 0:
+                for number in range(0, -(excess_nr_samples)):
+                    self.spo2_values.append(0)
+                    self.pulserate_values.append(0)     
         
         
-        Biosignal_SPO2 = BioSignal('SpO2 finger', 'IR-Red sensor',    '%',      0,    100,    0,    100,    'None',     10,  self.spo2_values)
-        ##########################       ^               ^             ^        ^      ^      ^      ^        ^          ^            ^
-        ##########################     label        sensor-type     physical   phys.  phys.  digi.  digi     pre-     Nsamples       list
-        ##########################                                 dimension   min    max    min    max    filtering
+            Biosignal_SPO2 = BioSignal('SpO2 finger', 'IR-Red sensor',    '%',      0,    100,    0,    100,    'None',     10,  self.spo2_values)
+            ##########################       ^               ^             ^        ^      ^      ^      ^        ^          ^            ^
+            ##########################     label        sensor-type     physical   phys.  phys.  digi.  digi     pre-     Nsamples       list
+            ##########################                                 dimension   min    max    min    max    filtering
 
-        Biosignal_BPM = BioSignal('SpO2 finger', 'IR-Red sensor',   'bpm',      0,    300,    0,    300,    'None',    10,   self.pulserate_values)
-        #########################        ^               ^             ^        ^      ^      ^     ^        ^         ^               ^
-        #########################     label        sensor-type     physical   phys.  phys.  digi.  digi     pre-    Nsamples         list
-        #########################                                 dimension   min    max    min    max    filtering
+            Biosignal_BPM = BioSignal('SpO2 finger', 'IR-Red sensor',   'bpm',      0,    300,    0,    300,    'None',    10,   self.pulserate_values)
+            #########################        ^               ^             ^        ^      ^      ^     ^        ^         ^               ^
+            #########################     label        sensor-type     physical   phys.  phys.  digi.  digi     pre-    Nsamples         list
+            #########################                                 dimension   min    max    min    max    filtering
         
-        self.parentPanel.BioSignals.append(Biosignal_SPO2)
-        self.parentPanel.BioSignals.append(Biosignal_BPM)
+            self.parentPanel.BioSignals.append(Biosignal_SPO2)
+            self.parentPanel.BioSignals.append(Biosignal_BPM)
 
-        print "DAQ ended at:", time.ctime()                         # get end time
+            print "DAQ ended at:", time.ctime()                         # get end time
          
     def status(self):
         """check status of spo2 device (connection? ready or not?)"""
@@ -823,6 +832,10 @@ class BP:
         self.psystole = 0
         self.pdiastole = 0
         self.pmean = 0
+        self.tx_status = 0
+        self.return_flag = 0
+        self.stop_flag = 0
+        self.cycle_flag = 0
 
         self.SELECT_MANUAL_MODE = [0x02, 0x30, 0x33, 0x3B, 0x3B, 0x44, 0x39, 0x03]
         self.SELECT_5MIN_CYCLE_MODE = [0x02, 0x30, 0x38, 0x3B, 0x3B, 0x44, 0x45, 0x03]
@@ -899,7 +912,7 @@ class BP:
         end_tx = self.request(self.END_OF_CUFF_TRANSMISSION)
         reply = 'string to initialize'
         basetime = time.time()
-        while (reply != end_tx) and (time.time()< (basetime+60)):
+        while (reply != end_tx) and (time.time()< (basetime+70)):
             reply = self.bpreply()
             self.extract_cuffpressure(reply)
         if (reply == end_tx):
@@ -924,7 +937,7 @@ class BP:
             d1 = ord(packet[2]) - int(0x30)
             d2 = ord(packet[3]) - int(0x30)
             cuff_pressure = (100*d0) + (10*d1) + (d2)
-            print "Current Cuff Pressure:", cuff_pressure, "mmHg"
+            #print "Current Cuff Pressure:", cuff_pressure, "mmHg"
             return cuff_pressure
     
     def get_bp(self):
@@ -932,17 +945,16 @@ class BP:
 
         self.start_bp()
         basetime = time.time()
-        tx_status = self.get_cuffpressure()
-        inflate_deflate_time = time.time()-basetime
-        if (tx_status == 1):
+        self.tx_status = self.get_cuffpressure()
+        inflate_deflate_time = time.time()- basetime
+        if (self.tx_status == 1):
             self.read_status()
+            self.nibp.write(chr(self.ABORT))
+            print "Abort request sent... BP device now in standby mode."
         else:
             print "Transmission status: Failed."
             self.stop()
-        self.nibp.write(chr(self.ABORT))
-        print "Abort request sent... BP device now in standby mode."
-
-        return inflate_deflate_time
+        return inflate_deflate_time     
     
     def read_status(self):
         """check current status of bp module and read current bp readings"""
@@ -952,6 +964,7 @@ class BP:
         self.nibp.write(self.request(self.READ_STATUS))
         status = self.bpreply()
         if status[4]==chr(0x41) and status[5]==chr(0x30) and \
+           status[12]==chr(0x30) and ( status[13]==chr(0x30) or status[13]==chr(0x33) ) and \
            status[15]==chr(0x50):
             self.psystole = ((ord(status[16]) - int(0x30))*100) + ((ord(status[17]) - int(0x30))*10) + (ord(status[18]) - int(0x30))
             self.pdiastole = ((ord(status[19]) - int(0x30))*100) + ((ord(status[20]) - int(0x30))*10) + (ord(status[21]) - int(0x30))
@@ -960,9 +973,15 @@ class BP:
             print "Systolic Pressure:", self.psystole, "mmHg"
             print "Diastolic Pressure:", self.pdiastole, "mmHg"
             print "Mean Pressure:", self.pmean, "mmHg"
+        else:
+            print "ERROR in measurement!"
+            self.stop()
+            self.psystole = '-'
+            self.pdiastole = '-'
+            self.pmean = '-'
             
-            pressure = str(self.psystole) + "/" + str(self.pdiastole)
-            CallAfter(self.parentPanel.updateBPDisplay, pressure)
+        pressure = str(self.psystole) + "/" + str(self.pdiastole)
+        CallAfter(self.parentPanel.updateBPDisplay, pressure)
     
     def getnow(self):
         """acquire bp reading one-shot"""
@@ -972,40 +991,61 @@ class BP:
         request=self.request(self.SELECT_ADULT_MODE)
         self.nibp.write(request)
         self.inflate_deflate_time = self.get_bp()
+        if self.cycle_flag == 0:
+            self.stop()
 
-    def get(self):
-        """implements pseudo-cycle mode for BP measurement"""
-        
+    def bpEDF(self):
+        """packages BP reading for edf generation"""
+
         self.systole_values = []
         self.diastole_values = []
-        self.getnow()
-        waiting_time = self.measurement_interval - self.inflate_deflate_time
-        for remaining_time in range(waiting_time,0,-1):
-            print "Time remaining before next measurement:", remaining_time
-            time.sleep(1)    
-        
+
         for second in range(0,15):
             self.systole_values.append(self.psystole)
             self.diastole_values.append(self.pdiastole)
             
         Biosignal_pSys = BioSignal('bpsystole', 'NIBP2010',   'mmHg',     0,    300,    0,   300,     'None',     1,     self.systole_values)
-        #########################      ^            ^           ^          ^      ^      ^     ^         ^        ^               ^
-        #########################     label    sensor-type   physical    phys.  phys.  digi.  digi     pre-    Nsamples         list
+        #########################      ^            ^           ^         ^      ^      ^     ^         ^         ^               ^
+        #########################    label     sensor-type   physical    phys.  phys.  digi.  digi     pre-    Nsamples          list
         #########################                            dimension   min    max    min    max    filtering
         
         Biosignal_pDias = BioSignal('bpdiastole', 'NIBP2010',    'mmHg',    0,   300,    0,    300,    'None',     1,   self.diastole_values)
         ##########################      ^            ^             ^        ^     ^      ^      ^        ^         ^            ^
-        ##########################   label      sensor-type    physical    phys.  phys.  digi.  digi     pre-     Nsamples       list
-        ##########################                             dimension   min    max    min    max    filtering
+        ##########################    label      sensor-type    physical   phys. phys.  digi  digi     pre-     Nsamples       list
+        ##########################                             dimension   min   max    min    max    filtering
+
         self.parentPanel.BioSignals.append(Biosignal_pSys)
         self.parentPanel.BioSignals.append(Biosignal_pDias)
+
+        self.return_flag = 1
+        print "returned bp \n"
+
+    def get(self):
+        """implements pseudo-cycle mode for BP measurement"""
         
+        self.cycle_flag = 1
+        self.getnow()
+        self.cycle_flag = 0
+        self.bpEDF()
+        if self.tx_status == 1:
+            waiting_time = self.measurement_interval - self.inflate_deflate_time
+            remaining_time = waiting_time
+            while (remaining_time > 0) and (self.stop_flag != 1):
+                #print "Time remaining before next measurement:", remaining_time
+                remaining_time = remaining_time - 1
+                time.sleep(1)
+            if self.stop_flag == 1:
+                print "Stop BP measurement. Cancel countdown timer."
+            self.tx_status = 0          # re-initialize to 0
+        elif self.tx_status == 0:
+            print "BP DAQ has stopped."
+            
     def stop(self):
         """stop acquisition of nibp readings and close the serial port"""
            
         self.nibp.write(chr(self.ABORT))
         self.nibp.close()
-        print "Serial port closed."
-
+        print "Serial port for NIBP closed."
+        self.cycle_flag = 0
 
 
