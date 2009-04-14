@@ -1,23 +1,32 @@
 
-"""Project LifeLink: API for EMI12 ECG Module
-Facilitates Data Acquisition (DAQ) from ECG module
+"""Project LifeLink: API for Corscience Biomedical Modules (EMI12 ECG, , Chipox Pulse Oximeter, and NIBP2010 BP Monitor)
+Facilitates Data Acquisition (DAQ) from biomedical modules
 
 Authors:    Julius Miguel J. Broma
-            Luis Sison, PhD
+            Arlan Roie A. Santos
+            Luis Sison, Ph.D.
             ------------------------------------------------
             Instrumentation, Robotics and Control Laboratory
             University of the Philippines - Diliman
             ------------------------------------------------
             February 2008
 """
+
 import serial
 import time
+import sys
+
+# appends to PYTHONPATH the location of edf.py, a required module located in a separate folder
+sys.path.append('../modules/edf')
 from edf import BioSignal
 from wx import CallAfter
 
 class ECG:
     """manages data request and processes reply packets to/from ECG module"""
 
+    # settings for linux:
+    # def__init__(self, parent, port='/dev/ttyUSB0', baud=230400, timeout=None):
+    
     def __init__(self, parent, port=2, baud=230400, timeout=None):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
         
@@ -537,6 +546,9 @@ class ECG:
 
 class SPO2:
     """manages data request and acquistion from the ChipOx OEM module"""
+
+    # settings for linux:
+    # def__init__(self, parent, port='/dev/ttyUSB1', baud=9600, timeout=None):
     
     def __init__(self, parent, port=11,baud=9600,timeout=None):
         """initialize port settings and request according to the specified setting for ChipOx"""
@@ -819,6 +831,9 @@ class SPO2:
 class BP:
     """manages data request and processes reply packets to/from NIBP module"""
 
+    # settings for linux:
+    # def__init__(self, parent, port='/dev/ttyUSB2', baud=4800, timeout=None):
+    
     def __init__(self, parent, port=7, baud=4800, timeout=None):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
         
