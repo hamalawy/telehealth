@@ -53,7 +53,7 @@ def main():
     opts, args = getopt.getopt(sys.argv[1:], 'hdtc:', ['help', 'debug', 'config-file=', 'test'])
     
     action = args[0]
-    debug_level = logging.INFO
+    #debug_level = logging.INFO
     config_file = '-'
     test_match = False
     
@@ -62,7 +62,7 @@ def main():
             print 'hello'
             sys.exit(0)
         elif o in ('-d', '--debug'):
-            debug_level = logging.DEBUG
+            pass#debug_level = logging.DEBUG
         elif o in ('-c', '--config-file'):
             config_file = a
         elif o in ('-t', '--test'):
