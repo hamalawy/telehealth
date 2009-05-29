@@ -187,5 +187,7 @@ class XmlWrapper:
 if __name__ == '__main__':
     print 'This script is not meant to be run from command line'
     PATH = project_path(sys.argv[0])
+    log = get_logger("mhtools")
 else:
     PATH = project_path(__file__)
+    log = get_logger("mhtools")

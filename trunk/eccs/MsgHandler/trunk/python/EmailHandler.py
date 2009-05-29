@@ -22,8 +22,6 @@ from email.MIMEBase import MIMEBase
 from email.MIMEText import MIMEText
 from email import Encoders
 
-log = get_logger("emailhandler")
-
 class EmailReader:
     def __init__(self, config_file):
         self.cfg = ConfigParser.ConfigParser()
@@ -244,8 +242,11 @@ def main():
 
 if __name__ == '__main__':
     smsfile = '-'
+    log = get_logger("emailhandler")
     try:
         main()
     except Exception, e:
         log.error('Exception processing "%s": %s' % (smsfile, e))
         raise
+else:
+    log = get_logger("emailhandler")

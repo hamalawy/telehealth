@@ -7,8 +7,6 @@ import binascii
 
 from MHTools import get_logger
 
-log = get_logger("mhlink")
-
 class DbLink:
 # adapted from CHITS SMS project
 # created by Bowei Du
@@ -241,3 +239,6 @@ class WsLink:
 
 if __name__ == '__main__':
     print 'This script is not meant to be run from command line'
+    log = get_logger("mhlink")
+else:
+    log = get_logger("mhlink")

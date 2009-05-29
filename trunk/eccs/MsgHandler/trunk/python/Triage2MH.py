@@ -14,8 +14,6 @@ from MHLink import WsLink
 from EmailHandler import EmailSender
 from SmsHandler import SmsSender
 
-log = get_logger("triage2mh")
-
 class MsgGenerator:
     def __init__(self, config_file):
         self.cfg = ConfigParser.ConfigParser()
@@ -81,13 +79,11 @@ def main():
 
 if __name__ == '__main__':
     smsfile = '-'
-    
-    (PATH, log) = log_handler(sys.argv[0], "triage2mh")
-    logging.info("Triage2MH.py started")
+    log = get_logger("triage2mh")
     try:
         main()
     except Exception, e:
         log.error('Exception processing "%s": %s' % (smsfile, e))
         raise
 else:
-    (PATH, log) = log_handler(__file__, "triage2mh")
+    log = get_logger("triage2mh")
