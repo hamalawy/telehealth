@@ -12,8 +12,6 @@ from MHTools import get_logger
 from MHTools import ConfigError
 from MHLink import DbLink, WsLink
 
-log = get_logger("mh2triage")
-
 class MsgProcess:
     def __init__(self, config_file):
         self.cfg = ConfigParser.ConfigParser()
@@ -86,8 +84,11 @@ def main():
 
 if __name__ == '__main__':
     smsfile = '-'
+    log = get_logger("mh2triage")
     try:
         main()
     except Exception, e:
         log.error('Exception processing "%s": %s' % (smsfile, e))
         raise
+else:
+    log = get_logger("mh2triage")
