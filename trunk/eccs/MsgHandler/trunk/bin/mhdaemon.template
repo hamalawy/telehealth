@@ -1,0 +1,7 @@
+#!/bin/sh
+
+SMSAPP=/home/triage/trunk
+
+$SMSAPP/python/EmailHandler.py -c $SMSAPP/config/triage.conf $*
+$SMSAPP/python/MH2Triage.py -c $SMSAPP/config/triage.conf $*
+$SMSAPP/python/Triage2MH.py -c $SMSAPP/config/triage.conf $*
