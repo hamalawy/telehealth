@@ -58,6 +58,6 @@ pncu: ^( *)pncu( |/)+
 [headers]
 From: Sender, From
 Subject: Subject
-Caseid: Caseid
+Caseid: X-Caseid
 Date: Date, Received
-Mode: 
+Mode: X-Mode
