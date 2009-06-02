@@ -1,0 +1,7 @@
+#!/bin/sh
+
+SMSAPP=/Users/NThC/Documents/01-Research/DOST/telehealth/eccs/MsgHandler/trunk
+
+$SMSAPP/python/test_smshandler.py
+$SMSAPP/python/test_emailhandler.py
+$SMSAPP/python/test_mhlink.py
