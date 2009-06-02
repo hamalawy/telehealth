@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 import getopt
-import sys, os
+import sys
+import os
 import time
 import tempfile
 import ConfigParser
@@ -44,23 +45,28 @@ class EmailReader:
             raise ConfigError(str(e))
     
     def login(self):
+        """Login to email address via secure POP3."""
         self.serv = poplib.POP3_SSL(self.email_params['server'])
         self.serv.user(self.email_params['user'])
         self.serv.pass_(self.email_params['passwd'])
     
     def logout(self):
+        """Logout email."""
         self.serv.quit()
     
     def get_unread(self):
+        """Return number of unread messages."""
         CNT, SIZE = self.serv.stat()
         log.info("%d message(s) unread" % CNT)
         return CNT
     
     def get_message(self, emailnum):
+        """Get email of number emailnum and return as email object."""
         RESP, TEXT, OCTETS = self.serv.retr(emailnum)
         return email.message_from_string('\n'.join(TEXT))
     
     def test_mode(self):
+        """Send all received email back to sender. Use 'reply' as email body."""
         while True:
             for i in range(1, self.get_unread()+1):
                 msg = self.get_message(i)
@@ -73,6 +79,7 @@ class EmailReader:
             time.sleep(self.sleep)
     
     def run(self):
+        """Check email from time to time. Insert into database and send an autoreply."""
         while True:
             for i in range(1, self.get_unread()+1):
                 msg = self.get_message(i)
@@ -82,6 +89,7 @@ class EmailReader:
             time.sleep(self.sleep)
     
     def _parse(self, msg):
+        """Parse email messages and return as tuple."""
         headers = self.get_headers(msg)
         contact = self.get_contact(headers)
         text_content = self.get_text_content(msg.get_payload())
@@ -90,6 +98,7 @@ class EmailReader:
         return (contact, headers, text_content, attachments)
     
     def get_headers(self, msg):
+        """Add special headers to existing email headers."""
         headers = self.get_headers_orig(msg)
         headers = self.get_headers_spl(msg)
         headers['keyword'] = self.get_keyword(headers)
@@ -99,11 +108,13 @@ class EmailReader:
         return headers
     
     def get_headers_orig(self, msg):
+        """Get email headers and return as dictionary."""
         headers = [(elem.lower(), item) for (elem, item) in msg.items()]
-        #log.info(headers)
+        log.info(headers)
         return dict(headers)
     
     def get_headers_spl(self, headers):
+        """Get headers used by the system and return as dictionary."""
         res = dict()
         vals = self.cfg.items('headers')
         for (item, elem) in vals:
@@ -115,17 +126,20 @@ class EmailReader:
         return res
     
     def get_contact(self, headers):
+        """Return email address of sender."""
         if 'from' in headers:
             return email.utils.parseaddr(headers['from'])[1]
         return ''
     
     def get_keyword(self, headers):
+        """Return keyword."""
         if 'caseid' in headers:
             return 'followup'
         else:
             return 'refer'
     
     def get_date(self, headers, date_fmt="%m-%d-%Y %H:%M:%S"):
+        """Return formatted date as string."""
         if 'date' in headers:
             val = email.utils.parsedate(headers['date'])
             # unpack tuple and get year, month, day, hr, min, sec
@@ -137,12 +151,14 @@ class EmailReader:
         return val.strftime(date_fmt)
     
     def get_text_content(self, content):
+        """Return body of email as string."""
         try:
             return self.get_text_content(content[0].get_payload())
         except AttributeError:
             return content
     
     def get_attachments(self, content):
+        """Return email attachments as dictionary."""
         if not isinstance(content, list):
             return dict()
         res = dict()
@@ -153,10 +169,12 @@ class EmailReader:
         return res
     
     def respond_to_msg(self, contact, headers, text_content, attachments):
+        """Send email response using EmailSender class."""
         email_send = EmailSender(self.cfg)
         email_send.send_message(contact, headers, text_content, attachments)
     
     def insert_msg_to_db(self, outp):
+        """Insert received email into database."""
         cfg = dict(self.cfg.items('database'))
         db = DbLink(**cfg)
         uuid = db.insert_msg(*outp)
@@ -176,6 +194,7 @@ class EmailSender:
             raise ConfigError(str(e))
     
     def send_message(self, contact, headers, text_content, attachments):
+        """Construct email message to send and return True."""
         # http://snippets.dzone.com/posts/show/757
         msg = MIMEMultipart()
         
@@ -195,6 +214,7 @@ class EmailSender:
         return True
     
     def send(self, contact, msg):
+        """Send email message using SMTP."""
         serv = smtplib.SMTP(self.email_params['server'])
         serv.ehlo()
         serv.starttls()
@@ -205,6 +225,7 @@ class EmailSender:
         serv.quit()
 
 def main():
+    """Handle command line arguments."""
     opts, args = getopt.getopt(sys.argv[1:], 'hdtc:', ['help', 'debug', 'config-file=', 'test'])
     
     action = args[0]

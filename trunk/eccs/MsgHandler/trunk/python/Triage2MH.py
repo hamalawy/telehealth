@@ -27,6 +27,7 @@ class MsgGenerator:
             raise ConfigError("'sleep' option missing in 'triage' section")
     
     def run(self):
+        """Check web services from time to time."""
         is_sent = False
         while True:
             msg = WsLink().msg_is_sent(is_sent)
@@ -34,6 +35,7 @@ class MsgGenerator:
             time.sleep(self.sleep)
     
     def send_msg(self, msg):
+        """Send message using sms or email depending on the mode."""
         try:
             if not cmp(msg[1]['Mode'], 'sms'):
                 msgsender = SmsSender(self.cfg)
@@ -45,6 +47,7 @@ class MsgGenerator:
         return msgsender.send_message(*msg)
     
 def main():
+    """Handle command line arguments."""
     opts, args = getopt.getopt(sys.argv[1:], 'hdtc:', ['help', 'debug', 'config-file=', 'test'])
     
     action = args[0]

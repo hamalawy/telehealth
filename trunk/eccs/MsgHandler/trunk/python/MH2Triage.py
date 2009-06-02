@@ -27,6 +27,7 @@ class MsgProcess:
             raise ConfigError("'sleep' option missing in 'database' section")
     
     def run(self):
+        """Check database from time to time. Send contents to triage using web services."""
         cfg = dict(self.cfg.items('database'))
         while True:
             try:
@@ -47,9 +48,11 @@ class MsgProcess:
             time.sleep(self.sleep)
     
     def close(self):
+        """Close database connection."""
         self.db.close()
 
 def main():
+    """Handle command line arguments."""
     opts, args = getopt.getopt(sys.argv[1:], 'hdtc:', ['help', 'debug', 'config-file=', 'test'])
     
     action = args[0]
