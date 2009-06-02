@@ -1,1 +1,8 @@
 old repository address: https://202.92.128.162/keg/repos/triage/MsgHandler
+
+Acknowledgements for the codes extensively used in this project are due to:
+- Eric Pareja (BuddyWorks project), SMS referral system
+- Bowei Du (CHITS project), SMS appointment reminder system
+- Jerome Ortega (LifeLink project), Web Service interfacing
+
+and also to various individuals who posted their code on the Internet.
