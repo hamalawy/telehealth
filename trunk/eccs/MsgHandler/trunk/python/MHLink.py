@@ -26,9 +26,11 @@ class DbLink:
         self.connect()
     
     def connect(self):
+        """Connect to database."""
         self.conn = MySQLdb.connect(**self.dbparams)
     
     def get(self, table, cols, conds):
+        """Helper for query."""
         if not(isinstance(cols, list) and cols):
             cols = ['*']
         if conds:
@@ -41,6 +43,7 @@ class DbLink:
         return "SELECT %s FROM %s" % (','.join(cols), table),
     
     def insert(self, table, kv):
+        """Helper for insert statement."""
         cols = []
         val_spec = []
         vals = []
@@ -51,6 +54,7 @@ class DbLink:
         return "INSERT INTO %s (%s) VALUES (%s);" % (table, ','.join(cols), ','.join(val_spec)), tuple(vals)
     
     def delete(self, table, conds):
+        """Helper for delete statement."""
         if conds:
             conds_spec = []
             vals = []
@@ -61,9 +65,11 @@ class DbLink:
         return "DELETE FROM %s" % (table),
     
     def close(self):
+        """Close connection to database."""
         self.conn.close()
     
     def get_response(self, kw, lang):
+        """Perform query for automated response and return as string."""
         cur = self.conn.cursor()
         qry = self.get('responses', [lang], {'keyword': kw})
         cur.execute(*qry)
@@ -73,6 +79,7 @@ class DbLink:
             return ''
     
     def get_earliest_msg(self):
+        """Return uuid of earliest message."""
         cur = self.conn.cursor()
         cur.execute("""SELECT uuid from contents LIMIT 1""")
         res = cur.fetchall()
@@ -82,36 +89,42 @@ class DbLink:
             return ()
     
     def get_msg(self, uuid):
+        """Get message contents from uuid and return as tuple."""
         (contact, body) = self.get_contents(uuid)[0]
         headers = dict(self.get_headers(uuid))
         attachments = dict(self.get_attachments(uuid))
         return (contact, headers, body, attachments)
     
     def get_contents(self, uuid):
+        """Return contact and body of message from uuid."""
         cur = self.conn.cursor()
         qry = self.get('contents', ['contact', 'body'], {'uuid': uuid})
         cur.execute(*qry)
         return cur.fetchall()
     
     def get_headers(self, uuid):
+        """Return headers of message from uuid."""
         cur = self.conn.cursor()
         qry = self.get('headers', ['field', 'value'], {'uuid': uuid})
         cur.execute(*qry)
         return cur.fetchall()
     
     def get_attachments(self, uuid):
+        """Return attachments of message from uuid."""
         cur = self.conn.cursor()
         qry = self.get('attachments', ['name', 'content'], {'uuid': uuid})
         cur.execute(*qry)
         return cur.fetchall()
     
     def set_uuid(self):
+        """Create new uuid and return as string."""
         cur = self.conn.cursor()
         cur.execute("""SELECT UUID()""")
         # remove spatial uniqueness
         return cur.fetchall()[0][0][:23]
     
     def insert_response(self, kw, resp):
+        """Insert new automated response."""
         cur = self.conn.cursor()
         #ins = self.insert('responses', {'keyword': kw})
         # add 'keyword' to dictionary
@@ -121,6 +134,7 @@ class DbLink:
         self.conn.commit()
     
     def insert_msg(self, contact, headers, body, attachments):
+        """Insert message contents and return uuid."""
         uuid = self.set_uuid()
         self.insert_contents(uuid, contact, body)
         self.insert_headers(uuid, headers)
@@ -134,12 +148,14 @@ class DbLink:
         return uuid
     
     def insert_contents(self, uuid, contact, body):
+        """Insert contact and body of message with uuid."""
         cur = self.conn.cursor()
         ins = self.insert('contents', {'uuid': uuid, 'contact': contact, 'body': body})
         cur.execute(*ins)
         self.conn.commit()
     
     def insert_headers(self, uuid, headers):
+        """Insert headers of message with uuid."""
         cur = self.conn.cursor()
         for (elem, item) in headers.items():
             ins = self.insert('headers', {'uuid': uuid, 'field': elem, 'value': item})
@@ -147,6 +163,7 @@ class DbLink:
             self.conn.commit()
     
     def insert_attachments(self, uuid, attachments):
+        """Insert attachments of message with uuid."""
         cur = self.conn.cursor()
         for (elem, item) in attachments.items():
             ins = self.insert('attachments', {'uuid': uuid, 'name': elem, 'content': item})
@@ -154,29 +171,34 @@ class DbLink:
             self.conn.commit()
     
     def del_response(self, kw):
+        """Remove automated response for given keyword."""
         cur = self.conn.cursor()
         rmv = self.delete('responses', {'keyword': kw})
         cur.execute(*rmv)
         self.conn.commit()
     
     def del_msg(self, uuid):
+        """Remove contents of message using uuid."""
         self.del_contents(uuid)
         self.del_headers(uuid)
         self.del_attachments(uuid)
     
     def del_contents(self, uuid):
+        """Remove contact and body of message using uuid."""
         cur = self.conn.cursor()
         rmv = self.delete('contents', {'uuid': uuid})
         cur.execute(*rmv)
         self.conn.commit()
         
     def del_headers(self, uuid):
+        """Remove headers of message using uuid."""
         cur = self.conn.cursor()
         rmv = self.delete('headers', {'uuid': uuid})
         cur.execute(*rmv)
         self.conn.commit()
     
     def del_attachments(self, uuid):
+        """Remove attachments of message using uuid."""
         cur = self.conn.cursor()
         rmv = self.delete('attachments', {'uuid': uuid})
         cur.execute(*rmv)
@@ -189,6 +211,7 @@ class WsLink:
         pass
     
     def push_msg(self, contact, headers, text_content, attachments):
+        """Send message contents to web service and return error message/s."""
         loc = DoctorLinkServiceLocator()
         port = loc.getDoctorLinkPort()
         req = push_msg()
@@ -203,6 +226,7 @@ class WsLink:
         return resp.Message
     
     def msg_is_sent(self, msg_sent):
+        """Send True if previous message is sent and return message contents from web service as tuple."""
         loc = DoctorLinkServiceLocator()
         port = loc.getDoctorLinkPort()
         req = msg_is_sent()
@@ -222,6 +246,7 @@ class WsLink:
         return (contact, dict(headers), text_content, dict(attachments))
     
     def _dict_to_lists(self, elems):
+        """Convert values of dictionary into binary and return a tuple."""
         keys = list()
         values = list()
         for (key, value) in elems.items():
@@ -231,10 +256,12 @@ class WsLink:
         return (keys, values)
 
     def _parse_headers(self, val, sep=':'):
+        """Parse header fields and values and return as tuple."""
         x = val.partition(sep)
         return (x[0].capitalize(), x[2])
     
     def _generate_attachments(self, num, elems):
+        """Extract attachment names and contents from a list and return a list of name-content pairs."""
         res = list()
         for index in range(0, num*2, 2):
             name = elems[index]

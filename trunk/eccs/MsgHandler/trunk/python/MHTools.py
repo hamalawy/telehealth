@@ -10,6 +10,7 @@ import xml.dom.minidom as minidom
 
 #---------- os.path tools
 def project_path(cur_path=''):
+    """Return path to trunk."""
     if not cur_path:
         cur_path = __file__
     real_path = os.path.realpath(cur_path)
@@ -20,6 +21,7 @@ def project_path(cur_path=''):
 
 #---------- logging tools
 def get_logger(logger_name):
+    """Return object for logging."""
     logger_path = os.path.join(PATH, 'config', "logging.conf")
     if os.path.exists(logger_path):
         logging.config.fileConfig(logger_path)
@@ -28,6 +30,7 @@ def get_logger(logger_name):
 
 #---------- daemon tools
 def stopd(pidfile=''):
+    """Kill processes written on pid files."""
     # disclaimer: taken from the internet (will search for the link)
     pidfile = os.path.basename(pidfile)
     pidfile = os.path.join(PATH, 'log', pidfile)
@@ -60,6 +63,7 @@ def stopd(pidfile=''):
     return errors
 
 def startd(pidfile=''):
+    """Daemonize process and write pid into file."""
     # do the UNIX double-fork magic, see Stevens' "Advanced 
     # Programming in the UNIX Environment" for details (ISBN 0201563177)
     # http://code.activestate.com/recipes/66012/
@@ -100,6 +104,7 @@ def startd(pidfile=''):
 
 #---------- Exception tools
 class ConfigError(Exception):
+    """Exception handling for configuration file."""
     # CHITS SMS code from Bowei Du
     configfile = ''
 

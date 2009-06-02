@@ -32,20 +32,24 @@ class SmsReader:
             raise ConfigError(str(e))
     
     def get_message(self, smsfile):
+        """Get sms from file and return as email object."""
         return email.message_from_string(open(smsfile, 'r').read())
     
     def test_mode(self, smsfile=''):
+        """Send all received sms back to sender. Use 'reply' as sms body."""
         msg = self.get_message(i)
         outp = self._parse(msg)
         self.respond_test(*outp)
     
     def run(self, smsfile=''):
+        """Insert received sms into database and send an autoreply."""
         msg = self.get_message(smsfile)
         outp = self._parse(msg)
         self.insert_msg_to_db(outp)
         self.respond_to_msg(*outp)
     
     def _parse(self, msg):
+        """Parse sms messages and return as tuple."""
         headers = self.get_headers(msg)
         contact = self.get_contact(headers)
         text_content = self.get_text_content(msg.get_payload())
@@ -55,6 +59,7 @@ class SmsReader:
         return (contact, headers, text_content, attachments)
     
     def get_headers(self, msg):
+        """Add special headers to existing sms headers."""
         headers = self.get_headers_orig(msg)
         headers = self.get_headers_spl(msg)
         #headers['keyword'] = self.get_keyword(headers)
@@ -64,11 +69,13 @@ class SmsReader:
         return headers
     
     def get_headers_orig(self, msg):
+        """Get sms headers and return as dictionary."""
         headers = [(elem.lower(), item) for (elem, item) in msg.items()]
         #log.info(headers)
         return dict(headers)
     
     def get_headers_spl(self, headers):
+        """Get headers used by the system and return as dictionary."""
         res = dict()
         vals = self.cfg.items('headers')
         for (item, elem) in vals:
@@ -80,11 +87,13 @@ class SmsReader:
         return res
     
     def get_contact(self, headers):
+        """Return number of sender."""
         if 'from' in headers:
             return email.utils.parseaddr(headers['from'])[1]
         return ''
     
     def get_keyword(self, text_content):
+        """Return keyword."""
         keys = self.cfg.get('buddyworks', 'keywords')
         keys = keys.split(',')
         vals = self.cfg.items('keywords')
@@ -97,6 +106,7 @@ class SmsReader:
         return ''
     
     def get_date(self, headers, date_fmt="%m-%d-%Y %H:%M:%S"):
+        """Return formatted date as string."""
         if 'date' in headers:
             val = datetime.datetime.strptime(headers['date'], '%y-%m-%d %H:%M:%S')
         else:
@@ -105,15 +115,18 @@ class SmsReader:
         return val.strftime(date_fmt)
     
     def get_text_content(self, content):
+        """Return body of sms as string."""
         try:
             return self.get_text_content(content[0].get_payload())
         except AttributeError:
             return content
     
     def get_attachments(self, content):
+        """Return sms attachments as dictionary."""
         return dict()
     
     def respond_to_msg(self, contact, headers, text_content, attachments):
+        """Send sms response using SmsSender class."""
         if not self.cfg.has_section('database'):
             raise ConfigError('database not in sections')
         text_content = self.get_db_response(self.cfg.items('database'), headers['keyword'], 'eng')
@@ -122,12 +135,14 @@ class SmsReader:
         sms_send.send_message(contact, headers, text_content, attachments)
     
     def get_db_response(self, config, kw, lang):
+        """Get automated response using keyword."""
         db = DbLink(**cfg)
         resp = db.get_response(kw, lang)
         db.close()
         return resp
     
     def insert_msg_to_db(self, outp):
+        """Insert received sms into database."""
         if not self.cfg.has_section('database'):
             raise ConfigError('database not in sections')
         cfg = dict(self.cfg.items('database'))
@@ -156,6 +171,7 @@ class SmsSender:
         self.spool = spool
     
     def send_message(self, contact, headers, text_content, attachments):
+        """Construct email message to send and return True if successful."""
         msg = "To: %s\n\n%s\n" % (contact, text_content)
         
         if self.spool != '-':
@@ -175,9 +191,11 @@ class SmsSender:
         log.debug('sent SMS to %s: %s, file = %s' % (contact, msg, outfile))
 
 def help():
+    """Return usage of module."""
     return 'hello'
 
 def main():
+    """Handle command line arguments."""
     # CHITS SMS code from Bowei Du
     opts, args = getopt.getopt(sys.argv[1:], 'hdtc:', ['help', 'debug', 'config-file=', 'test'])
     
