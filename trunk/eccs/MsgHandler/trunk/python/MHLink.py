@@ -125,7 +125,12 @@ class DbLink:
         self.insert_contents(uuid, contact, body)
         self.insert_headers(uuid, headers)
         self.insert_attachments(uuid, attachments)
-        log.info("message # %s stored" % uuid)
+        
+        subj = ''
+        if 'subject' in headers:
+            subj = headers['subject']
+        log.info("message # %s: %s" % (uuid, subj))
+        
         return uuid
     
     def insert_contents(self, uuid, contact, body):
