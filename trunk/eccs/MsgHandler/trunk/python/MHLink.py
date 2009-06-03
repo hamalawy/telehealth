@@ -251,7 +251,6 @@ class WsLink:
         values = list()
         for (key, value) in elems.items():
             keys.append(key.lower())
-            value = binascii.b2a_base64(value)
             values.append(value)
         return (keys, values)
 
