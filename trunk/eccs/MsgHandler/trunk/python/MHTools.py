@@ -1,7 +1,8 @@
 import logging
 import logging.config
 
-import sys, os
+import sys
+import os
 from signal import SIGTERM
 import errno
 import time

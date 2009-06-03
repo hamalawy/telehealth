@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 import getopt
-import sys, os
+import sys
+import os
 import time
 import ConfigParser
 import MySQLdb
