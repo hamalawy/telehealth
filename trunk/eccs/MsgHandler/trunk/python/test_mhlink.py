@@ -35,66 +35,67 @@ class DbLinkTest(unittest.TestCase):
         """set_uuid() should return a string containing uuid (without spatial uniqueness)"""
         uuid = self.reader.set_uuid()
         print uuid
+        print self.reader.set_uuid()
         self.assertTrue(isinstance(uuid, str))
     
-    def test_get(self, table, cols, conds):
+    def test_get(self):
+        pass#print self.reader.set_uuid()
+    
+    def test_insert(self):
         pass
     
-    def insert(self, table, kv):
+    def test_delete(self):
         pass
     
-    def delete(self, table, conds):
+    def test_get_response(self):
         pass
     
-    def get_response(self, kw, lang):
+    def test_get_earliest_msg(self):
+        print self.reader.get_earliest_msg()
+    
+    def test_get_msg(self):
         pass
     
-    def get_earliest_msg(self):
+    def test_get_contents(self):
         pass
     
-    def get_msg(self, uuid):
+    def test_get_headers(self):
         pass
     
-    def get_contents(self, uuid):
+    def test_get_attachments(self):
         pass
     
-    def get_headers(self, uuid):
+    def test_set_uuid(self):
         pass
     
-    def get_attachments(self, uuid):
+    def test_insert_response(self):
         pass
     
-    def set_uuid(self):
+    def test_insert_msg(self):
         pass
     
-    def insert_response(self, kw, resp):
+    def test_insert_contents(self):
         pass
     
-    def insert_msg(self, contact, headers, body, attachments):
+    def test_insert_headers(self):
         pass
     
-    def insert_contents(self, uuid, contact, body):
+    def test_insert_attachments(self):
         pass
     
-    def insert_headers(self, uuid, headers):
+    def test_del_response(self):
         pass
     
-    def insert_attachments(self, uuid, attachments):
+    def test_del_msg(self):
         pass
     
-    def del_response(self, kw):
-        pass
-    
-    def del_msg(self, uuid):
-        pass
-    
-    def del_contents(self, uuid):
+    def test_del_contents(self):
         pass
         
-    def del_headers(self, uuid):
+    def test_del_headers(self):
         pass
     
-    def del_attachments(self, uuid):
+    def test_del_attachments(self):
         pass
 
 if __name__ == "__main__":
