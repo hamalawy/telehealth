@@ -37,8 +37,6 @@ class EmailReader:
             
             if not self.cfg.has_section('headers'):
                 raise ConfigParser.NoSectionError
-            
-            self.login()
         except ConfigParser.NoSectionError, e:
             raise ConfigError(str(e))
         except ConfigParser.NoOptionError, e:
@@ -68,6 +66,9 @@ class EmailReader:
     def test_mode(self):
         """Send all received email back to sender. Use 'reply' as email body."""
         while True:
+            if self.email_params['user']:
+                # unit testing does not connect to server
+                self.login()
             for i in range(1, self.get_unread()+1):
                 msg = self.get_message(i)
                 outp = self._parse(msg)
@@ -76,16 +77,25 @@ class EmailReader:
                 if 'caseid' not in headers:
                     headers['caseid'] = '100'
                 self.respond_to_msg(contact, headers, 'reply', attachments)
+            if self.email_params['user']:
+                # unit testing does not connect to server
+                self.logout()
             time.sleep(self.sleep)
     
     def run(self):
         """Check email from time to time. Insert into database and send an autoreply."""
         while True:
+            if self.email_params['user']:
+                # unit testing does not connect to server
+                self.login()
             for i in range(1, self.get_unread()+1):
                 msg = self.get_message(i)
                 outp = self._parse(msg)
                 self.insert_msg_to_db(outp)
                 self.respond_to_msg(*outp)
+            if self.email_params['user']:
+                # unit testing does not connect to server
+                self.logout()
             time.sleep(self.sleep)
     
     def _parse(self, msg):
