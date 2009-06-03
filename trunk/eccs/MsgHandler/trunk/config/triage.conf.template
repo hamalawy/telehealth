@@ -58,6 +58,9 @@ pncu: ^( *)pncu( |/)+
 [headers]
 From: Sender, From
 Subject: Subject
-Caseid: X-Caseid
+Caseid: X-Eccs-Caseid
 Date: Date, Received
-Mode: X-Mode
+Mode: X-Eccs-Mode
+Priority: X-Eccs-Priority
+Rxboxticket: X-Eccs-Rxboxticket
+Uploadurl: X-Eccs-Uploadurl

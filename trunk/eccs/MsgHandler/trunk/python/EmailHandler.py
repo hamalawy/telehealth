@@ -200,7 +200,7 @@ class EmailSender:
         
         msg.add_header('To', contact)
         for (elem, item) in headers.items():
-            msg.add_header('X-%s' % elem.capitalize(), item)
+            msg.add_header('X-Eccs-%s' % elem.capitalize(), item)
         
         msg.attach(MIMEText(text_content))
         for (elem, item) in attachments.items():
