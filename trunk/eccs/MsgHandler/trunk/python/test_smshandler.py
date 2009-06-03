@@ -66,5 +66,5 @@ class SmsReaderTest(unittest.TestCase):
 
 if __name__ == "__main__":
     PATH = project_path()
-    config_file = os.path.join(PATH, 'config', "triage.conf")
+    config_file = os.path.join(PATH, 'config', "triage.conf.test")
     unittest.main()
