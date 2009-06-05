@@ -112,6 +112,7 @@ class EmailReader:
         """Add special headers to existing email headers."""
         headers = self.get_headers_orig(msg)
         headers = self.get_headers_spl(msg)
+        headers['references'] = self.get_references(headers)
         headers['keyword'] = self.get_keyword(headers)
         headers['date'] = self.get_date(headers)
         headers['mode'] = self.mode
@@ -141,6 +142,15 @@ class EmailReader:
         if 'from' in headers:
             return email.utils.parseaddr(headers['from'])[1]
         return ''
+    
+    def get_references(self, headers):
+        """Return references."""
+        if 'references' in headers:
+            refs = headers['references'].split()
+            refs.append(headers['message-id'])
+            return ' '.join(refs)
+        else:
+            return headers['message-id']
     
     def get_keyword(self, headers):
         """Return keyword."""
