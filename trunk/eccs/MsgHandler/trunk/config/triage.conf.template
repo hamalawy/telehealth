@@ -56,6 +56,9 @@ appointment: ^( *)pa?ti?e?n?t?( |/)+
 pncu: ^( *)pncu( |/)+
 
 [headers]
+In-Reply-To: In-Reply-To
+Message-Id: Message-ID
+References: References
 From: Sender, From
 Subject: Subject
 Caseid: X-Eccs-Caseid
@@ -63,4 +66,5 @@ Date: Date, Received
 Mode: X-Eccs-Mode
 Priority: X-Eccs-Priority
 Rxboxticket: X-Eccs-Rxboxticket
+Rxboxextension: X-Eccs-Rxboxextension
 Uploadurl: X-Eccs-Uploadurl
