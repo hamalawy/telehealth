@@ -67,7 +67,7 @@ class EmailReader:
         """Send all received email back to sender. Use 'reply' as email body."""
         log.debug('Using %s' % (str(self.email_params)))
         while True:
-            if self.email_params['user']:
+            if not self.email_params['user']:
                 # unit testing does not connect to server
                 break
             self.login()
@@ -87,7 +87,7 @@ class EmailReader:
         """Check email from time to time. Insert into database and send an autoreply."""
         log.debug('Using %s' % (str(self.email_params)))
         while True:
-            if self.email_params['user']:
+            if not self.email_params['user']:
                 # unit testing does not connect to server
                 break
             self.login()
@@ -182,6 +182,7 @@ class EmailReader:
     def respond_to_msg(self, contact, headers, text_content, attachments):
         """Send email response using EmailSender class."""
         email_send = EmailSender(self.cfg)
+        headers['subject'] = '[%s] Re: %s' % (headers['caseid'], headers['subject'])
         if email_send.send_message(contact, headers, text_content, attachments):
             log.info('sent to %s' % contact)
     
