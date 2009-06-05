@@ -182,7 +182,8 @@ class EmailReader:
     def respond_to_msg(self, contact, headers, text_content, attachments):
         """Send email response using EmailSender class."""
         email_send = EmailSender(self.cfg)
-        email_send.send_message(contact, headers, text_content, attachments)
+        if email_send.send_message(contact, headers, text_content, attachments):
+            log.info('sent to %s' % contact)
     
     def insert_msg_to_db(self, outp):
         """Insert received email into database."""
