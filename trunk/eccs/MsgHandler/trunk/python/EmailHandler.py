@@ -213,9 +213,10 @@ class EmailSender:
         
         msg.add_header('To', contact)
         for (elem, item) in headers.items():
-            elem = elem.capitalize()
-            if elem.lower() not in ('subject'):
+            if elem.lower() not in ('subject', 'in-reply-to', 'references'):
                 elem = 'X-Eccs-%s' % elem
+            # capitalize words separated by dashes '-'
+            elem = '-'.join([x.capitalize() for x in elem.split('-')])
             msg.add_header(elem, item)
         
         msg.attach(MIMEText(text_content))
