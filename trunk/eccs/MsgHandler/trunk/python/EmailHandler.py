@@ -77,7 +77,7 @@ class EmailReader:
                 if 'caseid' not in headers:
                     headers['caseid'] = '100'
                     headers['uploadurl'] = 'http://parakeeto.ath.cx:60080/web/upload_file.php'
-                self.respond_to_msg(contact, headers, 'reply', attachments)
+                self.respond_to_msg(contact, headers, text_content, attachments)
             if self.email_params['user']:
                 # unit testing does not connect to server
                 self.logout()
@@ -212,7 +212,10 @@ class EmailSender:
         
         msg.add_header('To', contact)
         for (elem, item) in headers.items():
-            msg.add_header('X-Eccs-%s' % elem.capitalize(), item)
+            elem = elem.capitalize()
+            if elem.lower() not in ('subject'):
+                elem = 'X-Eccs-%s' % elem
+            msg.add_header(elem, item)
         
         msg.attach(MIMEText(text_content))
         for (elem, item) in attachments.items():
