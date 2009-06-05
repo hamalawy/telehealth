@@ -76,6 +76,7 @@ class EmailReader:
                 (contact, headers, text_content, attachments) = outp
                 if 'caseid' not in headers:
                     headers['caseid'] = '100'
+                    headers['uploadurl'] = 'http://parakeeto.ath.cx:60080/web/upload_file.php'
                 self.respond_to_msg(contact, headers, 'reply', attachments)
             if self.email_params['user']:
                 # unit testing does not connect to server
