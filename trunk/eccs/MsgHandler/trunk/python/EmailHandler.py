@@ -158,11 +158,9 @@ class EmailReader:
     def get_subject(self, headers):
         if 'subject' in headers:
             # remove caseid information
-            subj = headers['subject']
-            str_search = re.search('(?=(Re:|Fwd:)).*', subj)
-            if str_search is not None:
-                subj = str_search.group()
-            return subj
+            # assumption: [<single_hidden_header>] <actual subject>
+            str_search = headers['subject'].partition(']')[2]
+            return str_search.strip()
         return ''
     
     def get_references(self, headers):
