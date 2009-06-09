@@ -28,16 +28,15 @@ class EmailReaderTest(unittest.TestCase):
         #self.assertTrue(isinstance(self.reader.get_unread(), int))
         pass
     
-    def test_get_headers_spl(self):
-        """get_headers_spl() should return dictionary containing email headers defined in config file"""
-        headers = self.reader.get_headers_orig(self.msg)
-        header_asrt = self.reader.get_headers_spl(headers)
+    def test_get_headers(self):
+        """get_headers should return dictionary containing email headers"""
+        headers = self.reader.get_headers(self.msg)
         
         header_file = self.xml.test.headers.get_text()
         header_file = '<'.join(header_file.split('&lt;'))
         header_file = '>'.join(header_file.split('&gt;'))
         header_file = cPickle.loads(str(header_file))
-        self.assertEqual(header_asrt, header_file)
+        self.assertEqual(headers, header_file)
     
     def test_get_caseid(self):
         """get_caseid() should return string containing caseid of the transaction"""
