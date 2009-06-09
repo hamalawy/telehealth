@@ -146,6 +146,7 @@ class EmailReader:
         return ''
     
     def get_caseid(self, headers):
+        """Return case id."""
         if 'caseid' in headers:
             return headers['caseid']
         if 'subject' in headers:
@@ -156,6 +157,7 @@ class EmailReader:
         return ''
     
     def get_subject(self, headers):
+        """Return subject with case id information removed."""
         if 'subject' in headers:
             # remove caseid information
             # assumption: [<single_hidden_header>] <actual subject>
