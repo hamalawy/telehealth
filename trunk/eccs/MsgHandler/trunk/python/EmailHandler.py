@@ -159,8 +159,11 @@ class EmailReader:
         if 'subject' in headers:
             # remove caseid information
             # assumption: [<single_hidden_header>] <actual subject>
-            str_search = headers['subject'].partition(']')[2]
-            return str_search.strip()
+            str_search = headers['subject'].partition(']')
+            if str_search[1]:
+                # partition returns ('content', '', '') if separator is not found
+                return str_search[2].strip()
+            return str_search[0].strip()
         return ''
     
     def get_references(self, headers):
