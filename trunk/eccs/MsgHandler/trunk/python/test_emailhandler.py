@@ -39,6 +39,12 @@ class EmailReaderTest(unittest.TestCase):
         header_file = cPickle.loads(str(header_file))
         self.assertEqual(header_asrt, header_file)
     
+    def test_get_caseid(self):
+        """get_caseid() should return string containing caseid of the transaction"""
+        headers = self.reader.get_headers_orig(self.msg)
+        headers = self.reader.get_headers_spl(headers)
+        self.assertEqual(self.reader.get_caseid(headers), self.xml.test.caseid.get_text())
+    
     def test_get_keyword(self):
         """get_keyword() should return string containing keyword of the transaction"""
         headers = self.reader.get_headers_orig(self.msg)
