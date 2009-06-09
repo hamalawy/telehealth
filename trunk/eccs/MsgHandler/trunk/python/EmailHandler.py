@@ -76,7 +76,7 @@ class EmailReader:
                 outp = self._parse(msg)
                 
                 (contact, headers, text_content, attachments) = outp
-                if 'caseid' not in headers:
+                if not headers['caseid']:
                     headers['caseid'] = '100'
                     headers['uploadurl'] = 'http://parakeeto.ath.cx:60080/web/upload_file.php'
                 self.respond_to_msg(contact, headers, text_content, attachments)
@@ -112,6 +112,7 @@ class EmailReader:
         """Add special headers to existing email headers."""
         headers = self.get_headers_orig(msg)
         headers = self.get_headers_spl(msg)
+        headers['caseid'] = self.get_caseid(headers)
         headers['references'] = self.get_references(headers)
         headers['keyword'] = self.get_keyword(headers)
         headers['date'] = self.get_date(headers)
@@ -141,6 +142,16 @@ class EmailReader:
         """Return email address of sender."""
         if 'from' in headers:
             return email.utils.parseaddr(headers['from'])[1]
+        return ''
+    
+    def get_caseid(self, headers):
+        if 'caseid' in headers:
+            return headers['caseid']
+        if 'subject' in headers:
+            # search for caseid in subject header
+            str_search = re.search('(?<=\[caseid-).*(?=\].*)', headers['subject'])
+            if str_search is not None:
+                return str_search.group()
         return ''
     
     def get_references(self, headers):
@@ -192,7 +203,7 @@ class EmailReader:
     def respond_to_msg(self, contact, headers, text_content, attachments):
         """Send email response using EmailSender class."""
         email_send = EmailSender(self.cfg)
-        headers['subject'] = '[%s] Re: %s' % (headers['caseid'], headers['subject'])
+        headers['subject'] = '[caseid-%s] %s' % (headers['caseid'], headers['subject'])
         if email_send.send_message(contact, headers, text_content, attachments):
             log.info('sent to %s' % contact)
     
