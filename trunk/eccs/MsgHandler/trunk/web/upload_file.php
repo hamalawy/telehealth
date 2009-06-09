@@ -1,8 +1,8 @@
 <?php
 
 if (empty($_POST['case_id'])) {
-	echo -3;
-	die();
+    echo -3;
+    die();
 }
 
 
@@ -18,14 +18,17 @@ if ($FUP["error"] > 0) {
     echo -1;
 }
 else {
-    if (!is_dir($target_path)){ echo $target_path; mkdir($target_path); } 
+    if (!is_dir($target_path)) {
+        echo $target_path;
+        mkdir($target_path);
+    } 
 //    $target_path = $target_path . basename( $FUP['name']); 
     $target_path = $target_path . "latest.jpg";
-
+    
     // Do overwrite check before this
     if(move_uploaded_file($FUP['tmp_name'], $target_path)) {
-	echo 0;
-    } else{
+        echo 0;
+    } else {
         echo -2;
     }
 

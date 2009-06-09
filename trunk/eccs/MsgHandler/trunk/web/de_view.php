@@ -4,10 +4,10 @@
 <body>
 
 <?php
-	$case_id = $_GET['case_id'];
-	if (empty($case_id)) {
-		die();
-	}
+    $case_id = $_GET['case_id'];
+    if (empty($case_id)) {
+        die();
+    }
 ?>
 
 <?php // Change physio.gif to ecg plot ?>
