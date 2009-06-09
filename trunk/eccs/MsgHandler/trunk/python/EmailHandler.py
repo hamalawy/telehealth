@@ -113,6 +113,7 @@ class EmailReader:
         headers = self.get_headers_orig(msg)
         headers = self.get_headers_spl(msg)
         headers['caseid'] = self.get_caseid(headers)
+        headers['subject'] = self.get_subject(headers)
         headers['references'] = self.get_references(headers)
         headers['keyword'] = self.get_keyword(headers)
         headers['date'] = self.get_date(headers)
@@ -152,6 +153,16 @@ class EmailReader:
             str_search = re.search('(?<=\[caseid-).*(?=\].*)', headers['subject'])
             if str_search is not None:
                 return str_search.group()
+        return ''
+    
+    def get_subject(self, headers):
+        if 'subject' in headers:
+            # remove caseid information
+            subj = headers['subject']
+            str_search = re.search('(?=(Re:|Fwd:)).*', subj)
+            if str_search is not None:
+                subj = str_search.group()
+            return subj
         return ''
     
     def get_references(self, headers):
