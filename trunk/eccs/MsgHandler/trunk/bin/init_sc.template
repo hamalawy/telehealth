@@ -1,0 +1,9 @@
+#!/bin/sh
+
+MHPATH=/path/to/MsgHandler/trunk
+
+# substitute path locations
+sed -i s:"MHPATH=".*:"MHPATH="$MHPATH: $MHPATH/bin/mhdaemon
+sed -i s:"MHPATH=".*:"MHPATH="$MHPATH: $MHPATH/bin/mh-unittest
+sed -i s:"MHPATH=".*:"MHPATH="$MHPATH: $MHPATH/bin/smsevent
+sed -i s:"args=('".*"mylog.txt'":"args=('"$MHPATH"/log/mylog.txt'": $MHPATH/config/logging.conf
