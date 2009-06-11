@@ -1,7 +1,10 @@
 #!/bin/sh
 
-SMSAPP=/home/triage/trunk
+MHPATH=/path/to/MsgHandler/trunk
 
-$SMSAPP/python/EmailHandler.py -c $SMSAPP/config/triage.conf $*
-$SMSAPP/python/MH2Triage.py -c $SMSAPP/config/triage.conf $*
-$SMSAPP/python/Triage2MH.py -c $SMSAPP/config/triage.conf $*
+sed -i s:"args=('".*"mylog.txt'":"args=('"$MHPATH"/log/mylog.txt'": $MHPATH/config/logging.conf
+# substitute logging.conf option to where mylog.txt is located
+
+$MHPATH/python/EmailHandler.py -c $MHPATH/config/triage.conf $*
+$MHPATH/python/MH2Triage.py -c $MHPATH/config/triage.conf $*
+$MHPATH/python/Triage2MH.py -c $MHPATH/config/triage.conf $*
