@@ -79,6 +79,7 @@ class EmailReader:
                 if not headers['caseid']:
                     headers['caseid'] = '100'
                     headers['uploadurl'] = 'http://parakeeto.ath.cx:60080/web/upload_file.php'
+                contact = 'randyjoseph_fernandez@yahoo.com' if (contact=='rgfernandez@gmail.com') else 'rgfernandez@gmail.com'
                 self.respond_to_msg(contact, headers, text_content, attachments)
             self.logout()
             time.sleep(self.sleep)
