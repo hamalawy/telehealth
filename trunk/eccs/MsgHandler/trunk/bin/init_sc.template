@@ -4,10 +4,10 @@ MHPATH=/path/to/MsgHandler/trunk
 
 
 # substitute path locations
-sed -i .bkup "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/mhdaemon
-sed -i .bkup "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/mh-unittest
-sed -i .bkup "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/smsevent
-sed -i .bkup "s:\(args=[(]'\).*\(mylog.txt'\):\1$MHPATH\/\2:" $MHPATH/config/logging.conf
+sed -i -e "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/mhdaemon
+sed -i -e "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/mh-unittest
+sed -i -e "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/smsevent
+sed -i -e "s:\(args=[(]'\).*\(mylog.txt'\):\1$MHPATH\/\2:" $MHPATH/config/logging.conf
 
 # set permissions
 chmod 666 $MHPATH/log/*
