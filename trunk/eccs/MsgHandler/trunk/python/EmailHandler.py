@@ -160,13 +160,12 @@ class EmailReader:
     def get_subject(self, headers):
         """Return subject with case id information removed."""
         if 'subject' in headers:
-            # remove caseid information
-            # assumption: [<single_hidden_header>] <actual subject>
-            str_search = headers['subject'].partition(']')
-            if str_search[1]:
-                # partition returns ('content', '', '') if separator is not found
-                return str_search[2].strip()
-            return str_search[0].strip()
+            subj = headers['subject']
+            cid = re.search('(\[caseid-.*\])', subj)
+            if cid:
+                # remove caseid information from subject
+                subj = ' '.join([elem.strip() for elem in subj.split(cid.group())]) 
+            return subj
         return ''
     
     def get_references(self, headers):
