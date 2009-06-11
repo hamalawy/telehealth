@@ -2,8 +2,23 @@
 
 MHPATH=/path/to/MsgHandler/trunk
 
+
 # substitute path locations
 sed -i s:"MHPATH=".*:"MHPATH="$MHPATH: $MHPATH/bin/mhdaemon
 sed -i s:"MHPATH=".*:"MHPATH="$MHPATH: $MHPATH/bin/mh-unittest
 sed -i s:"MHPATH=".*:"MHPATH="$MHPATH: $MHPATH/bin/smsevent
 sed -i s:"args=('".*"mylog.txt'":"args=('"$MHPATH"/log/mylog.txt'": $MHPATH/config/logging.conf
+
+
+# set permissions
+chmod 666 $MHPATH/log/*
+
+chmod 755 $MHPATH/bin/mhdaemon
+chmod 755 $MHPATH/bin/mh-unittest
+chmod 755 $MHPATH/bin/smsevent
+
+chmod 755 $MHPATH/python/SmsHandler.py
+chmod 755 $MHPATH/python/EmailHandler.py
+chmod 755 $MHPATH/python/MH2Triage.py
+chmod 755 $MHPATH/python/Triage2MH.py
+chmod 755 $MHPATH/python/test_*
