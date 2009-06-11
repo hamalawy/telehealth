@@ -66,6 +66,7 @@ def main():
             config_file = a
         elif o in ('-t', '--test'):
             test_match = True
+            return
     
     if not os.path.exists(config_file):
         raise ConfigError("%s not found" % config_file)
