@@ -113,10 +113,10 @@ class EmailReader:
         """Add special headers to existing email headers."""
         headers = self.get_headers_orig(msg)
         headers = self.get_headers_spl(msg)
+        headers['keyword'] = self.get_keyword(headers)
         headers['caseid'] = self.get_caseid(headers)
         headers['subject'] = self.get_subject(headers)
         headers['references'] = self.get_references(headers)
-        headers['keyword'] = self.get_keyword(headers)
         headers['date'] = self.get_date(headers)
         headers['mode'] = self.mode
         
