@@ -61,8 +61,9 @@ CREATE TABLE  `msghandler`.`headers` (
 DROP TABLE IF EXISTS `msghandler`.`responses`;
 CREATE TABLE  `msghandler`.`responses` (
   `keyword` text NOT NULL,
-  `english` text,
-  `tagalog` text
+  `language` text,
+  `mode` text,
+  `response` text
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
