@@ -68,10 +68,10 @@ class DbLink:
         """Close connection to database."""
         self.conn.close()
     
-    def get_response(self, kw, lang):
+    def get_response(self, kw, lang, mode):
         """Perform query for automated response and return as string."""
         cur = self.conn.cursor()
-        qry = self.get('responses', [lang], {'keyword': kw})
+        qry = self.get('responses', ['response'], {'keyword': kw, 'mode': mode, 'language': lang})
         cur.execute(*qry)
         try:
             return cur.fetchall()[0][0]
@@ -123,12 +123,12 @@ class DbLink:
         # remove spatial uniqueness
         return cur.fetchall()[0][0][:23]
     
-    def insert_response(self, kw, resp):
+    def insert_response(self, kw, lang, mode, resp):
         """Insert new automated response."""
         cur = self.conn.cursor()
         #ins = self.insert('responses', {'keyword': kw})
         # add 'keyword' to dictionary
-        resp.update({'keyword': kw})
+        resp.update({'keyword': kw, 'language': lang, 'mode': mode})
         ins = self.insert('responses', resp)
         cur.execute(*ins)
         self.conn.commit()
