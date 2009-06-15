@@ -171,7 +171,7 @@ class EmailReader:
             if cid:
                 # remove caseid information from subject
                 subj = ' '.join([elem.strip() for elem in subj.split(cid.group())])
-            return ' '.join(filter(filt_subject, subj.split()))
+            return ' '.join(filter(self.filt_subject, subj.split()))
         return ''
     
     def filt_subject(self, elem):
