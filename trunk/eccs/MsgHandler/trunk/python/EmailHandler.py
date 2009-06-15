@@ -30,8 +30,8 @@ class EmailReader:
         
         try:
             self.email_params = {'server': self.cfg.get('email', 'popserver'),
-                                'user': self.cfg.get('email', 'popuser'),
-                                'passwd': self.cfg.get('email', 'poppasswd')}
+                                'user': self.cfg.get('email', 'user'),
+                                'passwd': self.cfg.get('email', 'passwd')}
             self.sleep = int(self.cfg.get('email', 'sleep'))
             self.mode = self.cfg.get('email', 'mode')
             
@@ -66,6 +66,11 @@ class EmailReader:
     def test_mode(self):
         """Send all received email back to sender. Use 'reply' as email body."""
         log.debug('Using %s' % (str(self.email_params)))
+        try:
+            test1 = self.cfg.get('email', 'test1')
+            test2 = self.cfg.get('email', 'test2')
+        except ConfigParser.NoOptionError, e:
+            raise ConfigError(str(e))
         while True:
             if not self.email_params['user']:
                 # unit testing does not connect to server
@@ -79,7 +84,7 @@ class EmailReader:
                 if not headers['caseid']:
                     headers['caseid'] = '100'
                     headers['uploadurl'] = 'http://parakeeto.ath.cx:60080/web/upload_file.php'
-                contact = 'randyjoseph_fernandez@yahoo.com' if (contact=='rgfernandez@gmail.com') else 'rgfernandez@gmail.com'
+                contact = test1 if (contact==test2) else test2
                 self.respond_to_msg(contact, headers, text_content, attachments)
             self.logout()
             time.sleep(self.sleep)
@@ -164,7 +169,7 @@ class EmailReader:
             cid = re.search('(\[caseid-.*\])', subj)
             if cid:
                 # remove caseid information from subject
-                subj = ' '.join([elem.strip() for elem in subj.split(cid.group())]) 
+                subj = ' '.join([elem.strip() for elem in subj.split(cid.group())])
             return subj
         return ''
     
@@ -234,8 +239,8 @@ class EmailSender:
         
         try:
             self.email_params = {'server': self.cfg.get('email', 'smtpserver'),
-                                'user': self.cfg.get('email', 'smtpuser'),
-                                'passwd': self.cfg.get('email', 'smtppasswd')}
+                                'user': self.cfg.get('email', 'user'),
+                                'passwd': self.cfg.get('email', 'passwd')}
         except ConfigParser.NoSectionError, e:
             raise ConfigError(str(e))
         except ConfigParser.NoOptionError, e:
