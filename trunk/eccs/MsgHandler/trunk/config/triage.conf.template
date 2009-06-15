@@ -34,7 +34,7 @@ user:
 passwd: 
 # test addresses
 test1: 
-test2:  
+test2: 
 mode: email
 
 [buddyworks]
