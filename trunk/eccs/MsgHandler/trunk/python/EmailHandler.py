@@ -170,8 +170,15 @@ class EmailReader:
             if cid:
                 # remove caseid information from subject
                 subj = ' '.join([elem.strip() for elem in subj.split(cid.group())])
-            return subj
+            return filter(s_filt, subj.split())
         return ''
+    
+    def filt_subject(self, elem):
+        """Remove Re and Fwd from subject."""
+        if elem in ('Re:', 'Fwd:'):
+            return ''
+        else:
+            return elem
     
     def get_references(self, headers):
         """Return references."""
@@ -222,7 +229,7 @@ class EmailReader:
     def respond_to_msg(self, contact, headers, text_content, attachments):
         """Send email response using EmailSender class."""
         email_send = EmailSender(self.cfg)
-        headers['subject'] = '[caseid-%s] %s' % (headers['caseid'], headers['subject'])
+        headers['subject'] = '[caseid-%s] Re: %s' % (headers['caseid'], headers['subject'])
         if email_send.send_message(contact, headers, text_content, attachments):
             log.info('sent to %s' % contact)
     
