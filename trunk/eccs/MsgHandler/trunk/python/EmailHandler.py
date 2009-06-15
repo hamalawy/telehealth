@@ -258,7 +258,11 @@ class EmailSender:
         """Construct email message to send and return True."""
         # http://snippets.dzone.com/posts/show/757
         # http://python.active-venture.com/lib/node510.html
-        msg = MIMEMultipart()
+        if attachments:
+            msg = MIMEMultipart()
+            msg.attach(MIMEText(text_content))
+        else:
+            msg = MIMEText(text_content)
         
         msg.add_header('To', contact)
         for (elem, item) in headers.items():
@@ -268,10 +272,6 @@ class EmailSender:
             elem = '-'.join([x.capitalize() for x in elem.split('-')])
             msg.add_header(elem, item)
         
-        msg.preamble = text_content
-        msg.epilogue = ''
-        
-        #msg.attach(MIMEText(text_content))
         for (elem, item) in attachments.items():
             part = MIMEBase('application', "octet-stream")
             part.set_payload(item)
