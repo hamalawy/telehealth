@@ -14,7 +14,7 @@ from MHLink import DbLink
 
 import re
 import datetime
-import poplib
+import imaplib
 import smtplib
 
 import email
@@ -29,7 +29,7 @@ class EmailReader:
         self.cfg.read(config_file)
         
         try:
-            self.email_params = {'server': self.cfg.get('email', 'popserver'),
+            self.email_params = {'server': self.cfg.get('email', 'imapserver'),
                                 'user': self.cfg.get('email', 'user'),
                                 'passwd': self.cfg.get('email', 'passwd')}
             self.sleep = int(self.cfg.get('email', 'sleep'))
@@ -43,26 +43,41 @@ class EmailReader:
             raise ConfigError(str(e))
     
     def login(self):
-        """Login to email address via secure POP3."""
-        self.serv = poplib.POP3_SSL(self.email_params['server'])
-        self.serv.user(self.email_params['user'])
-        self.serv.pass_(self.email_params['passwd'])
+        """Login to email address via secure IMAP4."""
+        self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
+        msg = self.serv.login(self.email_params['user'], self.email_params['passwd'])
+        if msg[0]=='OK':
+            self.serv.select()
+        else:
+            self.logout()
+            raise
     
     def logout(self):
         """Logout email."""
-        self.serv.quit()
+        try:
+            self.serv.close()
+        except imaplib.error:
+            pass
+        self.serv.logout()
     
     def get_unread(self):
         """Return number of unread messages."""
-        CNT, SIZE = self.serv.stat()
-        if CNT:
-            log.info("%d message(s) unread" % CNT)
-        return CNT
+        self.serv.recent()
+        resp = self.serv.search(None, "UNSEEN")
+        if resp[0]!='OK':
+            return []
+        resp = resp[1][0].split()
+        if resp:
+            log.info("%d message(s) unread" % len(resp))
+        return resp
     
-    def get_message(self, emailnum):
-        """Get email of number emailnum and return as email object."""
-        RESP, TEXT, OCTETS = self.serv.retr(emailnum)
-        return email.message_from_string('\n'.join(TEXT))
+    def get_message(self, msgnum):
+        """Get email, set as seen, and return as email object."""
+        msg = self.serv.fetch(msgnum, "RFC822")
+        if msg[0]!='OK':
+            return ''
+        self.serv.store(msgnum, '+FLAGS', '\\Seen')
+        return email.message_from_string(msg[1][0][1])
     
     def test_mode(self):
         """Send all received email back to sender. Use 'reply' as email body."""
@@ -72,13 +87,13 @@ class EmailReader:
             test2 = self.cfg.get('email', 'test2')
         except ConfigParser.NoOptionError, e:
             raise ConfigError(str(e))
+        
+        self.login()
         while True:
-            if not self.email_params['user']:
-                # unit testing does not connect to server
-                break
-            self.login()
-            for i in range(1, self.get_unread()+1):
+            for i in self.get_unread():
                 msg = self.get_message(i)
+                if not msg:
+                    continue
                 outp = self._parse(msg)
                 
                 (contact, headers, text_content, attachments) = outp
@@ -87,24 +102,22 @@ class EmailReader:
                     headers['uploadurl'] = 'http://parakeeto.ath.cx:60080/web/upload_file.php'
                 contact = test1 if (contact==test2) else test2
                 self.respond_to_msg(contact, headers, text_content, attachments)
-            self.logout()
             time.sleep(self.sleep)
+        self.logout()
     
     def run(self):
         """Check email from time to time. Insert into database and send an autoreply."""
         log.debug('Using %s' % (str(self.email_params)))
+        
+        self.login()
         while True:
-            if not self.email_params['user']:
-                # unit testing does not connect to server
-                break
-            self.login()
-            for i in range(1, self.get_unread()+1):
+            for i in self.get_unread():
                 msg = self.get_message(i)
                 outp = self._parse(msg)
                 self.insert_msg_to_db(outp)
                 self.respond_to_msg(*outp)
-            self.logout()
             time.sleep(self.sleep)
+        self.logout()
     
     def _parse(self, msg):
         """Parse email messages and return as tuple."""
