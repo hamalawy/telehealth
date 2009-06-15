@@ -16,7 +16,10 @@ from edf import BioSignal
 from wx import CallAfter
 
 class ECG:
-    """manages data request and processes reply packets to/from ECG module"""
+    """manages data request and processes reply packets to/from ECG module
+
+"""
+
 
     def __init__(self, parent, port='COM2', baud=230400, timeout=None):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
