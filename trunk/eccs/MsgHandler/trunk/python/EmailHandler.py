@@ -55,7 +55,8 @@ class EmailReader:
     def get_unread(self):
         """Return number of unread messages."""
         CNT, SIZE = self.serv.stat()
-        log.info("%d message(s) unread" % CNT)
+        if CNT:
+            log.info("%d message(s) unread" % CNT)
         return CNT
     
     def get_message(self, emailnum):
@@ -170,7 +171,7 @@ class EmailReader:
             if cid:
                 # remove caseid information from subject
                 subj = ' '.join([elem.strip() for elem in subj.split(cid.group())])
-            return filter(s_filt, subj.split())
+            return ' '.join(filter(filt_subject, subj.split()))
         return ''
     
     def filt_subject(self, elem):
