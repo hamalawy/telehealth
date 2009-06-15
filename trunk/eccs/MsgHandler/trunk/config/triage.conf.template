@@ -28,7 +28,7 @@ mode: sms
 # read interval is in seconds
 sleep: 10
 # POP is receiver, SMTP is sender
-popserver: 
+imapserver: 
 smtpserver: 
 user: 
 passwd: 
