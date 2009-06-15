@@ -2,7 +2,6 @@
 
 MHPATH=/path/to/MsgHandler/trunk
 
-
 # substitute path locations
 sed -i -e "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/mhdaemon
 sed -i -e "s:\(MHPATH=\).*:\1$MHPATH:" $MHPATH/bin/mh-unittest
@@ -21,3 +20,6 @@ chmod 755 $MHPATH/python/EmailHandler.py
 chmod 755 $MHPATH/python/MH2Triage.py
 chmod 755 $MHPATH/python/Triage2MH.py
 chmod 755 $MHPATH/python/test_*
+
+# copy files
+cp $MHPATH/config/triage.conf.template $MHPATH/config/triage.conf
