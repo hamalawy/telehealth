@@ -45,10 +45,10 @@ class EmailReader:
     def login(self):
         """Login to email address via secure IMAP4."""
         self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
-        msg = self.serv.login(self.email_params['user'], self.email_params['passwd'])
-        if msg[0]=='OK':
+        try:
+            self.serv.login(self.email_params['user'], self.email_params['passwd'])
             self.serv.select()
-        else:
+        except imaplib.error:
             self.logout()
             raise
     
