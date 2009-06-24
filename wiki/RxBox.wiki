@@ -5,9 +5,8 @@
 = Introduction =
 
 = Objectives =
-  #To develop the necessary communications protocols for the Rx Box to transmit data. The test beds shall be situated in rural and urban poor communities from which health signals (sensor readings, video streaming, consultation and heart/lung sounds) shall be transmitted via internet, SMS, MMS and GPRS to remote medical specialists for evaluation. 
-
-  #To incorporate both hardware and software protocols to enable multimedia streaming through internet (PC) and 3G (mobile phones) for remote video consultation and emergency intervention to include the following services: 
+  # To develop the necessary communications protocols for the Rx Box to transmit data. The test beds shall be situated in rural and urban poor communities from which health signals (sensor readings, video streaming, consultation and heart/lung sounds) shall be transmitted via internet, SMS, MMS and GPRS to remote medical specialists for evaluation.
+  # To incorporate both hardware and software protocols to enable multimedia streaming through internet (PC) and 3G (mobile phones) for remote video consultation and emergency intervention to include the following services: 
     ##Remote real-time monitoring of health and biological signals 
     ##Audio-video remote medical consultation and diagnosis 
     ##Electronic health-information collection, analysis and reporting 
