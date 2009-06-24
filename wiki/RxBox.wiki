@@ -1,10 +1,11 @@
+#summary portable integrated biomedical sensors device linked to a remote telehealth center.
 #labels Phase-Design,RxBox
-# portable integrated biomedical sensors device linked to a remote telehealth center.
 
 
 = Introduction =
 
-A portable medical diagnostic device containing biomedical sensors to measure vital physiological signals linked to a remote dynamic patient database situated in the call station (National Telehealth Center).
+The main output of Project LifeLink is the RxBox: A portable medical diagnostic device containing biomedical sensors to measure vital physiological signals linked to a remote dynamic patient database situated in the call station (National Telehealth Center).
+
 
 ----
 
