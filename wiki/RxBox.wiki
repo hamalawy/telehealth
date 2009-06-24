@@ -3,20 +3,11 @@
 
 A portable medical diagnostic device containing biomedical sensors to measure vital physiological signals linked to a remote dynamic patient database situated in the call station (National Telehealth Center).
 
-= Objectives =
-  # To develop the necessary communications protocols for the Rx Box to transmit data. The test beds shall be situated in rural and urban poor communities from which health signals (sensor readings, video streaming, consultation and heart/lung sounds) shall be transmitted via internet, SMS, MMS and GPRS to remote medical specialists for evaluation.
-  # To incorporate both hardware and software protocols to enable multimedia streaming through internet (PC) and 3G (mobile phones) for remote video consultation and emergency intervention to include the following services: 
-    # Remote real-time monitoring of health and biological signals 
-    # Audio-video remote medical consultation and diagnosis 
-    # Electronic health-information collection, analysis and reporting 
-    # Research and electronic statistical health analysis 
-    # Interoperability and mobility of systems and operations 
-    # Wireless telemicroscopy for microdiagnostics of TB and Dengue 
 ----
 
 = RxBox v2.0 Specifications =
 
-RxBox is a device that monitors the health status of the patient in a remote location.
+The RxBox v2.0 is a device that monitors the health status of the patient in a remote location.
 Using medical-grade biomedical modules, it measures the ECG, the pulse rate, the blood
 pressure, and the blood-oxygen saturation(%Sp02).
 
