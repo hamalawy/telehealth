@@ -12,8 +12,8 @@ Using the program:
     cp triage.conf.template triage.conf
     vim triage.conf (then modify values)
     :wq
-2) run
-    <path to>/mhdaemon start
+3) run, stop
+    <path to>/mhdaemon <start/stop/restart
 
 Known Issues:
 1) To update WSDL (web service connection error)
