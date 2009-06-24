@@ -71,7 +71,6 @@ blood oxygen saturation (SpO2)
 > Integrated warning and error reporting system (e.g. motion artifact problem)
 > Serial interface for data exchange
 > Adjustable Sampling rates: 75 to 300 Hz
-
 === NIBP2010 BP Monitor ===
 - Medical-grade OEM module from corscience for the non-invasive measurement of the blood
 pressure based on the Oscillometric method
