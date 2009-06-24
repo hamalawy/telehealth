@@ -1,10 +1,10 @@
-#summary portable integrated biomedical sensors device linked to a remote telehealth center.
+#summary a multi-device biomedical appliance for physiological vital signs(e.g. ECG, BP,SpO2, Pulse Rate) acquisition, medical telemetry and remote consultation.
 #labels Phase-Design,RxBox
 
 
 = Introduction =
 
-The main output of Project LifeLink is the RxBox: A portable medical diagnostic device containing biomedical sensors to measure vital physiological signals linked to a remote dynamic patient database situated in the call station (National Telehealth Center).
+The main output of Project LifeLink is the RxBox: A multi-device biomedical appliance for physiological vital signs(e.g. ECG, BP,SpO2, Pulse Rate) acquisition, medical telemetry and remote consultation via the National Telehealth Center.
 
 
 ----
