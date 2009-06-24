@@ -17,6 +17,7 @@ Using the program:
 
 Known Issues:
 1) To update WSDL (web service connection error)
+    cd <path to>/MsgHandler/trunk/python
     wsdl2py --complexType <url_address or file_path>
 2) Solution to the "/usr/bin/python^M: bad interpreter: No such file or directory" problem...
     vim -b <filename>
