@@ -1,6 +1,10 @@
 #summary A project of the National Telehealth Program that aims to develop an integrated multi-device biomedical appliance (i.e. the RxBox) for medical telemetry and remote consultation.
 #labels RxBox,Phase-Design,telemetry,biomedicalappliance
 
+= Introduction =
+
+RxBox = an integrated multi-device biomedical appliance for medical telemetry and remote consultation.
+
 = Objectives =
   # To develop the necessary communications protocols for the Rx Box to transmit data. The test beds shall be situated in rural and urban poor communities from which health signals (sensor readings, video streaming, consultation and heart/lung sounds) shall be transmitted via internet, SMS, MMS and GPRS to remote medical specialists for evaluation.
   # To incorporate both hardware and software protocols to enable multimedia streaming through internet (PC) and 3G (mobile phones) for remote video consultation and emergency intervention to include the following services: 
