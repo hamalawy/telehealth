@@ -1,19 +1,24 @@
-Issues:
-1) To update WSDL: wsdl2py --complexType <url_address or file_path>
+Using the program:
+1) initialization
+    cd <path to>/MsgHandler/trunk/bin
+    cp init_sc.template init_sc
+    vim init_sc (then modify the MHPATH variable)
+    :wq
+    chmod 755 init_sc
+    ./init_sc
+    cp mhdaemon <desired path>
+2) add configuration
+    cd <path to>/MsgHandler/trunk/config
+    cp triage.conf.template triage.conf
+    vim triage.conf (then modify values)
+    :wq
+2) run
+    <path to>/mhdaemon start
 
-Initialization:
-1) "cd /path/to/MsgHandler/trunk/bin"
-2) "cp init_sc.template init_sc"
-2) modify MHPATH variable in init_sc
-3) "chmod 755 init_sc"
-4) "./init_sc"
-4) copy mhdaemon to preferred location
-
-How to run the program:
-1) cd to path of mhdaemon
-
-1) copy triage.conf.template to triage.conf and modify
-2) copy MHPATH variable in init_sc.template and modify
-3) solution to the "/usr/bin/python^M: bad interpreter: No such file or directory" problem...
-   (a) open vi (vi -b <filename>)
-   (b) type the following (:1,$s/^M//g)
+Known Issues:
+1) To update WSDL (web service connection error)
+    wsdl2py --complexType <url_address or file_path>
+2) Solution to the "/usr/bin/python^M: bad interpreter: No such file or directory" problem...
+    vim -b <filename>
+    :1,$s/^M//g
+    :wq
