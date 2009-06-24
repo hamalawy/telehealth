@@ -1,9 +1,9 @@
-#summary development of a multi-device biomedical appliance (i.e. the RxBox) for medical telemetry and remote consultation.
+#summary development of a multi-device biomedical appliance (i.e. the RxBox) for physiological vital signs(e.g. ECG, BP,SpO2, Pulse Rate) acquisition, medical telemetry and remote consultation.
 #labels RxBox,Phase-Design,telemetry,biomedicalappliance
 
 = Introduction =
 
-RxBox = an integrated multi-device biomedical appliance for medical telemetry and remote consultation.
+RxBox = a multi-device biomedical appliance for physiological vital signs(e.g. ECG, BP,SpO2, Pulse Rate) acquisition, medical telemetry and remote consultation.
 
 = Objectives =
   # To develop the necessary communications protocols for the RxBox to transmit data. The test beds shall be situated in rural and urban poor communities from which health signals (sensor readings, video streaming, consultation and heart/lung sounds) shall be transmitted via internet, SMS, MMS and GPRS to remote medical specialists for evaluation.
