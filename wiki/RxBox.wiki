@@ -1,4 +1,6 @@
 #labels Phase-Design,RxBox
+#A portable medical diagnostic device containing biomedical sensors to measure vital physiological signals linked to a remote dynamic patient database situated in the call station (National Telehealth Center).
+
 = Introduction =
 
 A portable medical diagnostic device containing biomedical sensors to measure vital physiological signals linked to a remote dynamic patient database situated in the call station (National Telehealth Center).
