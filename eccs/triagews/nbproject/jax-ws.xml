@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
+  <services>
+    <service name="CreatePatientService">
+      <implementation-class>ws.CreatePatient</implementation-class>
+    </service>
+    <service name="SendRxDataService">
+      <implementation-class>ws.SendRxData</implementation-class>
+    </service>
+    <service name="CreateCaseService">
+      <implementation-class>ws.CreateCase</implementation-class>
+    </service>
+    <service name="ViewCaseService">
+      <implementation-class>ws.ViewCase</implementation-class>
+    </service>
+    <service name="SearchService">
+      <implementation-class>ws.Search</implementation-class>
+    </service>
+    <service name="ReferCaseService">
+      <implementation-class>ws.ReferCase</implementation-class>
+    </service>
+    <service name="ViewPatientService">
+      <implementation-class>ws.ViewPatient</implementation-class>
+    </service>
+    <service name="ViewUserService">
+      <implementation-class>ws.ViewUser</implementation-class>
+    </service>
+    <service name="ViewHospitalService">
+      <implementation-class>ws.ViewHospital</implementation-class>
+    </service>
+    <service name="EditUserService">
+      <implementation-class>ws.EditUser</implementation-class>
+    </service>
+    <service name="RegisterUserService">
+      <implementation-class>ws.RegisterUser</implementation-class>
+    </service>
+  </services>
+  <clients>
+    <client name="DocUserService">
+      <wsdl-url>http://localhost:15880/PagsanjanUser/DocUserService?wsdl</wsdl-url>
+      <local-wsdl-file>localhost_15880/PagsanjanUser/DocUserService.wsdl</local-wsdl-file>
+      <package-name>ws</package-name>
+      <catalog-file>catalog.xml</catalog-file>
+    </client>
+    <client name="SendRxDataService">
+      <wsdl-url>http://localhost:8080/Pagsanjan/SendRxDataService?wsdl</wsdl-url>
+      <local-wsdl-file>localhost_8080/Pagsanjan/SendRxDataService.wsdl</local-wsdl-file>
+      <package-name>ws</package-name>
+      <catalog-file>catalog.xml</catalog-file>
+    </client>
+  </clients>
+  <jsr109>true</jsr109>
+</jax-ws>
