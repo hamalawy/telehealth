@@ -22,7 +22,7 @@ def ExtractLabels(HeaderFile,Signal_count):
         for i in range(Signal_count):
                 label = HeaderFile[256+(16*i):272+(16*i)] # extract the lead type i's label
                 sampling = int(HeaderFile[2848+(8*i):2854+(8*i)]) # extract lead type i's sampling rate
-                ECGlabel[i] = RemoveSpace(label)
+                ECGlabel[i] = label.strip()
                 ECGsampling[i] = sampling
         return ECGlabel, ECGsampling
 
@@ -66,14 +66,6 @@ def writeFile(File,Data):
                 leadII_file.write(str(Data[i]))
                 leadII_file.write(',\n')
         leadII_file.close()
-
-def RemoveSpace(string):
-        """ remove spaces to the string """
-        for i in range(len(string)):
-            if string[i] == ' ':
-                string = string[:i]
-                break;
-        return string
 
 def CheckLabel(lead, ECGlabel):
     """ (lead, ECGlabel) -> determine if lead is in tuple ECGlabel """
