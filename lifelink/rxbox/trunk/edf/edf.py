@@ -326,7 +326,7 @@ class EDFSignal:
         self.ECGsampling = []
         for i in range(self.signalnum):
             label = self.HeaderFile[256+(16*i):272+(16*i)] # extract the lead type i's label
-            self.ECGlabel[i] = self.RemoveSpace(label)
+            self.ECGlabel[i] = label.strip()
             sampling = int(self.HeaderFile[2848+(8*i):2854+(8*i)])
             self.ECGsampling.append(sampling) # extract lead type i's sampling rate
 
@@ -370,16 +370,6 @@ class EDFSignal:
             lead_file.write(str(item))
             lead_file.write(',\n')
         lead_file.close()
-
-    def RemoveSpace(self,data):
-        """ remove spaces to the string """
-        output = ''
-        for item in data:
-            if item == ' ':
-                break
-            else:
-                output = output+item
-        return output
 
     def CheckLabel(self):
         """ (lead, ECGlabel) -> determine if lead is in tuple ECGlabel """
