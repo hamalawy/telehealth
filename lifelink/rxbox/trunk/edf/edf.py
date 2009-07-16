@@ -269,13 +269,174 @@ class EDF:
         self.EDFFile = self.HeaderRecord + self.DataRecord
         return self.EDFFile
 
-      
+class EDFSignal:
+    """ extracts signal from an edf file """
+    def __init__(self, Input, Output='output.csv', lead_type='II', duration=None, start=None):
+        self.InputFile = Input
+        self.OutputFile = Output
+        self.lead_type = lead_type
+        if start == None:
+            self.start = 0
+        else:
+            self.start = start
+        self.duration = duration
+        self.parseHeaderFile()
 
+    def parseHeaderFile(self):
+        """ extract important information contained in the headerfile of an edf file """
+        # Read and store the data contained in the input File
+        myEDFFile = open(self.InputFile,'rb')
+        EDFValues = myEDFFile.read()
+        myEDFFile.close()
 
+        # Extract the Header File that contains info about the record
+        self.HeaderSize = int(EDFValues[184:192])
+        self.HeaderFile = EDFValues[:self.HeaderSize]
+        # Extract the actual data in the input file
+        self.rawDataRecord = EDFValues[self.HeaderSize:]
+        self.tempDataRecord = list(self.rawDataRecord)
 
-        
+        # Extract information from the EDF Header File
+        duration_per_sample = int(self.HeaderFile[236:244]) # duration per sample (in seconds)
+        self.total_duration = int(self.HeaderFile[236:244]) # total duration of the signal (in seconds)
+        if self.duration == None:
+            self.duration = self.total_duration
+        self.signalnum = int(self.HeaderFile[252:256]) # number of signals in edf file
 
+    def DecToBin(self,num):
+        """ DecToBin(num) -> binary string of num """
+        BinStr = ''
+        if num == 0: return '0'*8
+        while num > 0:
+            BinStr = str(num % 2) + BinStr
+            num = num >> 1                  # right-shift the num by 1 bit
+        BinStr = BinStr.zfill(8)            # make BinStr an 8-bit string
+        return BinStr
 
-        
-            
+    def ExtractLabels(self):
+        """ ExtractLabels(HeaderFile,n) -> ECG Lead types, Lead Sampling Rates
 
+            Extracts the 12 lead ECG labels as well as the sampling rate of
+            each lead. Valid lead types are:
+            I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6            
+        """
+        self.ECGlabel = {}
+        self.ECGsampling = [i*0 for i in range(self.signalnum)]
+        for i in range(self.signalnum):
+                label = self.HeaderFile[256+(16*i):272+(16*i)] # extract the lead type i's label
+                self.ECGlabel[i] = self.RemoveSpace(label)
+                self.ECGsampling[i] = int(self.HeaderFile[2848+(8*i):2854+(8*i)]) # extract lead type i's sampling rate
+
+    def ExtractLead(self):
+        """ Extracts a duration of data starting from 'start' from raw data """
+        self.lead = []
+        for i in range(self.duration):
+            self.lead[(i*1000):(i*1000)+1000] = self.tempDataRecord[((i+self.start)*2*self.fs*\
+                            self.signalnum)+((self.index+1)*1000):((i+self.start)*2*self.fs*\
+                                            self.signalnum)+((self.index+2)*1000)]
+
+    def RawToBinary(self):
+        """ Converts the list of integer data to binary strings """
+        for i in range(len(self.lead)):
+            intvalue = ord(self.lead[i])
+            binvalue = self.DecToBin(intvalue)
+            self.lead.remove(self.lead[i])
+            self.lead.insert(i,binvalue)
+
+    def BinaryTomV(self):
+        """ Convert the binary string representation of data to mV """
+        self.DataRecord_Int = []
+        for i in range(0,len(self.lead),2):
+            LSByte = self.lead[i]
+            MSByte = self.lead[i+1]
+            int_2bytedata = int(MSByte + LSByte,2)
+            if int_2bytedata <= 32767:
+                self.DataRecord_Int.append(int_2bytedata)
+            else:
+                negative_num = int_2bytedata - (2**16-1)
+                self.DataRecord_Int.append(negative_num)
+        for i in range(len(self.DataRecord_Int)):
+            self.DataRecord_Int[i] = self.DataRecord_Int[i]*0.00263
+
+    def writeFile(self):
+        """ writeFile(File,Data) -> writes the contents of list Data to File """
+        lead_file = open(self.OutputFile,'w')
+        for i in range(len(self.DataRecord_Int)):
+            lead_file.write(str(self.DataRecord_Int[i]))
+            lead_file.write(',\n')
+        lead_file.close()
+
+    def RemoveSpace(self,string):
+        """ remove spaces to the string """
+        for i in range(len(string)):
+            if string[i] == ' ':
+                string = string[:i]
+                break;
+        return string
+
+    def CheckLabel(self):
+        """ (lead, ECGlabel) -> determine if lead is in tuple ECGlabel """
+        for i in range(len(self.ECGlabel)):
+            if self.ECGlabel[i] == self.lead_type:
+                return True
+        return False
+
+    def getEDFparameters(self):
+        """ Extracts the index and sampling rate of specified lead_type from ECGlabel """
+        for i in range(len(self.ECGlabel)):
+            if self.ECGlabel[i] == self.lead_type:
+                self.index = i
+                self.fs = self.ECGsampling[i]
+
+    def ExtractECG(self):
+        """ ExtractECG(InputFile, OutputFile, lead_type, duration, start)
+
+            This Method extracts a specified ECG signal from InputFile.
+            Parameters:
+                Lead -> a list of Lead II ECG Signal values
+                InputFile -> edf file containing 12-lead ECG signals
+                OutputFile -> File where the values are to be printed
+                lead_type -> determines which ECG signal to be extracted (ex. "II")
+                duration -> number of seconds to be extraced
+                start -> determines where to start extracting data
+
+            Duration should be in seconds and should not exceed the total duration
+            the ECG signal. start should be an integer greater than zero but less
+            than or equal to the total duration minus the desired duration to be
+            extracted from the ECG signal.
+
+            Ex.
+                ExtractECG('Sison,Luis.edf','leadII.csv','II',15,30)
+
+                The output file 'leadII.csv' will contain values (in mV) of
+                the lead 'II' signal of 'Sison,Luis.edf'. The output file will
+                contain 15 seconds worth of data starting from the 30th second
+                after the telemetry was started.
+        """
+
+        # Determine the signal to be extracted by using the lead_type
+        # provided before calling the function
+        self.ExtractLabels() # extract signals from edf file
+        self.getEDFparameters() # determine the signal and sampling rate
+
+        # Check for possible errors in function call
+        # 1. Determine the validity of lead type
+        if not self.CheckLabel():
+            print "ERROR: ECG Label not found."
+            return None
+        # 2. Determine if the desired duration to be extracted
+        #    is less than the total duration
+        elif self.duration > self.total_duration:
+            print "ERROR: Duration to be extracted is longer than the signal duration."
+            return None
+        # 3. Determine if the desired duration to be extracted
+        #    is within the signal in the EDF file
+        elif self.start > self.total_duration - self.duration:
+            print "ERROR: start time will not accomodate specified duration"
+            return None
+
+        # Extract the desired portion of signal and store it to output file
+        self.ExtractLead() # Extract the desired duration of the signal
+        self.RawToBinary() # Convert data readings to 2 Byte, Binary Form
+        self.BinaryTomV() # Convert the 2 Byte binary data to mV
+        self.writeFile() # Write the extracted data to Output File
