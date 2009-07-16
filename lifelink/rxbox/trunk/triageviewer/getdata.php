@@ -10,7 +10,7 @@ $data = $lead1 = $lead2 = array();
 
 while (!feof($file_handle) ) {
 	$line = fgets($file_handle, 1024);
-	if (preg_match("/\d+\:(\d+\.\d+)\s+([-\d]+\.\d+)\s+([-\d]+\.\d+)/", $line, $res)) {
+	if (preg_match("/\d+\:(\d+\.\d+)\s+([-\.\d]+)\s+([-\.\d]+)/", $line, $res)) {
 		array_shift($res);
 
 		$res[0] = floatval($res[0]);
