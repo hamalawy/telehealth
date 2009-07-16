@@ -6,6 +6,8 @@ medical time-series recordings. It produces a .edf file which can be tested usin
 available edf viewer software.
 
 Authors: Julius Miguel J. Broma
+         Charles Hernan DC. Chiong
+         Dan Simone M. Cornillez
          Arlan Roie A. Santos
          Luis G. Sison, PhD
          ------------------------------------------------
@@ -321,11 +323,12 @@ class EDFSignal:
             I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6            
         """
         self.ECGlabel = {}
-        self.ECGsampling = [i*0 for i in range(self.signalnum)]
+        self.ECGsampling = []
         for i in range(self.signalnum):
-                label = self.HeaderFile[256+(16*i):272+(16*i)] # extract the lead type i's label
-                self.ECGlabel[i] = self.RemoveSpace(label)
-                self.ECGsampling[i] = int(self.HeaderFile[2848+(8*i):2854+(8*i)]) # extract lead type i's sampling rate
+            label = self.HeaderFile[256+(16*i):272+(16*i)] # extract the lead type i's label
+            self.ECGlabel[i] = self.RemoveSpace(label)
+            sampling = int(self.HeaderFile[2848+(8*i):2854+(8*i)])
+            self.ECGsampling.append(sampling) # extract lead type i's sampling rate
 
     def ExtractLead(self):
         """ Extracts a duration of data starting from 'start' from raw data """
@@ -337,11 +340,13 @@ class EDFSignal:
 
     def RawToBinary(self):
         """ Converts the list of integer data to binary strings """
-        for i in range(len(self.lead)):
-            intvalue = ord(self.lead[i])
+        count = 0;
+        for i in self.lead:
+            intvalue = ord(i)
             binvalue = self.DecToBin(intvalue)
-            self.lead.remove(self.lead[i])
-            self.lead.insert(i,binvalue)
+            self.lead.remove(i)
+            self.lead.insert(count,binvalue)
+            count = count+1
 
     def BinaryTomV(self):
         """ Convert the binary string representation of data to mV """
@@ -361,32 +366,34 @@ class EDFSignal:
     def writeFile(self):
         """ writeFile(File,Data) -> writes the contents of list Data to File """
         lead_file = open(self.OutputFile,'w')
-        for i in range(len(self.DataRecord_Int)):
-            lead_file.write(str(self.DataRecord_Int[i]))
+        for item in self.DataRecord_Int:
+            lead_file.write(str(item))
             lead_file.write(',\n')
         lead_file.close()
 
-    def RemoveSpace(self,string):
+    def RemoveSpace(self,data):
         """ remove spaces to the string """
-        for i in range(len(string)):
-            if string[i] == ' ':
-                string = string[:i]
-                break;
-        return string
+        output = ''
+        for item in data:
+            if item == ' ':
+                break
+            else:
+                output = output+item
+        return output
 
     def CheckLabel(self):
         """ (lead, ECGlabel) -> determine if lead is in tuple ECGlabel """
-        for i in range(len(self.ECGlabel)):
-            if self.ECGlabel[i] == self.lead_type:
+        for count in self.ECGlabel:
+            if self.ECGlabel[count] == self.lead_type:
                 return True
         return False
 
     def getEDFparameters(self):
         """ Extracts the index and sampling rate of specified lead_type from ECGlabel """
-        for i in range(len(self.ECGlabel)):
-            if self.ECGlabel[i] == self.lead_type:
-                self.index = i
-                self.fs = self.ECGsampling[i]
+        for count in self.ECGlabel:
+            if self.ECGlabel[count] == self.lead_type:
+                self.index = count
+                self.fs = self.ECGsampling[count]
 
     def ExtractECG(self):
         """ ExtractECG(InputFile, OutputFile, lead_type, duration, start)
