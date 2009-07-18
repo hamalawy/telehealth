@@ -385,7 +385,7 @@ class EDFSignal:
                 self.index = count
                 self.fs = self.ECGsampling[count]
 
-    def ExtractECG(self):
+    def ExtractECG(self, writeToFile = False):
         """ ExtractECG(InputFile, OutputFile, lead_type, duration, start)
 
             This Method extracts a specified ECG signal from InputFile.
@@ -436,4 +436,6 @@ class EDFSignal:
         self.ExtractLead() # Extract the desired duration of the signal
         self.RawToBinary() # Convert data readings to 2 Byte, Binary Form
         self.BinaryTomV() # Convert the 2 Byte binary data to mV
-        self.writeFile() # Write the extracted data to Output File
+        if writeToFile:
+            self.writeFile() # Write the extracted data to Output File
+        return self.DataRecord_Int
