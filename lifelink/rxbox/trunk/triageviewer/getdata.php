@@ -1,14 +1,16 @@
 <?php
 
+$link = mysql_connect("localhost","root","root") or die ("Unable to connect to SQL server");
+mysql_select_db("test_edf",$link) or die ("Unable to select database");
 
-$datapath = "/var/www/uploads/" . $_GET['session'] . "/current";
+//$datapath = "/var/www/uploads/" . $_GET['session'] . "/current";
 
-$file_handle = fopen($datapath, "r");
-if ($file_handle == NULL) die;
+//$file_handle = fopen($datapath, "r");
+//if ($file_handle == NULL) die;
 
-$data = $lead1 = $lead2 = array();
+//$data = $lead1 = $lead2 = array();
 
-while (!feof($file_handle) ) {
+/*while (!feof($file_handle) ) {
 	$line = fgets($file_handle, 1024);
 	if (preg_match("/\d+\:(\d+\.\d+)\s+([-\.\d]+)\s+([-\.\d]+)/", $line, $res)) {
 		array_shift($res);
@@ -23,8 +25,11 @@ while (!feof($file_handle) ) {
 }
 $data = array($lead1, $lead2);
 fclose($file_handle);
-
+*/
+    
 header("Content-type: text/plain");
-echo json_encode($data);
-
+//echo json_encode($data);
+    $data = mysql_query('SELECT val FROM edfs where id=4');
+    if (!$result) die;
+    echo $data;
 ?>
