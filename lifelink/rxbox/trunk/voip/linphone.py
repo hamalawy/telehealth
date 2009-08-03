@@ -1,13 +1,6 @@
-"""
-pylinphone - Linphonec wrapper for Python, based on Darwin Bautista's
-pyMplayer module of the Ma3x Team - Computer Networks Laboratory
-"""
-
 import sys, os
 from subprocess import Popen, PIPE
 import thread, threading
-import  wx
-import  wx.lib.newevent
 
 
 
@@ -17,30 +10,20 @@ class Linphone(threading.Thread):
     Provides the basic interface for sending commands and receiving responses
     to and from Linphone, such as starting and stopping the phone, initiating
     and terminating a call, etc. 
-    This module also emits proper signal to handle phone events from a WxPython
-    program. Initially, the following events are available for use in a wxPython
-    code: EVT_CALL_INCOMING, EVT_CALL_TERMINATED, EVT_CALL_FAILED and
-    EVT_CALL_ANSWERED.
     Note that this does not implement the embedding of the video window into
     the GUI. You may have to use this hack to embed Linphone video:
     os.environ['SDL_VIDEODRIVER']='x11'
     os.environ['SDL_WINDOWID']=str(self.frame_1.video_panel.GetHandle())
     where getHandle() returns the window id of the frame where to put the video.
     """
-    def __init__(self, wxFrame, args=()):
+    def __init__(self, args=()):
 	threading.Thread.__init__(self)
-	self.stopEvent = threading.Event()
-        self.stopEvent.clear()
         self.set_args(args)
         self.__subprocess = None
         self.onCall = False;
 
-	self.frame = wxFrame
-	#Phone events
-        self.CallIncomingEvent, self.EVT_CALL_INCOMING = wx.lib.newevent.NewEvent()
-        self.CallTerminatedEvent, self.EVT_CALL_TERMINATED = wx.lib.newevent.NewEvent()
-        self.CallFailedEvent, self.EVT_CALL_FAILED = wx.lib.newevent.NewEvent()
-        self.CallAnsweredEvent, self.EVT_CALL_ANSWERED = wx.lib.newevent.NewEvent()
+	self.caller = None
+	self.callee = None
 
     def __del__(self):
 	pass
@@ -71,25 +54,6 @@ class Linphone(threading.Thread):
             return self.__subprocess.poll()
         else:
             return None
-
-    def setFrame(self, frame):
-	"""
-	Sets the Wx element that will receive the phone signals such as call incoming,
-	terminated, etc.
-	"""
-        self.frame = frame
-
-    def execute(self, cmd):
-	"""
-	Sends a command to Linphonec. Ideally this should not be used unless
-	the command is not yet supported by this module.
-	"""
-        if not isinstance(cmd, basestring):
-            raise TypeError("command must be a string")
-        if not cmd:
-            raise ValueError("zero-length command")
-        if self.isrunning():
-            self.__subprocess.stdin.write("".join([cmd, '\n']))
 
     def isrunning(self):
 	"""
@@ -155,29 +119,41 @@ class Linphone(threading.Thread):
         while self.isrunning():
             line = self.__subprocess.stdout.readline() 
             print line
+
             if (line.find("Service Unavailable") != -1 or  line.find("Could not reach destination.") != -1):
-                evt = self.CallFailedEvent()
-                wx.PostEvent(self.frame, evt)
                 self.onCall = True
+		self.handle_failed()
+
             elif (line.find("Call terminated.") != -1 or line.find("Call ended") != -1):
-                evt = self.CallTerminatedEvent()
-                wx.PostEvent(self.frame, evt)
                 self.onCall = False
+		self.handle_terminated()
+
             elif (line.find("Connected") != -1):
-                evt = self.CallAnsweredEvent(attr1="hello", attr2=654)
-                wx.PostEvent(self.frame, evt)
                 self.onCall = True
+		self.handle_answered()
+
             #not 'incoming'
             elif (line.find("is contacting you") != -1):
 		#Assumes four-digit extension
-		idx = line.find("sip:")
+		i = line.find("sip:");
+		self.caller = line[i+4:i+8]
+		self.handle_incoming()
 		     
-                evt = self.CallIncomingEvent(caller=line[idx+4:idx+8], attr2=654)
-                wx.PostEvent(self.frame, evt)
             elif (line.find("No active call.") != -1):
                 if (self.onCall):
                     self.onCall = False
 
 
+    #Public virtual functions
+    def handle_incoming(self):
+	pass
 
+    def handle_terminated(self):
+        pass
+
+    def handle_answered(self):
+        pass
+
+    def handle_failed(self):
+        pass
 
