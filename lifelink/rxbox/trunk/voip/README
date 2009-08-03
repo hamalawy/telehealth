@@ -1,0 +1,23 @@
+== Installing Linphone from scratch ==
+
+Generate:
+autogen
+automake 1.9+
+autoconf
+libtool
+
+Configure:
+intltool
+exosip
+osip
+speex-dev
+speexdsp-dev (opt)
+
+hardcode error:
+readline5-dev
+
+install libgsm to hear voice prompts in gsm format
+
+install ffmpeg from source:
+libvorbis-dev (to be stripped)
+./configure --enable-shared --enable-swscale --enable-gpl
