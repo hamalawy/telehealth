@@ -82,6 +82,19 @@ class Linphone(threading.Thread):
         self._command.extend(args)
 
 
+    def execute(self, cmd):
+        """
+        Sends a command to Linphonec. Ideally this should not be used unless
+        the command is not yet supported by this module.
+        """
+        if not isinstance(cmd, basestring):
+            raise TypeError("command must be a string")
+        if not cmd:
+            raise ValueError("zero-length command")
+        if self.isrunning():
+            self.__subprocess.stdin.write("".join([cmd, '\n']))
+
+
     def call(self, extension):
 	"""
 	Initiates a call. To handle a failed call, EVT_CALL_FAILED event should
@@ -114,6 +127,11 @@ class Linphone(threading.Thread):
 	Returns True if a call is on going, and False otherwise.
 	"""
         return self.onCall
+
+    def set_window(self, windowid):
+	os.environ['SDL_VIDEODRIVER']='x11'
+        os.environ['SDL_WINDOWID']=str(windowid)
+
 
     def run(self):
         while self.isrunning():
