@@ -1,0 +1,17 @@
+Rxbox GUI simulator
+Aug 6, 2009
+
+* To initialize, execute rxboxGUIDemo.py
+
+Capabilities
+* Acquire Spo2 data every second
+* Acquire Pulse rate data every second
+* Blood Pressure: Cyclic mode or On-demand mode...
+    * Combo box functional
+    * 3 seconds simulation of inflation
+* EDF generation for Spo2, Pulse rate and Blood pressure every 15 seconds
+* 12 lead simulation with magnifying capability
+* 2:3 window when refer panel is called
+    *Patient information does not need to entered when referring multiple times
+
+
