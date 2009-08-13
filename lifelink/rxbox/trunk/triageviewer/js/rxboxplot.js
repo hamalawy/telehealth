@@ -12,15 +12,15 @@ $(document).ready(function() {
                 },
                 xaxis: {
                         min: 0,
-                        max: 10,
-                        tickSize: 0.2,
+                        max: 7000,
+                        tickSize: 100,
                         minTickSize: 0.2
                 },
                 yaxis: {
-                        min: -2,
-                        max: 2,
+                        min: 42.2,
+                        max: 45.2,
                         tickSize: 0.2,
-                        minTickSize: 0.2
+                        minTickSize: 0.1
                 },
                 colors:  [ "#000000"]
 
@@ -40,10 +40,10 @@ $(document).ready(function() {
                 	var nullarr = [null, null, null, null, null, null];
 	        	arr = arr.concat(ecg.slice(i,i+19));
 
-                        plot.setData([ { data: arr.concat(nullarr, previous.slice(i+20, previous.length)) } ]);
+                        plot.setData([ { data: arr.concat(nullarr, previous.slice(i+40, previous.length)) } ]);
                         plot.draw();
 
-                        i+=20;
+                        i+=40;
                         if(i >= ecg.length) {
                                	previous = arr.slice();
                                	clearInterval(plottimer);
