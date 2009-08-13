@@ -49,19 +49,21 @@ class DAQPanel2(DAQPanel):
 
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self,(1120,380))
-        self.ecg_vertical_sizer.Add(self.plotter.plotpanel,1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
+        self.ecg_vertical_sizer.Add(self.plotter.plotpanel,1,\
+                                    wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         
         self.timer1 = wx.Timer(self)
         self.timer2 = wx.Timer(self)
         self.timerEDF = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_timer1, self.timer1)
-        self.Bind(wx.EVT_TIMER, self.on_timer2, self.timer2)
+        self.Bind(wx.EVT_TIMER, self.on_timerbp, self.timer2)
         self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
 
         self.Biosignals = []
         
         self.spo2data = simsensors.Spo2sim(self)
         self.bpdata = simsensors.BpSim(self)
+        self.ecgdata = simsensors.EcgSim(self)
         
         self.patient1 = edf.Patient('1','Timothy','Cena','Ebido','Servan',\
                                     'Male','09.27.89','19')
@@ -69,7 +71,7 @@ class DAQPanel2(DAQPanel):
         self.bp_infolabel.SetLabel('BP ready')
         self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
         self.spo2_infolabel.SetLabel('Pulse Ox ready')
-        self.count = 0      #no use as of now
+        self.bp_isCyclic = 0
         
     def onStartStop(self, event):
 
@@ -93,11 +95,12 @@ class DAQPanel2(DAQPanel):
             self.StartStop_Button.SetBitmapLabel(wx.Bitmap("Icons/StopButton.png",wx.BITMAP_TYPE_ANY))
             self.StartStop_Button.SetToolTipString("Stop RxBox session")
             self.StartStop_Label.SetLabel("Stop")
-            self.displayECG()
-            self.spo2data.get()         
+            self.bp_isCyclic = 1
             
-            self.onBPCyclic()
+            self.displayECG()
+            self.spo2data.get()
             self.bpdata.get()
+            self.ecgdata.get()
             
             self.timer1.Start(1000)
             self.timerEDF.Start(15000)
@@ -110,6 +113,7 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(False)
             self.Upload_Button.Enable(False)
             self.lead12_button.Enable(False)
+            self.bp_isCyclic = 0
 
             self.timer1.Stop()
             self.timer2.Stop()       
@@ -132,12 +136,9 @@ class DAQPanel2(DAQPanel):
         
         self.spo2data.get()    
         print 'Spo2 data acquired'
-
-    def on_timer2(self,evt):
         
-        print 'BP ready'
-        self.bp_infolabel.SetLabel('BP ready')
-        self.onBPCyclic()
+    def on_timerbp(self,evt):
+        
         self.bpdata.get()
         
     def make_edf(self,evt):
@@ -148,28 +149,42 @@ class DAQPanel2(DAQPanel):
         self.strStarttime = self.Starttime.strftime("%H.%M.%S")
         self.strY2KDate = self.Starttime.strftime("%d-%b-%Y")
         
+        print len(self.spo2data.spo2_list)
+        print len(self.spo2data.bpm_list)
+        print len(self.bpdata.systole_sim_values)
+        print len(self.bpdata.diastole_sim_values)
+        print len(self.ecgdata.ecg_list_scaled)
+        
+        nDataRecord = 3
+        
         Biosignal_SPO2 = BioSignal('SpO2 finger','IR-Red sensor',\
                                 '%',0,100,0,100,'None',15,self.spo2data.spo2_list)
         Biosignal_BPM = BioSignal('SpO2 finger','IR-Red sensor',\
                                 'bpm',0,300,0,300,'None',15,self.spo2data.bpm_list)
-        Biosignal_pSys = BioSignal('bpsystole', 'NIBP2010','mmHg',\
-                                        0,300,0,300,'None',1,self.bpdata.systole_sim_values)
-        Biosignal_pDias = BioSignal('bpdiastole','NIBP2010','mmHg',\
-                                        0,300,0,300,'None',1,self.bpdata.diastole_sim_values)
-        
+        self.spo2data.spo2_list = []
+        self.spo2data.bpm_list = []
         self.Biosignals.append(Biosignal_SPO2)
-        self.Biosignals.append(Biosignal_BPM)
-        self.Biosignals.append(Biosignal_pSys)
-        self.Biosignals.append(Biosignal_pDias)     
+        self.Biosignals.append(Biosignal_BPM) 
+        
+        if (self.bpdata.systole_sim_values != 0):
+            Biosignal_pSys = BioSignal('bpsystole', 'NIBP2010','mmHg',\
+                                        0,300,0,300,'None',15,self.bpdata.systole_sim_values)
+            Biosignal_pDias = BioSignal('bpdiastole','NIBP2010','mmHg',\
+                                        0,300,0,300,'None',15,self.bpdata.diastole_sim_values)
+            self.Biosignals.append(Biosignal_pSys)
+            self.Biosignals.append(Biosignal_pDias)
+            nDataRecord = 5   
+            
+        Biosignal_ECG = BioSignal('II','CM','mV',-43,43,0,32767,'None',7500,self.ecgdata.ecg_list_scaled)
+        self.Biosignals.append(Biosignal_ECG)
         
         myedf = edf.EDF(self.patient1,self.Biosignals,self.strDate,self.strStarttime,self.strY2KDate + \
                         ': LifeLink 15 second data of CorScience modules', \
-                        4, 15)
+                        nDataRecord, 15)
         myedf.get(self.patient1)
         print 'EDF creation finished'
 
         self.Biosignals = []
-
 
     def onCall(self, event): # wxGlade: DAQPanel_Parent.<event_handler>
 
@@ -201,16 +216,8 @@ class DAQPanel2(DAQPanel):
 
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
         
-        reload_bp_str = self.setBPmins_combobox.GetValue()
-        reload_bp = int(reload_bp_str[0:2])*1000
         self.bpNow_Button.Enable(False)
         self.bpdata.get()
-        
-    def onBPCyclic(self):
-
-        reload_bp_str = self.setBPmins_combobox.GetValue()
-        reload_bp = int(reload_bp_str[0:2])*1000
-        self.timer2.Start(reload_bp)
         
     def updateSPO2Display(self, data):
         self.spo2value_label.SetLabel(data)

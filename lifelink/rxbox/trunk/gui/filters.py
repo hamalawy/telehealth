@@ -38,7 +38,7 @@ def besselfilter(ECGdata):
             lfilter(b,a,ECGdata)-- filtered data along one-dimension with IIR
                                      bessel filter
     """        
-    fs = 100.00
+    fs = 500.00
     f = 35.00
     N=4
     [b,a]=bessel(N,f/fs)

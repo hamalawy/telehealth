@@ -1,16 +1,28 @@
+""" simsensors.py
+
+simsensors module contains the simulated sensor classes:
+    Spo2sim - simulated blood oxygen saturation
+    Bpsim - simulated blood pressure
+    EcgSim - simulated ECG
+
+Author: Tim Ebido
+August 2009
+"""
+
 import time
 import wx
+import filters
+from matplotlib import pyplot
 
 class Spo2sim:
-    
+
     def __init__(self,parent):
         
         self.parent_panel = parent
         self.spo2sim_counter = 0
-        self.spo2_sim_values = [100,99,98,97,96,95,94,93,92,\
-                                93,94,95,96,97,98,99]
-        self.bpm_sim_values = [80,79,78,77,76,75,74,73,74,75,76,77,\
-                                78,79,80]
+        self.spo2_sim_values = [100,99,98,97,96,95,94,93,92,93,94,95,96,97,98,\
+                                99]
+        self.bpm_sim_values = [80,79,78,77,76,75,74,73,74,75,76,77,78,79,80]
         self.spo2 = 0
         self.bpm = 0        
         self.spo2_list = []
@@ -44,10 +56,10 @@ class BpSim:
         
         self.parent_panel = parent
         self.bpsim_counter = 0
-        self.systole_sim_values = [120,119,120,119,120,119,120,119,120,\
-                                    119,120,119,120,119,120]
-        self.diastole_sim_values = [80,80,80,80,80,80,80,80,80,80,80,\
-                                    80,80,80,80]
+        self.systole_sim_values = [120,119,120,119,120,119,120,119,120,119,\
+                                    120,119,120,119,120]
+        self.diastole_sim_values = [80,80,80,80,80,80,80,80,80,80,80,80,80,80,\
+                                    80]
         self.sys = 0
         self.dias = 0
         self.bpvalue = ''
@@ -66,6 +78,8 @@ class BpSim:
         print 'Getting bp'
         self.parent_panel.bp_infolabel.SetLabel('Getting BP')
         self.parent_panel.bpNow_Button.Enable(False)
+        reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
+        self.reload_bp = int(reload_bp_str[0:2])*1000
         self.timer.Start(3000)
         
     def bp_finished(self,evt):
@@ -87,6 +101,9 @@ class BpSim:
         self.update_bp_display()        
         self.bpsim_counter += 1
         
+        if self.parent_panel.bp_isCyclic == 1:
+            self.parent_panel.timer2.Start(self.reload_bp)
+        
         if (self.bpsim_counter % 15) == 0:
             self.bpsim_counter = 0
         
@@ -94,6 +111,31 @@ class BpSim:
         
 class EcgSim:
     
-    def _init__(self,parent):
-        pass
+    def __init__(self, parent):
+        
+        self.ecgfile = open('ecg.txt','rb')
+        self.ecg_sim_values = []
+        self.ecg_list_scaled = []
+        for line in self.ecgfile:
+            line = line[:6]
+            self.ecg_sim_values.append(float(line))
+        self.ecgfile.close()
+        self.ecg_sim_values = filters.besselfilter(self.ecg_sim_values)
+        
+    def get(self):
+        
+        self.ecg_list = self.ecg_sim_values
+        
+        for x in range(0,len(self.ecg_list)):
+            if x <= 500:
+                self.ecg_list_scaled.append(int((sum(self.ecg_list)/len(self.ecg_list))*1000))
+
+            else:
+                self.ecg_list_scaled.append(int(self.ecg_list[x]*1000))
+         
+        
+        
+        
+        
+        
         
