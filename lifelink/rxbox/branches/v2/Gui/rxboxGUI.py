@@ -23,19 +23,20 @@ class RxFrame(wx.Frame):
         self.MiddleName = wx.StaticText(self, -1, "Middle Name:   ")
         self.MiddleNameValue = wx.TextCtrl(self, -1, "")
         self.Gender = wx.StaticText(self, -1, "Gender:   ")
-        self.GenderCombo = wx.ComboBox(self, -1, choices=["Male", "Female"], style=wx.CB_DROPDOWN|wx.CB_DROPDOWN|wx.CB_READONLY)
+        self.GenderCombo = wx.ComboBox(self, -1, choices=["", "Male", "Female"], style=wx.CB_DROPDOWN|wx.CB_DROPDOWN|wx.CB_READONLY)
         self.Address = wx.StaticText(self, -1, "Address:   ")
         self.AddressValue = wx.TextCtrl(self, -1, "")
         self.PhoneNumber = wx.StaticText(self, -1, "Phone Number:   ")
         self.PhoneNumberValue = wx.TextCtrl(self, -1, "")
-        self.Birthdate = wx.StaticText(self, -1, "Birthdate:   ")
-        self.BirthMonth = wx.ComboBox(self, -1, choices=["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", ""], style=wx.CB_DROPDOWN|wx.CB_SIMPLE|wx.CB_DROPDOWN|wx.CB_READONLY)
+        self.Birthdate = wx.StaticText(self, -1, "Birthdate:")
+        self.isEstimated = wx.CheckBox(self, -1, "Estimated")
+        self.BirthMonth = wx.ComboBox(self, -1, choices=["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], style=wx.CB_DROPDOWN|wx.CB_SIMPLE|wx.CB_DROPDOWN|wx.CB_READONLY)
         self.BirthDayCombo = wx.ComboBox(self, -1, choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"], style=wx.CB_DROPDOWN|wx.CB_READONLY)
         self.BirthYear = wx.TextCtrl(self, -1, "")
         self.Age = wx.StaticText(self, -1, "Age:   ")
         self.AgeValue = wx.TextCtrl(self, -1, "")
         self.AgeCombo = wx.ComboBox(self, -1, choices=["Years", "Months", "Days"], style=wx.CB_DROPDOWN|wx.CB_DROPDOWN|wx.CB_READONLY)
-        self.panel_3 = wx.Panel(self, -1)
+        self.panel_1 = wx.Panel(self, -1)
 
         self.__set_properties()
         self.__do_layout()
@@ -56,11 +57,13 @@ class RxFrame(wx.Frame):
         self.GenderCombo.SetMinSize((85, 29))
         self.GenderCombo.SetSelection(0)
         self.AddressValue.SetMinSize((220, 27))
+        self.PhoneNumberValue.SetMinSize((75, 27))
         self.BirthMonth.SetMinSize((120, 29))
         self.BirthMonth.SetSelection(0)
         self.BirthDayCombo.SetMinSize((60, 29))
         self.BirthDayCombo.SetSelection(-1)
         self.BirthYear.SetMinSize((70, 27))
+        self.AgeValue.SetMinSize((60, 27))
         self.AgeCombo.SetMinSize((120, 29))
         self.AgeCombo.SetSelection(0)
         # end wxGlade
@@ -80,8 +83,10 @@ class RxFrame(wx.Frame):
         patient_info_sizer.Add(self.PatientInfoHeader_Label, 1, wx.EXPAND, 0)
         sizer_6.Add(self.LastName, 0, 0, 0)
         sizer_6.Add(self.LastNameValue, 0, 0, 0)
+        sizer_6.Add((20, 27), 0, 0, 0)
         sizer_6.Add(self.FirstName, 0, 0, 0)
         sizer_6.Add(self.FirstNameValue, 0, 0, 0)
+        sizer_6.Add((20, 27), 0, 0, 0)
         sizer_6.Add(self.MiddleName, 0, 0, 0)
         sizer_6.Add(self.MiddleNameValue, 0, 0, 0)
         sizer_1.Add(sizer_6, 1, wx.EXPAND, 0)
@@ -93,6 +98,7 @@ class RxFrame(wx.Frame):
         sizer_8.Add(self.PhoneNumberValue, 0, 0, 0)
         sizer_1.Add(sizer_8, 1, wx.EXPAND, 0)
         sizer_9.Add(self.Birthdate, 0, 0, 0)
+        sizer_9.Add(self.isEstimated, 0, 0, 0)
         sizer_9.Add(self.BirthMonth, 0, 0, 0)
         sizer_9.Add(self.BirthDayCombo, 0, 0, 0)
         sizer_9.Add(self.BirthYear, 0, 0, 0)
@@ -101,9 +107,9 @@ class RxFrame(wx.Frame):
         sizer_9.Add(self.AgeCombo, 0, 0, 0)
         sizer_1.Add(sizer_9, 1, wx.EXPAND, 0)
         info_sizer.Add(sizer_1, 1, wx.EXPAND, 0)
-        info_sizer.Add(self.panel_3, 1, wx.EXPAND, 0)
         patient_info_sizer.Add(info_sizer, 0, wx.EXPAND, 0)
         patient_info_tab_sizer.Add(patient_info_sizer, 1, wx.EXPAND, 0)
+        patient_info_tab_sizer.Add(self.panel_1, 1, wx.EXPAND, 0)
         self.info_daq_sizer.Add(patient_info_tab_sizer, 0, wx.ALL|wx.EXPAND, 4)
         self.mainhorizontal_sizer.Add(self.info_daq_sizer, 1, wx.EXPAND, 0)
         mainvertical_sizer.Add(self.mainhorizontal_sizer, 2, wx.EXPAND, 0)
@@ -114,6 +120,7 @@ class RxFrame(wx.Frame):
 
 # end of class RxFrame
 
+
 class DAQPanel(wx.Panel):
     def __init__(self, *args, **kwds):
         # begin wxGlade: DAQPanel.__init__
@@ -123,7 +130,7 @@ class DAQPanel(wx.Panel):
         self.bp_panel = wx.Panel(self, -1)
         self.slider_panel = wx.Panel(self.bp_panel, -1)
         self.press_panel = wx.Panel(self.bp_panel, -1)
-        
+       
         self.button_window_separator = wx.StaticLine(self, -1)
         self.StartStop_Button = wx.BitmapButton(self, -1, wx.Bitmap("Icons/PlayButton.png", wx.BITMAP_TYPE_ANY))
         self.StartStop_Label = wx.StaticText(self, -1, "Start")
@@ -144,7 +151,7 @@ class DAQPanel(wx.Panel):
 
         # default id = -1 is used, initial value = 50, min value = 0, max value = 100
         self.bp_slider = wx.Slider(self.slider_panel, -1, 20, 0, 20,size=(15, 110),style=wx.SL_VERTICAL | wx.SL_AUTOTICKS)
-        
+       
         self.bp_label = wx.StaticText(self, -1, "Blood Pressure", style=wx.ALIGN_CENTRE)
         self.bp_infolabel = wx.StaticText(self, -1, "--")
         self.bpvalue_label = wx.StaticText(self, -1, "-- / --", style=wx.ALIGN_CENTRE)
@@ -235,6 +242,7 @@ class DAQPanel(wx.Panel):
         self.spo2unit_label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
         # end wxGlade
 
+
     def __do_layout(self):
         # begin wxGlade: DAQPanel.__do_layout
         main_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -243,7 +251,7 @@ class DAQPanel(wx.Panel):
         # pressure panel
         self.ind_sizer = wx.BoxSizer(wx.HORIZONTAL)#GridSizer(1, 3, 0, 0)
         self.nowButton_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
-        
+       
         spo2_sizer = wx.BoxSizer(wx.VERTICAL)
         sizer_5 = wx.BoxSizer(wx.HORIZONTAL)
         spo2_label_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -294,7 +302,7 @@ class DAQPanel(wx.Panel):
         self.ind_sizer.Add(self.slider_panel, 1, wx.EXPAND, 0)
         self.ind_sizer.Add(self.press_panel, 1, wx.EXPAND, 0)
         self.bp_panel.SetSizer(self.ind_sizer)
-        
+       
         #nowButton_horizontal_sizer.Add(bp_grid, 1, wx.EXPAND, 0)
         nowButton_horizontal_sizer.Add(self.bp_panel, 1, wx.EXPAND, 0)
         #nowButton_horizontal_sizer2.Add(self.bp_panel2, 1, wx.EXPAND, 0)
@@ -356,6 +364,7 @@ class DAQPanel(wx.Panel):
         event.Skip()
 
 # end of class DAQPanel
+
 
 
 class ReferPanel(wx.Panel):

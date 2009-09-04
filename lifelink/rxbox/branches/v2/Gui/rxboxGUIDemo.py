@@ -21,6 +21,7 @@ class RxFrame2(RxFrame):
         RxFrame.__init__(self, *args, **kwds)
         self.DAQPanel=DAQPanel2(self,self,-1)
         self.info_daq_sizer.Add(self.DAQPanel, 1, wx.ALL|wx.EXPAND,4)
+        self.Bind(wx.EVT_CLOSE, self.onClose)
 
     def __set_properties(self):
         RxFrame.__set_properties(self)
@@ -30,7 +31,11 @@ class RxFrame2(RxFrame):
         self.ReferPanel=ReferPanel(self,-1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL|wx.EXPAND,4)
         self.Layout()
-
+        
+    def onClose(self,evt):
+        dlg = wx.MessageDialog(self,'Do you want to save data?','', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
+        dlg.ShowModal()        
+        
     def DestroyReferPanel(self):
 
         try:
@@ -39,7 +44,6 @@ class RxFrame2(RxFrame):
 
         except AttributeError:
             pass
-            
 
 class DAQPanel2(DAQPanel):
 
@@ -64,6 +68,8 @@ class DAQPanel2(DAQPanel):
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.Bind(wx.EVT_TIMER, self.onUpload, self.timerUpload)
         self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
+        self.parentFrame.isEstimated.Bind(wx.EVT_CHECKBOX, self.onEstimate)
+        
         self.Biosignals = []
         
         self.spo2data = simsensors.Spo2sim(self)
@@ -78,6 +84,12 @@ class DAQPanel2(DAQPanel):
         self.spo2_infolabel.SetLabel('Pulse Ox ready')
         self.bp_isCyclic = 0
         self.ecg_counter = 0
+        self.ecg_first = 0
+        self.on_check = 0
+        self.getlead = ECG().ecg_lead()  
+        
+        self.parentFrame.AgeValue.Enable(False)
+        self.parentFrame.AgeCombo.Enable(False)
 
     def onStartStop(self, event):
 
@@ -110,7 +122,7 @@ class DAQPanel2(DAQPanel):
 #            self.displayECG()            
             self.timer1.Start(1000)
             self.timerEDF.Start(15000)
-            self.timerECG_refresh.Start(500)
+            self.timerECG_refresh.Start(125)
             
         else:
             self.bpNow_Button.Enable(True)
@@ -129,31 +141,71 @@ class DAQPanel2(DAQPanel):
             self.timerECG_refresh.Stop()
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
-
+            
+            self.SaveQuery()
+            
             CallAfter(self.parentFrame.DestroyReferPanel)
+
+    def SaveQuery(self):
+        
+        dlg = wx.MessageDialog(self,'Do you want to save data?','', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
+        dlg.ShowModal()
+        
+            
+    def onEstimate(self,evt):
+        
+        self.on_check ^= 1
+        
+        if (self.on_check == 1):
+            self.parentFrame.BirthMonth.Enable(False)
+            self.parentFrame.BirthDayCombo.Enable(False)
+            self.parentFrame.BirthYear.Enable(False)
+            self.parentFrame.AgeValue.Enable(True)
+            self.parentFrame.AgeCombo.Enable(True)
+            
+        if (self.on_check == 0):
+            self.parentFrame.AgeValue.Enable(False)
+            self.parentFrame.AgeCombo.Enable(False)
+            self.parentFrame.BirthMonth.Enable(True)
+            self.parentFrame.BirthDayCombo.Enable(True)
+            self.parentFrame.BirthYear.Enable(True)
 
     def displayECG(self,evt):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
             the 12 leads then passes it to the ecgplotter module for plotting
         """
-
-#        self.getlead = ECG().ecg_lead()    
-#        self.plotter.plot(self.getlead[1]) 
         
         ecg_plot = []
-#        ecg_plot = self.ecgdata.ecg_list[:ecg_counter]
+        ecg_plot2 = []
         
-        for x in range(0,self.ecg_counter):
-            ecg_plot.append(self.ecgdata.ecg_list[x])
         
-        for x in range(0,(1500-self.ecg_counter)):
-            ecg_plot.append(0)
-        self.plotter.plot(ecg_plot)
-        self.ecg_counter += 500
+        
+        if (self.ecg_counter < 1500):
+            for x in range(0,self.ecg_counter):
+                ecg_plot.append(self.ecgdata.ecg_list[x])
+            
+            if (self.ecg_first == 0):
+                for x in range(0,(1500-self.ecg_counter)):
+                    ecg_plot.append(0)
+            if (self.ecg_first == 1):
+                for x in range(self.ecg_counter,1500):
+                    ecg_plot.append(self.ecgdata.ecg_list[x+1500])
+            
+            self.plotter.plot(ecg_plot)
+            self.ecg_counter += 125
 
-        if (self.ecg_counter == 1500):
-            self.ecg_counter = 0
-        
+        if (self.ecg_counter >= 1500):
+            for x in range(0,(self.ecg_counter-1500)):
+                ecg_plot.append(self.ecgdata.ecg_list[x+1500])
+                
+            for x in range((self.ecg_counter-1500),1500):
+                ecg_plot.append(self.ecgdata.ecg_list[x])
+            self.plotter.plot(ecg_plot)
+            self.ecg_counter += 125
+            if (self.ecg_counter == 3000):
+                self.ecg_counter = 0
+                self.ecg_first = 1
+
         
     def on_timer1(self,evt):
         
@@ -308,7 +360,13 @@ class CreateRecordDialog2(CreateRecordDialog):
     def __init__(self, parent,*args, **kwds):
         CreateRecordDialog.__init__(self, *args, **kwds)
         self.parentFrame = parent
-
+        self.PatientFirstName_TextCtrl.SetValue(self.parentFrame.FirstNameValue.GetValue())
+        self.PatientMiddleName_TextCtrl.SetValue(self.parentFrame.MiddleNameValue.GetValue())
+        self.PatientLastName_TextCtrl.SetValue(self.parentFrame.LastNameValue.GetValue())
+        self.PatientAddress_TextCtrl.SetValue(self.parentFrame.AddressValue.GetValue())
+        self.PatientPhoneNumber_TextCtrl.SetValue(self.parentFrame.PhoneNumberValue.GetValue())
+        self.PatientGender_Combo.SetValue(self.parentFrame.GenderCombo.GetValue())  
+        
     def OnCreateRecord(self, event): # wxGlade: CreateRecordDialog.<event_handler>
 
         FirstName = self.PatientFirstName_TextCtrl.GetValue()
