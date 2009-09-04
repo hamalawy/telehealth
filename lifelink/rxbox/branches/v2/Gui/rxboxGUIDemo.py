@@ -278,8 +278,8 @@ class DAQPanel2(DAQPanel):
     def onCall(self, event): # wxGlade: DAQPanel_Parent.<event_handler>
 
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):   
-            CreateDialog = CreateRecordDialog2(self.parentFrame,self)
-            CreateDialog.ShowModal()
+#            CreateDialog = CreateRecordDialog2(self.parentFrame,self)
+#            CreateDialog.ShowModal()
             CallAfter(self.parentFrame.CreateReferPanel)
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
             self.Call_Label.SetLabel(">>  ")       
@@ -289,7 +289,7 @@ class DAQPanel2(DAQPanel):
             self.panel = 1
             
         elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1):   
-#            CallAfter(self.parentFrame.CreateReferPanel)
+            self.parentFrame.ReferPanel.Show()
             self.Call_Label.SetLabel(">>  ")       
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
@@ -298,7 +298,7 @@ class DAQPanel2(DAQPanel):
         else:
             self.Call_Button.Enable(False)
             self.Call_Label.Enable(False)
-#            CallAfter(self.parentFrame.DestroyReferPanel)
+            self.parentFrame.ReferPanel.Hide()
             self.Call_Label.SetLabel("<<  ")       
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
