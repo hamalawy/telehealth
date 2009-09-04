@@ -82,8 +82,8 @@ class BpSim:
         self.reload_bp = int(reload_bp_str[0:2])*1000
         self.timer.Start(3000)
         
-        self.parent_panel.bp_slider.Enable(True)
-        self.parent_panel.bp_pressure_indicator.Enable(True)
+#        self.parent_panel.bp_slider.Enable(True)
+#        self.parent_panel.bp_pressure_indicator.Enable(True)
         self.parent_panel.setBPmins_combobox.Enable(False)
         self.parent_panel.file = open('pressure.txt','r')
         self.parent_panel.pressure_timer.Start(20)
