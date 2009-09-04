@@ -167,9 +167,6 @@ class ECG:
           #     self.ecg_leadV1, self.ecg_leadV2, self.ecg_leadV3,\
            #    self.ecg_leadV4, self.ecg_leadV5, self.ecg_leadV6
         
-        pyplot.plot(besselfilter(self.ecg_leadII))
-        pyplot.show()
-        
         return besselfilter(self.ecg_leadI), besselfilter(self.ecg_leadII), besselfilter(self.ecg_leadIII), \
                besselfilter(self.ecg_leadaVR), besselfilter(self.ecg_leadaVL), besselfilter(self.ecg_leadaVF),\
                besselfilter(self.ecg_leadV1), besselfilter(self.ecg_leadV2), besselfilter(self.ecg_leadV3),\
@@ -184,7 +181,7 @@ class ECG:
                               ((ord(packet[len(packet)-5]) & int(0x7f))<<7) + \
                               (ord(packet[len(packet)-6]) & int(0x7f))
         frames = new_dataset_counter - self.old_dataset_counter
-        print frames
+#        print frames
         self.prev_dataset_counter = self.old_dataset_counter
         
         

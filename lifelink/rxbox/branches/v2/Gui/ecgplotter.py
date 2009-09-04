@@ -1,9 +1,12 @@
 import wx
 import wx.lib.plot as plot
 
-ECG_LEN = 1500          # 3 seconds data
-ECG_FS = 500            # sampling rate
+#ECG_LEN = 1500          # 3 seconds data
+#ECG_FS = 500            # sampling rate
 ECG_MAX_SAMPLE = 3000
+ECG_LEN = 300
+ECG_FS = 100
+
 
 class Plotter():
 
@@ -103,3 +106,21 @@ class Plotter():
         #set up text, axis and draw
         self.gc = plot.PlotGraphics(grided_data)
         self.plotter.Draw(self.gc, xAxis=(0,3.02),yAxis=(-1.52,1.5))   
+		
+    def plot_main(self,lead):
+
+        self.yvalues=lead
+
+        self.data = ()
+        for i in range(0,1500):
+            a = (self.xvalues[i],self.yvalues[i]),
+            self.data = self.data + a
+
+        grided_data = self.setGrid()
+        #add the data to the grid lines
+        line = plot.PolyLine(self.data, colour='red', width = 2)
+        grided_data.append(line)
+
+        #set up text, axis and draw
+        self.gc = plot.PlotGraphics(grided_data)
+        self.plotter.Draw(self.gc, xAxis=(0,3.02),yAxis=(-1.52,1.5))
