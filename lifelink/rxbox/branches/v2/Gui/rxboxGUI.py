@@ -120,7 +120,6 @@ class RxFrame(wx.Frame):
 
 # end of class RxFrame
 
-
 class DAQPanel(wx.Panel):
     def __init__(self, *args, **kwds):
         # begin wxGlade: DAQPanel.__init__
@@ -134,8 +133,16 @@ class DAQPanel(wx.Panel):
         self.Call_Button = wx.BitmapButton(self, -1, wx.Bitmap("Icons/Refer.png", wx.BITMAP_TYPE_ANY))
         self.Call_Label = wx.StaticText(self, -1, "Call")
         self.button_display_separator = wx.StaticLine(self, -1)
-        self.nodeplacement_Bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/NodePlacement.png", wx.BITMAP_TYPE_ANY), style=wx.SIMPLE_BORDER)
-        self.calibsignal_Bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/CalibrationSignal.png", wx.BITMAP_TYPE_ANY), style=wx.SIMPLE_BORDER)
+        self.R_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/R_initial.png", wx.BITMAP_TYPE_ANY))
+        self.L_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/L_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C1_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/C1_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C2_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/C2_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C3_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C4_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/C4_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C5_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C6_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/C6_initial.png", wx.BITMAP_TYPE_ANY))
+        self.N_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
+        self.F_bitmap = wx.StaticBitmap(self, -1, wx.Bitmap("Icons/F_initial.png", wx.BITMAP_TYPE_ANY))
         self.lead12_button = wx.Button(self, -1, "12 Lead")
         self.ecg_label = wx.StaticText(self, -1, "ECG WAVEFORM", style=wx.ALIGN_CENTRE)
         self.ecg_lowerdata_separator = wx.StaticLine(self, -1)
@@ -257,6 +264,10 @@ class DAQPanel(wx.Panel):
         self.ecg_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         image_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         lead12_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
+        ecm_lower_horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        ecm_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
+        ecm_horizontal_ltorso_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        ecm_horizontal_utorso_sizer = wx.BoxSizer(wx.HORIZONTAL)
         buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
         main_vertical_sizer.Add(self.button_window_separator, 0, wx.EXPAND, 0)
         buttons_sizer.Add(self.StartStop_Button, 0, wx.ALL, 4)
@@ -268,8 +279,20 @@ class DAQPanel(wx.Panel):
         buttons_sizer.Add(self.Call_Label, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         main_vertical_sizer.Add(buttons_sizer, 0, wx.ALL|wx.EXPAND, 0)
         main_vertical_sizer.Add(self.button_display_separator, 0, wx.ALL|wx.EXPAND, 2)
-        image_vertical_sizer.Add(self.nodeplacement_Bitmap, 0, wx.ALL|wx.EXPAND, 4)
-        image_vertical_sizer.Add(self.calibsignal_Bitmap, 1, wx.ALL|wx.EXPAND, 4)
+        ecm_horizontal_utorso_sizer.Add(self.R_bitmap, 0, 0, 0)
+        ecm_horizontal_utorso_sizer.Add(self.L_bitmap, 0, 0, 0)
+        ecm_vertical_sizer.Add(ecm_horizontal_utorso_sizer, 1, 0, 0)
+        ecm_horizontal_ltorso_sizer.Add(self.C1_bitmap, 0, 0, 0)
+        ecm_horizontal_ltorso_sizer.Add(self.C2_bitmap, 0, 0, 0)
+        ecm_horizontal_ltorso_sizer.Add(self.C3_bitmap, 0, 0, 0)
+        ecm_horizontal_ltorso_sizer.Add(self.C4_bitmap, 0, 0, 0)
+        ecm_horizontal_ltorso_sizer.Add(self.C5_bitmap, 0, 0, 0)
+        ecm_horizontal_ltorso_sizer.Add(self.C6_bitmap, 0, 0, 0)
+        ecm_vertical_sizer.Add(ecm_horizontal_ltorso_sizer, 2, wx.SHAPED, 0)
+        image_vertical_sizer.Add(ecm_vertical_sizer, 0, 0, 1)
+        ecm_lower_horizontal_sizer.Add(self.N_bitmap, 0, 0, 0)
+        ecm_lower_horizontal_sizer.Add(self.F_bitmap, 0, 0, 0)
+        image_vertical_sizer.Add(ecm_lower_horizontal_sizer, 1, wx.EXPAND, 0)
         lead12_vertical_sizer.Add(self.lead12_button, 1, wx.EXPAND, 0)
         lead12_vertical_sizer.Add((20, 50), 0, wx.EXPAND, 0)
         lead12_vertical_sizer.Add((20, 50), 0, wx.EXPAND, 0)
@@ -318,8 +341,8 @@ class DAQPanel(wx.Panel):
         print "Event handler `onStartStop' not implemented!"
         event.Skip()
 
-    def onUpload(self, event): # wxGlade: DAQPanel.<event_handler>
-        print "Event handler `onUpload' not implemented!"
+    def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
+        print "Event handler `onSend' not implemented!"
         event.Skip()
 
     def onCall(self, event): # wxGlade: DAQPanel.<event_handler>
@@ -334,12 +357,7 @@ class DAQPanel(wx.Panel):
         print "Event handler `onBPNow' not implemented!"
         event.Skip()
 
-    def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
-        print "Event handler `onSend' not implemented"
-        event.Skip()
-
 # end of class DAQPanel
-
 
 
 class ReferPanel(wx.Panel):
