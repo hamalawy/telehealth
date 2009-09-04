@@ -60,13 +60,13 @@ class DAQPanel2(DAQPanel):
         self.timer2 = wx.Timer(self)
         self.timerEDF = wx.Timer(self)
         self.pressure_timer = wx.Timer(self)
-        self.timerUpload = wx.Timer(self)
+        self.timerSend = wx.Timer(self)
         self.timerECG_refresh = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_timer1, self.timer1)
         self.Bind(wx.EVT_TIMER, self.on_timerbp, self.timer2)
         self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
-        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
-        self.Bind(wx.EVT_TIMER, self.onUpload, self.timerUpload)
+#        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
+        self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
         self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
         self.parentFrame.isEstimated.Bind(wx.EVT_CHECKBOX, self.onEstimate)
         
@@ -95,8 +95,8 @@ class DAQPanel2(DAQPanel):
 
         self.referflag = 0
         self.panel = 0
-        self.uploadcount=0
-        self.uploadtoggled=0
+        self.sendcount=0
+        self.sendtoggled=0
         
         if self.StartStop_Label.GetLabel() == "Start":
             
@@ -107,8 +107,8 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.bpNow_Button.Enable(True)
-            self.Upload_Button.Enable(True)
-            self.Upload_Label.Enable(True)
+            self.Send_Button.Enable(True)
+            self.Send_Label.Enable(True)
             self.lead12_button.Enable(True)
             self.StartStop_Button.SetBitmapLabel(wx.Bitmap("Icons/StopButton.png",wx.BITMAP_TYPE_ANY))
             self.StartStop_Button.SetToolTipString("Stop RxBox session")
@@ -130,14 +130,14 @@ class DAQPanel2(DAQPanel):
             self.StartStop_Label.SetLabel("Start")
             self.bpNow_Button.Enable(True)
             self.Call_Button.Enable(False)
-            self.Upload_Button.Enable(False)
+            self.Send_Button.Enable(False)
             self.lead12_button.Enable(False)
             self.bp_isCyclic = 0
 
             self.timer1.Stop()
             self.timer2.Stop()       
             self.timerEDF.Stop()    
-            self.timerUpload.Stop()  
+            self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
@@ -216,18 +216,18 @@ class DAQPanel2(DAQPanel):
         
         self.bpdata.get()
         
-    def pressure_update(self, evt):
-        press = int(self.file.readline())
-        if press != 999:
-            self.bp_slider.SetValue(20-(press/10))
-            self.bp_pressure_indicator.SetValue(press)
-        else:
-            self.file.close()
-            self.pressure_timer.Stop()
-            self.bp_slider.Enable(False)
-            self.bp_pressure_indicator.Enable(False)
-            self.bpNow_Button.Enable(True)
-            self.setBPmins_combobox.Enable(True)
+#    def pressure_update(self, evt):
+#        press = int(self.file.readline())
+#        if press != 999:
+#            self.bp_slider.SetValue(20-(press/10))
+#            self.bp_pressure_indicator.SetValue(press)
+#        else:
+#            self.file.close()
+#            self.pressure_timer.Stop()
+#            self.bp_slider.Enable(False)
+#            self.bp_pressure_indicator.Enable(False)
+#            self.bpNow_Button.Enable(True)
+#            self.setBPmins_combobox.Enable(True)
 #            self.bpdata.get()
         
     def make_edf(self,evt):
@@ -294,7 +294,7 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.panel = 1
-               
+            self.parentFrame.Layout()               
         else:
             self.Call_Button.Enable(False)
             self.Call_Label.Enable(False)
@@ -303,29 +303,29 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.panel = 0
-
-    def onUpload(self, event): # wxGlade: DAQPanel.<event_handler>
-        self.timerUpload.Start(5000)
-        self.uploadcount = self.uploadcount + 1
-        print self.uploadcount
-        if (self.uploadcount == 2):
-            self.UploadStatus(self)
+            self.parentFrame.Layout()
+    def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
+        self.timerSend.Start(5000)
+        self.sendcount = self.sendcount + 1
+        print self.sendcount
+        if (self.sendcount == 2):
+            self.SendStatus(self)
          
     
-    def UploadStatus(self,event):
-        if (self.uploadtoggled == 0): 
+    def SendStatus(self,event):
+        if (self.sendtoggled == 0): 
 #            RxFrame_StatusBar_fields = ["success"]
 #            for i in range(len(RxFrame_StatusBar_fields)):
 #                self.RxFrame_StatusBar.SetStatusText(RxFrame_StatusBar_fields[i], i)        
-            print "Upload to Server Successful"
-            self.parentFrame.RxFrame_StatusBar.SetStatusText("Upload to Server Successful")
-            self.uploadtoggled = 1
-        elif (self.uploadtoggled == 1):  
-            print "Upload to Server Failed"
-            self.parentFrame.RxFrame_StatusBar.SetStatusText("Upload to Server Failed")
-            self.uploadtoggled = 0     
-        self.timerUpload.Stop()    
-        self.uploadcount = 0
+            print "Send to Server Successful"
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
+            self.sendtoggled = 1
+        elif (self.sendtoggled == 1):  
+            print "Send to Server Failed"
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Failed")
+            self.sendtoggled = 0     
+        self.timerSend.Stop()    
+        self.sendcount = 0
 
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
 #        self.bpNow_Button.Enable(False)
