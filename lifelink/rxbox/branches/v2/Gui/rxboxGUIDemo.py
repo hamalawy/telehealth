@@ -33,8 +33,12 @@ class RxFrame2(RxFrame):
         self.Layout()
         
     def onClose(self,evt):
-        dlg = wx.MessageDialog(self,'Do you want to save data?','', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
-        dlg.ShowModal()        
+        dlg = wx.MessageDialog(self,'Do you want to save data?','Exit', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
+        if dlg.ShowModal() == wx.ID_CANCEL:
+            dlg.Destroy()
+        else:
+            dlg.Destroy()
+            self.Destroy()        
         
     def DestroyReferPanel(self):
 
@@ -68,7 +72,10 @@ class DAQPanel2(DAQPanel):
 #        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
         self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
-        self.parentFrame.isEstimated.Bind(wx.EVT_CHECKBOX, self.onEstimate)
+        self.parentFrame.BirthMonth.Bind(wx.EVT_COMBOBOX, self.birthday_update)
+        self.parentFrame.BirthDayCombo.Bind(wx.EVT_COMBOBOX, self.birthday_update)
+        self.parentFrame.BirthYear.Bind(wx.EVT_TEXT, self.birthday_update)        
+#        self.Bind(wx.EVT_COMBOBOX, self.parentFrame.BirthDayCombo, self.birthday_update)
         
         self.Biosignals = []
         
@@ -85,11 +92,8 @@ class DAQPanel2(DAQPanel):
         self.bp_isCyclic = 0
         self.ecg_counter = 0
         self.ecg_first = 0
-        self.on_check = 0
         self.getlead = ECG().ecg_lead()  
         
-        self.parentFrame.AgeValue.Enable(False)
-        self.parentFrame.AgeCombo.Enable(False)
 
     def onStartStop(self, event):
 
@@ -125,6 +129,7 @@ class DAQPanel2(DAQPanel):
             self.timerECG_refresh.Start(125)
             
         else:
+            self.SaveQuery()
             self.bpNow_Button.Enable(True)
             self.StartStop_Button.SetBitmapLabel(wx.Bitmap("Icons/PlayButton.png",wx.BITMAP_TYPE_ANY))
             self.StartStop_Label.SetLabel("Start")
@@ -142,33 +147,14 @@ class DAQPanel2(DAQPanel):
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
             
-            self.SaveQuery()
+
             
             CallAfter(self.parentFrame.DestroyReferPanel)
 
     def SaveQuery(self):
         
-        dlg = wx.MessageDialog(self,'Do you want to save data?','', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
+        dlg = wx.MessageDialog(self,'Do you want to save data?','Stop', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
         dlg.ShowModal()
-        
-            
-    def onEstimate(self,evt):
-        
-        self.on_check ^= 1
-        
-        if (self.on_check == 1):
-            self.parentFrame.BirthMonth.Enable(False)
-            self.parentFrame.BirthDayCombo.Enable(False)
-            self.parentFrame.BirthYear.Enable(False)
-            self.parentFrame.AgeValue.Enable(True)
-            self.parentFrame.AgeCombo.Enable(True)
-            
-        if (self.on_check == 0):
-            self.parentFrame.AgeValue.Enable(False)
-            self.parentFrame.AgeCombo.Enable(False)
-            self.parentFrame.BirthMonth.Enable(True)
-            self.parentFrame.BirthDayCombo.Enable(True)
-            self.parentFrame.BirthYear.Enable(True)
 
     def displayECG(self,evt):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
@@ -176,9 +162,7 @@ class DAQPanel2(DAQPanel):
         """
         
         ecg_plot = []
-        ecg_plot2 = []
-        
-        
+#        ecg_plot2 = []
         
         if (self.ecg_counter < 1500):
             for x in range(0,self.ecg_counter):
@@ -206,6 +190,23 @@ class DAQPanel2(DAQPanel):
                 self.ecg_counter = 0
                 self.ecg_first = 1
 
+    def birthday_update(self,evt):
+        year_temp = self.parentFrame.BirthYear.GetValue()
+        month_temp = self.parentFrame.BirthMonth.GetSelection()
+        day_temp = self.parentFrame.BirthDayCombo.GetSelection()
+
+        age = 0
+        
+        if len(year_temp) == 4:
+            date = datetime.datetime.today()
+            year_now = date.year
+            age = int(year_now) - int(year_temp)
+            if int(date.month) < int(month_temp):
+                age = age - 1
+            if int(date.month) == int(month_temp):
+                if int(date.day) < int(day_temp) + 1:
+                    age = age - 1
+            self.parentFrame.AgeValue.SetValue(str(age))
         
     def on_timer1(self,evt):
         
@@ -238,11 +239,11 @@ class DAQPanel2(DAQPanel):
         self.strStarttime = self.Starttime.strftime("%H.%M.%S")
         self.strY2KDate = self.Starttime.strftime("%d-%b-%Y")
         
-        print len(self.spo2data.spo2_list)
-        print len(self.spo2data.bpm_list)
-        print len(self.bpdata.systole_sim_values)
-        print len(self.bpdata.diastole_sim_values)
-        print len(self.ecgdata.ecg_list_scaled)
+#        print len(self.spo2data.spo2_list)
+#        print len(self.spo2data.bpm_list)
+#        print len(self.bpdata.systole_sim_values)
+#        print len(self.bpdata.diastole_sim_values)
+#        print len(self.ecgdata.ecg_list_scaled)
         
         nDataRecord = 3
         
@@ -304,6 +305,7 @@ class DAQPanel2(DAQPanel):
             self.Call_Label.Enable(True)
             self.panel = 0
             self.parentFrame.Layout()
+            
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
         self.timerSend.Start(5000)
         self.sendcount = self.sendcount + 1
@@ -382,7 +384,6 @@ class CreateRecordDialog2(CreateRecordDialog):
         PatientName = FirstName + ' ' + MiddleName + ' ' + LastName
         self.parentFrame.PatientInfo_Label.SetLabel(PatientName+'\n'+ 'Gender: ' + Gender + '\nAge: ' + Age + ' ' + DMY + ' ' + Validity +\
                                                '\nAddress: ' + Address + '\nPhone: ' + Phone)
-
         self.Destroy()
         
 class Lead12Dialog2(Lead12Dialog):
