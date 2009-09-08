@@ -1,3 +1,26 @@
+"""Project LifeLink: RxBox GUI Simulator
+
+Authors:    Chiong, Charles Hernan
+            Cornillez, Dan Simone
+            Timothy John Ebido
+            Thomas Rodinel Soler
+            Luis Sison, PhD
+            ------------------------------------------------
+            Instrumentation, Robotics and Control Laboratory
+            University of the Philippines - Diliman
+            ------------------------------------------------
+            September 2009
+"""
+
+"""
+This simulator follows the following script when PLAY button is pressed:
+- BP, HR, and SpO2 panels activate
+- ECM Electrodes Blink for 5 seconds (checking all electrodes)
+- ECM electrodes turn green in sequence until all electrodes turn green(i.e. ECM check passed)
+- ECG plots on the grid
+"""
+
+
 import wx
 from rxboxGUI import RxFrame
 from rxboxGUI import DAQPanel
@@ -38,7 +61,7 @@ class RxFrame2(RxFrame):
             dlg.Destroy()
         else:
             dlg.Destroy()
-            self.Destroy()        
+            self.Destroy()          
         
     def DestroyReferPanel(self):
 
@@ -66,16 +89,17 @@ class DAQPanel2(DAQPanel):
         self.pressure_timer = wx.Timer(self)
         self.timerSend = wx.Timer(self)
         self.timerECG_refresh = wx.Timer(self)
+        self.timerECGNodeCheck = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_timer1, self.timer1)
         self.Bind(wx.EVT_TIMER, self.on_timerbp, self.timer2)
         self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
 #        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
         self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
+        self.Bind(wx.EVT_TIMER, self.onECGNodeCheck, self.timerECGNodeCheck)
         self.parentFrame.BirthMonth.Bind(wx.EVT_COMBOBOX, self.birthday_update)
         self.parentFrame.BirthDayCombo.Bind(wx.EVT_COMBOBOX, self.birthday_update)
-        self.parentFrame.BirthYear.Bind(wx.EVT_TEXT, self.birthday_update)        
-#        self.Bind(wx.EVT_COMBOBOX, self.parentFrame.BirthDayCombo, self.birthday_update)
+        self.parentFrame.BirthYear.Bind(wx.EVT_TEXT, self.birthday_update)    
         
         self.Biosignals = []
         
@@ -101,7 +125,17 @@ class DAQPanel2(DAQPanel):
         self.panel = 0
         self.sendcount=0
         self.sendtoggled=0
-        
+        self.nodetimer = 0
+        self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_initial.png",wx.BITMAP_TYPE_ANY))
+        self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_initial.png",wx.BITMAP_TYPE_ANY))
+        self.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+        self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_initial.png", wx.BITMAP_TYPE_ANY))
+        self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
+        self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_initial.png", wx.BITMAP_TYPE_ANY))        
         if self.StartStop_Label.GetLabel() == "Start":
             
             self.Call_Label.SetLabel("Call")
@@ -122,14 +156,15 @@ class DAQPanel2(DAQPanel):
 
             self.spo2data.get()
             self.bpdata.get()
-            self.ecgdata.get()
+            self.onECGNodeCheck(self)
+
 #            self.displayECG()            
             self.timer1.Start(1000)
             self.timerEDF.Start(15000)
-            self.timerECG_refresh.Start(125)
+
             
         else:
-            self.SaveQuery()
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("RxBox Ready")
             self.bpNow_Button.Enable(True)
             self.StartStop_Button.SetBitmapLabel(wx.Bitmap("Icons/PlayButton.png",wx.BITMAP_TYPE_ANY))
             self.StartStop_Label.SetLabel("Start")
@@ -144,17 +179,37 @@ class DAQPanel2(DAQPanel):
             self.timerEDF.Stop()    
             self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
+            self.timerECGNodeCheck.Stop()    
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
             
-
+            self.SaveQuery()
             
             CallAfter(self.parentFrame.DestroyReferPanel)
 
     def SaveQuery(self):
         
-        dlg = wx.MessageDialog(self,'Do you want to save data?','Stop', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
+        dlg = wx.MessageDialog(self,'Do you want to save data?','', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
         dlg.ShowModal()
+        
+            
+    def onEstimate(self,evt):
+        
+        self.on_check ^= 1
+        
+        if (self.on_check == 1):
+            self.parentFrame.BirthMonth.Enable(False)
+            self.parentFrame.BirthDayCombo.Enable(False)
+            self.parentFrame.BirthYear.Enable(False)
+            self.parentFrame.AgeValue.Enable(True)
+            self.parentFrame.AgeCombo.Enable(True)
+            
+        if (self.on_check == 0):
+            self.parentFrame.AgeValue.Enable(False)
+            self.parentFrame.AgeCombo.Enable(False)
+            self.parentFrame.BirthMonth.Enable(True)
+            self.parentFrame.BirthDayCombo.Enable(True)
+            self.parentFrame.BirthYear.Enable(True)
 
     def displayECG(self,evt):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
@@ -162,7 +217,9 @@ class DAQPanel2(DAQPanel):
         """
         
         ecg_plot = []
-#        ecg_plot2 = []
+        ecg_plot2 = []
+        
+        
         
         if (self.ecg_counter < 1500):
             for x in range(0,self.ecg_counter):
@@ -189,7 +246,7 @@ class DAQPanel2(DAQPanel):
             if (self.ecg_counter == 3000):
                 self.ecg_counter = 0
                 self.ecg_first = 1
-
+                
     def birthday_update(self,evt):
         year_temp = self.parentFrame.BirthYear.GetValue()
         month_temp = self.parentFrame.BirthMonth.GetSelection()
@@ -207,6 +264,7 @@ class DAQPanel2(DAQPanel):
                 if int(date.day) < int(day_temp) + 1:
                     age = age - 1
             self.parentFrame.AgeValue.SetValue(str(age))
+
         
     def on_timer1(self,evt):
         
@@ -239,11 +297,11 @@ class DAQPanel2(DAQPanel):
         self.strStarttime = self.Starttime.strftime("%H.%M.%S")
         self.strY2KDate = self.Starttime.strftime("%d-%b-%Y")
         
-#        print len(self.spo2data.spo2_list)
-#        print len(self.spo2data.bpm_list)
-#        print len(self.bpdata.systole_sim_values)
-#        print len(self.bpdata.diastole_sim_values)
-#        print len(self.ecgdata.ecg_list_scaled)
+        print len(self.spo2data.spo2_list)
+        print len(self.spo2data.bpm_list)
+        print len(self.bpdata.systole_sim_values)
+        print len(self.bpdata.diastole_sim_values)
+        print len(self.ecgdata.ecg_list_scaled)
         
         nDataRecord = 3
         
@@ -277,19 +335,20 @@ class DAQPanel2(DAQPanel):
         self.Biosignals = []
 
     def onCall(self, event): # wxGlade: DAQPanel_Parent.<event_handler>
-
+        self.parentFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):   
 #            CreateDialog = CreateRecordDialog2(self.parentFrame,self)
 #            CreateDialog.ShowModal()
             CallAfter(self.parentFrame.CreateReferPanel)
-            self.parentFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Initiated.")
             self.Call_Label.SetLabel(">>  ")       
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.referflag = 1
             self.panel = 1
             
-        elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1):   
+        elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1): 
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Shown.")        
             self.parentFrame.ReferPanel.Show()
             self.Call_Label.SetLabel(">>  ")       
             self.Call_Button.Enable(True)
@@ -297,6 +356,7 @@ class DAQPanel2(DAQPanel):
             self.panel = 1
             self.parentFrame.Layout()               
         else:
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Hidden.")
             self.Call_Button.Enable(False)
             self.Call_Label.Enable(False)
             self.parentFrame.ReferPanel.Hide()
@@ -306,13 +366,113 @@ class DAQPanel2(DAQPanel):
             self.panel = 0
             self.parentFrame.Layout()
             
+        
+    def onECGNodeCheck(self,x): 
+        self.timerECGNodeCheck.Start(250)
+        self.nodetimer = self.nodetimer + 1
+        self.parentFrame.RxFrame_StatusBar.SetStatusText("Checking Node Placement of ECG...")
+#        print self.nodecount
+        if (self.nodetimer == 1):
+            print "nodecount1"
+            self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_connected.png",wx.BITMAP_TYPE_ANY))
+            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png",wx.BITMAP_TYPE_ANY))
+            self.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_connected.png", wx.BITMAP_TYPE_ANY))
+            self.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_connected.png", wx.BITMAP_TYPE_ANY))
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_connected.png", wx.BITMAP_TYPE_ANY))
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_connected.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_connected.png", wx.BITMAP_TYPE_ANY))
+        elif (self.nodetimer == 2):
+            print "nodecount2"
+            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_initial.png",wx.BITMAP_TYPE_ANY))
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
+        elif (self.nodetimer == 3):
+            print "nodecount3"
+            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png",wx.BITMAP_TYPE_ANY))
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
+        elif (self.nodetimer == 4):
+            print "nodecount4"
+            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_connected.png",wx.BITMAP_TYPE_ANY))
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY)) 
+        elif (self.nodetimer == 5):
+            print "nodecount5"
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))  
+        elif (self.nodetimer == 6):
+            print "nodecount6"
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))        
+        elif (self.nodetimer == 7):
+            print "nodecount7"
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))              
+        elif (self.nodetimer == 8):
+            print "nodecount8"
+            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_connected.png", wx.BITMAP_TYPE_ANY))       
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))  
+        elif (self.nodetimer == 9):
+            print "nodecount9"      
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
+        elif (self.nodetimer == 10):
+            print "nodecount10"      
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
+        elif (self.nodetimer == 11):
+            print "nodecount11"      
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))            
+        elif (self.nodetimer == 12):
+            print "nodecount12"
+            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_connected.png", wx.BITMAP_TYPE_ANY))   
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))  
+        elif (self.nodetimer == 13):
+            print "nodecount13"  
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY)) 
+        elif (self.nodetimer == 14):
+            print "nodecount14"  
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY)) 
+        elif (self.nodetimer == 15):
+            print "nodecount15" 
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))             
+        elif (self.nodetimer == 16):
+            print "nodecount5" 
+            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png", wx.BITMAP_TYPE_ANY))
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
+            self.timerECGNodeCheck.Stop()    
+            self.nodetimer = 0
+            self.ecgdata.get()
+            self.timerECG_refresh.Start(125)              
+            
+            
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
         self.timerSend.Start(5000)
         self.sendcount = self.sendcount + 1
+        self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         print self.sendcount
         if (self.sendcount == 2):
             self.SendStatus(self)
-         
+
+    def onSend2(self): # wxGlade: DAQPanel.<event_handler>
+        self.timerSend.Start(5000)
+        self.sendcount = self.sendcount + 1
+        self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
+        print self.sendcount
+        if (self.sendcount == 2):
+            self.SendStatus(self)   
+            
     
     def SendStatus(self,event):
         if (self.sendtoggled == 0): 
@@ -321,11 +481,21 @@ class DAQPanel2(DAQPanel):
 #                self.RxFrame_StatusBar.SetStatusText(RxFrame_StatusBar_fields[i], i)        
             print "Send to Server Successful"
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
+            dlg = wx.MessageDialog(self,"Send to Server Successful","Send to Server Successful",wx.OK | wx.ICON_QUESTION )
+            dlg.ShowModal()
             self.sendtoggled = 1
         elif (self.sendtoggled == 1):  
             print "Send to Server Failed"
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Failed")
-            self.sendtoggled = 0     
+            self.sendtoggled = 0
+            dlg = wx.MessageDialog(self,"Would you like to resend data?","Send to Server Failed",wx.YES_NO | wx.ICON_QUESTION)
+            if dlg.ShowModal() == wx.ID_YES:
+                self.parentFrame.RxFrame_StatusBar.SetStatusText("Resending data to server...")
+                self.sendtoggled = 0
+                self.timerSend.Stop()    
+                self.sendcount = 1               
+                self.onSend2()
+        self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
         self.timerSend.Stop()    
         self.sendcount = 0
 
@@ -356,6 +526,7 @@ class DAQPanel2(DAQPanel):
         #self.lead12_button.Enable(False)
         CreateDialog2 = Lead12Dialog2(self,self)
         CreateDialog2.ShowModal()
+        
 
 class CreateRecordDialog2(CreateRecordDialog):
 
@@ -384,6 +555,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         PatientName = FirstName + ' ' + MiddleName + ' ' + LastName
         self.parentFrame.PatientInfo_Label.SetLabel(PatientName+'\n'+ 'Gender: ' + Gender + '\nAge: ' + Age + ' ' + DMY + ' ' + Validity +\
                                                '\nAddress: ' + Address + '\nPhone: ' + Phone)
+
         self.Destroy()
         
 class Lead12Dialog2(Lead12Dialog):
@@ -446,7 +618,7 @@ class Lead12Dialog2(Lead12Dialog):
         self.plotter_bigII=extendedPlotter(self,bigsizer,self.parent.getlead[1])
         self.leadII_sizer.Add(self.plotter_bigII,1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         
-                
+            
 # end of rxboxGUI classes
 
 if __name__ == "__main__":
