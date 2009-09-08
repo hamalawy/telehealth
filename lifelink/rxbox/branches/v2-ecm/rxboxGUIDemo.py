@@ -84,10 +84,25 @@ class DAQPanel2(DAQPanel):
         self.timer1 = wx.Timer(self)
         self.timer2 = wx.Timer(self)
         self.timer3 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.serverCheck, self.timer3)
+        
         self.timerEDF = wx.Timer(self)
+        self.timerECG = wx.Timer(self)
+        
+
+        self.timerPLOT = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.plotECG, self.timerPLOT)
+
+        self.plotinterval = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.plotnext, self.plotinterval)
+        
         self.Bind(wx.EVT_TIMER, self.on_timer1, self.timer1)
         self.Bind(wx.EVT_TIMER, self.on_timer2, self.timer2)
         self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
+        self.Bind(wx.EVT_TIMER, self.getECGdata, self.timerECG)
+        
+       
+        
 
         self.pressure_timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
@@ -96,6 +111,13 @@ class DAQPanel2(DAQPanel):
         
         self.spo2data = simsensors.Spo2sim(self)
         self.bpdata = simsensors.BpSim(self)
+        self.ECGdata =[]
+        for i in range(0,7500):
+            self.ECGdata.append(0)
+            
+        self.ECGcount = 0 #ECG data counter
+        self.ECGstart = 0 #ECG start counter
+        
         
         self.patient1 = edf.Patient('1','Timothy','Cena','Ebido','Servan',\
                                     'Male','09.27.89','19')
@@ -135,9 +157,9 @@ class DAQPanel2(DAQPanel):
             self.StartStop_Label.SetLabel("Stop")
 
 
-            self.myECG  = rxsensor.ECG(self)
-            self.myECG.get()
-            self.plotter.plot(self.myECG.ecg_leadII[500:2000])
+       
+            self.timerECG.Start(30000)
+           
             #self.displayECG()
             self.spo2data.get()         
             
@@ -146,10 +168,9 @@ class DAQPanel2(DAQPanel):
             
             self.timer1.Start(1000)
             self.timerEDF.Start(15000)
-           
-            network_status = self.serverCheck()
+            
             self.timer3.Start(1000)
-            if network_status == True:
+            if self.count == 3:
                 self.parentFrame.RxFrame_StatusBar.SetStatusText("Connected")  
             
             
@@ -165,9 +186,14 @@ class DAQPanel2(DAQPanel):
             self.refreshECMbitmap()
 
             self.timer1.Stop()
-            self.timer2.Stop()       
-            self.timerEDF.Stop()    
-
+            self.timer2.Stop()
+            self.timer3.Stop()
+            self.timerEDF.Stop()
+            #self.timerPLOT.Stop()
+            self.timerECG.Stop()
+            #self.timerplotsecond.Stop()
+            #self.timerplotthird.Stop()
+            self.plotinterval.Stop()
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
 
@@ -186,9 +212,9 @@ class DAQPanel2(DAQPanel):
         self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png"))
         self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_initial.png"))
 
-    def serverCheck(self):
+    def serverCheck(self,evt):
         
-        self.timer3.Start(1000)
+       # self.timer3.Start(1000)
         self.count = self.count + 1
         print self.count
         if self.count == 1:
@@ -202,10 +228,13 @@ class DAQPanel2(DAQPanel):
         elif self.count == 3:
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Connecting to server...")
             #return True
+
+        elif self.count == 4:
+                self.parentFrame.RxFrame_StatusBar.SetStatusText("Connected") 
         else:
             self.timer3.Stop()
             self.count = 0
-            return True
+            #return True
 
     def displayECG(self):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
@@ -213,7 +242,93 @@ class DAQPanel2(DAQPanel):
         """
 
         self.getlead = ECG().ecg_lead()    
-        self.plotter.plot(self.getlead[1]) 
+        self.plotter.plot(self.getlead[1])
+
+    def plotECG(self,evt):
+        self.startcount = 0
+        self.endcount = 1500
+        self.data=[]
+
+        for i in range(0,13):
+        #for i in range(0,len(self.ECGdata)/1500):
+            self.data = self.ECGdata[self.startcount:self.endcount]
+            self.startcount=self.startcount+500
+            self.endcount = self.endcount+500
+            print len(self.data)
+           # self.plotinterval.Start(50)
+            self.plotter.plot(self.data)
+            #time.sleep(0.5)
+            
+    def plotnext(self,evt):
+        print 'ECG data counter =',self.ECGcount
+       
+        self.ECGcount = self.ECGcount+1
+        if self.ECGcount == 1:
+            self.plotter.plot(self.ECGdata[0:1500])
+            print '0-3sec'
+        elif self.ECGcount == 2:
+            self.plotter.plot(self.ECGdata[500:2000])
+            print '1-4sec'
+        elif self.ECGcount == 3:
+            self.plotter.plot(self.ECGdata[1000:2500])
+            print '2-5sec'
+        elif self.ECGcount == 4:
+            self.plotter.plot(self.ECGdata[1500:3000])
+            print '3-6sec'
+        elif self.ECGcount == 5:
+            self.plotter.plot(self.ECGdata[2000:3500])
+            print '4-7sec'
+        elif self.ECGcount == 6:
+            self.plotter.plot(self.ECGdata[2500:4000])
+            print '5-8sec'
+        elif self.ECGcount == 7:
+            self.plotter.plot(self.ECGdata[3000:4500])
+            print '6-9sec'
+        elif self.ECGcount == 8:
+            self.plotter.plot(self.ECGdata[3500:5000])
+            print '7-10sec'
+        elif self.ECGcount == 9:
+            self.plotter.plot(self.ECGdata[4000:5500])
+            print '8-11sec'
+        elif self.ECGcount == 10:
+            self.plotter.plot(self.ECGdata[4500:6000])
+            print '9-12sec'
+        elif self.ECGcount == 11:
+            self.plotter.plot(self.ECGdata[5000:6500])
+            print '10-13sec'
+        elif self.ECGcount == 12:
+            self.plotter.plot(self.ECGdata[5500:7000])
+            print '11-14sec'
+        elif self.ECGcount == 13:
+            self.plotter.plot(self.ECGdata[6000:7500])
+            print '12-15sec'
+        else:
+            self.ECGcount = 0
+            self.plotinterval.Stop()
+        
+
+    def getECGdata(self,evt):
+        
+        
+        self.myECG  = rxsensor.ECG(self)
+        self.myECG.get()
+        
+        print len(self.myECG.ecg_leadII)
+        self.ECGdata = self.myECG.ecg_leadII
+        if len(self.ECGdata)<7500:
+            for i in range(0,7500-len(self.ECGdata)):
+                self.ECGdata.append(0)
+
+        elif len(self.ECGdata)>7500:
+            for i in range(0,len(self.ECGdata)-7500):
+                self.ECGdata.pop()
+        print len(self.ECGdata)
+       
+        self.plotinterval.Start(500)
+        self.myECG.stop()
+
+    
+    
 
     def on_timer1(self,evt):
         
