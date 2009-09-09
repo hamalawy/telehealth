@@ -148,7 +148,9 @@ class DAQPanel(wx.Panel):
         self.ecg_lowerdata_separator = wx.StaticLine(self, -1)
         self.bpNow_Button = wx.Button(self, -1, "NOW")
         self.setBPmins_combobox = wx.ComboBox(self, -1, choices=["5 min", "15 min", "30 min", "60 min"], style=wx.CB_DROPDOWN|wx.CB_DROPDOWN)
+        self.bpbarpanelleft = wx.Panel(self, -1)
         self.bpbarpanel = wx.Panel(self, -1)
+        self.bpbarpanelright = wx.Panel(self, -1)
         self.bp_label = wx.StaticText(self, -1, "Blood Pressure", style=wx.ALIGN_CENTRE)
         self.bp_infolabel = wx.StaticText(self, -1, "--")
         self.bpvalue_label = wx.StaticText(self, -1, "-- / --", style=wx.ALIGN_CENTRE)
@@ -201,8 +203,9 @@ class DAQPanel(wx.Panel):
         self.setBPmins_combobox.SetMinSize((323, 21))
         self.setBPmins_combobox.SetForegroundColour(wx.Colour(255, 217, 222))
         self.setBPmins_combobox.SetSelection(0)
-        self.bpbarpanel.SetMinSize((45, 95))
+        self.bpbarpanelleft.SetBackgroundColour(wx.Colour(255, 217, 222))
         self.bpbarpanel.SetBackgroundColour(wx.Colour(255, 217, 222))
+        self.bpbarpanelright.SetBackgroundColour(wx.Colour(255, 217, 222))
         self.bp_label.SetMinSize((60, 30))
         self.bp_label.SetBackgroundColour(wx.Colour(255, 217, 222))
         self.bp_label.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
@@ -305,7 +308,9 @@ class DAQPanel(wx.Panel):
         nowButton_vertical_sizer.Add(self.bpNow_Button, 2, wx.EXPAND, 0)
         nowButton_vertical_sizer.Add(self.setBPmins_combobox, 1, wx.EXPAND, 0)
         nowButton_horizontal_sizer.Add(nowButton_vertical_sizer, 1, wx.BOTTOM|wx.EXPAND, 4)
-        bpbarsizer.Add(self.bpbarpanel, 1, wx.TOP|wx.BOTTOM|wx.EXPAND, 4)
+        bpbarsizer.Add(self.bpbarpanelleft, 1, wx.EXPAND, 0)
+        bpbarsizer.Add(self.bpbarpanel, 1, wx.EXPAND, 0)
+        bpbarsizer.Add(self.bpbarpanelright, 1, wx.EXPAND, 0)
         nowButton_horizontal_sizer.Add(bpbarsizer, 1, wx.EXPAND, 0)
         lowerdata_horizontal_sizer.Add(nowButton_horizontal_sizer, 2, wx.TOP|wx.BOTTOM|wx.EXPAND, 0)
         bp_label_sizer.Add(self.bp_label, 1, wx.BOTTOM, 1)
@@ -360,46 +365,36 @@ class DAQPanel(wx.Panel):
 # end of class DAQPanel
 
 
+
 class ReferPanel(wx.Panel):
     def __init__(self, *args, **kwds):
         # begin wxGlade: refer_panel_new.__init__
         kwds["style"] = wx.TAB_TRAVERSAL
         wx.Panel.__init__(self, *args, **kwds)
+        self.upperpanel = wx.Panel(self, -1)
         self.Videoconf_Label = wx.StaticText(self, -1, "Video", style=wx.ALIGN_CENTRE)
         self.video_panel = wx.Panel(self, -1)
-        self.snap_prev = wx.Button(self, -1, "Snapshot")
-        self.Photosnap_label = wx.StaticText(self, -1, "Snapshot", style=wx.ALIGN_CENTRE)
-        self.photo_panel = wx.Panel(self, -1)
-        self.prev_snapshot = wx.Button(self, -1, "<<  Prev")
-        self.next_snapshot = wx.Button(self, -1, "Next >>")
         self.IM_Label = wx.StaticText(self, -1, "Instant Messaging", style=wx.ALIGN_CENTRE)
         self.IMtexts_Text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE|wx.TE_READONLY)
         self.IMreply_Text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE)
+        self.lowerpanel = wx.Panel(self, -1)
 
         self.__set_properties()
         self.__do_layout()
-
-        self.Bind(wx.EVT_BUTTON, self.onSnapshot, self.snap_prev)
-        self.Bind(wx.EVT_BUTTON, self.onPrevSnapshot, self.prev_snapshot)
-        self.Bind(wx.EVT_BUTTON, self.onNextSnapshot, self.next_snapshot)
         # end wxGlade
 
     def __set_properties(self):
         # begin wxGlade: refer_panel_new.__set_properties
+        self.upperpanel.SetMinSize((320, 160))
         self.Videoconf_Label.SetBackgroundColour(wx.Colour(251, 255, 100))
         self.Videoconf_Label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
         self.video_panel.SetMinSize((320,240))
-        self.snap_prev.SetBackgroundColour(wx.Colour(255, 0, 0))
-        self.Photosnap_label.SetBackgroundColour(wx.Colour(251, 255, 100))
-        self.Photosnap_label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        self.photo_panel.SetMinSize((320,240))
-        self.prev_snapshot.SetBackgroundColour(wx.Colour(255, 127, 0))
-        self.next_snapshot.SetBackgroundColour(wx.Colour(255, 127, 0))
         self.IM_Label.SetMinSize((620, 20))
         self.IM_Label.SetBackgroundColour(wx.Colour(253, 255, 191))
         self.IM_Label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
         self.IMtexts_Text.SetBackgroundColour(wx.Colour(255, 255, 255))
         self.IMreply_Text.SetBackgroundColour(wx.Colour(255, 255, 255))
+        self.lowerpanel.SetMinSize((320, 160))
         # end wxGlade
 
     def __do_layout(self):
@@ -407,43 +402,24 @@ class ReferPanel(wx.Panel):
         refer_panel_sizer = wx.FlexGridSizer(3, 1, 0, 0)
         im_sizer = wx.BoxSizer(wx.VERTICAL)
         sizer_18 = wx.BoxSizer(wx.VERTICAL)
-        photosnap_sizer = wx.BoxSizer(wx.VERTICAL)
-        photo_holder = wx.FlexGridSizer(2, 1, 0, 0)
-        grid_sizer_2 = wx.GridSizer(1, 2, 0, 0)
         video_sizer = wx.BoxSizer(wx.VERTICAL)
         video_holder = wx.FlexGridSizer(2, 1, 0, 0)
+        refer_panel_sizer.Add(self.upperpanel, 1, wx.EXPAND, 0)
         video_sizer.Add(self.Videoconf_Label, 0, wx.ALL|wx.EXPAND, 0)
         video_holder.Add(self.video_panel, 0, wx.ALL|wx.EXPAND, 0)
-        video_holder.Add(self.snap_prev, 0, wx.ALL|wx.EXPAND, 0)
         video_sizer.Add(video_holder, 1, wx.EXPAND, 0)
         refer_panel_sizer.Add(video_sizer, 1, wx.ALL|wx.EXPAND, 0)
-        photosnap_sizer.Add(self.Photosnap_label, 0, wx.ALL|wx.EXPAND, 0)
-        photo_holder.Add(self.photo_panel, 0, wx.ALL|wx.EXPAND, 0)
-        grid_sizer_2.Add(self.prev_snapshot, 0, wx.EXPAND, 0)
-        grid_sizer_2.Add(self.next_snapshot, 0, wx.EXPAND, 0)
-        photo_holder.Add(grid_sizer_2, 1, wx.EXPAND, 0)
-        photosnap_sizer.Add(photo_holder, 1, wx.EXPAND, 0)
-        refer_panel_sizer.Add(photosnap_sizer, 1, wx.EXPAND, 0)
         im_sizer.Add(self.IM_Label, 1, wx.RIGHT|wx.EXPAND, 1)
         sizer_18.Add(self.IMtexts_Text, 3, wx.TOP|wx.EXPAND, 1)
         sizer_18.Add(self.IMreply_Text, 0, wx.TOP|wx.EXPAND, 4)
         im_sizer.Add(sizer_18, 8, wx.EXPAND, 0)
         refer_panel_sizer.Add(im_sizer, 1, wx.EXPAND, 0)
+        refer_panel_sizer.Add(self.lowerpanel, 1, wx.EXPAND, 0)
         self.SetSizer(refer_panel_sizer)
         refer_panel_sizer.Fit(self)
         # end wxGlade
 
-    def onSnapshot(self, event): # wxGlade: refer_panel_new.<event_handler>
-        print "Event handler `onSnapshot' not implemented!"
-        event.Skip()
 
-    def onPrevSnapshot(self, event): # wxGlade: refer_panel_new.<event_handler>
-        print "Event handler `onPrevSnapshot' not implemented!"
-        event.Skip()
-
-    def onNextSnapshot(self, event): # wxGlade: refer_panel_new.<event_handler>
-        print "Event handler `onNextSnapshot' not implemented!"
-        event.Skip()
 
 
 if __name__ == "__main__":
