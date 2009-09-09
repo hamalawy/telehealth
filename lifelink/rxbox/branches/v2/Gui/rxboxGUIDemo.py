@@ -183,7 +183,8 @@ class DAQPanel2(DAQPanel):
             self.Send_Button.Enable(False)
             self.lead12_button.Enable(False)
             self.bp_isCyclic = 0
-
+            self.referflag = 0
+            self.panel = 0
             self.timer1.Stop()
             self.timer2.Stop()       
             self.timerEDF.Stop()    
@@ -349,23 +350,22 @@ class DAQPanel2(DAQPanel):
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):         
             CreateDialog = CreateRecordDialog2(self.parentFrame,self)
             self.Call_Label.SetLabel(">>  ") 
-            CreateDialog.ShowModal()             
+            CreateDialog.ShowModal()
+            CallAfter(self.parentFrame.CreateReferPanel)            
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.referflag = 1
             self.panel = 1
-            CallAfter(self.parentFrame.CreateReferPanel)
             self.parentFrame.Layout()             
-        elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) and (self.panel==0): 
+        elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) : 
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Shown.")        
             self.parentFrame.ReferPanel.Show()
             self.Call_Label.SetLabel(">>  ")       
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.panel = 1
-#            self.referflag = 2
             self.parentFrame.Layout()               
-        elif (self.Call_Label.GetLabel() == ">>  ") and (self.panel == 1):
+        else:
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Hidden.")
             self.Call_Button.Enable(False)
             self.Call_Label.Enable(False)
@@ -374,7 +374,6 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.panel = 0
-#            self.referflag = 1
             self.parentFrame.Layout()
                         
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
