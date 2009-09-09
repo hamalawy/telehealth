@@ -86,7 +86,7 @@ class DAQPanel2(DAQPanel):
         DAQPanel.__init__(self, *args, **kwds)
         self.parentFrame = parent
 
-        self.bp_slider = wx.Slider(self.bpbarpanel, -1, 20, 0, 20,size=(15, 110),style=wx.SL_VERTICAL | wx.SL_AUTOTICKS)      
+        self.bp_slider = wx.Slider(self.bpbarpanel, -1, 20, 0, 20,size=(15, 110),style=wx.SL_VERTICAL | wx.SL_AUTOTICKS | wx. ALIGN_CENTRE)      
         
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self,(1120,380))
