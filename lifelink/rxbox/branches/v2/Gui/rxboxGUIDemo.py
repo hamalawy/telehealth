@@ -349,21 +349,23 @@ class DAQPanel2(DAQPanel):
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):         
             CreateDialog = CreateRecordDialog2(self.parentFrame,self)
             self.Call_Label.SetLabel(">>  ") 
-            CreateDialog.ShowModal()      
+            CreateDialog.ShowModal()             
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.referflag = 1
             self.panel = 1
+            CallAfter(self.parentFrame.CreateReferPanel)
             self.parentFrame.Layout()             
-        elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1): 
+        elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) and (self.panel==0): 
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Shown.")        
             self.parentFrame.ReferPanel.Show()
             self.Call_Label.SetLabel(">>  ")       
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.panel = 1
+#            self.referflag = 2
             self.parentFrame.Layout()               
-        else:
+        elif (self.Call_Label.GetLabel() == ">>  ") and (self.panel == 1):
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Hidden.")
             self.Call_Button.Enable(False)
             self.Call_Label.Enable(False)
@@ -372,6 +374,7 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.panel = 0
+#            self.referflag = 1
             self.parentFrame.Layout()
                         
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
@@ -550,7 +553,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.parentFrame.AgeValue.SetValue(Age)
         self.parentFrame.AgeCombo.SetValue(DMY)
         self.Destroy()
-        CallAfter(self.parentFrame.CreateReferPanel)
+#        CallAfter(self.parentFrame.CreateReferPanel)
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Initiated.")
 
 
