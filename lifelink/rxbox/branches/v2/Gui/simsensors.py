@@ -79,11 +79,11 @@ class BpSim:
         self.parent_panel.bp_infolabel.SetLabel('Getting BP')
         self.parent_panel.bpNow_Button.Enable(False)
         reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
-        self.reload_bp = int(reload_bp_str[0:2])*1000
+        self.reload_bp = int(reload_bp_str[0:2])*1000*60
         self.timer.Start(3000)
         
-        self.parent_panel.bp_slider.Enable(True)
-#        self.parent_panel.bp_pressure_indicator.Enable(True)
+#        self.parent_panel.bp_slider.Enable(True)
+        self.parent_panel.bp_pressure_indicator.Enable(True)
         self.parent_panel.setBPmins_combobox.Enable(False)
         self.parent_panel.file = open('pressure.txt','r')
         self.parent_panel.pressure_timer.Start(20)

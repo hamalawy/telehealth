@@ -197,11 +197,10 @@ class DAQPanel(wx.Panel):
         self.ecg_label.SetMinSize((306, 20))
         self.ecg_label.SetBackgroundColour(wx.Colour(241, 123, 241))
         self.ecg_label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        self.bpNow_Button.SetMinSize((323, 66))
         self.bpNow_Button.SetBackgroundColour(wx.Colour(255, 217, 222))
         self.bpNow_Button.SetFont(wx.Font(12, wx.MODERN, wx.NORMAL, wx.BOLD, 0, ""))
-        self.setBPmins_combobox.SetMinSize((323, 21))
-        self.setBPmins_combobox.SetForegroundColour(wx.Colour(255, 217, 222))
+        self.setBPmins_combobox.SetBackgroundColour(wx.Colour(255, 255, 255))
+        self.setBPmins_combobox.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2"))
         self.setBPmins_combobox.SetSelection(0)
         self.bpbarpanelleft.SetBackgroundColour(wx.Colour(255, 217, 222))
         self.bpbarpanel.SetBackgroundColour(wx.Colour(255, 217, 222))
@@ -429,3 +428,4 @@ if __name__ == "__main__":
     app.SetTopWindow(rx_frame)
     rx_frame.Show()
     app.MainLoop()
+
