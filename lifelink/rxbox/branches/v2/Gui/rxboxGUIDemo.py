@@ -192,7 +192,7 @@ class DAQPanel2(DAQPanel):
             self.timerECGNodeCheck.Stop()    
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
-            
+            self.parentFrame.DAQPanel.RemarkValueDaq.SetValue('')            
             self.SaveQuery()
             
             CallAfter(self.parentFrame.DestroyReferPanel)
@@ -554,6 +554,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.parentFrame.GenderCombo.SetValue(Gender)
         self.parentFrame.AgeValue.SetValue(Age)
         self.parentFrame.AgeCombo.SetValue(DMY)
+        self.parentFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())
         self.Destroy()
 #        CallAfter(self.parentFrame.CreateReferPanel)
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Initiated.")
