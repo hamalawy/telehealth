@@ -376,6 +376,9 @@ class DAQPanel2(DAQPanel):
             self.parentFrame.Layout()
                         
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
+ #       CreateDialog = CreateRecordDialog2(self.parentFrame,self)
+#        CreateDialog.ShowModal()
+#        CallAfter(self.parentFrame.CreateReferPanel) 
         self.timerSend.Start(5000)
         self.sendcount = self.sendcount + 1
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
@@ -528,6 +531,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.PatientGender_Combo.SetValue(self.parentFrame.GenderCombo.GetValue())
         self.PatientAge_TextCtrl.SetValue(self.parentFrame.AgeValue.GetValue())
         self.PatientAgeDMY_Combo.SetValue(self.parentFrame.AgeCombo.GetValue())
+        self.RemarkValue.SetValue(self.parentFrame.DAQPanel.RemarkValueDaq.GetValue())
         
     def OnCreateRecord(self, event): # wxGlade: CreateRecordDialog.<event_handler>
 

@@ -39,7 +39,7 @@ class CreateRecordDialog(wx.Dialog):
         self.PatientPhoneNumber_TextCtrl = wx.TextCtrl(self, -1, "phone number")
         self.static_line_4 = wx.StaticLine(self, -1)
         self.Remark = wx.StaticText(self, -1, "Remarks:")
-        self.text_ctrl_1 = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
+        self.RemarkValue = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
         self.CreatePatient_Button = wx.Button(self, -1, "CREATE RECORD")
 
         self.__set_properties()
@@ -55,7 +55,7 @@ class CreateRecordDialog(wx.Dialog):
         self.PatientGender_Combo.SetSelection(-1)
         self.PatientAgeDMY_Combo.SetSelection(0)
         self.PatientAgeValidity_Combo.SetSelection(0)
-        self.text_ctrl_1.SetMinSize((481, 77))
+        self.RemarkValue.SetMinSize((481, 77))
         # end wxGlade
 
     def __do_layout(self):
@@ -138,7 +138,7 @@ class CreateRecordDialog(wx.Dialog):
         sizer_2.Add(sizer_7, 0, wx.EXPAND, 0)
         sizer_4.Add(self.Remark, 0, 0, 0)
         sizer_4.Add((80, 20), 0, 0, 0)
-        sizer_4.Add(self.text_ctrl_1, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 0)
+        sizer_4.Add(self.RemarkValue, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 0)
         sizer_4.Add((20, 20), 0, 0, 0)
         sizer_2.Add(sizer_4, 1, wx.EXPAND, 0)
         sizer_24.Add((150, 20), 0, 0, 0)
