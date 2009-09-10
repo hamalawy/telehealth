@@ -65,7 +65,6 @@ class RxFrame2(RxFrame):
             self.Destroy()   
             
     def updateIM(self,evt):
-        print "waa"
         prev = self.ReferPanel.IMtexts_Text.GetValue()
         reply = self.ReferPanel.IMreply_Text.GetValue() + '\n'
         self.ReferPanel.IMtexts_Text.SetValue(prev + reply)
@@ -86,8 +85,8 @@ class DAQPanel2(DAQPanel):
         DAQPanel.__init__(self, *args, **kwds)
         self.parentFrame = parent
 
-        self.bp_slider = wx.Slider(self.bpbarpanel, -1, 20, 0, 20,size=(15, 110),style=wx.SL_VERTICAL | wx.SL_AUTOTICKS | wx. ALIGN_CENTRE)      
-        
+#        self.bp_slider = wx.Slider(self.bpbarpanel, -1, 20, 0, 20,size=(15, 110),style=wx.SL_VERTICAL | wx.SL_AUTOTICKS | wx. ALIGN_CENTRE)      
+        self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 220, size=(10, 103),style=wx.GA_VERTICAL)        
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self,(1120,380))
         self.ecg_vertical_sizer.Add(self.plotter.plotpanel,1,\
@@ -289,16 +288,16 @@ class DAQPanel2(DAQPanel):
     def pressure_update(self, evt):
         press = int(self.file.readline())
         if press != 999:
-            self.bp_slider.SetValue(20-(press/10))
-#            self.bp_pressure_indicator.SetValue(press)
+#            self.bp_slider.SetValue(20-(press/10))
+            self.bp_pressure_indicator.SetValue(press)
         else:
             self.file.close()
             self.pressure_timer.Stop()
-            self.bp_slider.Enable(False)
-#            self.bp_pressure_indicator.Enable(False)
+#            self.bp_slider.Enable(False)
+            self.bp_pressure_indicator.Enable(False)
             self.bpNow_Button.Enable(True)
             self.setBPmins_combobox.Enable(True)
-            self.bpdata.get()
+#            self.bpdata.get()
         
     def make_edf(self,evt):
 
@@ -632,4 +631,5 @@ if __name__ == "__main__":
 
 
         
+
 
