@@ -14,6 +14,7 @@ class RxFrame(wx.Frame):
         # begin wxGlade: RxFrame.__init__
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
+        self.steth_panel = wx.Panel(self, -1)
         self.RxFrame_StatusBar = self.CreateStatusBar(1, 0)
         self.PatientInfoHeader_Label = wx.StaticText(self, -1, "Patient Information", style=wx.ALIGN_CENTRE)
         self.LastName = wx.StaticText(self, -1, "Last Name:   ")
@@ -36,16 +37,31 @@ class RxFrame(wx.Frame):
         self.Age = wx.StaticText(self, -1, "Age:   ")
         self.AgeValue = wx.TextCtrl(self, -1, "")
         self.AgeCombo = wx.ComboBox(self, -1, choices=["Years", "Months", "Days"], style=wx.CB_DROPDOWN|wx.CB_DROPDOWN|wx.CB_READONLY)
-        self.panel_1 = wx.Panel(self, -1)
+        self.video_panel = wx.Panel(self, -1)
+        self.snapshot_panel = wx.Panel(self, -1)
+        self.prev_snapshot = wx.Button(self, -1, "<<")
+        self.snapshot = wx.BitmapButton(self, -1, wx.Bitmap("Icons/cam.jpg", wx.BITMAP_TYPE_ANY), style=wx.BU_AUTODRAW)
+        self.next_snapshot = wx.Button(self, -1, ">>")
+        self.steth_label = wx.StaticText(self.steth_panel, -1, "Digital Stethoscope\nRecorder")
+        self.record_button = wx.BitmapButton(self.steth_panel, -1, wx.Bitmap("Icons/button_record.png", wx.BITMAP_TYPE_ANY))
+        self.play_button = wx.BitmapButton(self.steth_panel, -1, wx.Bitmap("Icons/button_play.png", wx.BITMAP_TYPE_ANY))
+        self.stop_button = wx.BitmapButton(self.steth_panel, -1, wx.Bitmap("Icons/button_stop.png", wx.BITMAP_TYPE_ANY))
 
         self.__set_properties()
         self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.onPrevSnapshot, self.prev_snapshot)
+        self.Bind(wx.EVT_BUTTON, self.onSnapshot, self.snapshot)
+        self.Bind(wx.EVT_BUTTON, self.onNextSnapshot, self.next_snapshot)
+        self.Bind(wx.EVT_BUTTON, self.on_steth_record, self.record_button)
+        self.Bind(wx.EVT_BUTTON, self.on_steth_play, self.play_button)
+        self.Bind(wx.EVT_BUTTON, self.on_steth_stop, self.stop_button)
         # end wxGlade
 
     def __set_properties(self):
         # begin wxGlade: RxFrame.__set_properties
         self.SetTitle("RxBox - Philippine General Hospital")
-        self.SetSize((1288, 778))
+        self.SetSize((1288, 951))
         self.SetBackgroundColour(wx.Colour(245, 255, 207))
         self.RxFrame_StatusBar.SetStatusWidths([-1])
         # statusbar fields
@@ -54,18 +70,27 @@ class RxFrame(wx.Frame):
             self.RxFrame_StatusBar.SetStatusText(RxFrame_StatusBar_fields[i], i)
         self.PatientInfoHeader_Label.SetBackgroundColour(wx.Colour(219, 219, 112))
         self.PatientInfoHeader_Label.SetFont(wx.Font(10, wx.MODERN, wx.NORMAL, wx.BOLD, 0, "Arial"))
-        self.GenderCombo.SetMinSize((85, 29))
+        self.GenderCombo.SetMinSize((85, 21))
         self.GenderCombo.SetSelection(0)
         self.AddressValue.SetMinSize((220, 27))
         self.PhoneNumberValue.SetMinSize((75, 27))
-        self.BirthMonth.SetMinSize((120, 29))
+        self.BirthMonth.SetMinSize((120, 21))
         self.BirthMonth.SetSelection(0)
-        self.BirthDayCombo.SetMinSize((60, 29))
+        self.BirthDayCombo.SetMinSize((60, 21))
         self.BirthDayCombo.SetSelection(-1)
         self.BirthYear.SetMinSize((70, 27))
         self.AgeValue.SetMinSize((60, 27))
-        self.AgeCombo.SetMinSize((120, 29))
+        self.AgeCombo.SetMinSize((120, 21))
         self.AgeCombo.SetSelection(0)
+        self.video_panel.SetMinSize((160,120))
+        self.snapshot_panel.SetMinSize((120,90))
+        self.prev_snapshot.SetMinSize((40, 30))
+        self.snapshot.SetMinSize((40, 30))
+        self.next_snapshot.SetMinSize((40, 30))
+        self.steth_label.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD, 0, ""))
+        self.record_button.SetSize(self.record_button.GetBestSize())
+        self.play_button.SetSize(self.play_button.GetBestSize())
+        self.stop_button.SetSize(self.stop_button.GetBestSize())
         # end wxGlade
 
     def __do_layout(self):
@@ -74,6 +99,11 @@ class RxFrame(wx.Frame):
         self.mainhorizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.info_daq_sizer = wx.BoxSizer(wx.VERTICAL)
         patient_info_tab_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        devices_sizer = wx.FlexGridSizer(1, 3, 0, 0)
+        steth_sizer = wx.BoxSizer(wx.VERTICAL)
+        steth_button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        snapshot_sizer = wx.FlexGridSizer(2, 1, 0, 0)
+        grid_sizer_1 = wx.FlexGridSizer(1, 3, 0, 0)
         patient_info_sizer = wx.BoxSizer(wx.VERTICAL)
         info_sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
@@ -108,8 +138,22 @@ class RxFrame(wx.Frame):
         sizer_1.Add(sizer_9, 1, wx.EXPAND, 0)
         info_sizer.Add(sizer_1, 1, wx.EXPAND, 0)
         patient_info_sizer.Add(info_sizer, 0, wx.EXPAND, 0)
-        patient_info_tab_sizer.Add(patient_info_sizer, 2, wx.EXPAND, 0)
-        patient_info_tab_sizer.Add(self.panel_1, 1, wx.EXPAND, 0)
+        patient_info_tab_sizer.Add(patient_info_sizer, 3, wx.EXPAND, 0)
+        devices_sizer.Add(self.video_panel, 1, wx.EXPAND, 0)
+        snapshot_sizer.Add(self.snapshot_panel, 1, wx.EXPAND, 0)
+        grid_sizer_1.Add(self.prev_snapshot, 0, 0, 0)
+        grid_sizer_1.Add(self.snapshot, 0, 0, 0)
+        grid_sizer_1.Add(self.next_snapshot, 0, 0, 0)
+        snapshot_sizer.Add(grid_sizer_1, 1, wx.EXPAND, 0)
+        devices_sizer.Add(snapshot_sizer, 1, wx.EXPAND, 0)
+        steth_sizer.Add(self.steth_label, 0, wx.EXPAND|wx.SHAPED, 0)
+        steth_button_sizer.Add(self.record_button, 0, 0, 0)
+        steth_button_sizer.Add(self.play_button, 0, 0, 0)
+        steth_button_sizer.Add(self.stop_button, 0, 0, 0)
+        steth_sizer.Add(steth_button_sizer, 1, wx.EXPAND, 0)
+        self.steth_panel.SetSizer(steth_sizer)
+        devices_sizer.Add(self.steth_panel, 1, wx.EXPAND, 0)
+        patient_info_tab_sizer.Add(devices_sizer, 2, wx.EXPAND, 0)
         self.info_daq_sizer.Add(patient_info_tab_sizer, 0, wx.ALL|wx.EXPAND, 4)
         self.mainhorizontal_sizer.Add(self.info_daq_sizer, 3, wx.EXPAND, 0)
         mainvertical_sizer.Add(self.mainhorizontal_sizer, 1, wx.EXPAND, 0)
@@ -117,6 +161,30 @@ class RxFrame(wx.Frame):
         self.Layout()
         self.Centre()
         # end wxGlade
+
+    def onPrevSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
+        print "Event handler `onPrevSnapshot' not implemented!"
+        event.Skip()
+
+    def onSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
+        print "Event handler `onSnapshot' not implemented!"
+        event.Skip()
+
+    def onNextSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
+        print "Event handler `onNextSnapshot' not implemented!"
+        event.Skip()
+
+    def on_steth_record(self, event): # wxGlade: RxFrame.<event_handler>
+        print "Event handler `on_steth_record' not implemented!"
+        event.Skip()
+
+    def on_steth_play(self, event): # wxGlade: RxFrame.<event_handler>
+        print "Event handler `on_steth_play' not implemented!"
+        event.Skip()
+
+    def on_steth_stop(self, event): # wxGlade: RxFrame.<event_handler>
+        print "Event handler `on_steth_stop' not implemented!"
+        event.Skip()
 
 # end of class RxFrame
 
@@ -187,7 +255,7 @@ class DAQPanel(wx.Panel):
         self.StartStop_Button.SetSize(self.StartStop_Button.GetBestSize())
         self.StartStop_Label.SetFont(wx.Font(16, wx.MODERN, wx.NORMAL, wx.NORMAL, 0, "Arial"))
         self.Remark_Daq.SetFont(wx.Font(16, wx.MODERN, wx.NORMAL, wx.NORMAL, 0, "Arial"))
-        self.RemarkValueDaq.SetMinSize((400, 54))
+        self.RemarkValueDaq.SetMinSize((300, 54))
         self.Send_Button.SetToolTipString("Stop data acquisition from the biomedical modules")
         self.Send_Button.Enable(False)
         self.Send_Button.SetSize(self.Send_Button.GetBestSize())
