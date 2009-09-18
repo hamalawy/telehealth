@@ -85,7 +85,6 @@ class DAQPanel2(DAQPanel):
         DAQPanel.__init__(self, *args, **kwds)
         self.parentFrame = parent
 
-#        self.bp_slider = wx.Slider(self.bpbarpanel, -1, 20, 0, 20,size=(15, 110),style=wx.SL_VERTICAL | wx.SL_AUTOTICKS | wx. ALIGN_CENTRE)      
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 220, size=(10, 103),style=wx.GA_VERTICAL)        
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self,(1120,380))
@@ -125,7 +124,10 @@ class DAQPanel2(DAQPanel):
         self.bp_isCyclic = 0
         self.ecg_counter = 0
         self.ecg_first = 0
-        self.getlead = ECG().ecg_lead()  
+        self.getlead = ECG().ecg_lead() 
+        self.ECGplotcounter = 0
+        self.on_send = 0
+        self.with_patient_info = 0
         
 
     def onStartStop(self, event):
@@ -166,8 +168,7 @@ class DAQPanel2(DAQPanel):
             self.spo2data.get()
             self.bpdata.get()
             self.onECGNodeCheck(self)
-
-#            self.displayECG()            
+   
             self.timer1.Start(1000)
             self.timerEDF.Start(15000)
 
@@ -194,7 +195,8 @@ class DAQPanel2(DAQPanel):
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
             self.parentFrame.DAQPanel.RemarkValueDaq.SetValue('')            
             self.SaveQuery()
-            
+            self.ClearPatient()
+            self.with_patient_info = 0
             CallAfter(self.parentFrame.DestroyReferPanel)
 
     def SaveQuery(self):
@@ -202,6 +204,19 @@ class DAQPanel2(DAQPanel):
         dlg = wx.MessageDialog(self,'Do you want to save data?','', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
         dlg.ShowModal()
         
+    def ClearPatient(self):
+        
+        self.parentFrame.FirstNameValue.SetValue("")
+        self.parentFrame.MiddleNameValue.SetValue("")
+        self.parentFrame.LastNameValue.SetValue("")
+        self.parentFrame.AddressValue.SetValue("") 
+        self.parentFrame.PhoneNumberValue.SetValue("")
+        self.parentFrame.GenderCombo.SetValue("")
+        self.parentFrame.AgeValue.SetValue("")
+        self.parentFrame.AgeCombo.SetValue("")
+        self.parentFrame.BirthYear.SetValue("")
+        self.parentFrame.BirthMonth.SetSelection(0)
+        self.parentFrame.BirthDayCombo.SetValue('')
             
     def onEstimate(self,evt):
         
@@ -225,37 +240,34 @@ class DAQPanel2(DAQPanel):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
             the 12 leads then passes it to the ecgplotter module for plotting
         """
-        
+        self.ECGplotcounter = self.ECGplotcounter + 1
         ecg_plot = []
         ecg_plot2 = []
+        self.ecgdata.ecg_list = []
         
-        
-        
-        if (self.ecg_counter < 1500):
-            for x in range(0,self.ecg_counter):
-                ecg_plot.append(self.ecgdata.ecg_list[x])
-            
-            if (self.ecg_first == 0):
-                for x in range(0,(1500-self.ecg_counter)):
-                    ecg_plot.append(0)
-            if (self.ecg_first == 1):
-                for x in range(self.ecg_counter,1500):
-                    ecg_plot.append(self.ecgdata.ecg_list[x+1500])
-            
-            self.plotter.plot(ecg_plot)
-            self.ecg_counter += 125
+        for y in range(0,4):
+            for i in range(100,400):
+                self.ecgdata.ecg_list.append(self.getlead[1][i])
 
-        if (self.ecg_counter >= 1500):
-            for x in range(0,(self.ecg_counter-1500)):
-                ecg_plot.append(self.ecgdata.ecg_list[x+1500])
-                
-            for x in range((self.ecg_counter-1500),1500):
-                ecg_plot.append(self.ecgdata.ecg_list[x])
-            self.plotter.plot(ecg_plot)
-            self.ecg_counter += 125
-            if (self.ecg_counter == 3000):
-                self.ecg_counter = 0
-                self.ecg_first = 1
+        if self.ECGplotcounter == 1:
+            self.plotter.plot(self.ecgdata.ecg_list[0:300])
+        elif self.ECGplotcounter == 2:
+            self.plotter.plot(self.ecgdata.ecg_list[50:350])
+        elif self.ECGplotcounter == 3:
+            self.plotter.plot(self.ecgdata.ecg_list[100:400])
+        elif self.ECGplotcounter == 4:
+            self.plotter.plot(self.ecgdata.ecg_list[150:450])
+        elif self.ECGplotcounter == 5:
+            self.plotter.plot(self.ecgdata.ecg_list[200:500])
+        elif self.ECGplotcounter == 6:
+            self.plotter.plot(self.ecgdata.ecg_list[250:550])
+        elif self.ECGplotcounter == 7:
+            self.plotter.plot(self.ecgdata.ecg_list[300:600])
+        else:
+            self.ECGplotcounter = 0
+
+        ecg_plot = []
+        ecg_plot2 = []
                 
     def birthday_update(self,evt):
         year_temp = self.parentFrame.BirthYear.GetValue()
@@ -307,11 +319,11 @@ class DAQPanel2(DAQPanel):
         self.strStarttime = self.Starttime.strftime("%H.%M.%S")
         self.strY2KDate = self.Starttime.strftime("%d-%b-%Y")
         
-        print len(self.spo2data.spo2_list)
-        print len(self.spo2data.bpm_list)
-        print len(self.bpdata.systole_sim_values)
-        print len(self.bpdata.diastole_sim_values)
-        print len(self.ecgdata.ecg_list_scaled)
+#        print len(self.spo2data.spo2_list)
+#        print len(self.spo2data.bpm_list)
+#        print len(self.bpdata.systole_sim_values)
+#        print len(self.bpdata.diastole_sim_values)
+#        print len(self.ecgdata.ecg_list_scaled)
         
         nDataRecord = 3
         
@@ -345,16 +357,19 @@ class DAQPanel2(DAQPanel):
         self.Biosignals = []
 
     def onCall(self, event): # wxGlade: DAQPanel_Parent.<event_handler>
+        self.on_send = 0
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
-        if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):         
-            CreateDialog = CreateRecordDialog2(self.parentFrame,self)
+        if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):    
+            print "call ba"
             self.Call_Label.SetLabel(">>  ") 
-            CreateDialog.ShowModal()
-            CallAfter(self.parentFrame.CreateReferPanel)            
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.referflag = 1
             self.panel = 1
+            if self.with_patient_info == 0:
+                CreateDialog = CreateRecordDialog2(self.parentFrame,self)
+                CreateDialog.ShowModal()
+            CallAfter(self.parentFrame.CreateReferPanel)
             self.parentFrame.Layout()             
         elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) : 
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Shown.")        
@@ -376,9 +391,12 @@ class DAQPanel2(DAQPanel):
             self.parentFrame.Layout()
                         
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
- #       CreateDialog = CreateRecordDialog2(self.parentFrame,self)
-#        CreateDialog.ShowModal()
-#        CallAfter(self.parentFrame.CreateReferPanel) 
+
+        self.on_send = 1
+        print self.sendcount
+        if self.with_patient_info == 0:
+            CreateDialog = CreateRecordDialog2(self.parentFrame,self)
+            CreateDialog.ShowModal() 
         self.timerSend.Start(5000)
         self.sendcount = self.sendcount + 1
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
@@ -397,7 +415,6 @@ class DAQPanel2(DAQPanel):
     
     def SendStatus(self,event):
         if (self.sendtoggled == 0): 
-        
             print "Send to Server Successful"
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
             dlg = wx.MessageDialog(self,"Send to Server Successful","Send to Server Successful",wx.OK | wx.ICON_QUESTION )
@@ -419,7 +436,7 @@ class DAQPanel2(DAQPanel):
         self.sendcount = 0
 
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
-#        self.bpNow_Button.Enable(False)
+        self.bpNow_Button.Enable(False)
         self.bpdata.get()
         
     def updateSPO2Display(self, data):
@@ -556,8 +573,11 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.parentFrame.AgeCombo.SetValue(DMY)
         self.parentFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())
         self.Destroy()
-#        CallAfter(self.parentFrame.CreateReferPanel)
-        self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Initiated.")
+        
+        self.parentFrame.DAQPanel.with_patient_info = 1
+        if self.parentFrame.DAQPanel.on_send == 0:
+ #           CallAfter(self.parentFrame.CreateReferPanel)
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Initiated.")
 
 
         
