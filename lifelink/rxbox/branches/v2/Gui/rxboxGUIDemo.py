@@ -32,6 +32,7 @@ import time
 import simsensors
 import edf
 import datetime
+import ConfigParser
 from lead12dialog import Lead12Dialog
 import wx.lib.plot as plot
 from ecglogfile import ECG
@@ -128,6 +129,9 @@ class DAQPanel2(DAQPanel):
         self.ECGplotcounter = 0
         self.on_send = 0
         self.with_patient_info = 0
+		
+        self.config = ConfigParser.ConfigParser()
+        self.config.read('rxbox.cfg')
         
 
     def onStartStop(self, event):
@@ -393,14 +397,12 @@ class DAQPanel2(DAQPanel):
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
 
         self.on_send = 1
-        print self.sendcount
         if self.with_patient_info == 0:
             CreateDialog = CreateRecordDialog2(self.parentFrame,self)
             CreateDialog.ShowModal() 
         self.timerSend.Start(5000)
         self.sendcount = self.sendcount + 1
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-        print self.sendcount
         if (self.sendcount == 2):
             self.SendStatus(self)
 
@@ -414,13 +416,13 @@ class DAQPanel2(DAQPanel):
             
     
     def SendStatus(self,event):
-        if (self.sendtoggled == 0): 
+        if (self.config.getint('triage','connection') == 1): 
             print "Send to Server Successful"
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
             dlg = wx.MessageDialog(self,"Send to Server Successful","Send to Server Successful",wx.OK | wx.ICON_QUESTION )
             dlg.ShowModal()
             self.sendtoggled = 1
-        elif (self.sendtoggled == 1):  
+        elif (self.config.getint('triage','connection') == 0):  
             print "Send to Server Failed"
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Failed")
             self.sendtoggled = 0
