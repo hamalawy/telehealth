@@ -40,6 +40,11 @@ from ecgplotter import Plotter
 #from ecgplot import Plotter
 from ecgplot import extendedPlotter
 
+import sys
+sys.path.append('triage')
+import triage
+
+
 class RxFrame2(RxFrame):
     def __init__(self, *args, **kwds):
         RxFrame.__init__(self, *args, **kwds)
@@ -404,6 +409,24 @@ class DAQPanel2(DAQPanel):
         self.sendcount = self.sendcount + 1
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         if (self.sendcount == 2):
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
+            t = triage.Triage('/home/jerome/Desktop/WORKAREA/v2/Gui/triage/email.cfg')
+            t.login()
+            headers = {'Subject': 'refer new referal jerome ortega j', 'X-Eccs-Priority': 'emergency',
+                            'X-Eccs-Rxboxextension': '2001'}
+            body='Patient blah blah blah.'
+            afilename=['Ebido_113056.edf']
+            attach={}
+            for i in afilename:
+                    f = open(i, 'r')
+                    attach[i] = f.read()
+                    f.close()
+
+            print "sending..\n";
+            t.request(headers, body, attach)
+            print "sent";
+
+
             self.SendStatus(self)
 
     def onSend2(self): 
