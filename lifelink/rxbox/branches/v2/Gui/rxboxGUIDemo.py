@@ -41,8 +41,8 @@ from ecgplotter import Plotter
 from ecgplot import extendedPlotter
 
 import sys
-#sys.path.append('triage')
-#import triage
+sys.path.append('triage')
+import triage
 
 
 class RxFrame2(RxFrame):
@@ -51,6 +51,8 @@ class RxFrame2(RxFrame):
         self.DAQPanel=DAQPanel2(self,self,-1)
         self.info_daq_sizer.Add(self.DAQPanel, 1, wx.ALL|wx.EXPAND,4)
         self.Bind(wx.EVT_CLOSE, self.onClose)
+        self.topic = ''
+        self.body = ''
 
     def __set_properties(self):
         RxFrame.__set_properties(self)
@@ -409,22 +411,23 @@ class DAQPanel2(DAQPanel):
         self.sendcount = self.sendcount + 1
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         if (self.sendcount == 2):
-            self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-#            t = triage.Triage('/home/jerome/Desktop/WORKAREA/v2/Gui/triage/email.cfg')
-#            t.login()
-#            headers = {'Subject': 'refer new referal jerome ortega j', 'X-Eccs-Priority': 'emergency',
-#                            'X-Eccs-Rxboxextension': '2001'}
-#            body='Patient blah blah blah.'
-#            afilename=['Ebido_113056.edf']
-#            attach={}
-#            for i in afilename:
-#                    f = open(i, 'r')
-#                    attach[i] = f.read()
-#                    f.close()
 
-#            print "sending..\n";
-#            t.request(headers, body, attach)
-#            print "sent";
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
+            t = triage.Triage('/home/tim/Desktop/Gui/triage/email.cfg')
+            t.login()
+            headers = {'Subject': 'refer ' + self.parentFrame.topic, 'X-Eccs-Priority': 'emergency',
+                            'X-Eccs-Rxboxextension': '2001'}
+            body= self.parentFrame.body
+            afilename=['triage/Ebido_113056.edf']
+            attach={}
+            for i in afilename:
+                    f = open(i, 'r')
+                    attach[i] = f.read()
+                    f.close()
+
+            print "sending..\n";
+            t.request(headers, body, attach)
+            print "sent";
 
 
             self.SendStatus(self)
@@ -588,6 +591,9 @@ class CreateRecordDialog2(CreateRecordDialog):
         Phone = self.PatientPhoneNumber_TextCtrl.GetValue()        
         PatientName = FirstName + ' ' + MiddleName + ' ' + LastName
 
+        self.parentFrame.topic = self.ReferralTopic_TextCtrl.GetValue()
+        self.parentFrame.body = self.RemarkValue.GetValue()
+
         self.parentFrame.FirstNameValue.SetValue(FirstName)
         self.parentFrame.MiddleNameValue.SetValue(MiddleName)
         self.parentFrame.LastNameValue.SetValue(LastName)
@@ -596,7 +602,8 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.parentFrame.GenderCombo.SetValue(Gender)
         self.parentFrame.AgeValue.SetValue(Age)
         self.parentFrame.AgeCombo.SetValue(DMY)
-        self.parentFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())
+        self.parentFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())     
+
         self.Destroy()
         
         self.parentFrame.DAQPanel.with_patient_info = 1
