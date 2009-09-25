@@ -1,9 +1,0 @@
-#!/bin/sh
-
-MHPATH=/path/to/MsgHandler/trunk
-
-# modules folder
-
-# (old) python folder
-#python $MHPATH/python/MH2Triage.py -c $MHPATH/config/triage.conf $*
-#python $MHPATH/python/Triage2MH.py -c $MHPATH/config/triage.conf $*

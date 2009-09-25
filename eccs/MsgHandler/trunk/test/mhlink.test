@@ -1,9 +1,0 @@
-<test>
-<database>
-<host>localhost</host>
-<port>3306</port>
-<user>root</user>
-<passwd>root</passwd>
-<db>msghandler</db>
-</database>
-</test>
