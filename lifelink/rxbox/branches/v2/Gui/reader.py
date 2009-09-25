@@ -3,9 +3,9 @@ class Reader:
     def __init__(self):
         pass
 
-    def OpenFile(self):
+    def OpenFile(self, sample):
 
-        opener=open('sample','rb')
+        opener=open(sample,'r')
         return opener
         
     def ReadLine(self,opener):

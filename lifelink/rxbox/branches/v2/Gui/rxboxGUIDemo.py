@@ -41,8 +41,8 @@ from ecgplotter import Plotter
 from ecgplot import extendedPlotter
 
 import sys
-sys.path.append('triage')
-import triage
+#sys.path.append('triage')
+#import triage
 
 
 class RxFrame2(RxFrame):
@@ -410,21 +410,21 @@ class DAQPanel2(DAQPanel):
         self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         if (self.sendcount == 2):
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-            t = triage.Triage('/home/jerome/Desktop/WORKAREA/v2/Gui/triage/email.cfg')
-            t.login()
-            headers = {'Subject': 'refer new referal jerome ortega j', 'X-Eccs-Priority': 'emergency',
-                            'X-Eccs-Rxboxextension': '2001'}
-            body='Patient blah blah blah.'
-            afilename=['Ebido_113056.edf']
-            attach={}
-            for i in afilename:
-                    f = open(i, 'r')
-                    attach[i] = f.read()
-                    f.close()
+#            t = triage.Triage('/home/jerome/Desktop/WORKAREA/v2/Gui/triage/email.cfg')
+#            t.login()
+#            headers = {'Subject': 'refer new referal jerome ortega j', 'X-Eccs-Priority': 'emergency',
+#                            'X-Eccs-Rxboxextension': '2001'}
+#            body='Patient blah blah blah.'
+#            afilename=['Ebido_113056.edf']
+#            attach={}
+#            for i in afilename:
+#                    f = open(i, 'r')
+#                    attach[i] = f.read()
+#                    f.close()
 
-            print "sending..\n";
-            t.request(headers, body, attach)
-            print "sent";
+#            print "sending..\n";
+#            t.request(headers, body, attach)
+#            print "sent";
 
 
             self.SendStatus(self)

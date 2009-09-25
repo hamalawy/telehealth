@@ -12,11 +12,17 @@ August 2009
 import time
 import wx
 import filters
+from reader import Reader
 from matplotlib import pyplot
+import ConfigParser
+
+
 
 class Spo2sim:
 
     def __init__(self,parent):
+        self.config = ConfigParser.ConfigParser()
+        self.config.read('rxbox.cfg')   
         
         self.parent_panel = parent
         self.spo2sim_counter = 0
@@ -27,11 +33,23 @@ class Spo2sim:
         self.bpm = 0        
         self.spo2_list = []
         self.bpm_list = []
-        
+
+        if (self.config.get('SPO2','spo2source') != '0'):
+            self.spo2sample = str(self.config.get('SPO2','spo2source'))
+#            self.spo2sample = 'sponormal.txt'
+            self.spo2read = Reader()
+            self.spo2file = self.spo2read.OpenFile(self.spo2sample)
+            self.spo2sim = self.spo2read.ReadLine(self.spo2file)
+            self.bpmsim = self.spo2read.ReadLine(self.spo2file)  
+
     def update_spo2_display(self):
-        
-        self.parent_panel.spo2value_label.SetLabel(str(self.spo2))
-        self.parent_panel.bpmvalue_label.SetLabel(str(self.bpm))
+    
+        if (self.config.get('SPO2','spo2source') == '0'):         
+            self.parent_panel.spo2value_label.SetLabel(str(self.spo2))
+            self.parent_panel.bpmvalue_label.SetLabel(str(self.bpm))
+        if (self.config.get('SPO2','spo2source') != '0'):     
+            self.parent_panel.spo2value_label.SetLabel(str(self.spo2sim))
+            self.parent_panel.bpmvalue_label.SetLabel(str(self.bpmsim))
     
     def get(self):
         
@@ -40,9 +58,12 @@ class Spo2sim:
         self.spo2 = self.spo2_sim_values[self.spo2sim_counter]
         self.bpm = self.bpm_sim_values[self.spo2sim_counter]
         
-        self.spo2_list.append(self.spo2)
-        self.bpm_list.append(self.bpm)
-        
+        if (self.config.get('SPO2','spo2source') == '0'):        
+            self.spo2_list.append(self.spo2)
+            self.bpm_list.append(self.bpm)
+        if (self.config.get('SPO2','spo2source') != '0'):     
+            self.spo2_list.append(int(self.spo2sim))
+            self.bpm_list.append(int(self.bpmsim))        
         self.update_spo2_display()
         self.spo2sim_counter += 1
         
@@ -53,7 +74,8 @@ class Spo2sim:
 class BpSim:
     
     def __init__(self,parent):
-        
+        self.config = ConfigParser.ConfigParser()
+        self.config.read('rxbox.cfg')        
         self.parent_panel = parent
         self.bpsim_counter = 0
         self.systole_sim_values = [120,119,120,119,120,119,120,119,120,119,\
@@ -65,6 +87,12 @@ class BpSim:
         self.bpvalue = ''
         self.sys_list = []
         self.dias_list = []
+        if (self.config.get('BP','bpsource') != '0'):        
+            self.bpsample = str(self.config.get('BP','bpsource')) 
+            self.bpread = Reader()
+            self.bpFile = self.bpread.OpenFile(self.bpsample)
+            self.syssim = self.bpread.ReadLine(self.bpFile)
+            self.diassim = self.bpread.ReadLine(self.bpFile) 
         
         self.timer = wx.Timer(self.parent_panel)
         self.parent_panel.Bind(wx.EVT_TIMER,self.bp_finished,self.timer)
@@ -99,11 +127,17 @@ class BpSim:
         
         self.sys = self.systole_sim_values[self.bpsim_counter]
         self.dias = self.diastole_sim_values[self.bpsim_counter]
+
+        if (self.config.get('BP','bpsource') == '0'):        
+            self.sys_list.append(self.sys)
+            self.dias_list.append(self.dias)
+            self.bpvalue = str(self.sys) + '/' + str(self.dias)
+        if (self.config.get('BP','bpsource') != '0'):  
+            self.sys_list.append(self.syssim)
+            self.dias_list.append(self.diassim) 
+            self.bpvalue = str(self.syssim) + '/' + str(self.diassim)
         
-        self.sys_list.append(self.sys)
-        self.dias_list.append(self.dias)
-                
-        self.bpvalue = str(self.sys) + '/' + str(self.dias)         
+                  
         self.update_bp_display()        
         self.bpsim_counter += 1
         
@@ -118,6 +152,8 @@ class BpSim:
 class EcgSim:
     
     def __init__(self, parent):
+        self.config = ConfigParser.ConfigParser()
+        self.config.read('rxbox.cfg')
         
         self.ecgfile = open('ecg.txt','rb')
         self.ecg_sim_values = []
