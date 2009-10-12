@@ -413,7 +413,7 @@ class DAQPanel2(DAQPanel):
         if (self.sendcount == 2):
 
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-            t = triage.Triage('/home/tim/Desktop/Gui/triage/email.cfg')
+            t = triage.Triage('triage/email.cfg')
             t.login()
             headers = {'Subject': 'refer ' + self.parentFrame.topic, 'X-Eccs-Priority': 'emergency',
                             'X-Eccs-Rxboxextension': '2001'}
