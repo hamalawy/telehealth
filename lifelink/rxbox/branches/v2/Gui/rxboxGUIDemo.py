@@ -41,8 +41,31 @@ from ecgplotter import Plotter
 from ecgplot import extendedPlotter
 
 import sys
-sys.path.append('triage')
-import triage
+sys.path.append('triage/')
+sys.path.append('voip/')
+import triage, linphone
+
+# This class will implement the callback functions
+# for Linphone events
+class LinphoneHandle(linphone.Linphone):
+    def __init__(self):
+        linphone.Linphone.__init__(self)
+
+    def handle_incoming(self):
+        print self.caller , " is calling."
+        self.answer()
+
+    def handle_terminated(self):
+        print "Call ended."
+        #you may put GUI codes here (callafter function maybe?)
+
+    def handle_answered(self):
+        print "Call answered"
+        #you may put GUI codes here (callafter function maybe?)
+
+    def handle_failed(self):
+        print "Call failed"
+        #you may put GUI codes here (callafter function maybe?)
 
 
 class RxFrame2(RxFrame):
@@ -63,6 +86,14 @@ class RxFrame2(RxFrame):
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL|wx.EXPAND,4)
         self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)        
         self.Layout()
+
+	self.l = LinphoneHandle()
+        wid = self.ReferPanel.video_panel.GetHandle()
+        self.l.set_window(wid)
+
+	self.l.spawn()
+	self.l.start()
+
         
     def onClose(self,evt):
         dlg = wx.MessageDialog(self,'Do you want to save data?','Exit', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
@@ -81,6 +112,9 @@ class RxFrame2(RxFrame):
     def DestroyReferPanel(self):
 
         try:
+	    self.l.stop()
+	    self.l.join()
+
             self.ReferPanel.Destroy()
             self.Layout()
 
@@ -425,7 +459,7 @@ class DAQPanel2(DAQPanel):
                     attach[i] = f.read()
                     f.close()
 
-            print "sending..\n";
+            print "sending..\n"
             t.request(headers, body, attach)
             print "sent";
 
