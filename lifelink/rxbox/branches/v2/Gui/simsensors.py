@@ -17,7 +17,6 @@ from matplotlib import pyplot
 import ConfigParser
 
 
-
 class Spo2sim:
 
     def __init__(self,parent):
@@ -26,44 +25,43 @@ class Spo2sim:
         
         self.parent_panel = parent
         self.spo2sim_counter = 0
-        self.spo2_sim_values = [100,99,98,97,96,95,94,93,92,93,94,95,96,97,98,\
-                                99]
-        self.bpm_sim_values = [80,79,78,77,76,75,74,73,74,75,76,77,78,79,80]
         self.spo2 = 0
         self.bpm = 0        
         self.spo2_list = []
         self.bpm_list = []
 
-        if (self.config.get('SPO2','spo2source') != '0'):
-            self.spo2sample = str(self.config.get('SPO2','spo2source'))
-#            self.spo2sample = 'sponormal.txt'
-            self.spo2read = Reader()
-            self.spo2file = self.spo2read.OpenFile(self.spo2sample)
-            self.spo2sim = self.spo2read.ReadLine(self.spo2file)
-            self.bpmsim = self.spo2read.ReadLine(self.spo2file)  
 
     def update_spo2_display(self):
     
-        if (self.config.get('SPO2','spo2source') == '0'):         
-            self.parent_panel.spo2value_label.SetLabel(str(self.spo2))
-            self.parent_panel.bpmvalue_label.SetLabel(str(self.bpm))
-        if (self.config.get('SPO2','spo2source') != '0'):     
-            self.parent_panel.spo2value_label.SetLabel(str(self.spo2sim))
-            self.parent_panel.bpmvalue_label.SetLabel(str(self.bpmsim))
+#        if (self.config.get('SPO2','spo2source') == '0'):         
+#            self.parent_panel.spo2value_label.SetLabel(str(self.spo2))
+#            self.parent_panel.bpmvalue_label.SetLabel(str(self.bpm))
+#        if (self.config.get('SPO2','spo2source') != '0'):     
+#            self.parent_panel.spo2value_label.SetLabel(str(self.spo2sim))
+#            self.parent_panel.bpmvalue_label.SetLabel(str(self.bpmsim))
+        self.parent_panel.spo2value_label.SetLabel(self.spo2_read.ReadLine(self.spo2file))
+        self.parent_panel.bpmvalue_label.SetLabel(self.spo2_read.ReadLine(self.hrfile))
     
     def get(self):
         
         self.parent_panel.heartrate_infolabel.SetLabel('Acquiring pulse rate')
         self.parent_panel.spo2_infolabel.SetLabel('Acquiring Spo2')
-        self.spo2 = self.spo2_sim_values[self.spo2sim_counter]
-        self.bpm = self.bpm_sim_values[self.spo2sim_counter]
+#        self.spo2 = self.spo2_sim_values[self.spo2sim_counter]
+#        self.bpm = self.bpm_sim_values[self.spo2sim_counter]
         
-        if (self.config.get('SPO2','spo2source') == '0'):        
-            self.spo2_list.append(self.spo2)
-            self.bpm_list.append(self.bpm)
-        if (self.config.get('SPO2','spo2source') != '0'):     
-            self.spo2_list.append(int(self.spo2sim))
-            self.bpm_list.append(int(self.bpmsim))        
+#        if (self.config.get('SPO2','spo2source') == '0'):        
+#            self.spo2_list.append(self.spo2)
+#            self.bpm_list.append(self.bpm)
+#        if (self.config.get('SPO2','spo2source') != '0'):     
+#            self.spo2_list.append(int(self.spo2sim))
+#            self.bpm_list.append(int(self.bpmsim))  
+
+        self.spo2_read = Reader()
+        filename_spo2 = self.config.get('spo2', 'spo2_sim_type')
+        filename_hr = self.config.get('spo2', 'hr_sim_type')
+        self.spo2file = self.spo2_read.OpenFile('simulators/spo2' + filename_spo2.lower() + '.txt')
+        self.hrfile = self.spo2_read.OpenFile('simulators/hr' + filename_hr.lower() + '.txt')
+      
         self.update_spo2_display()
         self.spo2sim_counter += 1
         
@@ -78,28 +76,31 @@ class BpSim:
         self.config.read('rxbox.cfg')        
         self.parent_panel = parent
         self.bpsim_counter = 0
-        self.systole_sim_values = [120,119,120,119,120,119,120,119,120,119,\
-                                    120,119,120,119,120]
-        self.diastole_sim_values = [80,80,80,80,80,80,80,80,80,80,80,80,80,80,\
-                                    80]
+#        self.systole_sim_values = [120,119,120,119,120,119,120,119,120,119,\
+#                                    120,119,120,119,120]
+#        self.diastole_sim_values = [80,80,80,80,80,80,80,80,80,80,80,80,80,80,\
+#                                    80]
+
         self.sys = 0
         self.dias = 0
         self.bpvalue = ''
         self.sys_list = []
         self.dias_list = []
-        if (self.config.get('BP','bpsource') != '0'):        
-            self.bpsample = str(self.config.get('BP','bpsource')) 
-            self.bpread = Reader()
-            self.bpFile = self.bpread.OpenFile(self.bpsample)
-            self.syssim = self.bpread.ReadLine(self.bpFile)
-            self.diassim = self.bpread.ReadLine(self.bpFile) 
         
-        self.timer = wx.Timer(self.parent_panel)
-        self.parent_panel.Bind(wx.EVT_TIMER,self.bp_finished,self.timer)
+#        if (self.config.get('BP','bpsource') != '0'):        
+#            self.bpsample = str(self.config.get('BP','sim_type')) 
+#            self.bpread = Reader()
+#            self.bpFile = self.bpread.OpenFile('simulators/'+self.bpsample)
+#            self.syssim = self.bpread.ReadLine(self.bpFile)
+#            self.diassim = self.bpread.ReadLine(self.bpFile) 
+        
+#        self.timer = wx.Timer(self.parent_panel)
+#        self.parent_panel.Bind(wx.EVT_TIMER,self.bp_finished,self.timer)
         
     def update_bp_display(self):
         
-        self.parent_panel.bpvalue_label.SetLabel(self.bpvalue)
+        self.parent_panel.bpvalue_label.SetLabel(self.bpread.ReadLine(self.bpfile) + '/' + self.bpread.ReadLine(self.bpfile))
+
         
     def get(self):
         
@@ -107,8 +108,8 @@ class BpSim:
         self.parent_panel.bp_infolabel.SetLabel('Getting BP')
         self.parent_panel.bpNow_Button.Enable(False)
         reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
-        self.reload_bp = int(reload_bp_str[0:2])*1000
-        self.timer.Start(3000)
+        self.reload_bp = int(reload_bp_str[0:2])*1000*60
+#        self.timer.Start(3000)
         
 #        self.parent_panel.bp_slider.Enable(True)
         self.parent_panel.bp_pressure_indicator.Enable(True)
@@ -116,7 +117,11 @@ class BpSim:
         self.parent_panel.file = open('pressure.txt','r')
         self.parent_panel.pressure_timer.Start(20)
         
-    def bp_finished(self,evt):
+        self.bpread = Reader()
+        filename = self.config.get('bp', 'sim_type')
+        self.bpfile = self.bpread.OpenFile('simulators/bp'+ filename.lower() +'.txt')
+        
+    def bp_finished(self):
         
         print 'Bp acquired'
         self.sys_list = []
@@ -125,29 +130,28 @@ class BpSim:
         self.parent_panel.bp_infolabel.SetLabel('BP acquired')
         self.parent_panel.bpNow_Button.Enable(True)
         
-        self.sys = self.systole_sim_values[self.bpsim_counter]
-        self.dias = self.diastole_sim_values[self.bpsim_counter]
+#        self.sys = self.systole_sim_values[self.bpsim_counter]
+#        self.dias = self.diastole_sim_values[self.bpsim_counter]
 
-        if (self.config.get('BP','bpsource') == '0'):        
-            self.sys_list.append(self.sys)
-            self.dias_list.append(self.dias)
-            self.bpvalue = str(self.sys) + '/' + str(self.dias)
-        if (self.config.get('BP','bpsource') != '0'):  
-            self.sys_list.append(self.syssim)
-            self.dias_list.append(self.diassim) 
-            self.bpvalue = str(self.syssim) + '/' + str(self.diassim)
-        
-                  
+#        if (self.config.get('bp','bpsource') == '0'):        
+#            self.sys_list.append(self.sys)
+#            self.dias_list.append(self.dias)
+#            self.bpvalue = str(self.sys) + '/' + str(self.dias)
+#        if (self.config.get('bp','bpsource') != '0'):  
+#            self.sys_list.append(self.syssim)
+#            self.dias_list.append(self.diassim) 
+#            self.bpvalue = str(self.syssim) + '/' + str(self.diassim)
+    
         self.update_bp_display()        
         self.bpsim_counter += 1
         
         if self.parent_panel.bp_isCyclic == 1:
             self.parent_panel.timer2.Start(self.reload_bp)
-        
+
         if (self.bpsim_counter % 15) == 0:
             self.bpsim_counter = 0
         
-        self.timer.Stop()
+#        self.timer.Stop()
         
 class EcgSim:
     

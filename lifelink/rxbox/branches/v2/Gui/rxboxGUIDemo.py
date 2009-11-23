@@ -82,7 +82,6 @@ class RxFrame2(RxFrame):
         self.SetIcon(wx.Icon("Icons/RxBox.ico", wx.BITMAP_TYPE_ICO))
         
     def CreateReferPanel(self):
-        """Creates the refer panel window and initializes and starts linphone process"""
         self.ReferPanel=ReferPanel(self,-1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL|wx.EXPAND,4)
         self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)        
@@ -97,7 +96,6 @@ class RxFrame2(RxFrame):
 
         
     def onClose(self,evt):
-        """Displays a dialog prompt that asks the user to save data when user attempts to destroy the frame"""
         dlg = wx.MessageDialog(self,'Do you want to save data?','Exit', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
         if dlg.ShowModal() == wx.ID_CANCEL:
             dlg.Destroy()
@@ -106,15 +104,13 @@ class RxFrame2(RxFrame):
             self.Destroy()   
             
     def updateIM(self,evt):
-        """Copy the contents of the im text input box and show it to an another text box"""
-
         prev = self.ReferPanel.IMtexts_Text.GetValue()
         reply = self.ReferPanel.IMreply_Text.GetValue() + '\n'
         self.ReferPanel.IMtexts_Text.SetValue(prev + reply)
         self.ReferPanel.IMreply_Text.SetValue("")   
         
     def DestroyReferPanel(self):
-        """Destroys the refer panel and stops linphone process"""
+
         try:
 	    self.l.stop()
 	    self.l.join()
@@ -169,6 +165,7 @@ class DAQPanel2(DAQPanel):
         self.spo2_infolabel.SetLabel('Pulse Ox ready')
         self.bp_isCyclic = 0
         self.ecg_counter = 0
+        self.ecg_first = 0
         self.getlead = ECG().ecg_lead() 
         self.ECGplotcounter = 0
         self.on_send = 0
@@ -248,7 +245,7 @@ class DAQPanel2(DAQPanel):
             CallAfter(self.parentFrame.DestroyReferPanel)
 
     def SaveQuery(self):
-        """Displays a dialog box that prompts the user to save data"""
+        
         dlg = wx.MessageDialog(self,'Do you want to save data?','', wx.YES_NO | wx.ICON_QUESTION |wx.CANCEL)
         dlg.ShowModal()
         
@@ -357,6 +354,7 @@ class DAQPanel2(DAQPanel):
             self.bp_pressure_indicator.Enable(False)
             self.bpNow_Button.Enable(True)
             self.setBPmins_combobox.Enable(True)
+            self.bpdata.bp_finished()
 #            self.bpdata.get()
         
     def make_edf(self,evt):
@@ -399,7 +397,7 @@ class DAQPanel2(DAQPanel):
         myedf = edf.EDF(self.patient1,self.Biosignals,self.strDate,self.strStarttime,self.strY2KDate + \
                         ': LifeLink 15 second data of CorScience modules', \
                         nDataRecord, 15)
-        myedf.get(self.patient1)
+#        myedf.get(self.patient1)
         print 'EDF creation finished'
 
         self.Biosignals = []
