@@ -84,8 +84,10 @@ class ConfigMain(MyApp):
         """Checks if sensor sim type value is 'others'. If yes, display file
             dialog box
         """
+        self.ecg_path = ''
+        
         if self.ecg_sim_type_val.GetValue() == 'Others':
-            self.display_file_dialog()
+            self.ecg_path = self.display_file_dialog()
 
     def onBPSimSensorVal(self, event):
         
@@ -105,7 +107,7 @@ class ConfigMain(MyApp):
     def display_file_dialog(self):
         file_dialog = wx.FileDialog(self.frame)
         file_dialog.ShowModal()
-#        self.ecg_sim_type_file_dialog.GetPath()
+        return file_dialog.GetPath()
         
     def onCheckEmail(self, event):
         print 'email check'
@@ -176,7 +178,10 @@ class ConfigMain(MyApp):
             self.config.set('ecg', 'lead', self.ecg_lead_value.GetValue())
             self.config.set('ecg', 'baud', self.ecg_baud_value.GetValue())
         else:
-            self.config.set('ecg', 'sim_type', self.ecg_sim_type_val.GetValue())
+            if self.ecg_sim_type_val.GetValue() == 'Others':
+                self.config.set('ecg', 'sim_type', self.ecg_path)
+            else:
+                self.config.set('ecg', 'sim_type', self.ecg_sim_type_val.GetValue())
         if self.bp_simulated == 0:
             self.config.set('bp', 'port', self.bp_com_value.GetValue())
         else:
