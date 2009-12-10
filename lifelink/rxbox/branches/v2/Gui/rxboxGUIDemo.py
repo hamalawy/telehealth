@@ -229,6 +229,7 @@ class RxFrame2(RxFrame):
 
     def on_steth_play(self, event): # wxGlade: RxFrame.<event_handler>
         print "Steth Sound Playing... "
+        self.RxFrame_StatusBar.SetStatusText("Steth Sound Playing...")
         self.stop_button.Enable(True)
         self.record_button.Enable(False)
         self.play_button.Enable(False)
@@ -237,18 +238,19 @@ class RxFrame2(RxFrame):
 
     def on_steth_stop(self, event): # wxGlade: RxFrame.<event_handler>
     
-        self.steth_status = None
         self.play_button.Enable(True)
         self.record_button.Enable(True)
         self.stop_button.Enable(False)
 
         if self.steth_status == 'Record':
-            self.record_timer.Stop()
+            print "r"
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Record...")
+            self.record_timer.Stop()
         elif self.steth_status == 'Play':
-        	self.RxFrame_StatusBar.SetStatusText("Stopping Steth Play...")
-#            self.play_timer.Stop()
-
+            print "p"
+            self.RxFrame_StatusBar.SetStatusText("Stopping Steth Play...")
+            self.play_timer.Stop()
+        self.steth_status = 'Stop'
     def record_audio(self, evt):
         pass
 
@@ -550,7 +552,7 @@ class DAQPanel2(DAQPanel):
             self.bp_label.SetLabel("BP ")## 
             self.heartrate_label.SetLabel("HR ")## 
             self.spo2_label.SetLabel("SpO2 ")## 
-#            self.RxFrame.video_panel.Hide()         
+            self.RxFrame.video_panel.Hide()         
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.referflag = 1

@@ -168,8 +168,8 @@ class EcgSim:
                 
         ecg_file.close()
         
-        pyplot.plot(temp_list)
-        pyplot.show()
+#        pyplot.plot(temp_list)
+#        pyplot.show()
         
         return temp_list
         
