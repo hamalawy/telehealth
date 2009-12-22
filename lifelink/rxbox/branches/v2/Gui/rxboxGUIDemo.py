@@ -46,7 +46,6 @@ import sys
 sys.path.append('triage/')
 sys.path.append('voip/')
 import triage, linphone
-#import triage
 import Image
 import tempfile
 import cStringIO
@@ -61,6 +60,7 @@ import dicom
 from scipy.misc import fromimage #wooooooooo
 # This class will implement the callback functions
 # for Linphone events   
+
 class LinphoneHandle(linphone.Linphone):
     def __init__(self):
         linphone.Linphone.__init__(self)
@@ -97,7 +97,7 @@ class RxFrame2(RxFrame):
         self.next_snapshot.Enable(False)
         self.imgcount = 1
         self.imgcurrent = 1
-        self.SetClientSize((320,240))
+        self.SetClientSize((320, 240))
         # Create a steth instance
 #        self.steth = steth.steth(self)
         self.steth_status = None
@@ -113,6 +113,7 @@ class RxFrame2(RxFrame):
         
     def CreateReferPanel(self):
         """Creates the refer panel window and initializes and starts linphone process"""
+        
         self.ReferPanel = ReferPanel(self, -1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL | wx.EXPAND, 4)
         self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)        
@@ -128,7 +129,9 @@ class RxFrame2(RxFrame):
         
     def onClose(self, evt):
         """Displays a dialog prompt that asks the user to save data when user attempts to destroy the frame"""
-        dlg = wx.MessageDialog(self, 'Do you want to save data?', 'Exit', wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
+        
+        dlg = wx.MessageDialog(self, 'Do you want to save data?', 'Exit', \
+                                wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
         if dlg.ShowModal() == wx.ID_CANCEL:
             dlg.Destroy()
         else:
@@ -160,16 +163,16 @@ class RxFrame2(RxFrame):
         print "Snapshot previous button toggled..."
         self.imgcurrent = self.imgcurrent - 1
         #resize image
-        img = wx.ImageFromBitmap(self.temp_bmp[self.imgcurrent-1])
+        img = wx.ImageFromBitmap(self.temp_bmp[self.imgcurrent - 1])
         img.Rescale(120, 90) # Resize image
-        bitmap = wx.BitmapFromImage( img ) # Convert Image to Bitmap
+        bitmap = wx.BitmapFromImage(img) # Convert Image to Bitmap
 
         self.img.SetBitmap(bitmap)
         if self.imgcurrent < 2:
             self.prev_snapshot.Enable(False)
         self.next_snapshot.Enable(True)
         
-        print "count: ",self.imgcount, "current: ",self.imgcurrent   
+        print "count: ", self.imgcount, "current: ", self.imgcurrent   
 
     def onNextSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
         self.RxFrame_StatusBar.SetStatusText("Snapshot next button toggled...")
@@ -177,28 +180,28 @@ class RxFrame2(RxFrame):
         if self.imgcurrent < self.imgcount:
             self.imgcurrent = self.imgcurrent + 1
             #resize image
-            img = wx.ImageFromBitmap(self.temp_bmp[self.imgcurrent-1])
+            img = wx.ImageFromBitmap(self.temp_bmp[self.imgcurrent - 1])
             img.Rescale(120, 90) # Resize image
-            bitmap = wx.BitmapFromImage( img ) # Convert Image to Bitmap
+            bitmap = wx.BitmapFromImage(img) # Convert Image to Bitmap
             self.img.SetBitmap(bitmap)
             
         if self.imgcurrent == self.imgcount:
             self.next_snapshot.Enable(False)
         self.prev_snapshot.Enable(True)
-        print "count: ",self.imgcount, "current: ",self.imgcurrent
+        print "count: ", self.imgcount, "current: ", self.imgcurrent
 
     def onSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
         self.RxFrame_StatusBar.SetStatusText("Snapshot main button toggled...")
         print "Snapshot main button toggled..."
         print self.imgcount
-        self.file = 'snapdemo/'+str(self.imgcount)+'.jpg'
-        self.temp_bmp.append(wx.Image(self.file,wx.BITMAP_TYPE_JPEG).ConvertToBitmap())
-        img = wx.ImageFromBitmap(self.temp_bmp[self.imgcount-1])
-        img.Rescale(120,90)
-        bitmap = wx.BitmapFromImage( img ) # Convert Image to Bitmap
+        self.file = 'snapdemo/' + str(self.imgcount) + '.jpg'
+        self.temp_bmp.append(wx.Image(self.file, wx.BITMAP_TYPE_JPEG).ConvertToBitmap())
+        img = wx.ImageFromBitmap(self.temp_bmp[self.imgcount - 1])
+        img.Rescale(120, 90)
+        bitmap = wx.BitmapFromImage(img) # Convert Image to Bitmap
         
         self.img.SetBitmap(bitmap)
-        self.imgcount = self.imgcount+1
+        self.imgcount = self.imgcount + 1
         self.imgcurrent = self.imgcount
         
         if self.imgcount > 1:
@@ -209,7 +212,7 @@ class RxFrame2(RxFrame):
             self.imgcount = 1
             self.img.SetBitmap(bitmap)
         self.next_snapshot.Enable(False)    
-        print "count: ",self.imgcount, "current: ",self.imgcurrent
+        print "count: ", self.imgcount, "current: ", self.imgcurrent
 
     def on_vid_display(self):
         pass
@@ -243,54 +246,41 @@ class RxFrame2(RxFrame):
         self.stop_button.Enable(False)
 
         if self.steth_status == 'Record':
-            print "r"
+#            print "r"
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Record...")
             self.record_timer.Stop()
         elif self.steth_status == 'Play':
-            print "p"
+#            print "p"
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Play...")
             self.play_timer.Stop()
+            
         self.steth_status = 'Stop'
+        
     def record_audio(self, evt):
         pass
 
     def play_audio(self, evt):
         pass
+        
+        
 class DAQPanel2(DAQPanel):
 
     def __init__(self, parent, *args, **kwds):
         DAQPanel.__init__(self, *args, **kwds)
         self.RxFrame = parent
-        ##
-        self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 110, size=(20, 120), style=wx.GA_VERTICAL)    
+        self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 110, \
+                                                size=(20, 120), style=wx.GA_VERTICAL)    
 #        self.ecg_vertical_sizer = self.RxFrame.ecg_vertical_sizer     
-        self.sizersize = self.ecg_vertical_sizer.GetSize()
-        self.plotter = Plotter(self, (1120, 380))
-        self.ecg_vertical_sizer.Add(self.plotter.plotpanel, 1, \
-                                    wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.timer1 = wx.Timer(self)
-        self.timer2 = wx.Timer(self)
-        self.timerEDF = wx.Timer(self)
-        self.pressure_timer = wx.Timer(self)
-        self.timerSend = wx.Timer(self)
-        self.timerECG_refresh = wx.Timer(self)
-        self.timerECGNodeCheck = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.on_timer1, self.timer1)
-        self.Bind(wx.EVT_TIMER, self.on_timerbp, self.timer2)
-        self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
-        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
-        self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
-        self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
-        self.Bind(wx.EVT_TIMER, self.onECGNodeCheck, self.timerECGNodeCheck)
+
+        self.init_ecglive()
+        self.init_daqtimers()
+        self.init_config()
+        self.init_simsensors()
+
         self.RxFrame.BirthMonth.Bind(wx.EVT_COMBOBOX, self.birthday_update)
         self.RxFrame.BirthDayCombo.Bind(wx.EVT_COMBOBOX, self.birthday_update)
         self.RxFrame.BirthYear.Bind(wx.EVT_TEXT, self.birthday_update)    
         
-        self.Biosignals = []
-        
-        self.spo2data = simsensors.Spo2sim(self)
-        self.bpdata = simsensors.BpSim(self)
-        self.ecgdata = simsensors.EcgSim(self)
         self.ecgdata.ecg_list = self.ecgdata.get_plot()
         
         self.patient1 = edf.Patient('1', 'Timothy', 'Cena', 'Ebido', 'Servan', \
@@ -301,16 +291,52 @@ class DAQPanel2(DAQPanel):
         self.spo2_infolabel.SetLabel('Pulse Ox ready')
         self.bp_isCyclic = 0
         self.ecg_counter = 0
-        self.getlead = ECG().ecg_lead() 
-        self.ECGplotcounter = 0
+
         self.on_send = 0
         self.with_patient_info = 0
         
+    def init_daqtimers(self):
+        """Initializes various timers for DAQ Panel of RxBox"""
+        
+        self.timer_spo2 = wx.Timer(self)
+        self.timer2 = wx.Timer(self)
+        self.timerEDF = wx.Timer(self)
+        self.pressure_timer = wx.Timer(self)
+        self.timerSend = wx.Timer(self)
+        self.timerECG_refresh = wx.Timer(self)
+        self.timerECGNodeCheck = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.on_timer_spo2, self.timer_spo2)
+        self.Bind(wx.EVT_TIMER, self.on_timerbp, self.timer2)
+        self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
+        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
+        self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
+        self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
+        self.Bind(wx.EVT_TIMER, self.onECGNodeCheck, self.timerECGNodeCheck)
+        
+    def init_config(self):
+        """Initializes configuration file for Rxbox"""
+
         self.config = ConfigParser.ConfigParser()
         self.config.read('rxbox.cfg')
         
+    def init_ecglive(self):
+        """Initializes ecgplotter GUI"""
         
+        self.sizersize = self.ecg_vertical_sizer.GetSize()
+        self.plotter = Plotter(self, (1120, 380))
+        self.ecg_vertical_sizer.Add(self.plotter.plotpanel, 1, \
+                                    wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+        self.getlead = ECG().ecg_lead() 
+        self.ECGplotcounter = 0
         
+    def init_simsensors(self):
+        """Initializes simsensors"""
+        
+        self.Biosignals = []
+        
+        self.spo2data = simsensors.Spo2sim(self)
+        self.bpdata = simsensors.BpSim(self)
+        self.ecgdata = simsensors.EcgSim(self)
 
     def onStartStop(self, event):
 
@@ -328,7 +354,8 @@ class DAQPanel2(DAQPanel):
         self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
         self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_initial.png", wx.BITMAP_TYPE_ANY))
         self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
-        self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_initial.png", wx.BITMAP_TYPE_ANY))        
+        self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_initial.png", wx.BITMAP_TYPE_ANY))
+
         if self.StartStop_Label.GetLabel() == "Start":
             
             self.Call_Label.SetLabel("Call")
@@ -351,7 +378,7 @@ class DAQPanel2(DAQPanel):
             self.bpdata.get()
             self.onECGNodeCheck(self)
    
-            self.timer1.Start(1000)
+            self.timer_spo2.Start(1000)
             self.timerEDF.Start(15000)
             
         else:
@@ -367,7 +394,7 @@ class DAQPanel2(DAQPanel):
             self.bp_isCyclic = 0
             self.referflag = 0
             self.panel = 0
-            self.timer1.Stop()
+            self.timer_spo2.Stop()
             self.timer2.Stop()       
             self.timerEDF.Stop()    
             self.timerSend.Stop()  
@@ -384,11 +411,14 @@ class DAQPanel2(DAQPanel):
 
     def SaveQuery(self):
         """Displays a dialog box that prompts the user to save data"""
+        
         CallAfter(self.RxFrame.DestroyReferPanel)
-        dlg = wx.MessageDialog(self, 'Do you want to save data?', '', wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
+        dlg = wx.MessageDialog(self, 'Do you want to save data?', '', \
+                                wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
         dlg.ShowModal()
         
     def ClearPatient(self):
+        """Clear patient information panel"""
         
         self.RxFrame.FirstNameValue.SetValue("")
         self.RxFrame.MiddleNameValue.SetValue("")
@@ -476,29 +506,27 @@ class DAQPanel2(DAQPanel):
             self.RxFrame.AgeValue.SetValue(str(age))
 
         
-    def on_timer1(self, evt):
+    def on_timer_spo2(self, evt):
         
-        self.spo2data.get()    
-        print 'Spo2 data acquired'
+        self.spo2data.get()
         
     def on_timerbp(self, evt):
         
         self.bpdata.get()
         
     def pressure_update(self, evt):
+        """Method that handles the inflating bar of blood pressure"""
+        
         press = int(self.file.readline())
         if press != 999:
-#            self.bp_slider.SetValue(20-(press/10))
             self.bp_pressure_indicator.SetValue(press)
         else:
             self.file.close()
             self.pressure_timer.Stop()
-#            self.bp_slider.Enable(False)
             self.bp_pressure_indicator.Enable(False)
             self.bpNow_Button.Enable(True)
             self.setBPmins_combobox.Enable(True)
             self.bpdata.bp_finished()
-#            self.bpdata.get()
         
     def make_edf(self, evt):
 
@@ -545,13 +573,13 @@ class DAQPanel2(DAQPanel):
 
         self.Biosignals = []
 
-    def onCall(self, event): # wxGlade: DAQPanel_Parent.<event_handler>
+    def onCall(self, event):
         self.on_send = 0
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):    
-            self.bp_label.SetLabel("BP ")## 
-            self.heartrate_label.SetLabel("HR ")## 
-            self.spo2_label.SetLabel("SpO2 ")## 
+            self.bp_label.SetLabel("BP ")
+            self.heartrate_label.SetLabel("HR ") 
+            self.spo2_label.SetLabel("SpO2 ")
             self.RxFrame.video_panel.Hide()         
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
@@ -681,6 +709,8 @@ class DAQPanel2(DAQPanel):
         CreateDialog2.ShowModal()
         
     def onECGNodeCheck(self, x): 
+        """Simulated electrode contact measurement (ECM)"""
+        
         self.timerECGNodeCheck.Start(250)
         self.nodetimer = self.nodetimer + 1
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Checking Node Placement of ECG...")
@@ -818,7 +848,6 @@ class Lead12Dialog2(Lead12Dialog):
         Lead12Dialog.__init__(self, *args, **kwds)
         self.parent = parent
         sizersize = self.leadI_sizer.GetSize()
-        print sizersize
         bigsizer = self.leadII_sizer.GetSize()
         self.plotter_I = Plotter(self, (308, 162))
         self.plotter_II = Plotter(self, (308, 162))
