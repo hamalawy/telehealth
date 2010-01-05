@@ -45,7 +45,8 @@ from matplotlib import pyplot
 import sys
 sys.path.append('triage/')
 sys.path.append('voip/')
-import triage, linphone
+import triage
+import linphone
 import Image
 import tempfile
 import cStringIO
@@ -246,11 +247,9 @@ class RxFrame2(RxFrame):
         self.stop_button.Enable(False)
 
         if self.steth_status == 'Record':
-#            print "r"
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Record...")
             self.record_timer.Stop()
         elif self.steth_status == 'Play':
-#            print "p"
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Play...")
             self.play_timer.Stop()
             
@@ -412,10 +411,10 @@ class DAQPanel2(DAQPanel):
     def SaveQuery(self):
         """Displays a dialog box that prompts the user to save data"""
         
-        CallAfter(self.RxFrame.DestroyReferPanel)
         dlg = wx.MessageDialog(self, 'Do you want to save data?', '', \
                                 wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
         dlg.ShowModal()
+        CallAfter(self.RxFrame.DestroyReferPanel)
         
     def ClearPatient(self):
         """Clear patient information panel"""
@@ -632,7 +631,7 @@ class DAQPanel2(DAQPanel):
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
             t = triage.Triage('triage/email.cfg')
             t.login()
-            headers = {'Subject': 'refer ' + self.RxFrame.topic, 'X-Eccs-Priority': 'emergency',
+            headers = {'Subject': self.config.get('email', 'mode') + ' ' + self.RxFrame.topic, 'X-Eccs-Priority': 'emergency',
                             'X-Eccs-Rxboxextension': '2001'}
             body = self.RxFrame.body
             afilename = ['triage/Ebido_113056.edf']

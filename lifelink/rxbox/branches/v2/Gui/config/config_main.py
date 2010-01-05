@@ -107,7 +107,8 @@ class ConfigMain(MyApp):
     def display_file_dialog(self):
         file_dialog = wx.FileDialog(self.frame)
         file_dialog.ShowModal()
-        return file_dialog.GetPath()
+        temp_list = file_dialog.GetPath().split('/')
+        return 'simulators/' + temp_list[-1]
         
     def onCheckEmail(self, event):
         print 'email check'
@@ -157,7 +158,7 @@ class ConfigMain(MyApp):
             self.config.set('email', 'imapserver', self.imap_val.GetValue())
             self.config.set('email', 'imapuser', self.imap_user_val.GetValue())
             self.config.set('email', 'imappasswd', self.imap_pass_val.GetValue())
-            self.config.set('email', 'mode', 'email')
+            self.config.set('email', 'mode', self.email_mode.GetValue())
         
         self.config.set('im', 'simulated', self.im_simulated)
         self.config.set('voip', 'simulated', self.voip_simulated)
