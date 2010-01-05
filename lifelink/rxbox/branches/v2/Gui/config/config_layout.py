@@ -34,6 +34,7 @@ class MyApp(wx.App):
         self.bp_sim = xrc.XRCCTRL(self.frame, 'bp_sim')
         self.spo2_sim = xrc.XRCCTRL(self.frame, 'spo2_sim')
         self.email_mode = xrc.XRCCTRL(self.frame, 'email_mode')
+        self.email_sim_connection_val = xrc.XRCCTRL(self.frame, 'email_sim_connection_val')
         
         self.Bind(wx.EVT_MENU, self.onLoad, id=1)
         self.Bind(wx.EVT_MENU, self.onAbout, id=3)
