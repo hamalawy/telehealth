@@ -33,6 +33,7 @@ class MyApp(wx.App):
         self.voip_sim = xrc.XRCCTRL(self.frame, 'voip_sim')
         self.bp_sim = xrc.XRCCTRL(self.frame, 'bp_sim')
         self.spo2_sim = xrc.XRCCTRL(self.frame, 'spo2_sim')
+        self.email_mode = xrc.XRCCTRL(self.frame, 'email_mode')
         
         self.Bind(wx.EVT_MENU, self.onLoad, id=1)
         self.Bind(wx.EVT_MENU, self.onAbout, id=3)
