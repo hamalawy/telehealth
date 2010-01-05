@@ -616,68 +616,75 @@ class DAQPanel2(DAQPanel):
             self.Call_Label.Enable(True)
             self.panel = 0
             self.RxFrame.Layout()
-                        
+
+    def sendEmail(self):
+        
+        self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
+        t = triage.Triage('triage/email.cfg')
+        t.login()
+        headers = {'Subject': self.config.get('email', 'mode') + ' ' + self.RxFrame.topic, 'X-Eccs-Priority': 'emergency',
+                        'X-Eccs-Rxboxextension': '2001'}
+        body = self.RxFrame.body
+        afilename = ['triage/Ebido_113056.edf']
+        attach = {}
+        for i in afilename:
+                f = open(i, 'r')
+                attach[i] = f.read()
+                f.close()
+
+        print "sending..\n"
+        t.request(headers, body, attach)
+        self.RxFrame.RxFrame_StatusBar.SetStatusText("Data Sent...")
+        print "sent";
+
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
 
-        self.on_send = 1
+        self.timerSend.Start(5000)
+        self.sendcount += 1
+        print 'SENDING'
+        print self.sendcount
+        
         if self.with_patient_info == 0:
             CreateDialog = CreateRecordDialog2(self.RxFrame, self)
             CreateDialog.ShowModal() 
-        self.timerSend.Start(5000)
-        self.sendcount = self.sendcount + 1
-        self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-        if (self.sendcount == 2):
-
-            self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-            t = triage.Triage('triage/email.cfg')
-            t.login()
-            headers = {'Subject': self.config.get('email', 'mode') + ' ' + self.RxFrame.topic, 'X-Eccs-Priority': 'emergency',
-                            'X-Eccs-Rxboxextension': '2001'}
-            body = self.RxFrame.body
-            afilename = ['triage/Ebido_113056.edf']
-            attach = {}
-            for i in afilename:
-                    f = open(i, 'r')
-                    attach[i] = f.read()
-                    f.close()
-
-            print "sending..\n"
-            t.request(headers, body, attach)
-            print "sent";
-
-
-            self.SendStatus(self)
-
-    def onSend2(self): 
-        self.timerSend.Start(5000)
-        self.sendcount = self.sendcount + 1
-        self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-        print self.sendcount
-        if (self.sendcount == 2):
-            self.SendStatus(self)   
             
+        self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
+        print 'ASTIG'
+
+        if self.sendcount == 2:
+            
+            self.timerSend.Stop()
+            
+            if (self.config.getint('email', 'simulated') == 0):
+                self.sendEmail()
+                self.show_email_success()
+            
+            elif (self.config.getint('email', 'simulated') == 1):
+                self.SendStatus(self)
     
-    def SendStatus(self, event):
-        if (self.config.getint('triage', 'connection') == 1): 
-            print "Send to Server Successful"
+    def show_email_success(self):
+        
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
             dlg = wx.MessageDialog(self, "Send to Server Successful", "Send to Server Successful", wx.OK | wx.ICON_QUESTION)
             dlg.ShowModal()
-            self.sendtoggled = 1
-        elif (self.config.getint('triage', 'connection') == 0):  
+    
+    def SendStatus(self, event):
+        
+        if (self.config.getint('email', 'connection') == 1): 
+            print "Send to Server Successful"
+            self.show_email_success()
+
+        else:
             print "Send to Server Failed"
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Send to Server Failed")
-            self.sendtoggled = 0
             dlg = wx.MessageDialog(self, "Would you like to resend data?", "Send to Server Failed", wx.YES_NO | wx.ICON_QUESTION)
+            
             if dlg.ShowModal() == wx.ID_YES:
                 self.RxFrame.RxFrame_StatusBar.SetStatusText("Resending data to server...")
-                self.sendtoggled = 0
-                self.timerSend.Stop()    
-                self.sendcount = 1               
-                self.onSend2()
-        self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
-        self.timerSend.Stop()    
-        self.sendcount = 0
+                self.sendcount = 1
+                self.timerSend.Start(5000)
+
+        self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")              
 
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
         self.bpNow_Button.Enable(False)
