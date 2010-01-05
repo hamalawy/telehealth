@@ -115,8 +115,11 @@ class ConfigMain(MyApp):
         self.email_simulated ^= 1
         if self.email_simulated == 0:
             self.enableEmailFields()
+            self.email_sim_connection_val.Disable()
+            
         else:            
             self.disableEmailFields()
+            self.email_sim_connection_val.Enable()
 
     def enableEmailFields(self):
         self.smtp_val.Enable()
@@ -125,6 +128,7 @@ class ConfigMain(MyApp):
         self.imap_val.Enable()
         self.imap_user_val.Enable()
         self.imap_pass_val.Enable()
+        self.email_mode.Enable()
         
     def disableEmailFields(self):
         self.smtp_val.Disable()
@@ -132,7 +136,8 @@ class ConfigMain(MyApp):
         self.smtp_pass_val.Disable()
         self.imap_val.Disable()
         self.imap_user_val.Disable()
-        self.imap_pass_val.Disable()        
+        self.imap_pass_val.Disable()
+        self.email_mode.Disable()
 
     def onCheckIM(self, event):
         print 'im check'
@@ -159,6 +164,12 @@ class ConfigMain(MyApp):
             self.config.set('email', 'imapuser', self.imap_user_val.GetValue())
             self.config.set('email', 'imappasswd', self.imap_pass_val.GetValue())
             self.config.set('email', 'mode', self.email_mode.GetValue())
+            
+        if self.email_simulated == 1:
+            if self.email_sim_connection_val.GetValue() == 'Connected':
+                self.config.set('email', 'connection', '1')
+            else:
+                self.config.set('email', 'connection', '0')
         
         self.config.set('im', 'simulated', self.im_simulated)
         self.config.set('voip', 'simulated', self.voip_simulated)
@@ -203,16 +214,24 @@ class ConfigMain(MyApp):
             self.email_simulated = 0
             self.email_sim.SetValue(False)
             self.enableEmailFields()
+            self.email_sim_connection_val.Disable()
             self.smtp_val.SetValue(self.config_load.get('email', 'smtpserver'))
             self.smtp_user_val.SetValue(self.config_load.get('email', 'smtpuser'))
             self.smtp_pass_val.SetValue(self.config_load.get('email', 'smtppasswd'))
             self.imap_val.SetValue(self.config_load.get('email', 'imapserver'))
             self.imap_user_val.SetValue(self.config_load.get('email', 'imapuser'))
             self.imap_pass_val.SetValue(self.config_load.get('email', 'imappasswd'))
+            self.email_mode.SetValue(self.config_load.get('email', 'mode'))
             
         if self.config_load.get('email', 'simulated') == '1':
             self.email_simulated = 1
             self.disableEmailFields()
+            self.email_sim_connection_val.Enable()
+            if self.config_load.get('email', 'connection') == '0':
+                self.email_sim_connection_val.SetValue('Not Connected')
+            else:
+                self.email_sim_connection_val.SetValue('Connected')
+                
             self.email_sim.SetValue(True)
             
         if self.config_load.get('im', 'simulated') == '0':
