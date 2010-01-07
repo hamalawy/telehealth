@@ -328,10 +328,9 @@ class DAQPanel2(DAQPanel):
         self.spo2_infolabel.SetLabel('Pulse Ox ready')
         self.bp_isCyclic = 0
         self.ecg_counter = 0
-
         self.on_send = 0
         self.with_patient_info = 0
-        
+        self.ClearPatient()
     def init_daqtimers(self):
         """Initializes various timers for DAQ Panel of RxBox"""
         
@@ -397,14 +396,13 @@ class DAQPanel2(DAQPanel):
             self.dbuuid = ""
             self.dbuuid = str(uuid.uuid1())
             print "uuid = ", self.dbuuid
-            self.rxboxDB.dbinsert('sessioninfo','uuid',self.dbuuid)
+            self.rxboxDB.dbinsert('sessions','uuid',self.dbuuid)
             #set start time in table: sessioninfo
             dbstart = str(datetime.datetime.today())
-            self.rxboxDB.dbupdate('sessioninfo','starttime',dbstart,'uuid',self.dbuuid)
-            self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','BP Ready')
-            self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Pulse Ox Ready')       
-            self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Pulse Ox Ready')
-                    
+            self.rxboxDB.dbupdate('sessions','starttime',dbstart,'uuid',self.dbuuid)
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','BP Ready')
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Pulse Ox Ready')
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Pulse Ox Ready')       
             self.Call_Label.SetLabel("Call")
             self.bpvalue_label.Enable(True)
             self.bpmvalue_label.Enable(True)
@@ -420,7 +418,7 @@ class DAQPanel2(DAQPanel):
             self.StartStop_Label.SetLabel("Stop")
             self.bp_isCyclic = 1
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")
-
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Acquiring biomedical readings...')
             self.spo2data.get()
             self.bpdata.get()
             self.onECGNodeCheck(self)
@@ -476,8 +474,8 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.AgeValue.SetValue("")
         self.RxFrame.AgeCombo.SetValue("")
         self.RxFrame.BirthYear.SetValue("")
-        self.RxFrame.BirthMonth.SetSelection(0)
-        self.RxFrame.BirthDayCombo.SetValue('')
+        self.RxFrame.BirthMonth.SetValue("")        
+        self.RxFrame.BirthDayCombo.SetValue("")
             
     def onEstimate(self, evt):
         
@@ -557,13 +555,13 @@ class DAQPanel2(DAQPanel):
         
         self.spo2data.get()
         print 'Spo2 data acquired'
-        self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Spo2 data acquired')
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Spo2 data acquired')
        
     def on_timerbp(self, evt):
         
         self.bpdata.get()
         print 'BP data acquired'
-        self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','BP data acquired')
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','BP data acquired')
                
     def pressure_update(self, evt):
         """Method that handles the inflating bar of blood pressure"""
@@ -627,7 +625,7 @@ class DAQPanel2(DAQPanel):
     def onCall(self, event):
         self.on_send = 0
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
-        self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Requesting connection to triage...')       
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Requesting connection to triage...')
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):    
             self.bp_label.SetLabel("BP ")
             self.heartrate_label.SetLabel("HR ") 
@@ -645,7 +643,7 @@ class DAQPanel2(DAQPanel):
             self.RxFrame.Layout()             
         elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) : 
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Shown.")
-            self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Acquiring biomedical readings... Call Panel Shown.')
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Acquiring biomedical readings... Call Panel Shown.')
             self.RxFrame.ReferPanel.Show()
             self.RxFrame.video_panel.Hide()
             self.Call_Label.SetLabel(">>  ") 
@@ -658,7 +656,7 @@ class DAQPanel2(DAQPanel):
             self.RxFrame.Layout()               
         else:
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Hidden.")
-            self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Acquiring biomedical readings... Call Panel Hidden.')
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Acquring biomedical readings... Call Panel Hidden.')
             self.RxFrame.ReferPanel.Hide()
             self.RxFrame.video_panel.Show()
             self.Call_Button.Enable(False)
@@ -675,6 +673,7 @@ class DAQPanel2(DAQPanel):
     def sendEmail(self):
         
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Sending Data to Server...')
         t = triage.Triage('triage/email.cfg')
         t.login()
         headers = {'Subject': self.config.get('email', 'mode') + ' ' + self.RxFrame.topic, 'X-Eccs-Priority': 'emergency',
@@ -690,6 +689,7 @@ class DAQPanel2(DAQPanel):
         print "sending..\n"
         t.request(headers, body, attach)
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Data Sent...")
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Data Sent...')
         print "sent";
 
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
@@ -704,7 +704,7 @@ class DAQPanel2(DAQPanel):
             CreateDialog.ShowModal() 
             
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
-        print 'ASTIG'
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Sending Data to Server...')
 
         if self.sendcount == 2:
             
@@ -720,6 +720,7 @@ class DAQPanel2(DAQPanel):
     def show_email_success(self):
         
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Send to Server Successful')
             dlg = wx.MessageDialog(self, "Send to Server Successful", "Send to Server Successful", wx.OK | wx.ICON_QUESTION)
             dlg.ShowModal()
     
@@ -732,6 +733,7 @@ class DAQPanel2(DAQPanel):
         else:
             print "Send to Server Failed"
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Send to Server Failed")
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Send to Server Failed')
             dlg = wx.MessageDialog(self, "Would you like to resend data?", "Send to Server Failed", wx.YES_NO | wx.ICON_QUESTION)
             
             if dlg.ShowModal() == wx.ID_YES:
@@ -740,7 +742,7 @@ class DAQPanel2(DAQPanel):
                 self.timerSend.Start(5000)
 
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")              
-
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Acquiring biomedical readings...')
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
         self.bpNow_Button.Enable(False)
         self.bpdata.get()
@@ -776,7 +778,7 @@ class DAQPanel2(DAQPanel):
         self.nodetimer = self.nodetimer + 1
         if (self.nodetimer == 1):
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Checking Node Placement of ECG...")
-            self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Checking Node Placement of ECG...')
+            self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Checking Node Placement of ECG...')
             self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_connected.png", wx.BITMAP_TYPE_ANY))
             self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png", wx.BITMAP_TYPE_ANY))
             self.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_connected.png", wx.BITMAP_TYPE_ANY))
@@ -839,7 +841,7 @@ class DAQPanel2(DAQPanel):
         elif (self.nodetimer == 16):
             self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png", wx.BITMAP_TYPE_ANY))
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
-            self.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.dbuuid,'status message','','Acquiring biomedical readings...')
+            self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.RxFrame.DAQPanel.dbuuid,'status message','','Acquiring biomedical readings...')
             self.timerECGNodeCheck.Stop()    
             self.nodetimer = 0
 #            self.ecgdata.get()
@@ -857,7 +859,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.PatientPhoneNumber_TextCtrl.SetValue(self.RxFrame.PhoneNumberValue.GetValue())
         self.PatientGender_Combo.SetValue(self.RxFrame.GenderCombo.GetValue())
         self.PatientAge_TextCtrl.SetValue(self.RxFrame.AgeValue.GetValue())
-        self.PatientAgeDMY_Combo.SetValue(self.RxFrame.AgeCombo.GetValue())
+        self.PatientBirth_Combo.SetValue(self.RxFrame.AgeCombo.GetValue())
         self.RemarkValue.SetValue(self.RxFrame.DAQPanel.RemarkValueDaq.GetValue())
         
     def OnCreateRecord(self, event): # wxGlade: CreateRecordDialog.<event_handler>
@@ -867,7 +869,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         LastName = self.PatientLastName_TextCtrl.GetValue()
         Gender = self.PatientGender_Combo.GetValue()
         Age = self.PatientAge_TextCtrl.GetValue()
-        DMY = self.PatientAgeDMY_Combo.GetValue()
+        Birth = self.PatientBirth_Combo.GetValue()
         Validity = self.PatientAgeValidity_Combo.GetValue()
         Address = self.PatientAddress_TextCtrl.GetValue()
         Phone = self.PatientPhoneNumber_TextCtrl.GetValue()        
@@ -883,17 +885,17 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.RxFrame.PhoneNumberValue.SetValue(Phone)
         self.RxFrame.GenderCombo.SetValue(Gender)
         self.RxFrame.AgeValue.SetValue(Age)
-        self.RxFrame.AgeCombo.SetValue(DMY)
+        self.RxFrame.AgeCombo.SetValue(Birth)
         self.RxFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())     
         self.Destroy()
         self.RxFrame.DAQPanel.with_patient_info = 1
-        self.RxFrame.DAQPanel.rxboxDB.dbpatientinsert('patientinfo','lastname', 'firstname', \
-            'middlename', 'address', 'phonenumber', 'age', 'dmy', 'gender', 'uuid', \
-            LastName, FirstName, MiddleName, Address, Phone, Age, DMY, Gender, self.RxFrame.DAQPanel.dbuuid)
+        self.RxFrame.DAQPanel.rxboxDB.dbpatientinsert('patients','lastname', 'firstname', \
+            'middlename', 'address', 'phonenumber', 'age', 'birth', 'gender', 'uuid', \
+            LastName, FirstName, MiddleName, Address, Phone, Age, Birth, Gender, self.RxFrame.DAQPanel.dbuuid)
         if self.RxFrame.DAQPanel.on_send == 0:
  #           CallAfter(self.RxFrame.CreateReferPanel)
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Initiated.")
-            self.RxFrame.DAQPanel.rxboxDB.dbbiomedinsert('biomedinfo','uuid','biomedinfotype','biomedfilename','biomedcontent',self.RxFrame.DAQPanel.dbuuid,'status message','','Acquiring biomedical readings... Call Panel Initiated.')
+            self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.RxFrame.DAQPanel.dbuuid,'status message','','Acquiring biomedical readings... Call Panel Initiated.')
 
         
 class Lead12Dialog2(Lead12Dialog):

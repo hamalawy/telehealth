@@ -33,18 +33,17 @@ class rxboxDB:
 		"""creates session, patient and biomed information tables in the database"""
 		# creates session information table (if does not exist) and uses it.
 		self.cursor.execute("""
-			create table if not exists sessioninfo 
+			create table if not exists sessions 
 			(
 				uuid varchar(36),
 				sessionid varchar(36),
 				starttime datetime,
-				endtime datetime,
 				primary key (uuid)
 			)
 			""") 
 		# creates patient information table (if does not exist) and uses it.
 		self.cursor.execute("""
-			create table if not exists patientinfo 
+			create table if not exists patients 
 			(
 				uuid varchar(36),
 				lastname varchar(20),
@@ -53,21 +52,21 @@ class rxboxDB:
 				address varchar(100),
 				phonenumber varchar(20),
 				age varchar(15),
-				dmy varchar(15),
+				birth varchar(15),
 				gender varchar(10),
-				foreign key (uuid) references sessioninfo(uuid)
+				foreign key (uuid) references session(uuid)
 			)
 			""") 
 		# creates biomedical information table (if does not exist) and uses it.			
 		self.cursor.execute("""
-			create table if not exists biomedinfo 
+			create table if not exists biosignals 
 			(
 				uuid varchar(36),
-				biomedinfotype varchar(20),
-				biomedfilename varchar(30),
-				biomedcontent longblob,
+				type varchar(20),
+				filename varchar(30),
+				content longblob,
 				timestamp timestamp,
-				foreign key (uuid) references sessioninfo(uuid)
+				foreign key (uuid) references session(uuid)
 			)
 			""") 	
 	
@@ -91,7 +90,7 @@ class rxboxDB:
 						col4name,col5name,col6name,col7name,col8name,\
 						col9name,value1,value2,value3,value4,value5,\
 						value6,value7,value8,value9):
-		"""inserts a new patient information to the patientinfo table"""
+		"""inserts a new patient information to the patients table"""
 		self.cursor.execute("""
 		    	insert into %s (%s,%s,%s,%s,%s,%s,%s,%s,%s) 
 				values 
@@ -105,7 +104,7 @@ class rxboxDB:
 						col3name,value3,col4name,value4,col5name,\
 						value5,col6name,value6,col7name,value7,col8name,\
 						value8,condition1,condition2):
-		"""updates a patient information to the patientinfo table"""		
+		"""updates a patient information to the patients table"""		
 		self.cursor.execute("""
 		    	update %s set 
 					%s = '%s',
@@ -122,9 +121,9 @@ class rxboxDB:
 						value5,col6name,value6,col7name,value7,col8name,\
 						value8,condition1,condition2))
 						
-	def dbbiomedinsert(self,tblname,col1name,col2name,col3name,\
+	def dbbiosignalsinsert(self,tblname,col1name,col2name,col3name,\
 						col4name,value1,value2,value3,value4):
-		"""inserts a new biomed information to the biomedinfo table"""
+		"""inserts a new biomed information to the biosignals table"""
 		self.cursor.execute("""
 		    	insert into %s (%s,%s,%s,%s) 
 				values 
@@ -132,9 +131,9 @@ class rxboxDB:
 		    	"""%(tblname,col1name,col2name,col3name,col4name,\
 					value1,value2,value3,value4))
 					
-	def dbbiomedupdate(self,tblname,col1name,value1,col2name,value2,\
+	def dbbiosignalsupdate(self,tblname,col1name,value1,col2name,value2,\
 						col3name,value3,condition1,condition2):
-		"""updates a biomed information to the biomedinfo table"""
+		"""updates a biomed information to the biosignals table"""
 		self.cursor.execute("""
 		    	update %s set 
 					%s = '%s',
