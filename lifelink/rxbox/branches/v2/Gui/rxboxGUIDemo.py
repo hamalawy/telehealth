@@ -331,6 +331,7 @@ class DAQPanel2(DAQPanel):
         self.on_send = 0
         self.with_patient_info = 0
         self.ClearPatient()
+        
     def init_daqtimers(self):
         """Initializes various timers for DAQ Panel of RxBox"""
         
