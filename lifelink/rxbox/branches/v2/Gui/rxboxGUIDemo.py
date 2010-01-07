@@ -45,8 +45,10 @@ from matplotlib import pyplot
 import sys
 sys.path.append('triage/')
 sys.path.append('voip/')
+sys.path.append('im')
 import triage
 import linphone
+import messenger
 import Image
 import tempfile
 import cStringIO
@@ -126,9 +128,13 @@ class RxFrame2(RxFrame):
         
     def CreateReferPanel(self):
         """Creates the refer panel window and initializes and starts linphone process"""
+
         self.ReferPanel = ReferPanel(self, -1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL | wx.EXPAND, 4)
-        self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)        
+        if self.DAQPanel.config.getint('im', 'simulated') == 1:
+            self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)
+        else:
+            self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.sendMessage)        
         self.Layout()
 
         self.l = LinphoneHandle()
@@ -138,6 +144,26 @@ class RxFrame2(RxFrame):
         self.l.spawn()
         self.l.start()
 
+	self.m = messenger.Messenger('1001@one.telehealth.ph', 'telehealth')
+        self.m.handler_new_message = self.onMsgRcvd
+        self.m.handler_sent_message = self.onMsgSent
+        self.m.set_recipient('1000@one.telehealth.ph')
+
+        self.m.connect()
+        self.m.start()
+
+
+    def onMsgRcvd(self, conn, msg):
+	self.ReferPanel.IMtexts_Text.AppendText('DE1: ' + msg.getBody() + '\n')
+	
+    def onMsgSent(self, msg):
+        self.ReferPanel.IMtexts_Text.AppendText('RXBOX: ' + msg + '\n')
+        self.ReferPanel.IMreply_Text.Clear()
+
+    def sendMessage(self, event):
+        msg = self.ReferPanel.IMreply_Text.GetValue()
+	self.m.set_recipient('1000@one.telehealth.ph')
+        self.m.send_message(msg)
         
     def onClose(self, evt):
         """Displays a dialog prompt that asks the user to save data when user attempts to destroy the frame"""
@@ -160,8 +186,11 @@ class RxFrame2(RxFrame):
     def DestroyReferPanel(self):
         """Destroys the refer panel and stops linphone process"""
         try:
-#            self.l.stop()
-#            self.l.join()
+            self.l.stop()
+            self.l.join()
+
+            self.m.stop()
+            self.m.join()
 
             self.ReferPanel.Destroy()
             self.Layout()
