@@ -90,7 +90,6 @@ class BpSim:
         
         self.parent_panel.bpvalue_label.SetLabel(self.systolic_value + '/' + self.diastolic_value)
 
-        
     def get(self):
         
         print 'Getting bp'
@@ -168,9 +167,6 @@ class EcgSim:
                 
         ecg_file.close()
         
-#        pyplot.plot(temp_list)
-#        pyplot.show()
-        
         return temp_list
         
     def get(self):
@@ -182,8 +178,6 @@ class EcgSim:
         
         for x in range(0,len(self.ecg_list)):
             self.ecg_list_scaled.append(int(self.ecg_list[x]*1000))
-        
-#        print self.ecg_list_scaled
          
         
         
