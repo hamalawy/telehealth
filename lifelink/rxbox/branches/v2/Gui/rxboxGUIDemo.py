@@ -45,10 +45,8 @@ from matplotlib import pyplot
 import sys
 sys.path.append('triage/')
 sys.path.append('voip/')
-sys.path.append('im')
 import triage
 import linphone
-import messenger
 import Image
 import tempfile
 import cStringIO
@@ -95,6 +93,7 @@ class RxFrame2(RxFrame):
     def __init__(self, *args, **kwds):
         RxFrame.__init__(self, *args, **kwds)
         self.DAQPanel = DAQPanel2(self, self, -1)
+        self.playwav = simsensors.stethplay(self)
         self.info_daq_sizer.Add(self.DAQPanel, 1, wx.ALL | wx.EXPAND, 4)
         self.Bind(wx.EVT_CLOSE, self.onClose)
         self.topic = ''
@@ -109,18 +108,14 @@ class RxFrame2(RxFrame):
         self.SetClientSize((320,240))
         # Create a steth instance
 #        self.steth = steth.steth(self)
-        self.data = 0
-        self.chunk = 0
-        self.stream = None
-        self.p = None
-        self.wf = None
-        self.openwav = ''
+
         self.steth_status = None
         self.stop_button.Enable(False)
-        self.record_timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.record_audio, self.record_timer)
-        self.play_timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.play_audio, self.play_timer)
+#        self.record_timer = wx.Timer(self)
+#        self.Bind(wx.EVT_TIMER, self.record_audio, self.record_timer)
+#        self.play_timer = wx.Timer(self)
+#        self.Bind(wx.EVT_TIMER, self.play_audio, self.play_timer)
+
 
     def __set_properties(self):
         RxFrame.__set_properties(self)
@@ -128,13 +123,9 @@ class RxFrame2(RxFrame):
         
     def CreateReferPanel(self):
         """Creates the refer panel window and initializes and starts linphone process"""
-
         self.ReferPanel = ReferPanel(self, -1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL | wx.EXPAND, 4)
-        if self.DAQPanel.config.getint('im', 'simulated') == 1:
-            self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)
-        else:
-            self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.sendMessage)        
+        self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)        
         self.Layout()
 
         self.l = LinphoneHandle()
@@ -144,26 +135,6 @@ class RxFrame2(RxFrame):
         self.l.spawn()
         self.l.start()
 
-	self.m = messenger.Messenger('1001@one.telehealth.ph', 'telehealth')
-        self.m.handler_new_message = self.onMsgRcvd
-        self.m.handler_sent_message = self.onMsgSent
-        self.m.set_recipient('1000@one.telehealth.ph')
-
-        self.m.connect()
-        self.m.start()
-
-
-    def onMsgRcvd(self, conn, msg):
-	self.ReferPanel.IMtexts_Text.AppendText('DE1: ' + msg.getBody() + '\n')
-	
-    def onMsgSent(self, msg):
-        self.ReferPanel.IMtexts_Text.AppendText('RXBOX: ' + msg + '\n')
-        self.ReferPanel.IMreply_Text.Clear()
-
-    def sendMessage(self, event):
-        msg = self.ReferPanel.IMreply_Text.GetValue()
-	self.m.set_recipient('1000@one.telehealth.ph')
-        self.m.send_message(msg)
         
     def onClose(self, evt):
         """Displays a dialog prompt that asks the user to save data when user attempts to destroy the frame"""
@@ -186,11 +157,8 @@ class RxFrame2(RxFrame):
     def DestroyReferPanel(self):
         """Destroys the refer panel and stops linphone process"""
         try:
-            self.l.stop()
-            self.l.join()
-
-            self.m.stop()
-            self.m.join()
+#            self.l.stop()
+#            self.l.join()
 
             self.ReferPanel.Destroy()
             self.Layout()
@@ -268,7 +236,6 @@ class RxFrame2(RxFrame):
         self.play_button.Enable(False)
         self.record_button.Enable(False)
         self.steth_status = 'Record'
-        self.record_timer.Start(10)
 
     def on_steth_play(self, event): # wxGlade: RxFrame.<event_handler>
         print "Steth Sound Playing... "
@@ -277,16 +244,17 @@ class RxFrame2(RxFrame):
         self.record_button.Enable(False)
         self.play_button.Enable(False)
         self.steth_status = 'Play'
-        self.play_timer.Start(10)
-#        self.filename_hr = self.DAQPanel.config.get('spo2', 'hr_sim_type')
-#        if self.filename_hr == 'High':
-#            self.openwav = 'stethdemo/Heartbeat100bpm.wav'
-#        elif self.filename_hr == 'Low':
-#            self.openwav = 'stethdemo/Heartbeat60bpm.wav'
-#        else :
-#            self.openwav = 'stethdemo/Heartbeat80bpm.wav'
-#        self.play_audio()
-
+        self.filename_hr = self.DAQPanel.config.get('spo2', 'hr_sim_type')
+        if self.filename_hr == 'High':
+            self.openwav = 'stethdemo/Heartbeat100bpm.wav'
+        elif self.filename_hr == 'Low':
+            self.openwav = 'stethdemo/Heartbeat60bpm.wav'
+        else :
+            self.openwav = 'stethdemo/Heartbeat80bpm.wav'
+        self.playwav.start()
+        self.playwav.stop()    
+        self.playwav.join()         
+        
     def on_steth_stop(self, event): # wxGlade: RxFrame.<event_handler>
     
         self.play_button.Enable(True)
@@ -295,36 +263,17 @@ class RxFrame2(RxFrame):
 
         if self.steth_status == 'Record':
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Record...")
-            self.record_timer.Stop()
         elif self.steth_status == 'Play':
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Play...")
-            self.play_timer.Stop()        
+            self.playwav.stop()    
+            self.playwav.join()    
         self.steth_status = 'Stop'
         
     def record_audio(self, evt):
         pass
 
-    def play_audio(self, evt):
-        pass
-#        self.chunk = 1024
-#        self.wf = wave.open(self.openwav, 'rb')
-#        self.p = pyaudio.PyAudio()
-        # open stream
-#        self.stream = self.p.open(format =
-#                        self.p.get_format_from_width(self.wf.getsampwidth()),
-#                        channels = self.wf.getnchannels(),
-#                        rate = self.wf.getframerate(),
-#                        output = True)
+    
 
-        # read data
-#        self.data = self.wf.readframes(self.chunk)
-        # play stream
-#        while self.data != '':
-
-#            self.stream.write(self.data)
-#            self.data = self.wf.readframes(self.chunk)
-#        self.stream.close()
-#        self.p.terminate()
         
         
 class DAQPanel2(DAQPanel):
@@ -361,19 +310,18 @@ class DAQPanel2(DAQPanel):
         self.on_send = 0
         self.with_patient_info = 0
         self.ClearPatient()
-        
     def init_daqtimers(self):
         """Initializes various timers for DAQ Panel of RxBox"""
         
         self.timer_spo2 = wx.Timer(self)
-        self.timer2 = wx.Timer(self)
+        self.timer_bp = wx.Timer(self)
         self.timerEDF = wx.Timer(self)
         self.pressure_timer = wx.Timer(self)
         self.timerSend = wx.Timer(self)
         self.timerECG_refresh = wx.Timer(self)
         self.timerECGNodeCheck = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_timer_spo2, self.timer_spo2)
-        self.Bind(wx.EVT_TIMER, self.on_timerbp, self.timer2)
+        self.Bind(wx.EVT_TIMER, self.on_timer_bp, self.timer_bp)
         self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
@@ -471,7 +419,7 @@ class DAQPanel2(DAQPanel):
             self.referflag = 0
             self.panel = 0
             self.timer_spo2.Stop()
-            self.timer2.Stop()       
+            self.timer_bp.Stop()       
             self.timerEDF.Stop()    
             self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
@@ -586,7 +534,7 @@ class DAQPanel2(DAQPanel):
         print 'Spo2 data acquired'
         self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Spo2 data acquired')
        
-    def on_timerbp(self, evt):
+    def on_timer_bp(self, evt):
         
         self.bpdata.get()
         print 'BP data acquired'
