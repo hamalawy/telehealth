@@ -16,6 +16,9 @@ from reader import Reader
 from matplotlib import pyplot
 from string import split
 import ConfigParser
+import wave
+import pyaudio
+import threading
 
 
 class Spo2sim:
@@ -127,7 +130,7 @@ class BpSim:
         self.bpsim_counter += 1
         
         if self.parent_panel.bp_isCyclic == 1:
-            self.parent_panel.timer2.Start(self.reload_bp)
+            self.parent_panel.timer_bp.Start(self.reload_bp)
 
         if (self.bpsim_counter % 15) == 0:
             self.bpsim_counter = 0
@@ -180,8 +183,40 @@ class EcgSim:
             self.ecg_list_scaled.append(int(self.ecg_list[x]*1000))
          
         
+class stethplay(threading.Thread):        
+    def __init__(self,parent):
+        threading.Thread.__init__(self)
+        self.stopEvent = threading.Event()
+        self.stopEvent.clear()
+        self.config = ConfigParser.ConfigParser()
+        self.config.read('rxbox.cfg')
+        self.data = 0
+        self.stream = None
+        self.p = None
+        self.wf = None           
+        self.parent_frame = parent
+        self.chunk = 1024
         
+    def run(self):
+        self.wf = wave.open(self.parent_frame.openwav, 'rb')
+        self.p = pyaudio.PyAudio()
+        # open stream
+        self.stream = self.p.open(format =
+                        self.p.get_format_from_width(self.wf.getsampwidth()),
+                        channels = self.wf.getnchannels(),
+                        rate = self.wf.getframerate(),
+                        output = True)
+
+        # read data
+        self.data = self.wf.readframes(self.chunk)
+        # play stream
+        while self.data != '':
+            self.stream.write(self.data)
+            self.data = self.wf.readframes(self.chunk)
+        self.stream.close()
+        self.p.terminate()
+        self.parent_frame.record_button.Enable(True)
+        self.parent_frame.play_button.Enable(True)
         
-        
-        
-        
+    def stop(self):
+        self.stopEvent.set()
