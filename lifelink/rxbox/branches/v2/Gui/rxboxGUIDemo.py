@@ -346,7 +346,8 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.BirthDayCombo.Bind(wx.EVT_COMBOBOX, self.birthday_update)
         self.RxFrame.BirthYear.Bind(wx.EVT_TEXT, self.birthday_update)    
         
-        self.ecgdata.ecg_list = self.ecgdata.get_plot()
+        if self.config.get('ecg', 'sim_type') != 'Normal':
+            self.ecgdata.ecg_list = self.ecgdata.get_plot()
         
         self.patient1 = edf.Patient('1', 'Timothy', 'Cena', 'Ebido', 'Servan', \
                                     'Male', '09.27.89', '19')
@@ -533,14 +534,12 @@ class DAQPanel2(DAQPanel):
         ecg_plot = []
         ecg_plot2 = []
 
-#        self.ecgdata.ecg_list = []
+        if self.config.get('ecg', 'sim_type') == 'Normal':
+            self.ecgdata.ecg_list = []
         
-#        for y in range(0, 4):
-#            for i in range(100, 400):
-#                self.ecgdata.ecg_list.append(self.getlead[1][i])
-
-#        pyplot.plot(self.ecgdata.ecg_list[:1200])
-#        pyplot.show()
+            for y in range(0, 4):
+                for i in range(100, 400):
+                    self.ecgdata.ecg_list.append(self.getlead[1][i])
 
         if self.ECGplotcounter == 1:
             self.plotter.plot(self.ecgdata.ecg_list[0:300])
