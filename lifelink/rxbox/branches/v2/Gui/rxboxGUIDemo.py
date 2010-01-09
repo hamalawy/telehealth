@@ -671,14 +671,13 @@ class DAQPanel2(DAQPanel):
 
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
 
-        self.timerSend.Start(5000)
         self.sendcount += 1
         print 'SENDING'
         print self.sendcount
         
         if self.with_patient_info == 0:
             CreateDialog = CreateRecordDialog2(self.RxFrame, self)
-            CreateDialog.ShowModal() 
+            CreateDialog.ShowModal()
             
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Sending Data to Server...')
@@ -873,6 +872,10 @@ class CreateRecordDialog2(CreateRecordDialog):
  #           CallAfter(self.RxFrame.CreateReferPanel)
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Initiated.")
             self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.RxFrame.DAQPanel.dbuuid,'status message','','Acquiring biomedical readings... Call Panel Initiated.')
+            
+        self.RxFrame.DAQPanel.timerSend.Start(5000)
+        
+        
 
         
 class Lead12Dialog2(Lead12Dialog):
