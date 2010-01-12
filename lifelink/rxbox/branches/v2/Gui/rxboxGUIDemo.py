@@ -272,10 +272,6 @@ class RxFrame2(RxFrame):
     def record_audio(self, evt):
         pass
 
-    
-
-        
-        
 class DAQPanel2(DAQPanel):
 
     def __init__(self, parent, *args, **kwds):
@@ -310,6 +306,7 @@ class DAQPanel2(DAQPanel):
         self.on_send = 0
         self.with_patient_info = 0
         self.ClearPatient()
+        
     def init_daqtimers(self):
         """Initializes various timers for DAQ Panel of RxBox"""
         
@@ -671,6 +668,7 @@ class DAQPanel2(DAQPanel):
 
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
 
+        self.on_send = 1
         self.sendcount += 1
         print 'SENDING'
         print self.sendcount
@@ -873,10 +871,8 @@ class CreateRecordDialog2(CreateRecordDialog):
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Initiated.")
             self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.RxFrame.DAQPanel.dbuuid,'status message','','Acquiring biomedical readings... Call Panel Initiated.')
             
-        self.RxFrame.DAQPanel.timerSend.Start(5000)
-        
-        
-
+        if self.RxFrame.DAQPanel.on_send == 1:
+            self.RxFrame.DAQPanel.timerSend.Start(5000)
         
 class Lead12Dialog2(Lead12Dialog):
     """Creates the 12 Lead Dialog Window where the 12 leads will be plotted
