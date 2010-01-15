@@ -54,7 +54,7 @@ class rxboxDB:
 				age varchar(15),
 				birth varchar(15),
 				gender varchar(10),
-				foreign key (uuid) references session(uuid)
+				foreign key (uuid) references sessions(uuid)
 			)
 			""") 
 		# creates biomedical information table (if does not exist) and uses it.			
@@ -66,7 +66,7 @@ class rxboxDB:
 				filename varchar(30),
 				content longblob,
 				timestamp timestamp,
-				foreign key (uuid) references session(uuid)
+				foreign key (uuid) references sessions(uuid)
 			)
 			""") 	
 	
