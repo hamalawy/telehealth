@@ -140,13 +140,14 @@ class RxFrame2(RxFrame):
         self.l.spawn()
         self.l.start()
 
-        self.m = messenger.Messenger('1001@one.telehealth.ph', 'telehealth')
-        self.m.handler_new_message = self.onMsgRcvd
-        self.m.handler_sent_message = self.onMsgSent
-        self.m.set_recipient('1000@one.telehealth.ph')
+        if self.DAQPanel.config.getint('im', 'simulated') == 0:
+            self.m = messenger.Messenger('1001@one.telehealth.ph', 'telehealth')
+            self.m.handler_new_message = self.onMsgRcvd
+            self.m.handler_sent_message = self.onMsgSent
+            self.m.set_recipient('1000@one.telehealth.ph')
 
-        self.m.connect()
-        self.m.start()
+            self.m.connect()
+            self.m.start()
 
 
     def onMsgRcvd(self, conn, msg):
@@ -456,6 +457,7 @@ class DAQPanel2(DAQPanel):
             self.SaveQuery()
             self.ClearPatient()
             self.with_patient_info = 0
+            print 'stopping...'
             CallAfter(self.RxFrame.DestroyReferPanel)
 
     def SaveQuery(self):
