@@ -175,10 +175,9 @@ class RxFrame2(RxFrame):
     def updateIM(self, evt):
         """Copy the contents of the im text input box and show it to an another text box"""
 
-        prev = self.ReferPanel.IMtexts_Text.GetValue()
-        reply = self.ReferPanel.IMreply_Text.GetValue() + '\n'
-        self.ReferPanel.IMtexts_Text.SetValue(prev + reply)
-        self.ReferPanel.IMreply_Text.SetValue("")   
+        prev = self.ReferPanel.IMreply_Text.GetValue()
+        self.ReferPanel.IMtexts_Text.AppendText('RxBox: ' + prev + '\nDE: ' + prev + '\n')
+        self.ReferPanel.IMreply_Text.Clear() 
         
     def DestroyReferPanel(self):
         """Destroys the refer panel and stops linphone process"""
