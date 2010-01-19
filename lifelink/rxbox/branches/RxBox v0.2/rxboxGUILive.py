@@ -24,12 +24,13 @@ import datetime
 from lead12dialog import Lead12Dialog
 import wx.lib.plot as plot
 from ecgplotter import Plotter
-from ecgplotter import extendPlotter
 
 import Image
 import tempfile
 import cStringIO
-from ctypes_opencv import *
+#from ctypes_opencv import *
+import opencv
+from opencv import highgui
 
 import dicom
 import numpy
@@ -45,7 +46,6 @@ from network import mailcheck
 from rxstatbar import RxStatusBar
 from rxsensor import ECG
 from scipy.misc import fromimage
-
 
 class RxFrame2(RxFrame, threading.Thread):
     def __init__(self, *args, **kwds):
@@ -90,7 +90,6 @@ class RxFrame2(RxFrame, threading.Thread):
         self.play_timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.play_audio, self.play_timer)
 
-##        self.vid_timer.Start(20)
         self.start()
        
 
@@ -105,18 +104,11 @@ class RxFrame2(RxFrame, threading.Thread):
                 print "User Authenticated"
                 statusECG = ECG(self).device_ready()
                 print statusECG
-##                statusSPO2 = SPO2(self,'COM7').POST()
-##                print statusSPO2
-##                statusBP = BP(self).POST()
-##                print statusBP
-                status ='ECG: \n'+ statusECG#+'\n\nSPO2:\n\n'+statusSPO2+\
-                                 #'\n\nBP:\n\n'+statusBP
-                device_ready = DeviceDialog2(status,self)
-                
-               
+                device_ready = DeviceDialog2(statusECG,self)
+                statusSPO2 = SPO2(self).POST()
+                print statusSPO2
                 device_ready.ShowModal()
                 self.SetTitle("RxBox - Philippine General Hospital" + ' - ' + self.username)
-                #del bp
                 dlg.Destroy()
 
             else:
@@ -216,17 +208,14 @@ class RxFrame2(RxFrame, threading.Thread):
 
     def run(self):
         while(True):
-            self.on_vid_display()                  
+#            self.on_vid_display()                  
+            pass
 
     def on_vid_display(self):
         self.vidfile = 'Photos/vidtemp.jpg'
-        #fd, fname = tempfile.mkstemp('.jpg')
         img = highgui.cvQueryFrame(self.cap)
         highgui.cvSaveImage(self.vidfile,img)
-        #self.rename_tempfile(fname,self.vidfile)
-        #del fname, fd
         self.displayImage()
-        #event.RequestMore()
 
     def displayImage(self, offset=(0,0)):
         infile = open(self.vidfile, "rb")
@@ -262,7 +251,7 @@ class RxFrame2(RxFrame, threading.Thread):
         self.record_button.Enable(False)
         self.play_button.Enable(False)
         self.steth_status = 'Play'
-        self.steth.init_play()
+        self.steth.init_play('Sounds/output.wav')
         self.play_timer.Start(10)
 
     def on_steth_stop(self, event): # wxGlade: RxFrame.<event_handler>
@@ -293,12 +282,15 @@ class DeviceDialog2(DeviceDialog):
     def __init__(self, status, *args, **kwds):
         DeviceDialog.__init__(self, *args, **kwds)
         self.status = status
-        self.Device_info.SetLabel(self.status)
+        statusSPO2 = SPO2(self).POST()
+        statusBP = BP(self).POST()
+        self.Device_info.SetLabel('ECG: \n'+ self.status+'\n\nSPO2:\n\n'+statusSPO2+\
+                                  '\n\nBP:\n\n'+statusSPO2)
         
     def onDeviceCheck(self):
         statusECG = ECG().device_ready()
-        statusSPO2 = SPO2(self,'COM7').POST()
-        statusBP = BP(self,'COM6').POST()
+        statusSPO2 = SPO2(self).POST()
+        statusBP = BP(self).POST()
         self.Device_info.SetLabel('ECG: \n'+ statusECG+'\n\nSPO2:\n\n'+statusSPO2+\
                                   '\n\nBP:\n\n'+statusBP)
 
@@ -310,7 +302,6 @@ class DAQPanel2(DAQPanel):
 
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self,(1080,380))
-        self.plotter.plotter.SetEnableZoom(False)
         self.ecg_vertical_sizer.Add(self.plotter.plotpanel,1,\
                                     wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
 
@@ -318,14 +309,10 @@ class DAQPanel2(DAQPanel):
         self.timer2 = wx.Timer(self)
         self.timerEDF = wx.Timer(self)
         self.pressure_timer = wx.Timer(self)
-        #self.timerSend = wx.Timer(self)
-        #self.timerECG_refresh = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_timer1, self.timer1)
         self.Bind(wx.EVT_TIMER, self.get_bp, self.timer2)
         self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
-        #self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
-        #self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
         self.parentFrame.isEstimated.Bind(wx.EVT_CHECKBOX, self.onEstimate)
 
         self.timerECG = wx.Timer(self)
@@ -335,9 +322,6 @@ class DAQPanel2(DAQPanel):
         self.Bind(wx.EVT_TIMER, self.plotnext, self.plotinterval)
 
         self.ECGdata =[]
-        #for i in range(0,7500):
-         #   self.ECGdata.append(0)
-        
         self.Biosignals = []
         self.ECGcount = 0
         
@@ -351,21 +335,15 @@ class DAQPanel2(DAQPanel):
         self.ecg_counter = 0
         self.ecg_first = 0
         self.on_check = 0
-        #self.getlead = ECG().ecg_lead()
 
-        self.bp = BP(self,'COM6')
-        self.bp_fresh = True
-        self.spo2 = SPO2(self,'COM7')
-        self.spo2_fresh = True
+        self.bp = BP(self,'COM9')
+        self.spo2 = SPO2(self,port='COM10')
 
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 250, size=(20, 100),style=wx.GA_VERTICAL)
         
         self.parentFrame.AgeValue.Enable(False)
         self.parentFrame.AgeCombo.Enable(False)
         self.bp_pressure_indicator.Enable(False)
-
-        #self.SPO2_status_check()
-        #self.BP_status_check()
 
     def onStartStop(self, event):
 
@@ -386,9 +364,9 @@ class DAQPanel2(DAQPanel):
             self.Send_Button.Enable(True)
             self.Send_Label.Enable(True)
             self.lead12_button.Enable(True)
-            self.parentFrame.stop_button.Enable(False)
-            self.parentFrame.play_button.Enable(False)
-            self.parentFrame.record_button.Enable(False)
+            self.stop_button.Enable(False)
+            self.play_button.Enable(False)
+            self.record_button.Enable(False)
             self.StartStop_Button.SetBitmapLabel(wx.Bitmap("Icons/StopButton.png",wx.BITMAP_TYPE_ANY))
             self.StartStop_Button.SetToolTipString("Stop RxBox session")
             self.StartStop_Label.SetLabel("Stop")
@@ -398,23 +376,12 @@ class DAQPanel2(DAQPanel):
             self.checkTelehealth()
             self.checkGmail()
 
-            if self.bp_fresh:
-                self.bp_fresh = False
-            else:
-                self.bp.OpenSerial()
-
-            if self.spo2_fresh:
-                self.spo2_fresh = False
-            else:
-                self.spo2.OpenSerial()
-
 
             self.onBPCyclic()
             self.get_bp()     
             self.timer1.Start(1000)
             self.timerEDF.Start(15000)
-            self.timerECG.Start(40000)
-            
+            self.timerECG.Start(30000)
             
         else:
             self.bpNow_Button.Enable(True)
@@ -424,9 +391,9 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(False)
             self.Send_Button.Enable(False)
             self.lead12_button.Enable(False)
-            self.parentFrame.stop_button.Enable(True)
-            self.parentFrame.play_button.Enable(True)
-            self.parentFrame.record_button.Enable(True)
+            self.stop_button.Enable(True)
+            self.play_button.Enable(True)
+            self.record_button.Enable(True)
             self.bp_isCyclic = 0
             self.refreshECMbitmap()
 
@@ -437,9 +404,6 @@ class DAQPanel2(DAQPanel):
             self.plotinterval.Stop()
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
-
-            self.bp.nibp.close()
-            self.spo2.CloseSerial()
             
             self.SaveQuery()
             
@@ -448,44 +412,39 @@ class DAQPanel2(DAQPanel):
     def checkTelehealth(self):
 
         ip ='one.telehealth.ph'
-        checknet = ping(ip,self.parentFrame)
+        checknet = ping(ip)
         average = checknet.start()
        
         Txtime = []
-        #self.parentFrame.RxFrame_StatusBar.SetStatusText("\t\t Connecting...",1)
         print average
-##   
-##        if average==0:
-##            self.parentFrame.RxFrame_StatusBar.neticon.SetBitmap(wx.Bitmap("Icons/telehealth_down.png",wx.BITMAP_TYPE_ANY))
-##            dlg = wx.MessageDialog(self,"Reconnect?","Telehealth Server Unavailable",wx.YES_NO | wx.ICON_QUESTION)
-##            if dlg.ShowModal() == wx.ID_YES:
-##                #self.parentFrame.RxFrame_StatusBar.SetStatusText("\t\t Reconnecting...",1)
-##                self.checkTelehealth()
-##            else:
-##                #self.parentFrame.RxFrame_StatusBar.SetStatusText("\t\t Not Connected!",1)
-##                dlg.Destroy()
-##                
-##                
-##                
-##            #self.parentFrame.RxFrame_StatusBar.SetStatusText("\t\t Not cionnected!",1)
-##           
-##        else:          
-##            self.parentFrame.RxFrame_StatusBar.neticon.SetBitmap(wx.Bitmap("Icons/telehealth_up.png",wx.BITMAP_TYPE_ANY))
-##           # self.parentFrame.RxFrame_StatusBar.SetStatusText("\t Ave:%dms"%average,1)
-##            self.parentFrame.RxFrame_StatusBar.neticon.SetToolTipString("Network Available\n%s"%checknet.info)
+   
+        if average==0:
+            self.parentFrame.RxFrame_StatusBar.neticon.SetBitmap(wx.Bitmap("Icons/telehealth_down.png",wx.BITMAP_TYPE_ANY))
+            dlg = wx.MessageDialog(self,"Reconnect?","Telehealth Server Unavailable",wx.YES_NO | wx.ICON_QUESTION)
+            if dlg.ShowModal() == wx.ID_YES:
+                self.parentFrame.RxFrame_StatusBar.SetStatusText("\t\t Reconnecting...",1)
+                self.checkTelehealth()
+            else:
+                self.parentFrame.RxFrame_StatusBar.SetStatusText("\t\t Not Connected!",1)
+                dlg.Destroy()
+                
+        else:          
+            self.parentFrame.RxFrame_StatusBar.neticon.SetBitmap(wx.Bitmap("Icons/telehealth_up.png",wx.BITMAP_TYPE_ANY))
+            self.parentFrame.RxFrame_StatusBar.SetStatusText("\t Average:%dms"%checknet.average,1)
+            self.parentFrame.RxFrame_StatusBar.neticon.SetToolTipString("Network Available\n%s"%checknet.info)
 
     def checkGmail(self):
 
-        server = mailcheck(self.parentFrame)
-        status = server.start()
+        server = mailcheck()
+        server.start()
 
-##        if status==True:
-##            self.parentFrame.RxFrame_StatusBar.mailicon.SetBitmap(wx.Bitmap("Icons/email_up.png",wx.BITMAP_TYPE_ANY))
-##
-##
-##        else:
-##            self.parentFrame.RxFrame_StatusBar.mailicon.SetBitmap(wx.Bitmap("Icons/email_down.png",wx.BITMAP_TYPE_ANY))
-##
+        if server==True:
+            self.parentFrame.RxFrame_StatusBar.mailicon.SetBitmap(wx.Bitmap("Icons/email_up.png",wx.BITMAP_TYPE_ANY))
+
+
+        else:
+            self.parentFrame.RxFrame_StatusBar.mailicon.SetBitmap(wx.Bitmap("Icons/email_down.png",wx.BITMAP_TYPE_ANY))
+
     def refreshECMbitmap(self):
         
         self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_initial.png"))
@@ -549,7 +508,6 @@ class DAQPanel2(DAQPanel):
         
 
     def getECGdata(self,evt):
-    #def getECGdata(self,threading.Thread)
         
         
         self.myECG  = rxsensor.ECG(self)
@@ -604,11 +562,13 @@ class DAQPanel2(DAQPanel):
         self.bpNow_Button.Enable(False)
         self.setBPmins_combobox.Enable(False)
         self.bp.send_request()
-        self.pressure_timer.Start(200)
+        if self.bp.status is None:
+            self.pressure_timer.Start(200)
+        else:
+            print self.bp.status
 
     def pressure_update(self, evt):
         print "timer for pressure"
-        #self.bp.OpenSerial()
         press = self.bp.get_reply()
         self.bp.nibp.read(1)
         press = int(press[1:4])
@@ -618,7 +578,6 @@ class DAQPanel2(DAQPanel):
             self.setBPmins_combobox.Enable(False)
             self.bp_pressure_indicator.SetValue(press)
             self.bp_infolabel.SetLabel(str(press)+' mmHg')                
-            #self.bp_pressure_indicator.SetValue(press)
         else:
             self.bp_pressure_indicator.SetValue(0)
             self.bp_infolabel.SetLabel('BP Acquired')
@@ -676,8 +635,6 @@ class DAQPanel2(DAQPanel):
     def onCall(self, event): # wxGlade: DAQPanel_Parent.<event_handler>
 
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):   
-#            CreateDialog = CreateRecordDialog2(self.parentFrame,self)
-#            CreateDialog.ShowModal()
             CallAfter(self.parentFrame.CreateReferPanel)
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
             self.Call_Label.SetLabel(">>  ")       
@@ -712,9 +669,6 @@ class DAQPanel2(DAQPanel):
     
     def SendStatus(self,event):
         if (self.sendtoggled == 0): 
-#            RxFrame_StatusBar_fields = ["success"]
-#            for i in range(len(RxFrame_StatusBar_fields)):
-#                self.RxFrame_StatusBar.SetStatusText(RxFrame_StatusBar_fields[i], i)        
             print "Send to Server Successful"
             self.parentFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
             self.sendtoggled = 1
@@ -726,23 +680,13 @@ class DAQPanel2(DAQPanel):
         self.sendcount = 0
 
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
-#        self.bpNow_Button.Enable(False)
-##        self.bpdata.get()
-        if self.bp_fresh:
-            self.bp_fresh = False
-        else:
-            self.bp.OpenSerial()
         self.get_bp()
         self.pressure_timer.Start(20)
 
     def SPO2_status_check(self):
         message1= message2 = ''
         self.spo2.POST()
-        #print self.spo2.device_message
-        #time.sleep(2)
         self.spo2.device_ready()
-        #time.sleep(2)
-        #self.spo2.patient_ready()
         message1 = 'FV:'+self.spo2.FirmwareVersion+'\n'+self.spo2.dm
         print self.spo2.patient_message
         message2 = 'SN:'+self.spo2.SerialNumber+'\n'+self.spo2.dm
@@ -752,9 +696,7 @@ class DAQPanel2(DAQPanel):
 
     def BP_status_check(self):
         self.bp.POST()
-        #time.sleep(2)
         self.bp.device_ready()
-        #time.sleep(2)
         self.bp_infolabel.SetLabel('FV:'+str(self.bp.EPROMVersion)+'\n'+self.bp.device_message)
 
     def onBPCyclic(self):
@@ -782,7 +724,6 @@ class DAQPanel2(DAQPanel):
         """event handler of the 12 lead button. When 12 lead button is pressed
         calls the 12 lead dialog window for plotting
         """
-        #self.lead12_button.Enable(False)
         CreateDialog2 = Lead12Dialog2(self,self)
         CreateDialog2.ShowModal()
 
@@ -847,7 +788,6 @@ class Lead12Dialog2(Lead12Dialog):
         self.plotter_V4=Plotter(self,(308,162))
         self.plotter_V5=Plotter(self,(308,162))
         self.plotter_V6=Plotter(self,(308,162))
-        self.plotter_bigII=extendPlotter(self,(1500,162)) 
         
         self.leadI_sizer.Add(self.plotter_I.plotpanel,1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         self.small_leadII_sizer.Add(self.plotter_II.plotpanel,1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
@@ -862,21 +802,6 @@ class Lead12Dialog2(Lead12Dialog):
         self.V5_sizer.Add(self.plotter_V5.plotpanel,1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         self.V6_sizer.Add(self.plotter_V6.plotpanel,1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
 
-##        self.plotter_I.plot(self.parent.getlead[0])
-##        self.plotter_II.plot(self.parent.getlead[1])
-##        self.plotter_III.plot(self.parent.getlead[2])
-##        self.plotter_aVR.plot(self.parent.getlead[3])
-##        self.plotter_aVL.plot(self.parent.getlead[4])
-##        self.plotter_aVF.plot(self.parent.getlead[5])
-##        self.plotter_V1.plot(self.parent.getlead[6])
-##        self.plotter_V2.plot(self.parent.getlead[7])
-##        self.plotter_V3.plot(self.parent.getlead[8])
-##        self.plotter_V4.plot(self.parent.getlead[9])
-##        self.plotter_V5.plot(self.parent.getlead[10])
-##        self.plotter_V6.plot(self.parent.getlead[11])
-        
-
-
         self.plotter_I.plot(self.parent.myECG.ecg_leadI[500:2000])
         self.plotter_II.plot(self.parent.myECG.ecg_leadII[500:2000])
         self.plotter_III.plot(self.parent.myECG.ecg_leadIII[500:2000])
@@ -890,8 +815,7 @@ class Lead12Dialog2(Lead12Dialog):
         self.plotter_V5.plot(self.parent.myECG.ecg_leadV5[500:2000])
         self.plotter_V6.plot(self.parent.myECG.ecg_leadV6[500:2000])
 
-             
-        #self.plotter_bigII=extendedPlotter(self,bigsizer,self.parent.myECG.ecg_leadII[500:6500])
+        self.plotter_bigII=extendPlotter(self,(1500,162))        
         self.leadII_sizer.Add(self.plotter_bigII.plotpanel,1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 4)
         self.plotter_bigII.extendplot(self.parent.myECG.ecg_leadII[500:6500])
 # end of rxboxGUI classes

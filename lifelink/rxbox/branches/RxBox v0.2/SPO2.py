@@ -4,7 +4,7 @@ import time
 from threading import Thread
 
 class SPO2:
-    def __init__(self, parent, port="COM6",baud=9600,timeout=5):
+    def __init__(self, parent, port="COM5",baud=9600,timeout=5):
         """ Initialize port settings and request according
             to the specified setting for ChipOx"""
         
@@ -14,7 +14,7 @@ class SPO2:
         self.SerialTimeout = timeout
         self.DataPacket = []
         #Thread.__init__(self)
-        self.OpenSerial()
+        #self.OpenSerial()
         self.device_message = self.dm = "Device Ready."
         self.patient_message = "Patient Ready."
         self.parent = parent
@@ -80,13 +80,18 @@ class SPO2:
 
     def get(self):
         #while self.parent.start:
-        self.reset()
-        raw_data = self.get_reply()
-        data_packet = self.verify_checksum(raw_data)
-        data_packet = self.byte_destuff(data_packet)
-        self.parse_packet(data_packet)
-        self.parent.spo2value_label.SetLabel(str(self.current_spo2))
-        self.parent.bpmvalue_label.SetLabel(str(self.current_bpm))
+        self.OpenSerial()
+        if self.status is None:
+            self.reset()
+            raw_data = self.get_reply()
+            data_packet = self.verify_checksum(raw_data)
+            data_packet = self.byte_destuff(data_packet)
+            self.parse_packet(data_packet)
+            self.parent.spo2value_label.SetLabel(str(self.current_spo2))
+            self.parent.bpmvalue_label.SetLabel(str(self.current_bpm))
+            self.CloseSerial()
+        else:
+            print self.status
 
     def parse_packet(self,packet):
         if packet == []:
@@ -233,14 +238,18 @@ class SPO2:
             are extracted from the reply and method returns 'True' logic value. Otherwise,
             'False' is returned.
         """
-        self.Power = False
-        self.checksum([0x7f, 0xb2]) # Compute for checksum
-        self.DataPacket = [0xa8, 0x7f, 0xb2, self.CShi, self.CSlo, 0xa8] # Organize data packet
-        self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
-        self.Command = ''.join(self.DataPacket) # combine packets into one string
-        # Command the module to Reset it's hardware component
-        if self.test_power():
-            self.check_power()
+        self.OpenSerial()
+        if self.status is None:
+            self.Power = False
+            self.checksum([0x7f, 0xb2]) # Compute for checksum
+            self.DataPacket = [0xa8, 0x7f, 0xb2, self.CShi, self.CSlo, 0xa8] # Organize data packet
+            self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
+            self.Command = ''.join(self.DataPacket) # combine packets into one string
+            # Command the module to Reset it's hardware component
+            if self.test_power():
+                self.check_power()
+            self.CloseSerial()
+        return self.status
 
     def test_power(self):
         """ self.test_power()
@@ -248,7 +257,7 @@ class SPO2:
             Method receives reply to from the module and determines whether a the
             serial port timed out or there is a packet received.
         """
-        #self.SerPort.flushOutput() # flush output buffer of serial port
+        self.SerPort.flushOutput() # flush output buffer of serial port
         self.SerPort.write(self.Command) # print/output command via serial port to SPO2 module
         self.SerPort.flushInput() # flush input buffer of serial port
         self.FirmwareVersion = self.get_reply()
@@ -293,13 +302,16 @@ class SPO2:
             to determine the state of the device and the sensor.
         """
         self.DeviceReady = False
-        self.checksum([0x7f, 0x88, 0x00]) # Compute for checksum
-        self.DataPacket = [0xa8, 0x7f, 0x88, 0x00, self.CShi, self.CSlo, 0xa8] # Organize data packet
-        self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
-        self.Command = ''.join(self.DataPacket) # combine packets into one string
-        self.DeviceReady = False
-        self.test_device_ready()
-        self.device_message = 'Device READY.'
+        self.OpenSerial()
+        if self.status is None:
+            self.checksum([0x7f, 0x88, 0x00]) # Compute for checksum
+            self.DataPacket = [0xa8, 0x7f, 0x88, 0x00, self.CShi, self.CSlo, 0xa8] # Organize data packet
+            self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
+            self.Command = ''.join(self.DataPacket) # combine packets into one string
+            self.DeviceReady = False
+            self.test_device_ready()
+            self.device_message = 'Device READY.'
+            self.CloseSerial()
         return self.DeviceReady
 
     def test_device_ready(self):
@@ -371,15 +383,18 @@ class SPO2:
             to determine the state of the patient and the sensor.
         """
         self.PatientReady = False
-        self.checksum([0x7f, 0x88, 0x00]) # Compute for checksum
-        self.DataPacket = [0xa8, 0x7f, 0x88, 0x00, self.CShi, self.CSlo, 0xa8] # Organize data packet
-        self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
-        self.Command = ''.join(self.DataPacket) # combine packets into one string
-        self.PatientReady = False
-        self.device_message = ''
-        if self.test_patient_ready():
-            #print "check_patient_status"
-            self.check_patient_status()
+        self.OpenSerial()
+        if self.status is None:
+            self.checksum([0x7f, 0x88, 0x00]) # Compute for checksum
+            self.DataPacket = [0xa8, 0x7f, 0x88, 0x00, self.CShi, self.CSlo, 0xa8] # Organize data packet
+            self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
+            self.Command = ''.join(self.DataPacket) # combine packets into one string
+            self.PatientReady = False
+            self.device_message = ''
+            if self.test_patient_ready():
+                #print "check_patient_status"
+                self.check_patient_status()
+            self.CloseSerial()
         return self.PatientReady
 
     def test_patient_ready(self):

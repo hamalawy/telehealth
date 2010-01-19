@@ -7,7 +7,7 @@ from threading import Thread
 class BP:
     """manages data request and processes reply packets to/from NIBP module"""
 
-    def __init__(self, parent, port="COM6", baud=4800, timeout=None):
+    def __init__(self, parent, port="COM5", baud=4800, timeout=None):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
         
         self.port = port                
@@ -53,18 +53,25 @@ class BP:
         self.parent = parent
         self.device_message = 'Device Ready.'
 
-        # open port 'self.port w/ baudrate=self.baud & timeout=self.timeout:
-        try:
-            self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)      
-        except serial.SerialException:
-            print "Unable to open ", self.port, "\nPlease check serial port settings."
+##        # open port 'self.port w/ baudrate=self.baud & timeout=self.timeout:
+##        try:
+##            self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)      
+##        except serial.SerialException:
+##            print "Unable to open COM port", 8, "\nPlease check serial port settings."
 
     def OpenSerial(self):
         try:
-            self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)      
+            self.nibp = serial.Serial(port=self.port,
+                                baudrate=self.baudrate,
+                                timeout=self.timeout)
+            self.status = None
         except serial.SerialException:
-            print "Unable to open ", self.port, "\nPlease check serial port settings."
+            self.status =  "ERROR: Unable to open Com Port - "+ str(self.port)
+            print "Please check serial port settings or the device."
 
+    def CloseSerial(self):
+        self.SerPort.close()
+        
     def reset(self):
         """reset serial port input buffer"""
         self.nibp.flushInput()
@@ -79,20 +86,33 @@ class BP:
         return bprequest
         
     def send_request(self):
-        print "*** ONE-SHOT BP ***"
-        request=self.request(self.SELECT_ADULT_MODE)
-        self.nibp.write(request)
-        print "***Start BP Measurement***"
-        self.nibp.write(self.request(self.START_MEASUREMENT))
-        print
-        print "***Acquiring Cuff Pressure***"
+        self.OpenSerial()
+        if self.status is None:
+            print "*** ONE-SHOT BP ***"
+            request=self.request(self.SELECT_ADULT_MODE)
+            self.nibp.write(request)
+            print "***Start BP Measurement***"
+            self.nibp.write(self.request(self.START_MEASUREMENT))
+            print
+            print "***Acquiring Cuff Pressure***"
+            self.CloseSerial()
+        else:
+            print self.status
         
     def get(self):
         """implements pseudo-cycle mode for BP measurement"""
-        print "***Extracting Status of Operation***"
-        self.patient_ready()
-        if self.PatientReady:
-            self.extract_bp()
+        #self.runBP = True
+        #self.run()
+        self.OpenSerial()
+        if self.status is None:
+            print
+            print "***Extracting Status of Operation***"
+            self.patient_ready()
+            if self.PatientReady:
+                self.extract_bp()
+            self.CloseSerial()
+        else:
+            print self.status
         #else:
         #    print "Patient NOT ready."
 
@@ -130,9 +150,14 @@ class BP:
             module is powered on and is transmitting data to the RxBox.
         """
         self.PowerStatus = False
-        self.test_power() # Check if module
+        self.OpenSerial()
+        if self.status is None:
+            self.test_power() # Check if module
+            self.CloseSerial()
+        else:
+            print self.status
         #self.nibp.close()
-        return self.status
+        return self.PowerStatus
 	
 
     def test_power(self):
@@ -156,7 +181,6 @@ class BP:
             self.EPROMVersion = self.EPROMVersion[2:len(self.EPROMVersion)-1]
             print "BP Module Powered On."
             print "EPROM Version:",self.EPROMVersion
-            self.status = "EPROM Version: "+self.EPROMVersion+'\n'
             self.PowerStatus = True        
 
     def verify_checksum(self,packet):
@@ -234,7 +258,12 @@ class BP:
         #self.runBP = True
         #self.pb.run()
         self.DeviceStatus = False
-        self.test_device()
+        self.OpenSerial()
+        if self.status is None:
+            self.test_device()
+            self.CloseSerial()
+        else:
+            print self.status
         return self.DeviceStatus
 
     def leakage_test(self):
@@ -306,7 +335,12 @@ class BP:
             is transmitted first. After the leakage test, the status
             of the sensor and the patient will be checked.
         """
-        self.test_sensor()
+        self.OpenSerial()
+        if self.status is None:
+            self.test_sensor()
+            self.CloseSerial()
+        else:
+            print self.status
 
     def test_sensor(self):
         """ test_sensor()

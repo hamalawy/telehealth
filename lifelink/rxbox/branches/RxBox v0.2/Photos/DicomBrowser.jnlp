@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for DicomBrowser -->
+<jnlp spec="1.0+"
+	codebase="http://nrg.wustl.edu/projects/DICOM/DicomBrowser-1.4/lib">
+		<information>
+		<title>DicomBrowser</title>
+		<vendor>Washington University Neuroinformatics Research Group</vendor>
+		<description>Browser and editor for DICOM data sets</description>
+		<offline-allowed/>
+	</information>
+	<resources>
+		<j2se version="1.5+" max-heap-size="512m"
+			href="http://java.sun.com/products/autodl/j2se"/>
+		<jar href="DicomBrowser-1.4.jar"/>
+		<jar href="DicomEdit-1.0.jar"/>
+		<jar href="DicomUtils-1.0.jar"/>
+		<jar href="DicomDB-1.1.jar"/>
+		<jar href="ExtAttr-1.4.jar"/>
+		<jar href="dcm4che-core-2.0.18.jar"/>
+		<jar href="dcm4che-net-2.0.18.jar"/>
+		<jar href="slf4j-api-1.5.0.jar"/>
+		<jar href="slf4j-log4j12-1.5.0.jar"/>
+		<jar href="log4j-1.2.15.jar"/>
+		<jar href="activation-1.1.jar"/>
+		<jar href="mail-1.4.jar"/>
+		<jar href="jms-1.1.jar"/>
+		<jar href="jmxtools-1.2.1.jar"/>
+		<jar href="jmxri-1.2.1.jar"/>
+		<jar href="hsqldb-1.8.0.7.jar"/>
+		<jar href="ij-1.41o.jar" download="lazy"/>
+		<jar href="cup_runtime-11a.jar" download="lazy"/>
+		<jar href="commons-lang-2.4.jar"/>
+		<jar href="json-20080701.jar"/>
+		<!-- properties for MacOS -->
+		<property name="com.apple.mrj.application.apple.menu.about.name" value="DicomBrowser"/>
+		<property name="apple.laf.useScreenMenuBar" value="true"/>
+		<property name="apple.awt.window.position.forceSafeCreation" value="true"/>
+	</resources>
+	<application-desc main-class="org.nrg.dcm.browse.DicomBrowser"/>
+	<security><all-permissions></security>
+</jnlp>
