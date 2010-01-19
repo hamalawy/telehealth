@@ -8,8 +8,8 @@ class RxStatusBar(wx.StatusBar):
         self.SetStatusWidths([-10, -1])
         #self.SetStatusText("\t Average:",1)
         #self.SetStatusText("Connecting...",2)
-        self.neticon = wx.StaticBitmap(self,-1,wx.Bitmap("Icons/telehealth_down.png",wx.BITMAP_TYPE_ANY))
-        self.mailicon = wx.StaticBitmap(self,-1,wx.Bitmap("Icons/email_down.png",wx.BITMAP_TYPE_ANY))
+        self.neticon = wx.StaticBitmap(self,-1,wx.Bitmap("Icons/unconnected_net.png",wx.BITMAP_TYPE_ANY))
+        self.mailicon = wx.StaticBitmap(self,-1,wx.Bitmap("Icons/mail_web.png",wx.BITMAP_TYPE_ANY))
         #self.SetToolTipString("Network Status")
         
         #print self.GetToolTip()
