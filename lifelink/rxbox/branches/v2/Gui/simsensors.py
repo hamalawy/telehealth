@@ -2,28 +2,47 @@
 
 simsensors module contains the simulated sensor classes:
     Spo2sim - simulated blood oxygen saturation
-    Bpsim - simulated blood pressure
+    BpSim - simulated blood pressure
     EcgSim - simulated ECG
-
-Author: Tim Ebido
-August 2009
+    stethplay - simulated stethoscope sounds
+    
+Author: Tim Ebido and Thomas Rodinel Soler
+2009-2010
 """
 
-import time
+import ConfigParser
+from string import split
+import threading
+
 import wx
+import wave
+import pyaudio
+from matplotlib import pyplot
+
 import filters
 from reader import Reader
 from matplotlib import pyplot
-from string import split
-import ConfigParser
-import wave
-import pyaudio
-import threading
-
 
 class Spo2sim:
+    """ Class for simulator for pulse oximeter module
+    
+    Methods:
+        __init__(RxFrame)
+        instantiate_file()
+        update_spo2_display()
+        get()
+    """
 
     def __init__(self,parent):
+        """Initializes simulator for pulse oximeter module
+        
+        - Interprets the configuration file
+        - Loads the corresponding simulator text file
+        - Initializes variables
+        
+        Arguments: __init__(RxFrame)
+        """
+        
         self.config = ConfigParser.ConfigParser()
         self.config.read('rxbox.cfg')   
         
@@ -36,6 +55,9 @@ class Spo2sim:
         self.instantiate_file()
     
     def instantiate_file(self):
+        """Acquires options from the configuration file and initializes
+        the corresponding text file containing heart rate and spo2 data
+        """
         
         self.spo2_read = Reader()
         filename_spo2 = self.config.get('spo2', 'spo2_sim_type')
@@ -44,11 +66,17 @@ class Spo2sim:
         self.hrfile = self.spo2_read.OpenFile('simulators/hr' + filename_hr.lower() + '.txt')
 
     def update_spo2_display(self):
+        """Displays extracted heart rate and spo2 data to their corresponding
+        data panel
+        """
 
         self.parent_panel.spo2value_label.SetLabel(self.spo2_value)
         self.parent_panel.bpmvalue_label.SetLabel(self.hr_value)
     
     def get(self):
+        """Extracts heart rate and spo2 data from text files and calls
+        update_spo2_display() to display datas
+        """
         
         self.parent_panel.heartrate_infolabel.SetLabel('Acquiring pulse rate')
         self.parent_panel.spo2_infolabel.SetLabel('Acquiring Spo2')
@@ -71,8 +99,26 @@ class Spo2sim:
             self.spo2sim_counter = 0
         
 class BpSim:
+    """ Class for simulator for blood pressure module
+    
+    Methods:
+        __init__(RxFrame)
+        instantiate_file()
+        update_bp_display()
+        get()
+        bp_finished()
+    """
     
     def __init__(self,parent):
+        """Initializes simulator for blood pressure module
+        
+        - Interprets the configuration file
+        - Loads the corresponding simulator text file
+        - Initializes variables
+        
+        Arguments: __init__(RxFrame)
+        """
+        
         self.config = ConfigParser.ConfigParser()
         self.config.read('rxbox.cfg')        
         self.parent_panel = parent
@@ -84,15 +130,28 @@ class BpSim:
         self.instantiate_file()
 
     def instantiate_file(self):
+        """Acquires options from the configuration file and initializes
+        the corresponding text file containing blood pressure
+        """
                 
         self.bpread = Reader()
         filename = self.config.get('bp', 'sim_type')
         self.bpfile = self.bpread.OpenFile('simulators/bp'+ filename.lower() +'.txt')
 
     def update_bp_display(self):
+        """Displays extracted blood pressure data to their corresponding
+        data panel
+        """
+        
         self.parent_panel.bpvalue_label.SetLabel('     '+self.systolic_value + '/' + self.diastolic_value)
 
     def get(self):
+        """Initial method that will start acquisition of simulated bp data
+        using the following steps:
+        
+        - Disables NOW button
+        - Determines cyclic time interval and enables simulated blood pressure bar
+        """
         
         self.parent_panel.bp_infolabel.SetLabel('Getting BP')
         self.parent_panel.bpNow_Button.Enable(False)
@@ -109,6 +168,12 @@ class BpSim:
         self.parent_panel.pressure_timer.Start(5)
         
     def bp_finished(self):
+        """Method that is called after bp acquistion is finished:
+        
+        - Enables NOW button
+        - Extracts systolic and diastolic value from text files
+        - Calls update_bp_display() to display data
+        """
         
         print 'Bp acquired'
         self.sys_list = []
@@ -138,21 +203,35 @@ class BpSim:
             self.bpsim_counter = 0
         
 class EcgSim:
+    """ Class for simulator for electrocardiography (ECG) module
+    
+    Methods:
+        __init__(RxFrame)
+        get_plot()
+    """
     
     def __init__(self, parent):
+        """Initializes simulator for ECG module
+        
+        - Interprets the configuration file
+        - Loads the corresponding simulator text file
+        - Initializes variables
+        
+        Arguments: __init__(RxFrame)
+        """
+        
         self.config = ConfigParser.ConfigParser()
         self.config.read('rxbox.cfg')
-        
-        self.ecgfile = open('ecg.txt','r')
-        self.ecg_sim_values = []
-        self.ecg_list_scaled = []
-        for line in self.ecgfile:
-            line = line[:6]
-            self.ecg_sim_values.append(float(line))
-        self.ecgfile.close()
-        self.ecg_sim_values = filters.besselfilter(self.ecg_sim_values)
+
+
         
     def get_plot(self):
+        """This method will do the following, if simulated data comes from MIT
+        physiobank:
+        
+        - Determines file path of data text file
+        - Extract ecg data and store it in a list
+        """
         
         ecg_file = open(self.config.get('ecg', 'sim_type'), 'r')
         done = 0
@@ -169,24 +248,33 @@ class EcgSim:
                 temp_list.append(float(sample[1]))
             else:
                 done = 1
-                
+
         ecg_file.close()
+        temp_list = filters.besselfilter(temp_list)
         
         return temp_list
         
-    def get(self):
+class stethplay(threading.Thread):
+    """ Class for simulator for electrocardiography (ECG) module
+    
+    Methods:
+        __init__(RxFrame)
+        run()
+        stop()
         
-        self.ecg_list = self.ecg_sim_values[500:8000]
-        ave = sum(self.ecg_list)/7500
-        for x in range(0,7500):
-            self.ecg_list[x] = self.ecg_list[x] - ave
-        
-        for x in range(0,len(self.ecg_list)):
-            self.ecg_list_scaled.append(int(self.ecg_list[x]*1000))
-         
-        
-class stethplay(threading.Thread):        
+    Arguments: threading module
+    """
+    
     def __init__(self,parent):
+        """Initializes simulator for stethoscop
+        
+        - Interprets threading
+        - Interprets configuration file
+        - Sets necessary variables
+        
+        Arguments: __init__(RxFrame)
+        """
+        
         threading.Thread.__init__(self)
         self.stopEvent = threading.Event()
         self.stopEvent.clear()
@@ -200,6 +288,13 @@ class stethplay(threading.Thread):
         self.chunk = 1024
         
     def run(self):
+        """Primary method of stehoscope thread:
+        
+        - Opens the desired wav file and creates PyAudio instance
+        - Create a stream of data consisting of the audio file and plays it
+        - Close the stream after playing the data
+        """
+        
         self.wf = wave.open(self.parent_frame.openwav, 'rb')
         self.p = pyaudio.PyAudio()
         # open stream
