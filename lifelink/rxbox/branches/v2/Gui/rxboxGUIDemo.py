@@ -118,6 +118,8 @@ class RxFrame2(RxFrame):
 #        self.play_timer = wx.Timer(self)
 #        self.Bind(wx.EVT_TIMER, self.play_audio, self.play_timer)
 
+#        self.init_steth()
+
 
     def __set_properties(self):
         RxFrame.__set_properties(self)
@@ -256,7 +258,6 @@ class RxFrame2(RxFrame):
     def displayImage(self, offset=(0, 0)):
         pass
 
-
     def on_steth_record(self, event): # wxGlade: RxFrame.<event_handler>
         print "Steth Recording... "
         self.RxFrame_StatusBar.SetStatusText("Steth Sound Recording...")
@@ -273,16 +274,18 @@ class RxFrame2(RxFrame):
         self.record_button.Enable(False)
         self.play_button.Enable(False)
         self.steth_status = 'Play'
+
         self.filename_hr = self.DAQPanel.config.get('spo2', 'hr_sim_type')
+        
         if self.filename_hr == 'High':
             self.openwav = 'stethdemo/heartbeatfast.wav'
         elif self.filename_hr == 'Low':
             self.openwav = 'stethdemo/heartbeatslow.wav'
         else :
             self.openwav = 'stethdemo/heartbeatnormal.wav'
-        
+
         self.playwav.play_steth = 1
-        self.playwav.start()  
+        self.playwav.start() 
 
 
    
