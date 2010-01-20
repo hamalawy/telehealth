@@ -143,7 +143,7 @@ class BpSim:
         data panel
         """
         
-        self.parent_panel.bpvalue_label.SetLabel('     '+self.systolic_value + '/' + self.diastolic_value)
+        self.parent_panel.bpvalue_label.SetLabel(self.systolic_value + '/' + self.diastolic_value)
 
     def get(self):
         """Initial method that will start acquisition of simulated bp data
@@ -165,7 +165,7 @@ class BpSim:
 
         self.parent_panel.bp_pressure_indicator.Enable(True)
         self.parent_panel.file = open('pressure.txt','r')
-        self.parent_panel.pressure_timer.Start(5)
+        self.parent_panel.pressure_timer.Start(20)
         
     def bp_finished(self):
         """Method that is called after bp acquistion is finished:
@@ -307,7 +307,7 @@ class stethplay(threading.Thread):
         # read data
         self.data = self.wf.readframes(self.chunk)
         # play stream
-        while self.data != '':
+        while (self.data != '') and (self.play_steth == 1):
             self.stream.write(self.data)
             self.data = self.wf.readframes(self.chunk)
         self.stream.close()
@@ -316,4 +316,7 @@ class stethplay(threading.Thread):
         self.parent_frame.play_button.Enable(True)
         
     def stop(self):
-        self.stopEvent.set()
+        """
+        """
+        print 'Stop pressed'
+        self.play_steth = 0
