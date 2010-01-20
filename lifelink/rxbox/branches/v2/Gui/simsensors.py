@@ -90,21 +90,23 @@ class BpSim:
         self.bpfile = self.bpread.OpenFile('simulators/bp'+ filename.lower() +'.txt')
 
     def update_bp_display(self):
-        
-        self.parent_panel.bpvalue_label.SetLabel(self.systolic_value + '/' + self.diastolic_value)
+        self.parent_panel.bpvalue_label.SetLabel('     '+self.systolic_value + '/' + self.diastolic_value)
 
     def get(self):
         
-        print 'Getting bp'
         self.parent_panel.bp_infolabel.SetLabel('Getting BP')
         self.parent_panel.bpNow_Button.Enable(False)
         reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
-        self.reload_bp = int(reload_bp_str[0:2])*1000*60
+        self.reload_bp = int(reload_bp_str[0:2])*1000*3 #60
+        
+        #5min -> 15seconds
+        #15min -> 45seconds
+        #30min -> 90seconds
+        #60min -> 180seconds
 
         self.parent_panel.bp_pressure_indicator.Enable(True)
-        self.parent_panel.setBPmins_combobox.Enable(False)
         self.parent_panel.file = open('pressure.txt','r')
-        self.parent_panel.pressure_timer.Start(20)
+        self.parent_panel.pressure_timer.Start(5)
         
     def bp_finished(self):
         

@@ -274,15 +274,15 @@ class RxFrame2(RxFrame):
         self.steth_status = 'Play'
         self.filename_hr = self.DAQPanel.config.get('spo2', 'hr_sim_type')
         if self.filename_hr == 'High':
-            self.openwav = 'stethdemo/Heartbeat100bpm.wav'
+            self.openwav = 'stethdemo/heartbeatfast.wav'
         elif self.filename_hr == 'Low':
-            self.openwav = 'stethdemo/Heartbeat60bpm.wav'
+            self.openwav = 'stethdemo/heartbeatslow.wav'
         else :
-            self.openwav = 'stethdemo/Heartbeat80bpm.wav'
-        self.playwav.start()
-        self.playwav.stop()    
-        self.playwav.join()         
-        
+            self.openwav = 'stethdemo/heartbeatnormal.wav'
+        self.playwav.start()  
+
+
+   
     def on_steth_stop(self, event): # wxGlade: RxFrame.<event_handler>
     
         self.play_button.Enable(True)
@@ -395,6 +395,7 @@ class DAQPanel2(DAQPanel):
         self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_initial.png", wx.BITMAP_TYPE_ANY))
         self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
         self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_initial.png", wx.BITMAP_TYPE_ANY))
+        self.EnablePatient()
         if self.StartStop_Label.GetLabel() == "Start":
             #creates universally unique identifier and add it to database as primary key
             self.dbuuid = ""
@@ -452,19 +453,23 @@ class DAQPanel2(DAQPanel):
             self.Call_Label.SetLabel("Call")          
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
-            self.RxFrame.DAQPanel.RemarkValueDaq.SetValue('')            
-            self.SaveQuery()
-            self.ClearPatient()
-            self.with_patient_info = 0
-            print 'stopping...'
+            self.RxFrame.DAQPanel.RemarkValueDaq.SetValue('')
             CallAfter(self.RxFrame.DestroyReferPanel)
+            self.SaveQuery()
+            print 'stopping...'
+    
 
     def SaveQuery(self):
         """Displays a dialog box that prompts the user to save data"""
-        
-        dlg = wx.MessageDialog(self, 'Do you want to save data?', '', \
+        dlg2 = wx.MessageDialog(self, 'Do you want to save data?', '', \
                                 wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
-        dlg.ShowModal()
+        dlg2.ShowModal()
+        if dlg2.ShowModal() == wx.ID_YES:
+            self.with_patient_info = 1
+            self.EnablePatient()
+        else:
+            self.ClearPatient()
+            self.with_patient_info = 0
         CallAfter(self.RxFrame.DestroyReferPanel)
         
     def ClearPatient(self):
@@ -482,24 +487,37 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.BirthMonth.SetValue("")        
         self.RxFrame.BirthDayCombo.SetValue("")
             
-    def onEstimate(self, evt):
-        
-        self.on_check ^= 1
-        
-        if (self.on_check == 1):
-            self.RxFrame.BirthMonth.Enable(False)
-            self.RxFrame.BirthDayCombo.Enable(False)
-            self.RxFrame.BirthYear.Enable(False)
-            self.RxFrame.AgeValue.Enable(True)
-            self.RxFrame.AgeCombo.Enable(True)
-            
-        if (self.on_check == 0):
-            self.RxFrame.AgeValue.Enable(False)
-            self.RxFrame.AgeCombo.Enable(False)
-            self.RxFrame.BirthMonth.Enable(True)
-            self.RxFrame.BirthDayCombo.Enable(True)
-            self.RxFrame.BirthYear.Enable(True)
 
+    def DisablePatient(self):
+        """Disable patient information panel"""
+        
+        self.RxFrame.FirstNameValue.Enable(False)
+        self.RxFrame.MiddleNameValue.Enable(False)
+        self.RxFrame.LastNameValue.Enable(False)
+        self.RxFrame.AddressValue.Enable(False) 
+        self.RxFrame.PhoneNumberValue.Enable(False)
+        self.RxFrame.GenderCombo.Enable(False)
+        self.RxFrame.AgeValue.Enable(False)
+        self.RxFrame.AgeCombo.Enable(False)
+        self.RxFrame.BirthYear.Enable(False)
+        self.RxFrame.BirthMonth.Enable(False)        
+        self.RxFrame.BirthDayCombo.Enable(False)
+        
+    def EnablePatient(self):
+        """Enable patient information panel"""
+        
+        self.RxFrame.FirstNameValue.Enable(True)
+        self.RxFrame.MiddleNameValue.Enable(True)
+        self.RxFrame.LastNameValue.Enable(True)
+        self.RxFrame.AddressValue.Enable(True) 
+        self.RxFrame.PhoneNumberValue.Enable(True)
+        self.RxFrame.GenderCombo.Enable(True)
+        self.RxFrame.AgeValue.Enable(True)
+        self.RxFrame.AgeCombo.Enable(True)
+        self.RxFrame.BirthYear.Enable(True)
+        self.RxFrame.BirthMonth.Enable(True)        
+        self.RxFrame.BirthDayCombo.Enable(True)  
+                  
     def displayECG(self, evt):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
             the 12 leads then passes it to the ecgplotter module for plotting
@@ -552,19 +570,19 @@ class DAQPanel2(DAQPanel):
                 if int(date.day) < int(day_temp) + 1:
                     age = age - 1
             self.RxFrame.AgeValue.SetValue(str(age))
-
+            self.RxFrame.AgeCombo.SetValue('Years')
         
     def on_timer_spo2(self, evt):
         
         self.spo2data.get()
-        print 'Spo2 data acquired'
-        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Spo2 data acquired')
+        print 'Acquiring Spo2 data'
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Acquiring Spo2 data')
        
     def on_timer_bp(self, evt):
         
         self.bpdata.get()
-        print 'BP data acquired'
-        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','BP data acquired')
+        print 'Acquiring BP data'
+        self.rxboxDB.dbbiosignalsinsert('biosignals','uuid','type','filename','content',self.dbuuid,'status message','','Acquiring BP data')
                
     def pressure_update(self, evt):
         """Method that handles the inflating bar of blood pressure"""
@@ -750,17 +768,6 @@ class DAQPanel2(DAQPanel):
         self.bpNow_Button.Enable(False)
         self.bpdata.get()
         
-    def updateSPO2Display(self, data):
-        self.spo2value_label.SetLabel(data)
-        
-
-    def updateBPMDisplay(self, data):
-        self.bpmvalue_label.SetLabel(data)
-        
-        
-    def updateBPDisplay(self, data):
-        self.bpvalue_label.SetLabel(data)
-        
         
     def startSaveThread (self):
 ##        """ calls makeEDF.SaveThread.run() """
@@ -891,6 +898,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.RxFrame.AgeCombo.SetValue(Birth)
         self.RxFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())     
         self.Destroy()
+        self.RxFrame.DAQPanel.DisablePatient()
         self.RxFrame.DAQPanel.with_patient_info = 1
         self.RxFrame.DAQPanel.rxboxDB.dbpatientinsert('patients','lastname', 'firstname', \
             'middlename', 'address', 'phonenumber', 'age', 'birth', 'gender', 'uuid', \
