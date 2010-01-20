@@ -119,6 +119,7 @@ class RxFrame2(RxFrame):
 #        self.Bind(wx.EVT_TIMER, self.play_audio, self.play_timer)
 
 #        self.init_steth()
+        self.DAQPanel.refer_panel_shown = 0
 
 
     def __set_properties(self):
@@ -127,13 +128,21 @@ class RxFrame2(RxFrame):
         
     def CreateReferPanel(self):
         """Creates the refer panel window and initializes and starts linphone process"""
+        
         self.ReferPanel = ReferPanel(self, -1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL | wx.EXPAND, 4)
+        
+        self.DAQPanel.refer_panel_shown = 1
+        
+        
         if self.DAQPanel.config.getint('im', 'simulated') == 1:
             self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.updateIM)
         else:
             self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.sendMessage)        
+            
         self.Layout()
+
+        self.DAQPanel.bpdata.update_bp_display()
 
         self.l = LinphoneHandle()
         wid = self.ReferPanel.video_panel.GetHandle()
@@ -183,6 +192,9 @@ class RxFrame2(RxFrame):
         
     def DestroyReferPanel(self):
         """Destroys the refer panel and stops linphone process"""
+        
+        self.DAQPanel.refer_panel_shown = 0
+        
         try:
             self.l.stop()
             self.l.join()
@@ -653,6 +665,7 @@ class DAQPanel2(DAQPanel):
         self.on_send = 0
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Requesting connection to triage...')
+
         if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):    
             self.bp_label.SetLabel("BP ")
             self.heartrate_label.SetLabel("HR ") 
@@ -680,7 +693,12 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             self.panel = 1
-            self.RxFrame.Layout()               
+            self.RxFrame.Layout()
+            
+            self.refer_panel_shown = 1
+            if self.bpdata.systolic_value != '':
+                self.bpdata.update_bp_display()
+
         else:
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Hidden.")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquring biomedical readings... Call Panel Hidden.')
@@ -696,6 +714,10 @@ class DAQPanel2(DAQPanel):
             self.Call_Label.Enable(True)
             self.panel = 0
             self.RxFrame.Layout()
+            
+            self.refer_panel_shown = 0
+            if self.bpdata.systolic_value != '':
+                self.bpdata.update_bp_display()
 
     def sendEmail(self):
         
