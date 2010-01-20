@@ -266,6 +266,7 @@ class RxFrame2(RxFrame):
         self.steth_status = 'Record'
 
     def on_steth_play(self, event): # wxGlade: RxFrame.<event_handler>
+    
         print "Steth Sound Playing... "
         self.RxFrame_StatusBar.SetStatusText("Steth Sound Playing...")
         self.stop_button.Enable(True)
@@ -279,6 +280,8 @@ class RxFrame2(RxFrame):
             self.openwav = 'stethdemo/heartbeatslow.wav'
         else :
             self.openwav = 'stethdemo/heartbeatnormal.wav'
+        
+        self.playwav.play_steth = 1
         self.playwav.start()  
 
 
