@@ -58,6 +58,8 @@ from MySQLdb import connect
 import datetime
 import uuid
 import rxboxdb
+import os
+
 #import threading
 #try:                   #weeeeeeeeeeeee
 #    from opencv import *
@@ -138,6 +140,8 @@ class RxFrame2(RxFrame):
 
 #        self.init_steth()
         self.DAQPanel.refer_panel_shown = 0
+        self.timer_video_start = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.init_simvideo, self.timer_video_start)
 
 
     def __set_properties(self):
@@ -147,6 +151,7 @@ class RxFrame2(RxFrame):
     def CreateReferPanel(self):
         """Creates the refer panel window and initializes and starts linphone process"""
         
+        self.timer_video_start.Start(5000)
         self.ReferPanel = ReferPanel(self, -1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL | wx.EXPAND, 4)
         
@@ -159,15 +164,18 @@ class RxFrame2(RxFrame):
             self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.sendMessage)        
             
         self.Layout()
-
+        
         self.DAQPanel.bpdata.update_bp_display()
 
-        self.l = LinphoneHandle()
-        wid = self.ReferPanel.video_panel.GetHandle()
-        self.l.set_window(wid)
-
-        self.l.spawn()
-        self.l.start()
+        if self.DAQPanel.config.getint('voip', 'simulated') == 0:
+            self.l = LinphoneHandle()
+            wid = self.ReferPanel.video_panel.GetHandle()
+            self.l.set_window(wid)
+        else:
+            wid = self.ReferPanel.video_panel.GetHandle()
+            print wid
+            self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/th.avi'
+            print self.command
 
         if self.DAQPanel.config.getint('im', 'simulated') == 0:
             self.m = messenger.Messenger('1001@one.telehealth.ph', 'telehealth')
@@ -177,7 +185,18 @@ class RxFrame2(RxFrame):
 
             self.m.connect()
             self.m.start()
+        
+        print 'ReferPanel initialized'
+#        os.system(self.command)
 
+    def init_simvideo(self, event):
+        self.timer_video_start.Stop()
+        wid = self.ReferPanel.video_panel.GetHandle()
+        print wid
+        self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/th.avi'
+        print self.command
+        os.system(self.command)
+        
 
     def onMsgRcvd(self, conn, msg):
         """Shows message received in the IM panel"""
@@ -223,11 +242,11 @@ class RxFrame2(RxFrame):
             self.m.stop()
             self.m.join()
 
-            self.ReferPanel.Destroy()
-            self.Layout()
-
         except AttributeError:
             pass
+            
+        self.ReferPanel.Destroy()
+        self.Layout()
             
     def onPrevSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
         """Displays previously captured images in the snapshot image panel.
@@ -334,8 +353,6 @@ class RxFrame2(RxFrame):
         self.playwav.play_steth = 1
         self.playwav.start() 
 
-
-   
     def on_steth_stop(self, event): # wxGlade: RxFrame.<event_handler>
         """Stops stethoscope record or play methods.
         """   
@@ -381,8 +398,8 @@ class DAQPanel2(DAQPanel):
         DAQPanel.__init__(self, *args, **kwds)
         self.RxFrame = parent
         self.rxboxDB = rxboxdb.rxboxDB()
-        self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 110, \
-                                                size=(20, 120), style=wx.GA_VERTICAL)    
+        self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 200, \
+                                                size=(40, 120), style=wx.GA_VERTICAL)    
 #        self.ecg_vertical_sizer = self.RxFrame.ecg_vertical_sizer     
 
         self.init_ecglive()
@@ -529,7 +546,8 @@ class DAQPanel2(DAQPanel):
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
             self.RxFrame.DAQPanel.RemarkValueDaq.SetValue('')
-            CallAfter(self.RxFrame.DestroyReferPanel)
+#            CallAfter(self.RxFrame.DestroyReferPanel)
+
             self.SaveQuery()
             print 'stopping...'
     
@@ -744,9 +762,13 @@ class DAQPanel2(DAQPanel):
             if self.with_patient_info == 0:
                 CreateDialog = CreateRecordDialog2(self.RxFrame, self)
                 CreateDialog.ShowModal()
-            CallAfter(self.RxFrame.CreateReferPanel)
+                
+#            CallAfter(self.RxFrame.CreateReferPanel)
+            self.RxFrame.CreateReferPanel()
             self.Call_Label.SetLabel(">>  ")
-            self.RxFrame.Layout()             
+            self.RxFrame.Layout()
+#            self.RxFrame.init_simvideo()
+                        
         elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) : 
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Shown.")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring biomedical readings... Call Panel Shown.')
