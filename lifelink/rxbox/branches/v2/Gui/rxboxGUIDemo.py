@@ -91,7 +91,26 @@ class LinphoneHandle(linphone.Linphone):
 
 
 class RxFrame2(RxFrame):
+    """ Class for RxFrame GUI instance and methods
+    
+    Methods:
+        __init__(RxFrame)       DestroyReferPanel
+        __set_properties        onPrevSnapshot
+        CreateReferPanel        onNextSnapshot
+        onMsgRcvd               onSnapshot
+        onMsgSent               on_steth_record
+        sendMessage             on_steth_play
+        onClose                 on_steth_stop
+        updateIM
+         
+    """
     def __init__(self, *args, **kwds):
+        """Initializes RxFrame GUI
+        
+        - Sets necessary variables
+        
+        Arguments: __init__(RxFrame)
+        """        
         RxFrame.__init__(self, *args, **kwds)
         self.DAQPanel = DAQPanel2(self, self, -1)
         self.playwav = simsensors.stethplay(self)
@@ -161,13 +180,16 @@ class RxFrame2(RxFrame):
 
 
     def onMsgRcvd(self, conn, msg):
+        """Shows message received in the IM panel"""
         self.ReferPanel.IMtexts_Text.AppendText('DE1: ' + msg.getBody() + '\n')
        
     def onMsgSent(self, msg):
+        """Shows message sent in the IM panel"""
         self.ReferPanel.IMtexts_Text.AppendText('RXBOX: ' + msg + '\n')
         self.ReferPanel.IMreply_Text.Clear()
 
     def sendMessage(self, event):
+        """Sends the message to a specified destination (address)"""
         msg = self.ReferPanel.IMreply_Text.GetValue()
         self.m.set_recipient('1000@one.telehealth.ph')
         self.m.send_message(msg)
@@ -333,8 +355,29 @@ class RxFrame2(RxFrame):
         pass
 
 class DAQPanel2(DAQPanel):
-
+    """ Class for DAQPanel GUI instance and methods
+    
+    Methods:
+        __init__(DAQPanel)       displayECG
+        init_daqtimers           birthday_update
+        init_config              make_edf
+        init_ecglive             on12Lead
+        init_simsensors          onBPNow
+        onStartStop              onCall
+        SaveQuery                onECGNodeCheck
+        ClearPatient             onSend
+        DisablePatient           on_timer_bp
+        EnablePatient            on_timer_spo2
+        pressure_update          sendEmail
+        show_email_success       startSaveThread 
+    """
     def __init__(self, parent, *args, **kwds):
+        """Initializes DAQPanel2 GUI, timers
+        
+        - Sets necessary variables
+        
+        Arguments: __init__(DAQPanel)
+        """
         DAQPanel.__init__(self, *args, **kwds)
         self.RxFrame = parent
         self.rxboxDB = rxboxdb.rxboxDB()
@@ -743,7 +786,7 @@ class DAQPanel2(DAQPanel):
                 self.bpdata.update_bp_display()
 
     def sendEmail(self):
-        """send an email containing an attachment of biomedical data to a remote server or an email address"""
+        """Sends an email containing an attachment of biomedical data to a remote server or an email address"""
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Sending Data to Server...')
         t = triage.Triage('triage/email.cfg')
@@ -917,11 +960,19 @@ class DAQPanel2(DAQPanel):
             self.timerECG_refresh.Start(125)         
 
 class CreateRecordDialog2(CreateRecordDialog):
-    """Calls the Create Patient Record Dialog
+    """ Class for Create Record Dialog instance and methods
+    
+    Methods:
+        __init__(CreateRecordDialog) 
+        OnCreateRecord        
+         
     """
     def __init__(self, parent, *args, **kwds):
-        """
-        Patient data from Information Panel is copied to their respective fields in the Patient Record Dialog
+        """Patient data from Information Panel is copied to their respective fields in the Patient Record Dialog
+        - Sets necessary variables
+        
+        Arguments: __init__(CreateRecordDialog)
+        
         """
         CreateRecordDialog.__init__(self, *args, **kwds)
         self.RxFrame = parent
@@ -977,9 +1028,12 @@ class CreateRecordDialog2(CreateRecordDialog):
             self.RxFrame.DAQPanel.timerSend.Start(5000)
         
 class Lead12Dialog2(Lead12Dialog):
-    """Creates the 12 Lead Dialog Window where the 12 leads will be plotted
-    """
+    """ Class that creates the 12 Lead Dialog Window where the 12 leads will be plotted
     
+    Methods:
+        __init__(Lead12Dialog)         
+         
+    """   
     def __init__(self, parent, *args, **kwds):
         """ initializes the placement of the plotter to the 12 lead dialog window
 

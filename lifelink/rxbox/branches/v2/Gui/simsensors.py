@@ -269,7 +269,7 @@ class stethplay(threading.Thread):
     """
     
     def __init__(self,parent):
-        """Initializes simulator for stethoscop
+        """Initializes simulator for stethoscope
         
         - Interprets threading
         - Interprets configuration file
