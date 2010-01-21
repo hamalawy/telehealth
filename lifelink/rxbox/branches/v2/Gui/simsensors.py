@@ -128,6 +128,9 @@ class BpSim:
         self.sys_list = []
         self.dias_list = []
         self.instantiate_file()
+        
+        self.systolic_value = '--'
+        self.diastolic_value = '--'
 
     def instantiate_file(self):
         """Acquires options from the configuration file and initializes
