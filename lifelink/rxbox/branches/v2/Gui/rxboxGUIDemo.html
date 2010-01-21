@@ -101,7 +101,11 @@ This&nbsp;simulator&nbsp;follows&nbsp;the&nbsp;following&nbsp;script&nbsp;when&n
 <font color="#000000" face="helvetica, arial"><a name="CreateRecordDialog2">class <strong>CreateRecordDialog2</strong></a>(<a href="CreateRecordDialog.html#CreateRecordDialog">CreateRecordDialog.CreateRecordDialog</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Calls&nbsp;the&nbsp;Create&nbsp;Patient&nbsp;Record&nbsp;Dialog<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>Class&nbsp;for&nbsp;Create&nbsp;Record&nbsp;Dialog&nbsp;instance&nbsp;and&nbsp;methods<br>
+&nbsp;<br>
+Methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#CreateRecordDialog2-__init__">__init__</a>(<a href="CreateRecordDialog.html#CreateRecordDialog">CreateRecordDialog</a>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;OnCreateRecord<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="rxboxGUIDemo.html#CreateRecordDialog2">CreateRecordDialog2</a></dd>
@@ -117,7 +121,10 @@ This&nbsp;simulator&nbsp;follows&nbsp;the&nbsp;following&nbsp;script&nbsp;when&n
 Methods defined here:<br>
 <dl><dt><a name="CreateRecordDialog2-OnCreateRecord"><strong>OnCreateRecord</strong></a>(self, event)</dt><dd><tt>Updates&nbsp;the&nbsp;Patient&nbsp;Information&nbsp;Panel&nbsp;when&nbsp;the&nbsp;Create&nbsp;Record&nbsp;Button&nbsp;is&nbsp;toggled</tt></dd></dl>
 
-<dl><dt><a name="CreateRecordDialog2-__init__"><strong>__init__</strong></a>(self, parent, *args, **kwds)</dt><dd><tt>Patient&nbsp;data&nbsp;from&nbsp;Information&nbsp;Panel&nbsp;is&nbsp;copied&nbsp;to&nbsp;their&nbsp;respective&nbsp;fields&nbsp;in&nbsp;the&nbsp;Patient&nbsp;Record&nbsp;Dialog</tt></dd></dl>
+<dl><dt><a name="CreateRecordDialog2-__init__"><strong>__init__</strong></a>(self, parent, *args, **kwds)</dt><dd><tt>Patient&nbsp;data&nbsp;from&nbsp;Information&nbsp;Panel&nbsp;is&nbsp;copied&nbsp;to&nbsp;their&nbsp;respective&nbsp;fields&nbsp;in&nbsp;the&nbsp;Patient&nbsp;Record&nbsp;Dialog<br>
+-&nbsp;Sets&nbsp;necessary&nbsp;variables<br>
+&nbsp;<br>
+Arguments:&nbsp;<a href="#CreateRecordDialog2-__init__">__init__</a>(<a href="CreateRecordDialog.html#CreateRecordDialog">CreateRecordDialog</a>)</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="wx._windows.html#Dialog">wx._windows.Dialog</a>:<br>
@@ -1908,7 +1915,23 @@ Data descriptors inherited from <a href="wx._core.html#Object">wx._core.Object</
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="DAQPanel2">class <strong>DAQPanel2</strong></a>(<a href="GUIdaqpanel.html#DAQPanel">GUIdaqpanel.DAQPanel</a>)</font></td></tr>
     
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;for&nbsp;<a href="GUIdaqpanel.html#DAQPanel">DAQPanel</a>&nbsp;GUI&nbsp;instance&nbsp;and&nbsp;methods<br>
+&nbsp;<br>
+Methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#DAQPanel2-__init__">__init__</a>(<a href="GUIdaqpanel.html#DAQPanel">DAQPanel</a>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayECG<br>
+&nbsp;&nbsp;&nbsp;&nbsp;init_daqtimers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;birthday_update<br>
+&nbsp;&nbsp;&nbsp;&nbsp;init_config&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make_edf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;init_ecglive&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on12Lead<br>
+&nbsp;&nbsp;&nbsp;&nbsp;init_simsensors&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onBPNow<br>
+&nbsp;&nbsp;&nbsp;&nbsp;onStartStop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onCall<br>
+&nbsp;&nbsp;&nbsp;&nbsp;SaveQuery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onECGNodeCheck<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ClearPatient&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onSend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DisablePatient&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_timer_bp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;EnablePatient&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_timer_spo2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pressure_update&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendEmail<br>
+&nbsp;&nbsp;&nbsp;&nbsp;show_email_success&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;startSaveThread<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="rxboxGUIDemo.html#DAQPanel2">DAQPanel2</a></dd>
 <dd><a href="GUIdaqpanel.html#DAQPanel">GUIdaqpanel.DAQPanel</a></dd>
@@ -1932,7 +1955,11 @@ If&nbsp;no:&nbsp;patient&nbsp;information&nbsp;is&nbsp;cleared</tt></dd></dl>
 
 <dl><dt><a name="DAQPanel2-SendStatus"><strong>SendStatus</strong></a>(self, event)</dt><dd><tt>Shows&nbsp;the&nbsp;status&nbsp;of&nbsp;email&nbsp;sending&nbsp;using&nbsp;a&nbsp;dialog&nbsp;box</tt></dd></dl>
 
-<dl><dt><a name="DAQPanel2-__init__"><strong>__init__</strong></a>(self, parent, *args, **kwds)</dt></dl>
+<dl><dt><a name="DAQPanel2-__init__"><strong>__init__</strong></a>(self, parent, *args, **kwds)</dt><dd><tt>Initializes&nbsp;<a href="#DAQPanel2">DAQPanel2</a>&nbsp;GUI,&nbsp;timers<br>
+&nbsp;<br>
+-&nbsp;Sets&nbsp;necessary&nbsp;variables<br>
+&nbsp;<br>
+Arguments:&nbsp;<a href="#DAQPanel2-__init__">__init__</a>(<a href="GUIdaqpanel.html#DAQPanel">DAQPanel</a>)</tt></dd></dl>
 
 <dl><dt><a name="DAQPanel2-birthday_update"><strong>birthday_update</strong></a>(self, evt)</dt><dd><tt>Automatically&nbsp;updates&nbsp;the&nbsp;age&nbsp;of&nbsp;patient&nbsp;and&nbsp;the&nbsp;corresponding&nbsp;birth&nbsp;year</tt></dd></dl>
 
@@ -1973,7 +2000,7 @@ Calls&nbsp;the&nbsp;sendEmail&nbsp;and&nbsp;SendStatus&nbsp;methods.</tt></dd></
 
 <dl><dt><a name="DAQPanel2-pressure_update"><strong>pressure_update</strong></a>(self, evt)</dt><dd><tt>Method&nbsp;that&nbsp;handles&nbsp;the&nbsp;inflating&nbsp;bar&nbsp;of&nbsp;blood&nbsp;pressure</tt></dd></dl>
 
-<dl><dt><a name="DAQPanel2-sendEmail"><strong>sendEmail</strong></a>(self)</dt><dd><tt>send&nbsp;an&nbsp;email&nbsp;containing&nbsp;an&nbsp;attachment&nbsp;of&nbsp;biomedical&nbsp;data&nbsp;to&nbsp;a&nbsp;remote&nbsp;server&nbsp;or&nbsp;an&nbsp;email&nbsp;address</tt></dd></dl>
+<dl><dt><a name="DAQPanel2-sendEmail"><strong>sendEmail</strong></a>(self)</dt><dd><tt>Sends&nbsp;an&nbsp;email&nbsp;containing&nbsp;an&nbsp;attachment&nbsp;of&nbsp;biomedical&nbsp;data&nbsp;to&nbsp;a&nbsp;remote&nbsp;server&nbsp;or&nbsp;an&nbsp;email&nbsp;address</tt></dd></dl>
 
 <dl><dt><a name="DAQPanel2-show_email_success"><strong>show_email_success</strong></a>(self)</dt><dd><tt>Shows&nbsp;a&nbsp;dialog&nbsp;box&nbsp;that&nbsp;affirms&nbsp;successful&nbsp;sending&nbsp;of&nbsp;data</tt></dd></dl>
 
@@ -3655,7 +3682,10 @@ Data descriptors inherited from <a href="wx._core.html#Object">wx._core.Object</
 <font color="#000000" face="helvetica, arial"><a name="Lead12Dialog2">class <strong>Lead12Dialog2</strong></a>(<a href="lead12dialog.html#Lead12Dialog">lead12dialog.Lead12Dialog</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Creates&nbsp;the&nbsp;12&nbsp;Lead&nbsp;Dialog&nbsp;Window&nbsp;where&nbsp;the&nbsp;12&nbsp;leads&nbsp;will&nbsp;be&nbsp;plotted<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>Class&nbsp;that&nbsp;creates&nbsp;the&nbsp;12&nbsp;Lead&nbsp;Dialog&nbsp;Window&nbsp;where&nbsp;the&nbsp;12&nbsp;leads&nbsp;will&nbsp;be&nbsp;plotted<br>
+&nbsp;<br>
+Methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Lead12Dialog2-__init__">__init__</a>(<a href="lead12dialog.html#Lead12Dialog">Lead12Dialog</a>)<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="rxboxGUIDemo.html#Lead12Dialog2">Lead12Dialog2</a></dd>
@@ -5570,7 +5600,19 @@ Data descriptors inherited from <a href="threading.html#_Verbose">threading._Ver
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="RxFrame2">class <strong>RxFrame2</strong></a>(<a href="GUIrxframe.html#RxFrame">GUIrxframe.RxFrame</a>)</font></td></tr>
     
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;for&nbsp;<a href="GUIrxframe.html#RxFrame">RxFrame</a>&nbsp;GUI&nbsp;instance&nbsp;and&nbsp;methods<br>
+&nbsp;<br>
+Methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#RxFrame2-__init__">__init__</a>(<a href="GUIrxframe.html#RxFrame">RxFrame</a>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DestroyReferPanel<br>
+&nbsp;&nbsp;&nbsp;&nbsp;__set_properties&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onPrevSnapshot<br>
+&nbsp;&nbsp;&nbsp;&nbsp;CreateReferPanel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onNextSnapshot<br>
+&nbsp;&nbsp;&nbsp;&nbsp;onMsgRcvd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onSnapshot<br>
+&nbsp;&nbsp;&nbsp;&nbsp;onMsgSent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_steth_record<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sendMessage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_steth_play<br>
+&nbsp;&nbsp;&nbsp;&nbsp;onClose&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_steth_stop<br>
+&nbsp;&nbsp;&nbsp;&nbsp;updateIM<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="rxboxGUIDemo.html#RxFrame2">RxFrame2</a></dd>
 <dd><a href="GUIrxframe.html#RxFrame">GUIrxframe.RxFrame</a></dd>
@@ -5587,15 +5629,19 @@ Methods defined here:<br>
 
 <dl><dt><a name="RxFrame2-DestroyReferPanel"><strong>DestroyReferPanel</strong></a>(self)</dt><dd><tt>Destroys&nbsp;the&nbsp;refer&nbsp;panel&nbsp;and&nbsp;stops&nbsp;linphone&nbsp;process</tt></dd></dl>
 
-<dl><dt><a name="RxFrame2-__init__"><strong>__init__</strong></a>(self, *args, **kwds)</dt></dl>
+<dl><dt><a name="RxFrame2-__init__"><strong>__init__</strong></a>(self, *args, **kwds)</dt><dd><tt>Initializes&nbsp;<a href="GUIrxframe.html#RxFrame">RxFrame</a>&nbsp;GUI<br>
+&nbsp;<br>
+-&nbsp;Sets&nbsp;necessary&nbsp;variables<br>
+&nbsp;<br>
+Arguments:&nbsp;<a href="#RxFrame2-__init__">__init__</a>(<a href="GUIrxframe.html#RxFrame">RxFrame</a>)</tt></dd></dl>
 
 <dl><dt><a name="RxFrame2-displayImage"><strong>displayImage</strong></a>(self, offset<font color="#909090">=(0, 0)</font>)</dt></dl>
 
 <dl><dt><a name="RxFrame2-onClose"><strong>onClose</strong></a>(self, evt)</dt><dd><tt>Displays&nbsp;a&nbsp;dialog&nbsp;prompt&nbsp;that&nbsp;asks&nbsp;the&nbsp;user&nbsp;to&nbsp;save&nbsp;data&nbsp;when&nbsp;user&nbsp;attempts&nbsp;to&nbsp;destroy&nbsp;the&nbsp;frame</tt></dd></dl>
 
-<dl><dt><a name="RxFrame2-onMsgRcvd"><strong>onMsgRcvd</strong></a>(self, conn, msg)</dt></dl>
+<dl><dt><a name="RxFrame2-onMsgRcvd"><strong>onMsgRcvd</strong></a>(self, conn, msg)</dt><dd><tt>Shows&nbsp;message&nbsp;received&nbsp;in&nbsp;the&nbsp;IM&nbsp;panel</tt></dd></dl>
 
-<dl><dt><a name="RxFrame2-onMsgSent"><strong>onMsgSent</strong></a>(self, msg)</dt></dl>
+<dl><dt><a name="RxFrame2-onMsgSent"><strong>onMsgSent</strong></a>(self, msg)</dt><dd><tt>Shows&nbsp;message&nbsp;sent&nbsp;in&nbsp;the&nbsp;IM&nbsp;panel</tt></dd></dl>
 
 <dl><dt><a name="RxFrame2-onNextSnapshot"><strong>onNextSnapshot</strong></a>(self, event)</dt><dd><tt>Enabled&nbsp;once&nbsp;the&nbsp;previous&nbsp;button&nbsp;is&nbsp;toggled.<br>
 Disabled&nbsp;when&nbsp;the&nbsp;latest&nbsp;image&nbsp;is&nbsp;displayed.</tt></dd></dl>
@@ -5618,7 +5664,7 @@ Disables&nbsp;the&nbsp;stethoscope&nbsp;play&nbsp;button.</tt></dd></dl>
 
 <dl><dt><a name="RxFrame2-record_audio"><strong>record_audio</strong></a>(self, evt)</dt></dl>
 
-<dl><dt><a name="RxFrame2-sendMessage"><strong>sendMessage</strong></a>(self, event)</dt></dl>
+<dl><dt><a name="RxFrame2-sendMessage"><strong>sendMessage</strong></a>(self, event)</dt><dd><tt>Sends&nbsp;the&nbsp;message&nbsp;to&nbsp;a&nbsp;specified&nbsp;destination&nbsp;(address)</tt></dd></dl>
 
 <dl><dt><a name="RxFrame2-updateIM"><strong>updateIM</strong></a>(self, evt)</dt><dd><tt>Copy&nbsp;the&nbsp;contents&nbsp;of&nbsp;the&nbsp;im&nbsp;text&nbsp;input&nbsp;box&nbsp;and&nbsp;show&nbsp;it&nbsp;to&nbsp;an&nbsp;another&nbsp;text&nbsp;box</tt></dd></dl>
 
