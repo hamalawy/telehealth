@@ -10,9 +10,8 @@ Authors:    Chiong, Charles Hernan
             University of the Philippines - Diliman
             ------------------------------------------------
             September 2009
-"""
 
-"""
+
 This simulator follows the following script when PLAY button is pressed:
 - BP, HR, and SpO2 panels activate
 - ECM Electrodes Blink for 5 seconds (checking all electrodes)
@@ -209,6 +208,10 @@ class RxFrame2(RxFrame):
             pass
             
     def onPrevSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
+        """Displays previously captured images in the snapshot image panel.
+           Enabled once the capture button is toggled.
+           Disabled when the oldest image captured is displayed.
+        """
         self.RxFrame_StatusBar.SetStatusText("Snapshot previous button toggled...")
         print "Snapshot previous button toggled..."
         self.imgcurrent = self.imgcurrent - 1
@@ -225,6 +228,9 @@ class RxFrame2(RxFrame):
         print "count: ", self.imgcount, "current: ", self.imgcurrent   
 
     def onNextSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
+        """Enabled once the previous button is toggled.
+           Disabled when the latest image is displayed.
+        """
         self.RxFrame_StatusBar.SetStatusText("Snapshot next button toggled...")
         print "Snapshot next button toggled..."
         if self.imgcurrent < self.imgcount:
@@ -241,6 +247,8 @@ class RxFrame2(RxFrame):
         print "count: ", self.imgcount, "current: ", self.imgcurrent
 
     def onSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
+        """Captures an image.
+        """
         self.RxFrame_StatusBar.SetStatusText("Snapshot main button toggled...")
         print "Snapshot main button toggled..."
         print self.imgcount
@@ -271,6 +279,9 @@ class RxFrame2(RxFrame):
         pass
 
     def on_steth_record(self, event): # wxGlade: RxFrame.<event_handler>
+        """Record bodily sounds.
+           Disables the stethoscope play button.
+        """
         print "Steth Recording... "
         self.RxFrame_StatusBar.SetStatusText("Steth Sound Recording...")
         self.stop_button.Enable(True)
@@ -279,7 +290,9 @@ class RxFrame2(RxFrame):
         self.steth_status = 'Record'
 
     def on_steth_play(self, event): # wxGlade: RxFrame.<event_handler>
-    
+        """Plays recorded sounds.
+           Disables the stethoscope record button.
+        """    
         print "Steth Sound Playing... "
         self.RxFrame_StatusBar.SetStatusText("Steth Sound Playing...")
         self.stop_button.Enable(True)
@@ -302,7 +315,8 @@ class RxFrame2(RxFrame):
 
    
     def on_steth_stop(self, event): # wxGlade: RxFrame.<event_handler>
-    
+        """Stops stethoscope record or play methods.
+        """   
         self.play_button.Enable(True)
         self.record_button.Enable(True)
         self.stop_button.Enable(False)
@@ -397,7 +411,7 @@ class DAQPanel2(DAQPanel):
         self.ecgdata = simsensors.EcgSim(self)
 
     def onStartStop(self, event):
-
+        """Triggers the start or end of the RxBox session."""
         self.referflag = 0
         self.panel = 0
         self.sendcount = 0
@@ -478,7 +492,10 @@ class DAQPanel2(DAQPanel):
     
 
     def SaveQuery(self):
-        """Displays a dialog box that prompts the user to save data"""
+        """Displays a dialog box that prompts the user to save data
+           If yes: patient information panel retains data
+           If no: patient information is cleared
+        """
         dlg2 = wx.MessageDialog(self, 'Do you want to save data?', '', \
                                 wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
 
@@ -487,6 +504,7 @@ class DAQPanel2(DAQPanel):
             self.EnablePatient()
         else:
             self.ClearPatient()
+            self.EnablePatient()
             self.with_patient_info = 0
         CallAfter(self.RxFrame.DestroyReferPanel)
         
@@ -572,6 +590,7 @@ class DAQPanel2(DAQPanel):
         ecg_plot2 = []
                 
     def birthday_update(self, evt):
+        """Automatically updates the age of patient and the corresponding birth year"""
         year_temp = self.RxFrame.BirthYear.GetValue()
         month_temp = self.RxFrame.BirthMonth.GetSelection()
         day_temp = self.RxFrame.BirthDayCombo.GetSelection()
@@ -591,13 +610,13 @@ class DAQPanel2(DAQPanel):
             self.RxFrame.AgeCombo.SetValue('Years')
         
     def on_timer_spo2(self, evt):
-        
+        """Starts spo2 data acquisition"""
         self.spo2data.get()
         print 'Acquiring Spo2 data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring Spo2 data')
        
     def on_timer_bp(self, evt):
-        
+        """Starts cyclic bp data acquisition"""
         self.bpdata.get()
         print 'Acquiring BP data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring BP data')
@@ -617,7 +636,7 @@ class DAQPanel2(DAQPanel):
             self.bpdata.bp_finished()
         
     def make_edf(self, evt):
-
+        """Creates 15 second chunks of edf data"""
         self.Endtime = datetime.datetime.today()
         self.Starttime = self.Endtime + datetime.timedelta(seconds= -15)
         self.strDate = self.Starttime.strftime("%d.%m.%y")
@@ -662,6 +681,10 @@ class DAQPanel2(DAQPanel):
         self.Biosignals = []
 
     def onCall(self, event):
+        """Method is called when Call button is toggled
+           Calls the CreatePatientRecord Dialog if Patient Information is not yet finalized.
+           Shows or Hides the Call/Refer Panel which contains the IM/Video Panels           
+        """
         self.on_send = 0
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Requesting connection to triage...')
@@ -720,7 +743,7 @@ class DAQPanel2(DAQPanel):
                 self.bpdata.update_bp_display()
 
     def sendEmail(self):
-        
+        """send an email containing an attachment of biomedical data to a remote server or an email address"""
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Sending Data to Server...')
         t = triage.Triage('triage/email.cfg')
@@ -742,7 +765,10 @@ class DAQPanel2(DAQPanel):
         print "sent";
 
     def onSend(self, event): # wxGlade: DAQPanel.<event_handler>
-
+        """Method is called when Send button is toggled
+           Calls the CreatePatientRecord Dialog if if Patient Information is not yet finalized.
+           Calls the sendEmail and SendStatus methods. 
+        """
         self.on_send = 1
         self.sendcount += 1
         print 'SENDING'
@@ -767,14 +793,17 @@ class DAQPanel2(DAQPanel):
                 self.SendStatus(self)
     
     def show_email_success(self):
-        
+            """
+            Shows a dialog box that affirms successful sending of data 
+            """
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Send to Server Successful')
             dlg = wx.MessageDialog(self, "Send to Server Successful", "Send to Server Successful", wx.OK | wx.ICON_QUESTION)
             dlg.ShowModal()
     
     def SendStatus(self, event):
-        
+        """Shows the status of email sending using a dialog box
+        """
         if (self.config.getint('email', 'connection') == 1): 
             print "Send to Server Successful"
             self.show_email_success()
@@ -793,6 +822,9 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")              
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
+        """Called when the BP NOW button is toggled
+           Calls the get() method from the BP sensor class
+        """
         self.bpNow_Button.Enable(False)
         self.bpdata.get()
         
@@ -885,8 +917,12 @@ class DAQPanel2(DAQPanel):
             self.timerECG_refresh.Start(125)         
 
 class CreateRecordDialog2(CreateRecordDialog):
-
+    """Calls the Create Patient Record Dialog
+    """
     def __init__(self, parent, *args, **kwds):
+        """
+        Patient data from Information Panel is copied to their respective fields in the Patient Record Dialog
+        """
         CreateRecordDialog.__init__(self, *args, **kwds)
         self.RxFrame = parent
         self.PatientFirstName_TextCtrl.SetValue(self.RxFrame.FirstNameValue.GetValue())
@@ -900,7 +936,9 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.RemarkValue.SetValue(self.RxFrame.DAQPanel.RemarkValueDaq.GetValue())
         
     def OnCreateRecord(self, event): # wxGlade: CreateRecordDialog.<event_handler>
-
+        """
+        Updates the Patient Information Panel when the Create Record Button is toggled
+        """
         FirstName = self.PatientFirstName_TextCtrl.GetValue()
         MiddleName = self.PatientMiddleName_TextCtrl.GetValue()
         LastName = self.PatientLastName_TextCtrl.GetValue()
