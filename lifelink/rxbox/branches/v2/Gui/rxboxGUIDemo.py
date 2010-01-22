@@ -60,6 +60,10 @@ import uuid
 import rxboxdb
 import os
 
+import threading
+from multiprocessing import Process
+from subprocess import Popen, PIPE
+
 #import threading
 #try:                   #weeeeeeeeeeeee
 #    from opencv import *
@@ -90,7 +94,7 @@ class LinphoneHandle(linphone.Linphone):
     def handle_failed(self):
         print "Call failed"
         #you may put GUI codes here (callafter function maybe?)
-
+                
 
 class RxFrame2(RxFrame):
     """ Class for RxFrame GUI instance and methods
@@ -129,19 +133,15 @@ class RxFrame2(RxFrame):
         self.imgcurrent = 1
         self.SetClientSize((320, 240))
         # Create a steth instance
-#        self.steth = steth.steth(self)
 
         self.steth_status = None
         self.stop_button.Enable(False)
-#        self.record_timer = wx.Timer(self)
-#        self.Bind(wx.EVT_TIMER, self.record_audio, self.record_timer)
-#        self.play_timer = wx.Timer(self)
-#        self.Bind(wx.EVT_TIMER, self.play_audio, self.play_timer)
 
-#        self.init_steth()
         self.DAQPanel.refer_panel_shown = 0
+        self.simvideo_run = 0
         self.timer_video_start = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.init_simvideo, self.timer_video_start)
+        self.pid = int()
 
 
     def __set_properties(self):
@@ -151,7 +151,7 @@ class RxFrame2(RxFrame):
     def CreateReferPanel(self):
         """Creates the refer panel window and initializes and starts linphone process"""
         
-        self.timer_video_start.Start(5000)
+#        self.timer_video_start.Start(5000)
         self.ReferPanel = ReferPanel(self, -1)
         self.mainhorizontal_sizer.Add(self.ReferPanel, 1, wx.ALL | wx.EXPAND, 4)
         
@@ -172,6 +172,7 @@ class RxFrame2(RxFrame):
             wid = self.ReferPanel.video_panel.GetHandle()
             self.l.set_window(wid)
         else:
+            self.timer_video_start.Start(5000)
             wid = self.ReferPanel.video_panel.GetHandle()
             print wid
             self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/th.avi'
@@ -185,18 +186,28 @@ class RxFrame2(RxFrame):
 
             self.m.connect()
             self.m.start()
-        
+
+        self.mplayer = Process(target = self.init_video)
         print 'ReferPanel initialized'
-#        os.system(self.command)
 
     def init_simvideo(self, event):
+
         self.timer_video_start.Stop()
-        wid = self.ReferPanel.video_panel.GetHandle()
-        print wid
-        self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/th.avi'
-        print self.command
-        os.system(self.command)
+        self.mplayer.start()
         
+    def init_video(self):
+
+        wid = self.ReferPanel.video_panel.GetHandle()
+        self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/th.avi'
+        os.system(self.command)
+
+        
+    def terminate_video(self):
+        self.pid = self.mplayer.pid + 2
+        cmd = 'kill -15 ' + str(self.pid)
+        print cmd
+        os.system('kill -15 ' + str(self.pid))
+        print 'VIDEO TERMINATED'
 
     def onMsgRcvd(self, conn, msg):
         """Shows message received in the IM panel"""
@@ -233,6 +244,7 @@ class RxFrame2(RxFrame):
     def DestroyReferPanel(self):
         """Destroys the refer panel and stops linphone process"""
         
+        print 'Destroying Refer Panel'
         self.DAQPanel.refer_panel_shown = 0
         
         try:
@@ -244,8 +256,11 @@ class RxFrame2(RxFrame):
 
         except AttributeError:
             pass
-            
+        
+#        self.simvideo_run = 0
         self.ReferPanel.Destroy()
+        self.terminate_video()
+        self.mplayer.join()
         self.Layout()
             
     def onPrevSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
@@ -547,6 +562,7 @@ class DAQPanel2(DAQPanel):
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
             self.RxFrame.DAQPanel.RemarkValueDaq.SetValue('')
 #            CallAfter(self.RxFrame.DestroyReferPanel)
+#            self.RxFrame.DestroyReferPanel()
 
             self.SaveQuery()
             print 'stopping...'
@@ -567,7 +583,9 @@ class DAQPanel2(DAQPanel):
             self.ClearPatient()
             self.EnablePatient()
             self.with_patient_info = 0
-        CallAfter(self.RxFrame.DestroyReferPanel)
+            
+        self.RxFrame.DestroyReferPanel()
+        print 'Refer Panel Destroyed'
         
     def ClearPatient(self):
         """Clear patient information panel"""
