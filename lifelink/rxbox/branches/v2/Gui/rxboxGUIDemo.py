@@ -171,11 +171,13 @@ class RxFrame2(RxFrame):
             self.l = LinphoneHandle()
             wid = self.ReferPanel.video_panel.GetHandle()
             self.l.set_window(wid)
+            self.l.spawn()
+            self.l.start()
         else:
             self.timer_video_start.Start(5000)
             wid = self.ReferPanel.video_panel.GetHandle()
             print wid
-            self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/th.avi'
+            self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/try.ogv'
             print self.command
 
         if self.DAQPanel.config.getint('im', 'simulated') == 0:
@@ -198,7 +200,7 @@ class RxFrame2(RxFrame):
     def init_video(self):
 
         wid = self.ReferPanel.video_panel.GetHandle()
-        self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/th.avi'
+        self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/try.ogv'
         os.system(self.command)
 
         
