@@ -129,8 +129,8 @@ class RxFrame2(RxFrame):
         self.img = wx.StaticBitmap(self.snapshot_panel, -1)
         self.prev_snapshot.Enable(False)
         self.next_snapshot.Enable(False)
-        self.imgcount = 1
-        self.imgcurrent = 1
+        self.imgcount = 0
+        self.imgcurrent = 0
         self.SetClientSize((320, 240))
         # Create a steth instance
 
@@ -309,24 +309,24 @@ class RxFrame2(RxFrame):
         """
         self.RxFrame_StatusBar.SetStatusText("Snapshot main button toggled...")
         print "Snapshot main button toggled..."
+        self.imgcount = self.imgcount + 1
+        self.imgcurrent = self.imgcount
+
+        if self.imgcount == 7:
+            self.imgcount = 1
+            self.imgcurrent = 1
+        if self.imgcurrent > 1:
+            self.prev_snapshot.Enable(True)
+        if self.imgcurrent == 1:
+            self.prev_snapshot.Enable(False)
+            
         print self.imgcount
         self.file = 'snapdemo/' + str(self.imgcount) + '.jpg'
         self.temp_bmp.append(wx.Image(self.file, wx.BITMAP_TYPE_JPEG).ConvertToBitmap())
         img = wx.ImageFromBitmap(self.temp_bmp[self.imgcount - 1])
         img.Rescale(120, 90)
-        bitmap = wx.BitmapFromImage(img) # Convert Image to Bitmap
-        
-        self.img.SetBitmap(bitmap)
-        self.imgcount = self.imgcount + 1
-        self.imgcurrent = self.imgcount
-        
-        if self.imgcount > 1:
-            self.prev_snapshot.Enable(True)
-        if self.imgcount == 1:
-            self.img.SetBitmap(bitmap)
-        if self.imgcount == 7:
-            self.imgcount = 1
-            self.img.SetBitmap(bitmap)
+        bitmap = wx.BitmapFromImage(img) # Convert Image to Bitmap 
+        self.img.SetBitmap(bitmap)  
         self.next_snapshot.Enable(False)    
         print "count: ", self.imgcount, "current: ", self.imgcurrent
 
