@@ -574,18 +574,25 @@ class DAQPanel2(DAQPanel):
            If no: patient information is cleared
         """
         dlg2 = wx.MessageDialog(self, 'Do you want to save data?', '', \
-                                wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
-
-        if dlg2.ShowModal() == wx.ID_YES:
+                                    wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
+        SaveOption = dlg2.ShowModal()
+        if SaveOption == wx.ID_YES:
             self.with_patient_info = 1
             self.EnablePatient()
-        else:
+            if self.refer_panel_shown == 1:
+                self.RxFrame.DestroyReferPanel()
+                print 'Refer Panel Destroyed'
+                self.refer_panel_shown = 0
+        elif SaveOption == wx.ID_NO:
             self.ClearPatient()
             self.EnablePatient()
             self.with_patient_info = 0
-            
-        self.RxFrame.DestroyReferPanel()
-        print 'Refer Panel Destroyed'
+            if self.refer_panel_shown == 1:
+                self.RxFrame.DestroyReferPanel()
+                print 'Refer Panel Destroyed'
+                self.refer_panel_shown = 0
+        else:
+            print "cancel"
         
     def ClearPatient(self):
         """Clear patient information panel"""
