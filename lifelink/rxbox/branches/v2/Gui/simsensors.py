@@ -162,7 +162,7 @@ class BpSim:
         self.parent_panel.bp_infolabel.SetLabel('Getting BP')
         self.parent_panel.bpNow_Button.Enable(False)
         reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
-        self.reload_bp = int(reload_bp_str[0:2])*1000*3 #60
+        self.reload_bp = int(reload_bp_str[0:2])*1000*60
         
         #5min -> 15seconds
         #15min -> 45seconds

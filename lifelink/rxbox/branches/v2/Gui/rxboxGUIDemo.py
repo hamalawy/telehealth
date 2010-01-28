@@ -443,7 +443,7 @@ class DAQPanel2(DAQPanel):
         self.on_send = 0
         self.with_patient_info = 0
         self.ClearPatient()
-        
+        self.referflag = 0        
     def init_daqtimers(self):
         """Initializes various timers for DAQ Panel of RxBox"""
         
@@ -489,8 +489,7 @@ class DAQPanel2(DAQPanel):
 
     def onStartStop(self, event):
         """Triggers the start or end of the RxBox session."""
-        self.referflag = 0
-        self.panel = 0
+
         self.sendcount = 0
         self.sendtoggled = 0
         self.nodetimer = 0
@@ -517,7 +516,7 @@ class DAQPanel2(DAQPanel):
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'BP Ready')
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Pulse Ox Ready')
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Pulse Ox Ready')       
-            self.Call_Label.SetLabel("Call")
+#            self.Call_Label.SetLabel("Call")
             self.bpvalue_label.Enable(True)
             self.bpmvalue_label.Enable(True)
             self.spo2value_label.Enable(True)
@@ -551,15 +550,13 @@ class DAQPanel2(DAQPanel):
             self.Send_Button.Enable(False)
             self.lead12_button.Enable(False)
             self.bp_isCyclic = 0
-            self.referflag = 0
-            self.panel = 0
             self.timer_spo2.Stop()
             self.timer_bp.Stop()       
             self.timerEDF.Stop()    
             self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
             self.timerECGNodeCheck.Stop() 
-            self.Call_Label.SetLabel("Call")          
+#            self.Call_Label.SetLabel("Call")          
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
             self.RxFrame.DAQPanel.RemarkValueDaq.SetValue('')
@@ -579,20 +576,29 @@ class DAQPanel2(DAQPanel):
                                     wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
         SaveOption = dlg2.ShowModal()
         if SaveOption == wx.ID_YES:
-            self.with_patient_info = 1
+            self.Call_Label.SetLabel("Call") 
+#            print "YES"
             self.EnablePatient()
-            if self.refer_panel_shown == 1:
+            if self.referflag == 0:
+                self.with_patient_info = 0
+#                print "NOT REFERRED"
+            if self.referflag == 1:
+                self.referflag = 0
+                self.with_patient_info = 0
+#                print "REFER BUTTON TOGGLED"
                 self.RxFrame.DestroyReferPanel()
                 print 'Refer Panel Destroyed'
-                self.refer_panel_shown = 0
         elif SaveOption == wx.ID_NO:
+            self.Call_Label.SetLabel("Call") 
+#            print "NO"
             self.ClearPatient()
             self.EnablePatient()
             self.with_patient_info = 0
-            if self.refer_panel_shown == 1:
+            if self.referflag == 1:
+#                print "REFER BUTTON TOGGLED"
                 self.RxFrame.DestroyReferPanel()
                 print 'Refer Panel Destroyed'
-                self.refer_panel_shown = 0
+            self.referflag = 0
         else:
             print "cancel"
         
@@ -777,26 +783,9 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Requesting connection to triage...')
 
-        if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):    
-            self.bp_label.SetLabel("BP ")
-            self.heartrate_label.SetLabel("HR ") 
-            self.spo2_label.SetLabel("SpO2 ")
-            self.RxFrame.video_panel.Hide()         
-            self.Call_Button.Enable(True)
-            self.Call_Label.Enable(True)
-            self.referflag = 1
-            self.panel = 1
-            if self.with_patient_info == 0:
-                CreateDialog = CreateRecordDialog2(self.RxFrame, self)
-                CreateDialog.ShowModal()
-                
-#            CallAfter(self.RxFrame.CreateReferPanel)
-            self.RxFrame.CreateReferPanel()
-            self.Call_Label.SetLabel(">>  ")
-            self.RxFrame.Layout()
-#            self.RxFrame.init_simvideo()
+
                         
-        elif (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) : 
+        if (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) : 
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Shown.")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring biomedical readings... Call Panel Shown.')
             self.RxFrame.ReferPanel.Show()
@@ -807,14 +796,13 @@ class DAQPanel2(DAQPanel):
             self.spo2_label.SetLabel("SpO2 ")             
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
-            self.panel = 1
             self.RxFrame.Layout()
             
             self.refer_panel_shown = 1
             if self.bpdata.systolic_value != '':
                 self.bpdata.update_bp_display()
 
-        else:
+        elif (self.Call_Label.GetLabel() == ">>  ") and (self.referflag == 1) : 
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquring biomedical readings... Call Panel Hidden.")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquring biomedical readings... Call Panel Hidden.')
             self.RxFrame.ReferPanel.Hide()
@@ -827,12 +815,29 @@ class DAQPanel2(DAQPanel):
             self.spo2_label.SetLabel("Blood Oxygen Saturation ")          
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
-            self.panel = 0
             self.RxFrame.Layout()
             
             self.refer_panel_shown = 0
             if self.bpdata.systolic_value != '':
                 self.bpdata.update_bp_display()
+        else:
+#        if (self.Call_Label.GetLabel() == "Call") and (self.referflag == 0):    
+            self.bp_label.SetLabel("BP ")
+            self.heartrate_label.SetLabel("HR ") 
+            self.spo2_label.SetLabel("SpO2 ")
+            self.RxFrame.video_panel.Hide()         
+            self.Call_Button.Enable(True)
+            self.Call_Label.Enable(True)
+            if self.with_patient_info == 0:
+                CreateDialog = CreateRecordDialog2(self.RxFrame, self)
+                CreateDialog.ShowModal()
+                self.with_patient_info = 1
+#            CallAfter(self.RxFrame.CreateReferPanel)
+            self.RxFrame.CreateReferPanel()
+            self.Call_Label.SetLabel(">>  ")
+            self.RxFrame.Layout()
+            self.referflag = 1
+#            self.RxFrame.init_simvideo()
 
     def sendEmail(self):
         """Sends an email containing an attachment of biomedical data to a remote server or an email address"""
@@ -869,7 +874,7 @@ class DAQPanel2(DAQPanel):
         if self.with_patient_info == 0:
             CreateDialog = CreateRecordDialog2(self.RxFrame, self)
             CreateDialog.ShowModal()
-            
+            self.with_patient_info = 1
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Sending Data to Server...')
 
