@@ -65,13 +65,13 @@ from multiprocessing import Process
 from subprocess import Popen, PIPE
 
 #import threading
-#try:                   #weeeeeeeeeeeee
+#try:                   
 #    from opencv import *
 #except ImportError:
 #    from ctypes_opencv import *
 
 import dicom           
-from scipy.misc import fromimage #wooooooooo
+from scipy.misc import fromimage
 # This class will implement the callback functions
 # for Linphone events   
 
