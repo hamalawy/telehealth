@@ -219,6 +219,7 @@ class ConfigMain(MyApp):
         spo2_prefiltering = 'None'
         spo2_samples = 15
         
+        hr_phy_dim = 'bpm'
         hr_phy_min = 0
         hr_phy_max = 300
         hr_dig_min = 0
@@ -226,7 +227,8 @@ class ConfigMain(MyApp):
         hr_prefiltering = 'None'
         hr_samples = 15
         
-        bp_label = 'bpsystole'
+        bp_sys_label = 'bpsystole'
+        bp_dias_label = 'bpdiastole'
         bp_transducer_type = 'NIBP2010'
         bp_phy_dim = 'mmHg'
         bp_phy_min = 0
@@ -258,7 +260,8 @@ class ConfigMain(MyApp):
         self.config.set('edf', 'ecg_prefiltering', ecg_prefiltering)
         self.config.set('edf', 'ecg_samples', ecg_samples)
         
-        self.config.set('edf', 'bp_label', bp_label)
+        self.config.set('edf', 'bp_sys_label', bp_sys_label)
+        self.config.set('edf', 'bp_dias_label', bp_dias_label)
         self.config.set('edf', 'bp_transducer_type', bp_transducer_type)
         self.config.set('edf', 'bp_phy_dim', bp_phy_dim)
         self.config.set('edf', 'bp_phy_max', bp_phy_max)
@@ -273,6 +276,7 @@ class ConfigMain(MyApp):
         self.config.set('edf', 'spo2_phy_dim', spo2_phy_dim)
         self.config.set('edf', 'spo2_phy_min', spo2_phy_min)
         self.config.set('edf', 'spo2_phy_max', spo2_phy_max)
+        self.config.set('edf', 'hr_phy_dim', hr_phy_dim)
         self.config.set('edf', 'hr_phy_min', hr_phy_min)
         self.config.set('edf', 'hr_phy_max', hr_phy_max)
         self.config.set('edf', 'spo2_dig_min', spo2_dig_min)
