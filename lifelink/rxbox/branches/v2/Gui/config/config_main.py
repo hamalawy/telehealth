@@ -254,6 +254,7 @@ class ConfigMain(MyApp):
         self.config.set('edf', 'ecg_label', ecg_label)
         self.config.set('edf', 'ecg_transducer_type', ecg_transducer_type)
         self.config.set('edf', 'ecg_phy_dim', ecg_phy_dim)
+        self.config.set('edf', 'ecg_phy_min', ecg_phy_min)
         self.config.set('edf', 'ecg_phy_max', ecg_phy_max)
         self.config.set('edf', 'ecg_dig_min', ecg_dig_min)
         self.config.set('edf', 'ecg_dig_max', ecg_dig_max)
