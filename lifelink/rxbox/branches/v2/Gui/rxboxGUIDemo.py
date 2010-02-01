@@ -758,7 +758,7 @@ class DAQPanel2(DAQPanel):
                                     
         Biosignal_BPM = BioSignal(self.config.get('edf', 'spo2_label'), \
                                     self.config.get('edf', 'spo2_transducer_type'), \
-                                    self.config.getint('edf', 'hr_phy_dim'), \
+                                    self.config.get('edf', 'hr_phy_dim'), \
                                     self.config.getint('edf', 'hr_phy_min'), \
                                     self.config.getint('edf', 'hr_phy_max'), \
                                     self.config.getint('edf', 'hr_dig_min'), \
@@ -810,7 +810,7 @@ class DAQPanel2(DAQPanel):
                                     self.config.getint('edf', 'ecg_dig_max'), \
                                     self.config.get('edf', 'ecg_prefiltering'), \
                                     self.config.getint('edf', 'ecg_samples'), \
-                                    self.ecgdata.ecg_list_scaled)
+                                    self.ecgdata.ecg_list)
                                     
         self.Biosignals.append(Biosignal_ECG)
         
