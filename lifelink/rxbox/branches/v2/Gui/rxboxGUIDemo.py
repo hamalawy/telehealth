@@ -745,31 +745,79 @@ class DAQPanel2(DAQPanel):
         
         nDataRecord = 3
         
-        Biosignal_SPO2 = BioSignal('SpO2 finger', 'IR-Red sensor', \
-                                '%', 0, 100, 0, 100, 'None', 15, self.spo2data.spo2_list)
-        Biosignal_BPM = BioSignal('SpO2 finger', 'IR-Red sensor', \
-                                'bpm', 0, 300, 0, 300, 'None', 15, self.spo2data.bpm_list)
+        Biosignal_SPO2 = BioSignal(self.config.get('edf', 'spo2_label'),\
+                                    self.config.get('edf', 'spo2_transducer_type'), \
+                                    self.config.get('edf', 'spo2_phy_dim'), \
+                                    self.config.getint('edf', 'spo2_phy_min'), \
+                                    self.config.getint('edf', 'spo2_phy_max'), \
+                                    self.config.getint('edf', 'spo2_dig_min'), \
+                                    self.config.getint('edf', 'spo2_dig_max'), \
+                                    self.config.get('edf', 'spo2_prefiltering'), \
+                                    self.config.getint('edf', 'spo2_samples'), \
+                                    self.spo2data.spo2_list)
+                                    
+        Biosignal_BPM = BioSignal(self.config.get('edf', 'spo2_label'), \
+                                    self.config.get('edf', 'spo2_transducer_type'), \
+                                    self.config.getint('edf', 'hr_phy_dim'), \
+                                    self.config.getint('edf', 'hr_phy_min'), \
+                                    self.config.getint('edf', 'hr_phy_max'), \
+                                    self.config.getint('edf', 'hr_dig_min'), \
+                                    self.config.getint('edf', 'hr_dig_max'), \
+                                    self.config.get('edf', 'hr_prefiltering'), \
+                                    self.config.getint('edf', 'hr_samples'), \
+                                    self.spo2data.bpm_list)
+
         self.spo2data.spo2_list = []
         self.spo2data.bpm_list = []
         self.Biosignals.append(Biosignal_SPO2)
         self.Biosignals.append(Biosignal_BPM) 
         
-        if (self.bpdata.systole_sim_values != 0):
-            Biosignal_pSys = BioSignal('bpsystole', 'NIBP2010', 'mmHg', \
-                                        0, 300, 0, 300, 'None', 15, self.bpdata.systole_sim_values)
-            Biosignal_pDias = BioSignal('bpdiastole', 'NIBP2010', 'mmHg', \
-                                        0, 300, 0, 300, 'None', 15, self.bpdata.diastole_sim_values)
+        if (self.bpdata.sys_list != 0):
+            Biosignal_pSys = BioSignal(self.config.get('edf', 'bp_sys_label'), \
+                                        self.config.get('edf', 'bp_transducer_type'), \
+                                        self.config.get('edf', 'bp_phy_dim'), \
+                                        self.config.get('edf', 'bp_phy_min'), \
+                                        self.config.getint('edf', 'bp_phy_max'), \
+                                        self.config.getint('edf', 'bp_dig_min'), \
+                                        self.config.getint('edf', 'bp_dig_max'), \
+                                        self.config.get('edf', 'bp_prefiltering'), \
+                                        self.config.getint('edf', 'bp_samples'), \
+                                        self.bpdata.sys_list)
+            
+            Biosignal_pDias = BioSignal(self.config.get('edf', 'bp_dias_label'), \
+                                        self.config.get('edf', 'bp_transducer_type'), \
+                                        self.config.get('edf', 'bp_phy_dim'), \
+                                        self.config.get('edf', 'bp_phy_min'), \
+                                        self.config.getint('edf', 'bp_phy_max'), \
+                                        self.config.getint('edf', 'bp_dig_min'), \
+                                        self.config.getint('edf', 'bp_dig_max'), \
+                                        self.config.get('edf', 'bp_prefiltering'), \
+                                        self.config.getint('edf', 'bp_samples'), \
+                                        self.bpdata.dias_list)
+                                        
             self.Biosignals.append(Biosignal_pSys)
             self.Biosignals.append(Biosignal_pDias)
+            self.bpdata.sys_list = []
+            self.bpdata.dias_list = []
             nDataRecord = 5   
             
-        Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 7500, self.ecgdata.ecg_list_scaled)
+        Biosignal_ECG = BioSignal(self.config.get('edf', 'ecg_label'), \
+                                    self.config.get('edf', 'ecg_transducer_type'), \
+                                    self.config.get('edf', 'ecg_phy_dim'), \
+                                    self.config.getint('edf', 'ecg_phy_min'), \
+                                    self.config.getint('edf', 'ecg_phy_max'), \
+                                    self.config.getint('edf', 'ecg_dig_min'), \
+                                    self.config.getint('edf', 'ecg_dig_max'), \
+                                    self.config.get('edf', 'ecg_prefiltering'), \
+                                    self.config.getint('edf', 'ecg_samples'), \
+                                    self.ecgdata.ecg_list_scaled)
+                                    
         self.Biosignals.append(Biosignal_ECG)
         
         myedf = edf.EDF(self.patient1, self.Biosignals, self.strDate, self.strStarttime, self.strY2KDate + \
                         ': LifeLink 15 second data of CorScience modules', \
                         nDataRecord, 15)
-#        myedf.get(self.patient1)
+        myedf.get(self.patient1)
         print 'EDF creation finished'
 
         self.Biosignals = []

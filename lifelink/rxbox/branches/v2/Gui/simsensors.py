@@ -95,6 +95,8 @@ class Spo2sim:
         self.update_spo2_display()
         self.spo2sim_counter += 1
         
+        self.spo2_list.append(int(self.spo2_value))
+        
         if (self.spo2sim_counter % 15) == 0:
             self.spo2sim_counter = 0
         
@@ -198,7 +200,10 @@ class BpSim:
         if self.diastolic_value == '':
             self.instantiate_file()
             self.bp_finished()
-    
+
+        self.sys_list.append(int(self.systolic_value))
+        self.dias_list.append(int(self.diastolic_value))
+
         self.update_bp_display()        
         self.bpsim_counter += 1
         
@@ -242,6 +247,7 @@ class EcgSim:
         ecg_file = open(self.config.get('ecg', 'sim_type'), 'r')
         done = 0
         temp_list = []
+        self.ecg_list = []
         
         ecg_file.readline()
         ecg_file.readline()
@@ -257,6 +263,7 @@ class EcgSim:
 
         ecg_file.close()
         temp_list = filters.besselfilter(temp_list)
+        self.ecg_list = temp_list[:7500]
         
         return temp_list
         
