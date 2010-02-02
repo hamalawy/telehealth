@@ -199,13 +199,15 @@ class RxFrame2(RxFrame):
         self.mplayer.start()
         
     def init_video(self):
-
+        
+        self.simvideo_run = 1
         wid = self.ReferPanel.video_panel.GetHandle()
         self.command = 'mplayer -wid ' + str(wid) + ' simulators/video/water-and-wind.ogv'
         os.system(self.command)
 
         
     def terminate_video(self):
+        self.simvideo_run = 0
         self.pid = self.mplayer.pid + 2
         cmd = 'kill -15 ' + str(self.pid)
         print cmd
@@ -229,6 +231,12 @@ class RxFrame2(RxFrame):
        
     def onClose(self, evt):
         """Displays a dialog prompt that asks the user to save data when user attempts to destroy the frame"""
+        
+        try:
+            self.terminate_video()
+        except:
+            pass
+        
         dlg = wx.MessageDialog(self, 'Do you want to save data?', 'Exit', \
                                 wx.YES_NO | wx.ICON_QUESTION | wx.CANCEL)
         if dlg.ShowModal() == wx.ID_CANCEL:
