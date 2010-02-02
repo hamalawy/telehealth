@@ -45,6 +45,7 @@ import sys
 sys.path.append('triage/')
 sys.path.append('voip/')
 sys.path.append('im')
+sys.path.append('simulators/')
 import triage
 import linphone
 import messenger
@@ -177,7 +178,7 @@ class RxFrame2(RxFrame):
             self.timer_video_start.Start(5000)
             wid = self.ReferPanel.video_panel.GetHandle()
             print wid
-            self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/try.ogv'
+            self.command = 'mplayer -wid ' + str(wid) + ' water-and-wind.ogv'
             print self.command
 
         if self.DAQPanel.config.getint('im', 'simulated') == 0:
@@ -200,7 +201,7 @@ class RxFrame2(RxFrame):
     def init_video(self):
 
         wid = self.ReferPanel.video_panel.GetHandle()
-        self.command = 'mplayer -wid ' + str(wid) + ' /home/rxbox/Desktop/try.ogv'
+        self.command = 'mplayer -wid ' + str(wid) + ' simulators/video/water-and-wind.ogv'
         os.system(self.command)
 
         
