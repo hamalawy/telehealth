@@ -594,6 +594,9 @@ class DAQPanel2(DAQPanel):
 #                print "NOT REFERRED"
             if self.referflag == 1:
                 self.referflag = 0
+                self.bp_label.SetLabel("Blood Pressure ") 
+                self.heartrate_label.SetLabel("Heart Rate ") 
+                self.spo2_label.SetLabel("Blood Oxygen\nSaturation ")
                 self.with_patient_info = 0
 #                print "REFER BUTTON TOGGLED"
                 self.RxFrame.DestroyReferPanel()
@@ -606,6 +609,9 @@ class DAQPanel2(DAQPanel):
             self.with_patient_info = 0
             if self.referflag == 1:
 #                print "REFER BUTTON TOGGLED"
+                self.bp_label.SetLabel("Blood Pressure ") 
+                self.heartrate_label.SetLabel("Heart Rate ") 
+                self.spo2_label.SetLabel("Blood Oxygen\nSaturation ")
                 self.RxFrame.DestroyReferPanel()
                 print 'Refer Panel Destroyed'
             self.referflag = 0
