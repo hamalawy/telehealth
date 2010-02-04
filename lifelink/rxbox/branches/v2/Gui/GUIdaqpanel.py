@@ -101,7 +101,7 @@ class DAQPanel(wx.Panel):
         self.setBPmins_combobox.SetBackgroundColour(wx.Colour(255, 255, 255))
         self.setBPmins_combobox.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2"))
         self.setBPmins_combobox.SetSelection(0)
-        self.bpbarpanel.SetMinSize((40,120))
+        self.bpbarpanel.SetMinSize((20,120))
         self.bp_label.SetBackgroundColour(wx.Colour(226, 255, 180))
         self.bp_label.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.bp_infolabel.SetBackgroundColour(wx.Colour(226, 255, 180))

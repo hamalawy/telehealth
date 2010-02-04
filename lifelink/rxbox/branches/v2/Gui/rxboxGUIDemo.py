@@ -426,7 +426,7 @@ class DAQPanel2(DAQPanel):
         self.RxFrame = parent
         self.rxboxDB = rxboxdb.rxboxDB()
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 200, \
-                                                size=(40, 120), style=wx.GA_VERTICAL)    
+                                                size=(20, 120), style=wx.GA_VERTICAL)    
 #        self.ecg_vertical_sizer = self.RxFrame.ecg_vertical_sizer     
 
         self.init_ecglive()
