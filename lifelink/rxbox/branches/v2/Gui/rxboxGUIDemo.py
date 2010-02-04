@@ -190,7 +190,7 @@ class RxFrame2(RxFrame):
             self.m.connect()
             self.m.start()
 
-        self.mplayer = Process(target = self.init_video)
+        self.mplayer = Process(target=self.init_video)
         print 'ReferPanel initialized'
 
     def init_simvideo(self, event):
@@ -261,6 +261,7 @@ class RxFrame2(RxFrame):
         try:
             self.l.stop()
             self.l.join()
+            self.terminate_video()
 
             self.m.stop()
             self.m.join()
@@ -754,7 +755,7 @@ class DAQPanel2(DAQPanel):
         
         nDataRecord = 3
         
-        Biosignal_SPO2 = BioSignal(self.config.get('edf', 'spo2_label'),\
+        Biosignal_SPO2 = BioSignal(self.config.get('edf', 'spo2_label'), \
                                     self.config.get('edf', 'spo2_transducer_type'), \
                                     self.config.get('edf', 'spo2_phy_dim'), \
                                     self.config.getint('edf', 'spo2_phy_min'), \
@@ -785,7 +786,7 @@ class DAQPanel2(DAQPanel):
             Biosignal_pSys = BioSignal(self.config.get('edf', 'bp_sys_label'), \
                                         self.config.get('edf', 'bp_transducer_type'), \
                                         self.config.get('edf', 'bp_phy_dim'), \
-                                        self.config.get('edf', 'bp_phy_min'), \
+                                        self.config.getint('edf', 'bp_phy_min'), \
                                         self.config.getint('edf', 'bp_phy_max'), \
                                         self.config.getint('edf', 'bp_dig_min'), \
                                         self.config.getint('edf', 'bp_dig_max'), \
@@ -796,7 +797,7 @@ class DAQPanel2(DAQPanel):
             Biosignal_pDias = BioSignal(self.config.get('edf', 'bp_dias_label'), \
                                         self.config.get('edf', 'bp_transducer_type'), \
                                         self.config.get('edf', 'bp_phy_dim'), \
-                                        self.config.get('edf', 'bp_phy_min'), \
+                                        self.config.getint('edf', 'bp_phy_min'), \
                                         self.config.getint('edf', 'bp_phy_max'), \
                                         self.config.getint('edf', 'bp_dig_min'), \
                                         self.config.getint('edf', 'bp_dig_max'), \

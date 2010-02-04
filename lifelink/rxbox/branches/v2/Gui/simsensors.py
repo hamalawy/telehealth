@@ -151,7 +151,7 @@ class BpSim:
         if self.parent_panel.refer_panel_shown == 0:
             self.parent_panel.bpvalue_label.SetLabel(self.systolic_value + '/' + self.diastolic_value)
         else:
-            self.parent_panel.bpvalue_label.SetLabel('   ' + self.systolic_value + '/' + self.diastolic_value)
+            self.parent_panel.bpvalue_label.SetLabel(self.systolic_value + '/' + self.diastolic_value)
 
     def get(self):
         """Initial method that will start acquisition of simulated bp data
