@@ -1,0 +1,18 @@
+Refactor codes to be used from Rxbox demo GUI v2
+Use of threading for obtaining data and timers for plotting
+Update of ECG lead stat
+12 Lead Plot
+EDF Generation
+
+I.	Refactor codes to be used from Rxbox demo GUI v2
+	ECG.py refactored ECG class from rxsensor.py
+	
+	Notes:
+		module can't have start_ecm() and start_ecg() at the same time.
+	
+	Functions:
+	set_ecm_threshold()		#initialization for ecm 
+	electrode_stat()		#obtain current status of ecm (Added)
+	ecg_lead()				#transform obtained data into the appropriate data & pop temp data(Editted) 
+	stop_ecg()				#seem to be not working
+	__init__()				#added parameter daqdur = duration of sampling (Editted)

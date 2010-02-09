@@ -20,8 +20,6 @@ from wx import CallAfter
 from filters import besselfilter
 import leadcalc
 
-import threading
-
 class ECG:
     """manages data request and processes reply packets to/from ECG module"""
     def __init__(self, port='/dev/ttyUSB0', baud=230400, timeout=None, daqdur=15):
@@ -42,7 +40,7 @@ class ECG:
         self.prev_dataset_counter = 0       # initialize previous dataset counter
 
         self.start_flag = 0                 # if start_flag is 1, don't send start_ecg request anymore
-        self.required_nr_samples = 1500     # required number of samples for a 15sec DAQ with sampling rate of 100Hz
+        self.required_nr_samples = daqdur*500     # required number of samples for a 15sec DAQ with sampling rate of 100Hz
         self.resolution = 0.00263           # resolution of ecg reading in mV/bit
         self.leadII_temp = []
         self.leadIII_temp = []
@@ -501,7 +499,7 @@ class ECG:
             lead_value = self.payload_parser(packet,ecg_data)
 
             #get the value for lead II
-           # self.leadII_values.append(lead_value[1])
+            #self.leadII_values.append(lead_value[1])
            # self.leadII_values.append(ecg_reading[1])
             self.leadII_temp.append(lead_value[1]*0.00263)
             #self.ecg_leadII.append(lead_value[1]*0.00263)
@@ -917,15 +915,16 @@ class ECG:
         print "Acquiring ECG readings..."
         print "DAQ started at:", time.ctime()                   # get start time
         count = 0
-        self.leadII_values = []
-        self.leadIII_values = []
+        #self.leadII_values = []
+        #self.leadIII_values = []
         while (time.time() - BaseTime <= self.daqduration):
             raw_packet = self.ecgreply()                        # get reply packet; raw_packet is a string
             packet = self.byte_destuff(raw_packet)
             self.reply_parser(packet)
             count = count + 1
+        """
         excess_nr_samples = ( self.old_dataset_counter - self.prev_dataset_counter ) - self.required_nr_samples
-
+        
         # if number of samples > required, remove the excess
         if excess_nr_samples > 0:                           
             for number in range(0, excess_nr_samples):
@@ -940,7 +939,9 @@ class ECG:
         #actual_readings = self.hanning(self.lowpassfilter(self.real_val(self.leadII_values)))
                 
         actual_readings = self.real_val(self.leadII_values)
-        print "DAQ ended at:", time.ctime()                      # get end time
+        
+        """
+        print "DAQ ended at:", time.ctime()      # get end time
 
     def real_val(self, digital_readings):
         """convert digital readings into the actual readings using resolution"""
@@ -1017,10 +1018,7 @@ class ECG:
             print "Serial port for EMI12 ECG closed."
             self.start_flag = 0
     
-    #threading
-    def Start_Thread(self):
-        """Threading for obtaining ECG data"""
-        self.alive = True
+    def Init_ECG(self):
         self.set_ecm_threshold()
         self.start_ecm()
         self.ecm_status = self.get_ecm()
@@ -1038,26 +1036,7 @@ class ECG:
             self.config_analog()
             self.start_ecg()
             self.start_flag = 1
-            self.get_thread = threading.Thread(target=self.Get_ECG)
-            self.get_thread.start()
             return True
-        
-    def Get_ECG(self):
-        """Obtain ECG data for threading"""
-        while self.alive:
-            #try:
-            self.get_ecg()
-            self.ecg_lead()
-            time.sleep(0.1)
-            #except:
-            print Exception
-        
-    def Stop_Thread(self):
-        """Stop Threading for obtaining ecg data"""
-        print 'Stop ECG Thread'
-        self.alive = False
-        time.sleep(3)
-        self.stop()
         
     def Pop(self,start=0,end=0):
         """Delete ECG main lead data from 'start' to 'end'"""

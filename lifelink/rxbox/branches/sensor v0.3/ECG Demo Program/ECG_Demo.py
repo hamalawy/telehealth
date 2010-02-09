@@ -15,6 +15,7 @@ import ECG
 import time
 from edf import *
 import datetime
+import threading
 # begin wxGlade: extracode
 # end wxGlade
         
@@ -24,13 +25,13 @@ DAQDUR = 3
 class Lead12Dialog2(Lead12Dialog):
     """Creates the 12 Lead Dialog Window where the 12 leads will be plotted"""
     
-    def __init__(self, ECGdata, edfbin, *args, **kwds):
+    def __init__(self, ECGdata, *args, **kwds):
         """ initializes the placement of the plotter to the 12 lead dialog window
 
         """
         
         Lead12Dialog.__init__(self, *args, **kwds)
-        self.ECGdata = ECGdata
+        self.ECGdata = ECGdata.ECG
         
         sizersize = self.leadI_sizer.GetSize()
         bigsizer = self.leadII_sizer.GetSize()
@@ -73,9 +74,134 @@ class Lead12Dialog2(Lead12Dialog):
         self.plotter_V5.plot(self.ECGdata.ecg_leadV5)
         self.plotter_V6.plot(self.ECGdata.ecg_leadV6)
         
-        self.plotter_bigII = extendedPlotter(self, bigsizer, edfbin+self.ECGdata.ecg_leadII)
+        self.plotter_bigII = extendedPlotter(self, bigsizer, self.ECGdata.ecg_leadII)
         self.leadII_sizer.Add(self.plotter_bigII, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
 
+class DataGather:
+    #threading
+    def __init__(self, parent):
+        """DataGather Init"""
+        self.parent = parent
+        self.alive = False
+        self.patient1 = Patient('1', 'Timothy', 'Cena', 'Ebido', 'Servan', \
+                                            'Male', '09.27.89', '19')
+        
+    def ECG_Connect(self, port='/dev/ttyUSB0', daqdur=DAQDUR):
+        """Connect ECG"""
+        self.ECG = ECG.ECG(port=port, daqdur=daqdur)
+        self.ECG.stop()
+        self.ECG = ECG.ECG(port=port, daqdur=daqdur)
+
+        if self.ECG.serialstatus:
+            self.parent.ECG_Demo_statusbar.SetStatusText('Device Detected')
+            return True
+        else:
+            self.parent.ECG_Demo_statusbar.SetStatusText('Device Not Detected')
+            return False
+        
+    def Start_Thread(self, port='/dev/ttyUSB0', daqdur=DAQDUR):
+        """Threading for obtaining ECG data"""
+        self.samples = daqdur*500
+        self.daqdur = daqdur
+        
+        if self.ECG_Connect(port=port, daqdur=daqdur):
+            self.ECG.Init_ECG()
+            self.alive = True
+            self.statECG(self.parent)
+            self.get_thread = threading.Thread(target=self.Get_ECG)
+            self.get_thread.start()
+            return True
+        else:
+            print 'Cannot Connect to ECG'
+            return False
+        
+    def Get_ECG(self):
+        """Obtain ECG data for threading"""
+        while self.alive:
+            try:
+                #Get ECG data
+                self.ECG.get_ecg()
+                self.ECG.ecg_lead()
+                time.sleep(0.1)
+                
+                #Generate EDF
+                self.Endtime = datetime.datetime.today()
+                self.Starttime = self.Endtime + datetime.timedelta(seconds= -3)
+                self.strDate = self.Starttime.strftime("%d.%m.%y")
+                self.strStarttime = self.Starttime.strftime("%H.%M.%S")
+                self.strY2KDate = self.Starttime.strftime("%d-%b-%Y")
+                
+                temp = []    
+                for i in range(-self.samples,0):
+                    temp.append(int(self.ECG.ecg_leadII[i]/0.00263+16384))
+                    
+                Biosignals = []
+                Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', self.samples, temp)
+                Biosignals.append(Biosignal_ECG)
+                
+                myedf = EDF(self.patient1, Biosignals, self.strDate, self.strStarttime, self.strY2KDate + \
+                                ': LifeLink 15 second data of CorScience modules', \
+                                1, self.daqdur)
+                myedf.get(self.patient1)
+                print 'EDF creation finished'
+                
+            except Exception, e:
+                print e
+        print 'STOP'
+        
+    def Stop_Thread(self):
+        """Stop Threading for obtaining ecg data"""
+        print 'Stop ECG Thread'
+        if self.alive:
+            self.alive = False
+            time.sleep(3)
+        self.ECG.stop()
+        
+    def statECG(self, parent):
+        try:
+            if self.ECG.nodeR:
+                self.parent.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_connected.png"))
+            else:
+                self.parent.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_unconnected.png"))
+            if self.ECG.nodeL:
+                self.parent.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_connected.png"))
+            else:
+                self.parent.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png"))
+            if self.ECG.nodeN:
+                self.parent.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png"))
+            else:
+                self.parent.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png"))
+            if self.ECG.nodeF:
+                self.parent.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_connected.png"))
+            else:
+                self.parent.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_unconnected.png"))
+            if self.ECG.nodeC1:
+                self.parent.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_connected.png"))
+            else:
+                self.parent.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_unconnected.png"))
+            if self.ECG.nodeC2:
+                self.parent.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_connected.png"))
+            else:
+                self.parent.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_unconnected.png"))
+            if self.ECG.nodeC3:
+                self.parent.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_connected.png"))
+            else:
+                self.parent.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png"))
+            if self.ECG.nodeC4:
+                self.parent.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_connected.png"))
+            else:
+                self.parent.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_unconnected.png"))
+            if self.ECG.nodeC5:
+                self.parent.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_connected.png"))
+            else:
+                self.parent.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png"))
+            if self.ECG.nodeC6:
+                self.parent.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_connected.png"))
+            else:
+                self.parent.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_unconnected.png"))
+        except Exception,e:
+            print e
+            
 class MyFrame2(MyFrame):
     def __init__(self, *args, **kwds):
         MyFrame.__init__(self, *args, **kwds)
@@ -84,27 +210,16 @@ class MyFrame2(MyFrame):
         self.Bind(wx.EVT_CLOSE, self.onClose)
         
         self.port = '/dev/ttyUSB0'
-        self.ECGDemo = ECG.ECG(port=self.port)
-        self.ECGDemo.device_ready()
-        if self.ECGDemo.device_ready_counter:
-            self.ECG_Demo_statusbar.SetStatusText('Device Detected')
-        else:
-            self.ECG_Demo_statusbar.SetStatusText('Device Not Detected')
-        self.ECGDemo.stop()
-        
-        self.patient1 = Patient('1', 'Timothy', 'Cena', 'Ebido', 'Servan', \
-                                            'Male', '09.27.89', '19')
-        self.edfbin = [1.1]*1000+[-1.1]*1000+[0]*5500
+        self.ECGDemo = DataGather(self)
+        self.ECGDemo.ECG_Connect()
+        self.ECGDemo.ECG.device_ready()
+        self.ECGDemo.Stop_Thread()
         
         self.play_toggle = False
         self.timerStat = wx.Timer(self)
         self.timerPlot = wx.Timer(self)
-        self.timerEDF = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.statECG, self.timerStat)
+        #self.Bind(wx.EVT_TIMER, self.statECG, self.timerStat)
         self.Bind(wx.EVT_TIMER, self.plotECG, self.timerPlot)
-        self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
-        self.timerStat.Start(5000)
-        self.timerEDF.Start(15000)
         self.plotter.plot(range(0,20)+[1]*1479+[1])
 
     def onClose(self, evt):
@@ -116,124 +231,49 @@ class MyFrame2(MyFrame):
         else:
             dlg.Destroy()
             self.Destroy()   
-            self.timerStat.Stop()
-            self.timerEDF.Stop()
-            self.timerPlot.Stop()
-            self.ECGDemo.Stop_Thread()
+            self.Stop()
 
-    def make_edf(self, evt):
-        if len(self.edfbin) >= 7500:    
-            self.Endtime = datetime.datetime.today()
-            self.Starttime = self.Endtime + datetime.timedelta(seconds= -15)
-            self.strDate = self.Starttime.strftime("%d.%m.%y")
-            self.strStarttime = self.Starttime.strftime("%H.%M.%S")
-            self.strY2KDate = self.Starttime.strftime("%d-%b-%Y")
-                    
-            Biosignals = []
-            temp = []
-            for i in range(0,7500):
-                temp.append(int(round(self.edfbin[i]/0.00263))+16383)
-                
-            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 7500, temp)
-            Biosignals.append(Biosignal_ECG)
-            
-            del self.edfbin[0:7500]
-            myedf = EDF(self.patient1, Biosignals, self.strDate, self.strStarttime, self.strY2KDate + \
-                            ': LifeLink 15 second data of CorScience modules', \
-                            1, 15)
-            myedf.get(self.patient1)
-            print 'EDF creation finished'
-        else:
-            print 'EDF have no enough data'
-            print len(self.edfbin)
-                
     def plotECG(self, evt):
         try:
-            self.plotter.plot(self.ECGDemo.ecg_leadII[0:1500])
-            temp = self.ECGDemo.Pop(end=125)
-            for i in temp:
-                self.edfbin.append(i)
-            
+            if len(self.ECGDemo.ECG.ecg_leadII) > 4500:
+                self.plotter.plot(self.ECGDemo.ECG.ecg_leadII[0:1500])
+                self.ECGDemo.ECG.Pop(end=125)
         except:
             print 'No New Data'
             
-    def statECG(self, evt):
-        try:
-            if self.ECGDemo.nodeR:
-                self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_connected.png"))
-            else:
-                self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_unconnected.png"))
-            if self.ECGDemo.nodeL:
-                self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_connected.png"))
-            else:
-                self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png"))
-            if self.ECGDemo.nodeN:
-                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png"))
-            else:
-                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png"))
-            if self.ECGDemo.nodeF:
-                self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_connected.png"))
-            else:
-                self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_unconnected.png"))
-            if self.ECGDemo.nodeC1:
-                self.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_connected.png"))
-            else:
-                self.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_unconnected.png"))
-            if self.ECGDemo.nodeC2:
-                self.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_connected.png"))
-            else:
-                self.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_unconnected.png"))
-            if self.ECGDemo.nodeC3:
-                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_connected.png"))
-            else:
-                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png"))
-            if self.ECGDemo.nodeC4:
-                self.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_connected.png"))
-            else:
-                self.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_unconnected.png"))
-            if self.ECGDemo.nodeC5:
-                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_connected.png"))
-            else:
-                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png"))
-            if self.ECGDemo.nodeC6:
-                self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_connected.png"))
-            else:
-                self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_unconnected.png"))
-        except:
-            print 'No Lead Status Data'
-        
     def play_button_clicked(self, event): # wxGlade: MyFrame.<event_handler>
         if self.play_toggle:
             self.play_toggle = False
-            self.timerPlot.Stop()
-            self.ECGDemo.Stop_Thread()
+            self.Stop()
             print 'ECG Plot Stop'
         else:
-            self.ECGDemo = ECG.ECG(port = '/dev/ttyUSB0',daqdur=DAQDUR)
-            if self.ECGDemo.Start_Thread():
+            if self.Start():
                 self.play_toggle = True
-                self.timerPlot.Start(250)
-                self.edfbin = []
                 print 'ECG Plot Start'
-            
 
     def lead12_button_clicked(self, event): # wxGlade: MyFrame.<event_handler>
         if not self.play_toggle:
-            self.play_toggle = True
-            self.timerPlot.Start(250)
-            self.edfbin = []
-            self.ECGDemo = ECG.ECG(port = '/dev/ttyUSB0',daqdur=DAQDUR)
-            self.ECGDemo.Start_Thread()
-            time.sleep(6.1)
-        self.ECGDemo.Stop_Thread()
-        self.timerPlot.Stop()
-        CreateDialog2 = Lead12Dialog2(self.ECGDemo,self.edfbin,self)
+            self.Start()
+            time.sleep(12.1)
+        self.Stop()
+        CreateDialog2 = Lead12Dialog2(self.ECGDemo,self)
         CreateDialog2.ShowModal()
-        self.timerPlot.Start(250)
-        self.ECGDemo = ECG.ECG(port = '/dev/ttyUSB0',daqdur=DAQDUR)
-        self.ECGDemo.Start_Thread()
+        time.sleep(1)
+        if self.play_toggle:
+            self.Start()
         
-
+    def Stop(self):
+        #self.timerStat.Stop()
+        self.timerPlot.Stop()
+        self.ECGDemo.Stop_Thread()
+        
+    def Start(self):
+        if self.ECGDemo.Start_Thread(port=self.port, daqdur=DAQDUR):
+            self.timerPlot.Start(250)
+            #self.timerStat.Start(5000)
+            return True
+        else:
+            return False
 # end of class MyFrame
 
 
