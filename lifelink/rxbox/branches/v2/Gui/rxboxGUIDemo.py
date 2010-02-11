@@ -552,6 +552,7 @@ class DAQPanel2(DAQPanel):
         else:
 
             self.RxFrame.RxFrame_StatusBar.SetStatusText("RxBox Ready")
+            self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'RxBox Ready')
             self.bpNow_Button.Enable(True)
             self.StartStop_Button.SetBitmapLabel(wx.Bitmap("Icons/PlayButton.png", wx.BITMAP_TYPE_ANY))
             self.StartStop_Label.SetLabel("Start")
@@ -977,6 +978,7 @@ class DAQPanel2(DAQPanel):
             
             if dlg.ShowModal() == wx.ID_YES:
                 self.RxFrame.RxFrame_StatusBar.SetStatusText("Resending data to server...")
+                self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Resending data to server...')
                 self.sendcount = 1
                 self.timerSend.Start(5000)
 
