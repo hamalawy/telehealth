@@ -1,5 +1,6 @@
+// <![CDATA[
 function handleIQ(aIQ) {
-  document.getElementById('iResp').innerHTML += 
+  document.getElementById('iResp').innerHTML +=
     "<div class='msg'>IN (raw): " +aIQ.xml().htmlEnc() + '</div>';
   document.getElementById('iResp').lastChild.scrollIntoView();
   con.send(aIQ.errorReply(ERR_FEATURE_NOT_IMPLEMENTED));
@@ -15,7 +16,7 @@ function handleMessage(aJSJaCPacket) {
 
 function handlePresence(aJSJaCPacket) {
   var html = '<div class="msg">';
-  if (!aJSJaCPacket.getType() && !aJSJaCPacket.getShow()) 
+  if (!aJSJaCPacket.getType() && !aJSJaCPacket.getShow())
     html += '<b>'+aJSJaCPacket.getFromJID()+' has become available.</b>';
   else {
     html += '<b>'+aJSJaCPacket.getFromJID()+' has set his presence to ';
@@ -33,12 +34,12 @@ function handlePresence(aJSJaCPacket) {
 }
 
 function handleError(e) {
-  document.getElementById('err').innerHTML = "An error occured:<br />"+ 
+  document.getElementById('err').innerHTML = "An error occured:<br />"+
     ("Code: "+e.getAttribute('code')+"\nType: "+e.getAttribute('type')+
-    "\nCondition: "+e.firstChild.nodeName).htmlEnc(); 
+    "\nCondition: "+e.firstChild.nodeName).htmlEnc();
   document.getElementById('login_pane').style.display = '';
   document.getElementById('sendmsg_pane').style.display = 'none';
-  
+
   if (con.connected())
     con.disconnect();
 }
@@ -54,7 +55,6 @@ function handleConnected() {
 
   con.send(new JSJaCPresence());
 }
-
 function handleDisconnected() {
   document.getElementById('login_pane').style.display = '';
   document.getElementById('sendmsg_pane').style.display = 'none';
@@ -107,7 +107,6 @@ function doLogin(aForm) {
     oArgs.resource = 'jsjac_simpleclient';
     oArgs.pass = aForm.password.value;
     oArgs.register = aForm.register.checked;
-    oArgs.authtype = 'nonsasl';
     con.connect(oArgs);
   } catch (e) {
     document.getElementById('err').innerHTML = e.toString();
@@ -115,6 +114,7 @@ function doLogin(aForm) {
     return false;
   }
 }
+
 
 function setupCon(con) {
     con.registerHandler('message',handleMessage);
@@ -146,7 +146,7 @@ function sendMsg(aForm) {
 
     return false;
   } catch (e) {
-    html = "<div class='msg error''>Error: "+e.message+"</div>"; 
+    html = "<div class='msg error''>Error: "+e.message+"</div>";
     document.getElementById('iResp').innerHTML += html;
     document.getElementById('iResp').lastChild.scrollIntoView();
     return false;
@@ -175,7 +175,6 @@ function init() {
     oDbg.log = function() {};
   }
 
-
   try { // try to resume a session
     if (JSJaCCookie.read('btype').getValue() == 'binding')
       con = new JSJaCHttpBindingConnection({'oDbg':oDbg});
@@ -196,15 +195,15 @@ function init() {
 }
 onload = init;
 
-onerror = function(e) { 
-  document.getElementById('err').innerHTML = e; 
+onerror = function(e) {
+  document.getElementById('err').innerHTML = e;
 
   document.getElementById('login_pane').style.display = '';
   document.getElementById('sendmsg_pane').style.display = 'none';
 
   if (con && con.connected())
     con.disconnect();
-  return false; 
+  return false;
 };
 
 onunload = function() {
@@ -215,8 +214,9 @@ onunload = function() {
     else
       (new JSJaCCookie('btype','polling')).write();
     if (con.suspend) {
-      con.suspend(); 
+      con.suspend();
     }
   }
 };
 
+// ]]>
