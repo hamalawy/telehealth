@@ -1,8 +1,17 @@
 <?php $this->load->view('header'); ?>
 
+<script id="source" language="javascript" type="text/javascript">
+$(function () {
+    var d1 = <?php echo $ecg; ?>;
+    $.plot($("#placeholder"), [d1]);
+});
+</script>
+
   <div id="err"></div>
 
-  <div id="login_pane">
+<?php 
+// Disable while designing viewer itseelff
+/*  <div id="login_pane">
     <h2>Login</h2>
     <form name="loginForm" onSubmit="return doLogin(this);" action="#">
       <table>
@@ -17,22 +26,24 @@
      </table>
     </form>
   </div>
+*/ ?>
 
-  <div id="sendmsg_pane" style="display:none;">
-  <div class="ui-widget ui-corner-all" style="float: left; width: 20%">
-   <h2>Cases</h2>
-   <div class="ui-widget-content" style="margin: 5%;">
+  <?php //<div id="sendmsg_pane" style="display:none;"> ?>
+  <div>
+  <div class="ui-widget ui-corner-all ui-widget-content" style="float: left; width: 20%">
+   <p><h2>Cases</h2></p>
+   <div  style="margin: 5%;">
 	<?php
-		$mbox = imap_open("{imap.example.org:143}INBOX", "username", "password")
+		$mbox = imap_open("{imap.gmail.com:993/imap/ssl/novalidate-cert}INBOX", "nurse.triage", "telehealth")
 		     or die("can't connect: " . imap_last_error());
 	
 		$MC = imap_check($mbox);
 
 		// Fetch an overview for all messages in INBOX
-		$result = imap_fetch_overview($mbox,"1:{$MC->Nmsgs}",0);
+		$result = imap_search($mbox, 'UNSEEN');
+                $result = imap_fetch_overview($mbox,join(',',$result),0);
 		foreach ($result as $overview) {
-		    echo "#{$overview->msgno} ({$overview->date}) - From: {$overview->from}
-		    {$overview->subject}\n";
+		    echo "#{$overview->msgno} {$overview->subject}<br/>";
 		}
 		imap_close($mbox);
 	?>
@@ -45,9 +56,7 @@
 <center>
 <table width="95%" border="1" style="border-collapse: collapse; margin: 2%">
 <tr>
-<td height="114" colspan="4">Last Name: &nbsp;&nbsp;Fernandez &nbsp;&nbsp;First Name: Randy Middle Name: &nbsp;<br/>
-Gender: Male&nbsp;&nbsp;&nbsp;&nbsp;Address: QC&nbsp;&nbsp;&nbsp;&nbsp;Phone Number: 222-2212<br/>
-</td>
+<td height="114" colspan="4"><?php echo $patient; ?></td>
 </tr>
 <tr>
 <td width="23%" height="56">&nbsp;</td>
@@ -76,13 +85,13 @@ Gender: Male&nbsp;&nbsp;&nbsp;&nbsp;Address: QC&nbsp;&nbsp;&nbsp;&nbsp;Phone Num
 </tr>
 <tr>
 <td height="86">
-<h1><center>119/80</center></h1>
+<h1><center><?php echo $bp; ?></center></h1>
 </td>
 <td>
-<h1><center>79  <br/>BPM</center>
+<h1><center><?php echo $heartrate; ?><br/>BPM</center>
 </td>
 <td>
-<h1><center>94<br/>%SP02</center>
+<h1><center><?php echo $spo2; ?><br/>%SP02</center>
 </td>
 </tr>
 <tr>

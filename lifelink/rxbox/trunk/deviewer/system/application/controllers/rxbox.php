@@ -19,6 +19,15 @@
 		    '<link rel="stylesheet" type="text/css" href="' . base_url() . 'public/jquery-ui/css/south-street/jquery-ui.css"></link>',
 		    '<link rel="stylesheet" type="text/css" href="' . base_url() . 'public/css/deview.css"></link>'
                  );
+
+
+	    exec('cd /var/www/deviewer/edfviewer/ && python viewer2.py', $edf);
+	    $data['ecg'] = $edf[1];
+	    $data['patient'] = $edf[0];
+	    $data['bp'] = $edf[3];
+	    $data['spo2'] = $edf[2];
+	    $data['heartrate'] = $edf[4];
+
             $this->load->view('rxbox/deview', $data);
         }
     }
