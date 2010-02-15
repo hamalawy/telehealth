@@ -950,8 +950,10 @@ class DAQPanel2(DAQPanel):
             if (self.config.getint('email', 'simulated') == 0):
                 self.sendEmail()
                 self.show_email_success()
+                self.sendcount = 1
             
             elif (self.config.getint('email', 'simulated') == 1):
+                self.sendcount = 1
                 self.SendStatus(self)
     
     def show_email_success(self):
@@ -984,6 +986,7 @@ class DAQPanel2(DAQPanel):
 
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")              
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
+        
     def onBPNow(self, event): # wxGlade: MyPanel1.<event_handler>
         """Called when the BP NOW button is toggled
            Calls the get() method from the BP sensor class
@@ -1139,6 +1142,7 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.RxFrame.DAQPanel.rxboxDB.dbpatientinsert('patients', 'lastname', 'firstname', \
             'middlename', 'address', 'phonenumber', 'age', 'birth', 'gender', 'uuid', \
             LastName, FirstName, MiddleName, Address, Phone, Age, Birth, Gender, self.RxFrame.DAQPanel.dbuuid)
+
         if self.RxFrame.DAQPanel.on_send == 0:
  #           CallAfter(self.RxFrame.CreateReferPanel)
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Initiated.")
