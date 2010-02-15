@@ -1136,20 +1136,31 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.RxFrame.AgeValue.SetValue(Age)
         self.RxFrame.AgeCombo.SetValue(Birth)
         self.RxFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())     
-        self.Destroy()
-        self.RxFrame.DAQPanel.DisablePatient()
-        self.RxFrame.DAQPanel.with_patient_info = 1
-        self.RxFrame.DAQPanel.rxboxDB.dbpatientinsert('patients', 'lastname', 'firstname', \
-            'middlename', 'address', 'phonenumber', 'age', 'birth', 'gender', 'uuid', \
-            LastName, FirstName, MiddleName, Address, Phone, Age, Birth, Gender, self.RxFrame.DAQPanel.dbuuid)
+        
+        check_valid = self.check_patient_valid(FirstName, MiddleName, LastName, Gender, Age,\
+                                            Address, Phone)
+        
+        if (check_valid == 1):
+            self.Destroy()
+            self.RxFrame.DAQPanel.DisablePatient()
+            self.RxFrame.DAQPanel.with_patient_info = 1
+            self.RxFrame.DAQPanel.rxboxDB.dbpatientinsert('patients', 'lastname', 'firstname', \
+                'middlename', 'address', 'phonenumber', 'age', 'birth', 'gender', 'uuid', \
+                LastName, FirstName, MiddleName, Address, Phone, Age, Birth, Gender, self.RxFrame.DAQPanel.dbuuid)
 
-        if self.RxFrame.DAQPanel.on_send == 0:
- #           CallAfter(self.RxFrame.CreateReferPanel)
-            self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Initiated.")
-            self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'Acquiring biomedical readings... Call Panel Initiated.')
+            if self.RxFrame.DAQPanel.on_send == 0:
+ #               CallAfter(self.RxFrame.CreateReferPanel)
+                self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Initiated.")
+                self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'Acquiring biomedical readings... Call Panel Initiated.')
             
-        if self.RxFrame.DAQPanel.on_send == 1:
-            self.RxFrame.DAQPanel.timerSend.Start(5000)
+            if self.RxFrame.DAQPanel.on_send == 1:
+                self.RxFrame.DAQPanel.timerSend.Start(5000)
+            
+    def check_patient_valid(self, firstname, middlename, lastname, gender, age, address, phone):
+        if ((firstname == '')|(middlename == '')|(lastname == '')|(gender == '')|(age == '')|(address == '')|(phone == '')):
+            return 0
+        else:
+            return 1
         
 class Lead12Dialog2(Lead12Dialog):
     """ Class that creates the 12 Lead Dialog Window where the 12 leads will be plotted
