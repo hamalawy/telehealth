@@ -1,3 +1,3 @@
 <?php
-    $MHPATH='/home/jerome/MsgHandler';
+    //$MHPATH='/home/jerome/MsgHandler';
 ?>
