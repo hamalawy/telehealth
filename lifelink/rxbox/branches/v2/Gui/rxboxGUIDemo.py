@@ -216,12 +216,20 @@ class RxFrame2(RxFrame):
 
     def onMsgRcvd(self, conn, msg):
         """Shows message received in the IM panel"""
-        self.ReferPanel.IMtexts_Text.AppendText('DE1: ' + msg.getBody() + '\n')
+        time = self.get_time()
+        self.ReferPanel.IMtexts_Text.AppendText('('+time+')\n'+'DE1: ' + msg.getBody() + '\n')
        
     def onMsgSent(self, msg):
         """Shows message sent in the IM panel"""
-        self.ReferPanel.IMtexts_Text.AppendText('RXBOX: ' + msg + '\n')
+        time = self.get_time()
+        self.ReferPanel.IMtexts_Text.AppendText('('+time+')\n'+'RXBOX: ' + msg + '\n')
         self.ReferPanel.IMreply_Text.Clear()
+        
+    def get_time(self):
+        
+        time = datetime.datetime.today()
+        time = time.strftime("%H:%M:%S")
+        return str(time)
 
     def sendMessage(self, event):
         """Sends the message to a specified destination (address)"""
@@ -248,8 +256,9 @@ class RxFrame2(RxFrame):
     def updateIM(self, evt):
         """Copy the contents of the im text input box and show it to an another text box"""
 
+        time = self.get_time()
         prev = self.ReferPanel.IMreply_Text.GetValue()
-        self.ReferPanel.IMtexts_Text.AppendText('RxBox: ' + prev + '\nDE: ' + prev + '\n')
+        self.ReferPanel.IMtexts_Text.AppendText('(' + time ')' + '\nRxBox: ' + prev + '\nDE: ' + prev + '\n')
         self.ReferPanel.IMreply_Text.Clear() 
         
     def DestroyReferPanel(self):
