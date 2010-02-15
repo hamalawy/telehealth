@@ -1,6 +1,6 @@
-import edfviewer
+import edfviewer, sys
 
-c_inst=edfviewer.EDF_File('Ebido_113056.edf')# edf file input
+c_inst=edfviewer.EDF_File(sys.argv[1])# edf file input
 x=c_inst.parseDataRecords()
 
 y = range(len(x[4]));
