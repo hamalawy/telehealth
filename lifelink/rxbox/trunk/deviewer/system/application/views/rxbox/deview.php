@@ -34,18 +34,9 @@ $(function () {
    <p><h2>Cases</h2></p>
    <div  style="margin: 5%;">
 	<?php
-		$mbox = imap_open("{imap.gmail.com:993/imap/ssl/novalidate-cert}INBOX", "nurse.triage", "telehealth")
-		     or die("can't connect: " . imap_last_error());
-	
-		$MC = imap_check($mbox);
-
-		// Fetch an overview for all messages in INBOX
-		$result = imap_search($mbox, 'UNSEEN');
-                $result = imap_fetch_overview($mbox,join(',',$result),0);
-		foreach ($result as $overview) {
+		foreach ($unread as $overview) {
 		    echo "#{$overview->msgno} {$overview->subject}<br/>";
 		}
-		imap_close($mbox);
 	?>
 
    </div>
