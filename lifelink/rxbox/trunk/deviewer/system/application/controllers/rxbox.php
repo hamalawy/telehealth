@@ -59,6 +59,7 @@
 	            $data['heartrate'] = $edf[4];
 	    }
 
+	    $data['description'] = $this->_get_body($mbox, $q);
             $this->load->view('rxbox/deview', $data);
 
             imap_close($mbox);
@@ -73,11 +74,15 @@
 		return $result;
 	}
 
+	function _get_body($mbox, $uid) {
+		$body = imap_fetchbody($mbox, $uid, 1);
+		return $body;
+	}
+
 	function _extract_attachments($connection, $message_number) {
    
 	    $attachments = array();
 	    $structure = imap_fetchstructure($connection, $message_number);
-	   
 	    if(isset($structure->parts) && count($structure->parts)) {
    
 	        for($i = 0; $i < count($structure->parts); $i++) {
