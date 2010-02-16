@@ -30,9 +30,9 @@ $(function () {
 
   <?php //<div id="sendmsg_pane" style="display:none;"> ?>
   <div>
-  <div class="ui-widget ui-corner-all ui-widget-content" style="float: left; width: 20%">
-   <p><h2>Cases</h2></p>
-   <div  style="margin: 5%;">
+  <div class="ui-corner-all ui-widget-content" style="float: left; height: 740px;">
+   <center><h2 class="ui-widget-header ui-corner-all">Cases</h2></center>
+   <div style="margin: 5%">
 	<?php
 		foreach ($unread as $overview) {
 		    echo "#{$overview->msgno} {$overview->subject}<br/>";
@@ -44,6 +44,8 @@ $(function () {
   </div>
 
   <div class="ui-widget ui-widget-content ui-corner-all" style="float: right">
+  <center><h2 class="ui-widget-header ui-corner-all">Rx Panel</h2></center>
+
 <center>
 <table width="95%" border="1" style="border-collapse: collapse; margin: 2%">
 <tr>
