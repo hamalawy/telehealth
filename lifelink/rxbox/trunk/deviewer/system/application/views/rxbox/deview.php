@@ -35,7 +35,7 @@ $(function () {
    <div style="margin: 5%">
 	<?php
 		foreach ($unread as $overview) {
-		    echo "#{$overview->msgno} {$overview->subject}<br/>";
+		    echo '<a href="' . base_url() . 'index.php/rxbox/session/' . $overview->msgno .'">' . $overview->subject . '</a><br/>';
 		}
 	?>
 
@@ -49,7 +49,7 @@ $(function () {
 <center>
 <table width="95%" border="1" style="border-collapse: collapse; margin: 2%">
 <tr>
-<td height="114" colspan="4"><?php echo $patient; ?></td>
+<td height="114" colspan="4" valign="top"><h3><?php echo $patient;?></h3><p><?php echo $description; ?></p></td>
 </tr>
 <tr>
 <td width="23%" height="56">&nbsp;</td>
@@ -78,7 +78,7 @@ $(function () {
 </tr>
 <tr>
 <td height="86">
-<h1><center><?php echo $bp; ?></center></h1>
+<h1><center><?php echo $bp; ?><br/>mmHg</center></h1>
 </td>
 <td>
 <h1><center><?php echo $heartrate; ?><br/>BPM</center>
