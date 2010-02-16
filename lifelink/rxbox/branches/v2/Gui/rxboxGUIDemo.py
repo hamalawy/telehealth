@@ -258,7 +258,7 @@ class RxFrame2(RxFrame):
 
         time = self.get_time()
         prev = self.ReferPanel.IMreply_Text.GetValue()
-        self.ReferPanel.IMtexts_Text.AppendText('(' + time ')' + '\nRxBox: ' + prev + '\nDE: ' + prev + '\n')
+        self.ReferPanel.IMtexts_Text.AppendText('(' + time + ')' + '\nRxBox: ' + prev + '\nDE: ' + prev + '\n')
         self.ReferPanel.IMreply_Text.Clear() 
         
     def DestroyReferPanel(self):
