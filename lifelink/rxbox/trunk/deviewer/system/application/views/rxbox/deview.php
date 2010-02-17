@@ -31,10 +31,9 @@ $(function () {
   <?php //<div id="sendmsg_pane" style="display:none;"> ?>
   <div>
   <div class="ui-corner-all ui-widget-content" style="float: left; height: 740px;">
-   <center><h2 class="ui-widget-header ui-corner-all">Cases</h2></center>
+   <center><h2 class="widget-headers ui-widget-header ui-corner-all">Cases</h2></center>
    <div style="margin: 5%">
-	<?php
-		foreach ($unread as $overview) {
+	<?php	foreach ($unread as $overview) {
 		    echo '<a href="' . base_url() . 'index.php/rxbox/session/' . $overview->msgno .'">' . $overview->subject . '</a><br/>';
 		}
 	?>
@@ -44,7 +43,7 @@ $(function () {
   </div>
 
   <div class="ui-widget ui-widget-content ui-corner-all" style="float: right">
-  <center><h2 class="ui-widget-header ui-corner-all">Rx Panel</h2></center>
+  <center><h2 class="widget-headers ui-widget-header ui-corner-all">Rx Panel</h2></center>
 
 <center>
 <table width="95%" border="1" style="border-collapse: collapse; margin: 2%">
