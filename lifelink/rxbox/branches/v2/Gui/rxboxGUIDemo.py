@@ -46,6 +46,8 @@ sys.path.append('triage/')
 sys.path.append('voip/')
 sys.path.append('im')
 sys.path.append('simulators/')
+sys.path.append('splash_screen/')
+
 import triage
 import linphone
 import messenger
@@ -60,6 +62,11 @@ import datetime
 import uuid
 import rxboxdb
 import os
+
+#import splash
+#from splash import SplashApp
+import splash2
+from splash2 import Splash
 
 import threading
 from multiprocessing import Process
@@ -96,6 +103,31 @@ class LinphoneHandle(linphone.Linphone):
         print "Call failed"
         #you may put GUI codes here (callafter function maybe?)
                 
+class SplashApp2(Splash):
+    
+    def __init__(self, *args, **kwds):
+        Splash.__init__(self, *args, **kwds)
+        self.init_loadingbar()
+        
+    def init_loadingbar(self):
+        self.bar = wx.Gauge(self.gauge, -1, 100, size=(525,30), style=wx.GA_HORIZONTAL)
+        self.bar_timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.inc_bar, self.bar_timer)
+        self.value = 0
+        self.bar_timer.Start(50)
+        
+    def inc_bar(self, event):
+        
+        if (self.value != 100):
+            self.bar.SetValue(self.value)
+            self.value += 1
+            
+        else:
+            self.bar_timer.Stop()
+
+    def on_skip(self, event): # wxGlade: Splash.<event_handler>
+        
+        self.Close()
 
 class RxFrame2(RxFrame):
     """ Class for RxFrame GUI instance and methods
@@ -118,8 +150,12 @@ class RxFrame2(RxFrame):
         
         Arguments: __init__(RxFrame)
         """        
+        
         RxFrame.__init__(self, *args, **kwds)
         self.DAQPanel = DAQPanel2(self, self, -1)
+        self.splash_app = SplashApp2(self)
+        self.splash_app.ShowModal()
+        
         self.playwav = simsensors.stethplay(self)
         self.info_daq_sizer.Add(self.DAQPanel, 1, wx.ALL | wx.EXPAND, 4)
         self.Bind(wx.EVT_CLOSE, self.onClose)
