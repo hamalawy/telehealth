@@ -7,7 +7,7 @@
         function index()
         {
         }
-        function session($q='')
+        function session($view='static', $q='')
         {
             $data['title'] = "Domain Expert's Window";
             $data['extraHeadContent'] =
@@ -60,7 +60,7 @@
 	    }
 
 	    $data['description'] = $this->_get_body($mbox, $q);
-            $this->load->view('rxbox/deview', $data);
+            $this->load->view("rxbox/$view", $data);
 
             imap_close($mbox);
         }
