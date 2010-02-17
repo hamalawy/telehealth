@@ -71,7 +71,7 @@
                 $result = imap_search($mbox, $search);
                 $result = imap_fetch_overview($mbox,join(',',$result),0);
 
-		return $result;
+		return array_reverse($result);
 	}
 
 	function _get_body($mbox, $uid) {
