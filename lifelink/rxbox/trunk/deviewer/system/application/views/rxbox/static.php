@@ -28,6 +28,17 @@ $(function () {
   </div>
 */ ?>
 
+<?php if($sent):?>
+<div class="ui-widget">
+<div style="padding: 0pt 0em; margin-top: 20px;" class="ui-state-highlight ui-corner-all">
+                                <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>
+                                <strong>Reply sent to triage!</strong></p>
+</div>
+</div>
+<br/>
+<?php endif;?>
+
+
   <?php //<div id="sendmsg_pane" style="display:none;"> ?>
   <div>
   <div class="ui-corner-all ui-widget-content" style="float: left; height: 61.5em;">
@@ -63,11 +74,11 @@ $(function () {
 <td height="275" valign="top"><center><h3 class="widget-headers ui-widget-header">Photos</h3></td>
 </tr>
 <tr>
-<td rowspan="3" valign="top"><div id="iResp"></div>
+<td rowspan="3" valign="top">
       <center><h3 class="ui-widget-header widget-headers">Reply</h3></center>
-      <form name="sendForm" onSubmit="return sendMsg(this);" action="#">
-        <div class="spaced"><textarea name="msg" id='msgArea' rows="8" cols="80" tabindex="2"></textarea></div>
-        <center><div class="spaced"><button type="button" class="ui-state-default ui-corner-all">Send</button></div></center>
+      <form name="replyForm" method="post" action="<?php echo current_url(); ?>">
+        <div class="spaced"><textarea name="msg" id='msgArea' rows="8" cols="80" tabindex="2" <?php if (!empty($msg)) echo "value='$msg'";?>></textarea></div>
+        <center><div class="spaced"><button type="submit" class="ui-state-default ui-corner-all">Send</button></div></center><br/>
       </form>
 </td>
 </tr>
@@ -89,7 +100,7 @@ $(function () {
 </tr>
 </table>
 </center>
-    </div>
-    </div>
-<?php $this->load->view('header'); ?>
+    </div></div>
+
+<?php $this->load->view('footer'); ?>
 
