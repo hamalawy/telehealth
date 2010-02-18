@@ -46,6 +46,10 @@
             $data['spo2'] = "---";
             $data['heartrate'] = "---";
 
+	    //Message id
+	    $data['q'] = $q;
+	    $data['view'] = $view;
+
 	    if ($filename != "") {
 	            exec('cd /var/www/deviewer/edfviewer/ && python viewer2.py ' . $filename, $edf);
 
