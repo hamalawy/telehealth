@@ -30,11 +30,14 @@ $(function () {
 
   <?php //<div id="sendmsg_pane" style="display:none;"> ?>
   <div>
-  <div class="ui-corner-all ui-widget-content" style="float: left; height: 740px;">
+  <div class="ui-corner-all ui-widget-content" style="float: left; height: 61.5em;">
    <center><h2 class="widget-headers ui-widget-header ui-corner-all">Cases</h2></center>
    <div style="margin: 5%">
-	<?php	foreach ($unread as $overview) {
-		    echo '<a href="' . base_url() . 'index.php/rxbox/session/' . $overview->msgno .'">' . $overview->subject . '</a><br/>';
+	<?php
+		$subject = '';
+		foreach ($unread as $overview) {
+		    echo '<a href="' . base_url() . "index.php/rxbox/session/$view/" . $overview->msgno .'">' . $overview->subject . '</a><br/>';
+		    if ($overview->msgno == $q) $subject = $overview->subject;
 		}
 	?>
 
@@ -46,34 +49,32 @@ $(function () {
   <center><h2 class="widget-headers ui-widget-header ui-corner-all">Rx Panel</h2></center>
 
 <center>
-<table width="95%" border="1" style="border-collapse: collapse; margin: 2%">
+<table width="95%" border="1" style="border-collapse: collapse; margin: 2%; border:1px solid #DFD9C3;">
 <tr>
-<td height="114" colspan="4" valign="top"><h3><?php echo $patient;?></h3><p><?php echo $description; ?></p></td>
-</tr>
-<tr>
-<td width="23%" height="56">&nbsp;</td>
-<td colspan="2">&nbsp;</td>
-<td width="30%">&nbsp;</td>
+<td height="114" colspan="4" valign="top">
+   <center><h3 class="widget-headers ui-widget-header">Patient and Referral Information</h3></center>
+   <h2><?php echo $subject; ?></h2><h3><?php echo $patient;?></h3><p><?php echo $description; ?></p></td>
 </tr>
 <tr>
 <td height="329" colspan="3" rowspan="2">
-<div id="placeholder" style="width:683px;height:267px;"></div>
+<center><h3 class="widget-headers ui-widget-header">Electrocardiograph</h3>
+<center><div id="placeholder" style="width:57em;height:26em;"></div></center>
 </td>
-<td height="275">&nbsp;</td>
+<td height="275" valign="top"><center><h3 class="widget-headers ui-widget-header">Photos</h3></td>
 </tr>
 <tr>
-<td rowspan="3"><div id="iResp"></div>
+<td rowspan="3" valign="top"><div id="iResp"></div>
+      <center><h3 class="ui-widget-header widget-headers">Reply</h3></center>
       <form name="sendForm" onSubmit="return sendMsg(this);" action="#">
-        <div class="spaced"><b>To:</b> <input type="text" name="sendTo" tabindex="1"></div>
-        <div class="spaced"><textarea name="msg" id='msgArea' rows="3" cols="80" tabindex="2"></textarea></div>
-        <div class="spaced"><input type="submit" value="Send" tabindex="3"> * <input type="button" value="Quit" tabindex="4" onclick="return quit();"></div>
+        <div class="spaced"><textarea name="msg" id='msgArea' rows="8" cols="80" tabindex="2"></textarea></div>
+        <center><div class="spaced"><button type="button" class="ui-state-default ui-corner-all">Send</button></div></center>
       </form>
 </td>
 </tr>
 <tr>
-<td height="23">Blood Pressure</td>
-<td width="23%">Heart Rate</td>
-<td width="24%">Blood Oxygen Saturation</td>
+<td width="23%"><center><h3 class="widget-headers ui-widget-header">Blood Pressure</h3></center></td>
+<td width="23%"><center><h3 class="widget-headers ui-widget-header">Heart Rate</h3></center></td>
+<td width="24%"><center><h3 class="widget-headers ui-widget-header">Blood Oxygen Saturation</h3></center></td>
 </tr>
 <tr>
 <td height="86">
@@ -85,9 +86,6 @@ $(function () {
 <td>
 <h1><center><?php echo $spo2; ?><br/>%SP02</center>
 </td>
-</tr>
-<tr>
-<td colspan="4">&nbsp;</td>
 </tr>
 </table>
 </center>
