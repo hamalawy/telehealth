@@ -14,8 +14,8 @@ class Splash(wx.Dialog):
         # begin wxGlade: Splash.__init__
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE
         wx.Dialog.__init__(self, *args, **kwds)
-        self.bitmap_1 = wx.StaticBitmap(self, -1, wx.Bitmap("/home/tim/Desktop/Caduceus_Logo_v2.jpg", wx.BITMAP_TYPE_ANY))
-        self.text_ctrl_1 = wx.TextCtrl(self, -1, "Welcome to RxBox :)\nVersion 0.3426\n\nDeveloped by Tim & Thom", style=wx.TE_MULTILINE|wx.TE_READONLY)
+        self.bitmap_1 = wx.StaticBitmap(self, -1, wx.Bitmap("splash_screen/Caduceus_Logo_v2.jpg", wx.BITMAP_TYPE_ANY))
+        self.text_ctrl_1 = wx.TextCtrl(self, -1, "Welcome to RxBox :)\nVersion 0.3426\n\nDeveloped by UP EEEI", style=wx.TE_MULTILINE|wx.TE_READONLY)
         self.panel_1 = wx.Panel(self, -1)
         self.Back = wx.Button(self, -1, "<< Back")
         self.Next = wx.Button(self, -1, "Next >>")
@@ -30,7 +30,7 @@ class Splash(wx.Dialog):
 
     def __set_properties(self):
         # begin wxGlade: Splash.__set_properties
-        self.SetTitle("dialog_1")
+        self.SetTitle("Welcome to Rxbox")
         # end wxGlade
 
     def __do_layout(self):
