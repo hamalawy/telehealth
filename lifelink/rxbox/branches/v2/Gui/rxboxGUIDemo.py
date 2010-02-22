@@ -107,6 +107,8 @@ class SplashApp2(Splash):
     
     def __init__(self, *args, **kwds):
         Splash.__init__(self, *args, **kwds)
+        self.loaded = 0
+        self.ret_value = 0
         self.init_loadingbar()
         
     def init_loadingbar(self):
@@ -115,6 +117,7 @@ class SplashApp2(Splash):
         self.Bind(wx.EVT_TIMER, self.inc_bar, self.bar_timer)
         self.value = 0
         self.bar_timer.Start(50)
+        self.ret_value = self.ShowModal()
         
     def inc_bar(self, event):
         
@@ -124,10 +127,14 @@ class SplashApp2(Splash):
             
         else:
             self.bar_timer.Stop()
+            self.loaded = 1
+
 
     def on_skip(self, event): # wxGlade: Splash.<event_handler>
         
-        self.Close()
+        self.EndModal(self.ret_value)
+        self.Destroy()
+        self.Destroy()
 
 class RxFrame2(RxFrame):
     """ Class for RxFrame GUI instance and methods
@@ -150,12 +157,10 @@ class RxFrame2(RxFrame):
         
         Arguments: __init__(RxFrame)
         """        
-        
+   
         RxFrame.__init__(self, *args, **kwds)
         self.DAQPanel = DAQPanel2(self, self, -1)
-        self.splash_app = SplashApp2(self)
-        self.splash_app.ShowModal()
-        
+
         self.playwav = simsensors.stethplay(self)
         self.info_daq_sizer.Add(self.DAQPanel, 1, wx.ALL | wx.EXPAND, 4)
         self.Bind(wx.EVT_CLOSE, self.onClose)
@@ -179,7 +184,7 @@ class RxFrame2(RxFrame):
         self.timer_video_start = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.init_simvideo, self.timer_video_start)
         self.pid = int()
-
+        
 
     def __set_properties(self):
         RxFrame.__set_properties(self)
@@ -1278,7 +1283,13 @@ if __name__ == "__main__":
     rx_frame = RxFrame2(None, -1, "")
     app.SetTopWindow(rx_frame)
     rx_frame.Maximize(True)
+    
+    splash_app = SplashApp2(None)
+
+    
+    
     rx_frame.Show()
+        
     app.MainLoop()
 
 
