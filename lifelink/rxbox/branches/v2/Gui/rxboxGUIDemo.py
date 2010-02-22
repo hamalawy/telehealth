@@ -134,7 +134,6 @@ class SplashApp2(Splash):
         
         self.EndModal(self.ret_value)
         self.Destroy()
-        self.Destroy()
 
 class RxFrame2(RxFrame):
     """ Class for RxFrame GUI instance and methods
