@@ -1244,9 +1244,6 @@ class CreateRecordDialog2(CreateRecordDialog):
         Phone = self.PatientPhoneNumber_TextCtrl.GetValue()        
         PatientName = FirstName + ' ' + MiddleName + ' ' + LastName
 
-        self.RxFrame.topic = self.ReferralTopic_TextCtrl.GetValue()
-        self.RxFrame.body = self.RemarkValue.GetValue()
-
         self.RxFrame.FirstNameValue.SetValue(FirstName)
         self.RxFrame.MiddleNameValue.SetValue(MiddleName)
         self.RxFrame.LastNameValue.SetValue(LastName)
@@ -1255,10 +1252,13 @@ class CreateRecordDialog2(CreateRecordDialog):
         self.RxFrame.GenderCombo.SetValue(Gender)
         self.RxFrame.AgeValue.SetValue(Age)
         self.RxFrame.AgeCombo.SetValue(Birth)
-        self.RxFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())     
-        
+        self.RxFrame.DAQPanel.RemarkValueDaq.SetValue(self.RemarkValue.GetValue())  
+           
+        self.RxFrame.topic = self.ReferralTopic_TextCtrl.GetValue()
+        self.RxFrame.reason = self.ReferralReason_Combo.GetValue()
+        self.RxFrame.remarks = self.RemarkValue.GetValue()        
         check_valid = self.check_patient_valid(FirstName, MiddleName, LastName, Gender, Age,\
-                                            Address, Phone)
+                                            Birth, Validity, self.RxFrame.topic, self.RxFrame.reason)
         
         if (check_valid == 1):
             self.Destroy()
@@ -1276,8 +1276,8 @@ class CreateRecordDialog2(CreateRecordDialog):
             if self.RxFrame.DAQPanel.on_send == 1:
                 self.RxFrame.DAQPanel.timerSend.Start(5000)
             
-    def check_patient_valid(self, firstname, middlename, lastname, gender, age, address, phone):
-        if ((firstname == '')|(middlename == '')|(lastname == '')|(gender == '')|(age == '')|(address == '')|(phone == '')):
+    def check_patient_valid(self, firstname, middlename, lastname, gender, age, birth, validity, topic, reason):
+        if ((firstname == '')|(middlename == '')|(lastname == '')|(gender == '')|(age == '')|(birth == '')|(validity == '')|(topic == '')|(reason == '')):
             return 0
         else:
             return 1
