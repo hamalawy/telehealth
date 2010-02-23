@@ -103,7 +103,7 @@ class RxFrame(wx.Frame):
     def __do_layout(self):
         # begin wxGlade: RxFrame.__do_layout
         mainvertical_sizer = wx.BoxSizer(wx.VERTICAL)
-        mainhorizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.mainhorizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.info_daq_sizer = wx.BoxSizer(wx.VERTICAL)
         patient_info_tab_sizer = wx.BoxSizer(wx.HORIZONTAL)
         devices_sizer = wx.FlexGridSizer(1, 3, 0, 0)
@@ -162,8 +162,8 @@ class RxFrame(wx.Frame):
         self.devices_panel.SetSizer(devices_sizer)
         patient_info_tab_sizer.Add(self.devices_panel, 1, wx.EXPAND, 0)
         self.info_daq_sizer.Add(patient_info_tab_sizer, 0, wx.ALL|wx.EXPAND, 4)
-        mainhorizontal_sizer.Add(self.info_daq_sizer, 3, wx.EXPAND, 0)
-        mainvertical_sizer.Add(mainhorizontal_sizer, 1, wx.EXPAND, 0)
+        self.mainhorizontal_sizer.Add(self.info_daq_sizer, 3, wx.EXPAND, 0)
+        mainvertical_sizer.Add(self.mainhorizontal_sizer, 1, wx.EXPAND, 0)
         self.SetSizer(mainvertical_sizer)
         self.Layout()
         self.Centre()
