@@ -41,6 +41,7 @@ $(function () {
 
   <?php //<div id="sendmsg_pane" style="display:none;"> ?>
   <div>
+<?php /*
   <div class="ui-corner-all ui-widget-content" style="float: left; height: 61.5em;">
    <center><h2 class="widget-headers ui-widget-header ui-corner-all">Cases</h2></center>
    <div style="margin: 5%">
@@ -55,8 +56,9 @@ $(function () {
    </div>
 
   </div>
+*/ ?>
 
-  <div class="ui-widget ui-widget-content ui-corner-all" style="float: right">
+  <div class="ui-widget ui-widget-content ui-corner-all">
   <center><h2 class="widget-headers ui-widget-header ui-corner-all">Rx Panel</h2></center>
 
 <center>
