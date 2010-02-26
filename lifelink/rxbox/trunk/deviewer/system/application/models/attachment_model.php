@@ -22,6 +22,19 @@ class Attachment_model extends Model {
 	}
     }
 
+    function getSubject($msg_uuid)
+    {
+        $query = $this->db->get_where('msg_headers', array('msg_uuid' => $msg_uuid, 'field' => 'subject'));
+        $result = $query->result();
+        return $result[0]->value;
+    }
+
+    function getBody($msg_uuid)
+    {
+	$query = $this->db->get_where('msg_contents', array('msg_uuid' => $msg_uuid));
+	$result = $query->result();
+	return $result[0]->body;
+    }
 
 }
 ?>
