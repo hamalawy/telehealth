@@ -40,6 +40,8 @@
 
             $this->load->model('attachment_model');
             $attachments = $this->attachment_model->getAttachmentsByHash($q);
+	    $data['subject'] = $this->attachment_model->getSubject($attachments[0]->msg_uuid);
+	    $data['description'] = $this->attachment_model->getBody($attachments[0]->msg_uuid);
 
 	    //TODO: Check file extension first
 
