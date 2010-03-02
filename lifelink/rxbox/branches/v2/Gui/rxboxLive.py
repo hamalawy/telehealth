@@ -74,6 +74,7 @@ from subprocess import Popen, PIPE
 
 from SPO2 import SPO2
 from BP import BP
+#from ECG import ECG
 
 #import threading
 #try:                   
@@ -510,8 +511,6 @@ class DAQPanel2(DAQPanel):
         self.with_patient_info = 0
         self.ClearPatient()
         self.referflag = 0    
-        self.pressure_timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.bp_pressure_indicator.Enable(False)
         
     def init_daqtimers(self):
@@ -540,7 +539,7 @@ class DAQPanel2(DAQPanel):
         
     def init_ecglive(self):
         """Initializes ecgplotter GUI"""
-        
+        print 'kelan pumapsok dito'
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self, (1120, 380))
         self.ecg_vertical_sizer.Add(self.plotter.plotpanel, 1, \
@@ -567,9 +566,9 @@ class DAQPanel2(DAQPanel):
         
         
     def init_simsensors_bp(self):
-        """Initializes spo2 simsensor"""
+        """Initializes bp simsensor"""
         self.bpdata = simsensors.BpSim(self)
-
+      
 
     def onStartStop(self, event):
         """Triggers the start or end of the RxBox session."""
@@ -618,7 +617,9 @@ class DAQPanel2(DAQPanel):
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
             if self.config.get('bp', 'simulated') == '0':
                 self.get_bp()
+                print "live bp"
             else:
+                print "demo bp"
                 self.bpdata.get()
             
             self.onECGNodeCheck(self)
@@ -809,19 +810,6 @@ class DAQPanel2(DAQPanel):
         print 'Acquiring BP data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring BP data')
                
-    def pressure_update(self, evt):
-        """Method that handles the inflating bar of blood pressure"""
-        
-        press = int(self.file.readline())
-        if press != 999:
-            self.bp_pressure_indicator.SetValue(press)
-        else:
-            self.file.close()
-            self.pressure_timer.Stop()
-            self.bp_pressure_indicator.Enable(False)
-            self.bpNow_Button.Enable(True)
-            self.setBPmins_combobox.Enable(True)
-            self.bpdata.bp_finished()
         
     def make_edf(self, evt):
         """Creates 15 second chunks of edf data"""
@@ -971,7 +959,7 @@ class DAQPanel2(DAQPanel):
             self.Call_Button.Enable(True)
             self.Call_Label.Enable(True)
             if self.with_patient_info == 0:
-                CreateDialog = CreateRecordDialog2(self.RxFrame, self)
+                CreateDialog =CreateRecordDialog2(self.RxFrame, self)
                 CreateDialog.ShowModal()
                 self.with_patient_info = 1
 #            CallAfter(self.RxFrame.CreateReferPanel)
@@ -1091,29 +1079,45 @@ class DAQPanel2(DAQPanel):
         self.bpvalue_label.SetLabel(data) 
         
     def pressure_update(self,event):
-        #print "timer for pressure"
-        print "hi"
-        press = self.bp.get_reply()
-        self.bp.nibp.read(1)
-        #print "pressure: ", press, " mmHg"
-        if ord(press[1])==2:
-			return
-        press = int(press[1:4])
-        print press
-        if press != 999:
-            self.bpNow_Button.Enable(False)
-            self.bp_pressure_indicator.SetValue(press)
-            self.bp_infolabel.SetLabel(str(press)+' mmHg')
-            print str(press)
-            self.count=0
-            #self.bp_pressure_indicator.SetValue(press)
+        """Method that handles the inflating bar of blood pressure"""
+        if self.config.get('bp', 'simulated') == '0':
+            #live
+            #print "timer for pressure"
+            press = self.bp.get_reply()
+            self.bp.nibp.read(1)
+            #print "pressure: ", press, " mmHg"
+            if ord(press[1])==2:
+                return
+            press = int(press[1:4])
+            print press
+            if press != 999:
+                self.bpNow_Button.Enable(False)
+                self.bp_pressure_indicator.SetValue(press)
+                self.bp_infolabel.SetLabel(str(press)+' mmHg')
+                print str(press)
+                self.count=0
+                #self.bp_pressure_indicator.SetValue(press)
+            else:
+                self.bp_pressure_indicator.SetValue(0)
+                self.bp_infolabel.SetLabel('BP Acquired')
+                self.bp_pressure_indicator.Enable(False)
+                self.bpNow_Button.Enable(True)
+                self.bp.get()
+                self.pressure_timer.Stop()
+         
         else:
-            self.bp_pressure_indicator.SetValue(0)
-            self.bp_infolabel.SetLabel('BP Acquired')
-            self.bp_pressure_indicator.Enable(False)
-            self.bpNow_Button.Enable(True)
-            self.bp.get()
-            self.pressure_timer.Stop()
+            #demo
+            press = int(self.file.readline())
+            if press != 999:
+                self.bp_pressure_indicator.SetValue(press)
+            else:
+                self.file.close()
+                self.pressure_timer.Stop()
+                self.bp_pressure_indicator.Enable(False)
+                self.bpNow_Button.Enable(True)
+                self.setBPmins_combobox.Enable(True)
+                self.bpdata.bp_finished()
+            
         
     def startSaveThread (self):
 ##        """ calls makeEDF.SaveThread.run() """
@@ -1204,7 +1208,7 @@ class DAQPanel2(DAQPanel):
 
 class CreateRecordDialog2(CreateRecordDialog):
     """ Class for Create Record Dialog instance and methods
-    
+    DAQ
     Methods:
         __init__(CreateRecordDialog) 
         OnCreateRecord        
