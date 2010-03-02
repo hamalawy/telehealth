@@ -111,6 +111,8 @@ class SplashApp2(Splash):
     
     def __init__(self, *args, **kwds):
         Splash.__init__(self, *args, **kwds)
+        self.loaded = 0
+        self.ret_value = 0
         self.init_loadingbar()
         
     def init_loadingbar(self):
@@ -119,7 +121,8 @@ class SplashApp2(Splash):
         self.Bind(wx.EVT_TIMER, self.inc_bar, self.bar_timer)
         self.value = 0
         self.bar_timer.Start(50)
-        
+        self.ret_value = self.ShowModal()        
+
     def inc_bar(self, event):
         
         if (self.value != 100):
@@ -128,10 +131,12 @@ class SplashApp2(Splash):
             
         else:
             self.bar_timer.Stop()
+            self.loaded = 1
 
     def on_skip(self, event): # wxGlade: Splash.<event_handler>
         
-        self.Close()
+        self.EndModal(self.ret_value)
+        self.Destroy()
 
 class RxFrame2(RxFrame):
     """ Class for RxFrame GUI instance and methods
@@ -157,9 +162,7 @@ class RxFrame2(RxFrame):
         
         RxFrame.__init__(self, *args, **kwds)
         self.DAQPanel = DAQPanel2(self, self, -1)
-        self.splash_app = SplashApp2(self)
-        self.splash_app.ShowModal()
-        
+
         self.playwav = simsensors.stethplay(self)
         self.info_daq_sizer.Add(self.DAQPanel, 1, wx.ALL | wx.EXPAND, 4)
         self.Bind(wx.EVT_CLOSE, self.onClose)
@@ -474,7 +477,7 @@ class DAQPanel2(DAQPanel):
         DAQPanel.__init__(self, *args, **kwds)
         self.RxFrame = parent
         self.rxboxDB = rxboxdb.rxboxDB()
-        self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 250, \
+        self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 200, \
                                                 size=(20, 120), style=wx.GA_VERTICAL)    
 #        self.ecg_vertical_sizer = self.RxFrame.ecg_vertical_sizer     
 
@@ -539,7 +542,7 @@ class DAQPanel2(DAQPanel):
         
     def init_ecglive(self):
         """Initializes ecgplotter GUI"""
-        print 'kelan pumapsok dito'
+#        print 'kelan pumapsok dito'
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self, (1120, 380))
         self.ecg_vertical_sizer.Add(self.plotter.plotpanel, 1, \
@@ -1357,6 +1360,7 @@ if __name__ == "__main__":
     rx_frame = RxFrame2(None, -1, "")
     app.SetTopWindow(rx_frame)
     rx_frame.Maximize(True)
+    splash_app = SplashApp2(None)
     rx_frame.Show()
     app.MainLoop()
 
