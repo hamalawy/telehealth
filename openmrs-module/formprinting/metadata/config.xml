@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "http://resources.openmrs.org/doctype/config-1.0.dtd">
+<module configVersion="1.0">
+	
+	<!-- BulkImport Module Properties -->
+	<id>formprinting</id>
+	<name>FormPrinting Module</name>
+	<version>0.1</version>
+	<package>org.openmrs.module.@MODULE_ID@</package>
+	<author>telehealth</author>
+	<description>Prints forms (dependent on HTML Form Entry module)</description>
+	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>
+    <require_version>1.5</require_version>
+	<!-- /BulkImport Module Properties -->
+	
+	
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.extension.AdminList</class>
+	</extension>
+	
+	<extension>
+		<point>org.openmrs.headerMinimalIncludeExt</point>
+		<class>@MODULE_PACKAGE@.extension.HeaderInclude</class>
+	</extension>
+	
+	<extension>
+		<point>org.openmrs.headerFullIncludeExt</point>
+		<class>@MODULE_PACKAGE@.extension.HeaderInclude</class>
+	</extension>
+	
+	<servlet>
+		<servlet-name>HtmlToPdfServlet</servlet-name>
+		<servlet-class>@MODULE_PACKAGE@.web.servlet.HtmlToPdfServlet</servlet-class>
+	</servlet>
+		
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	
+	
+</module>
