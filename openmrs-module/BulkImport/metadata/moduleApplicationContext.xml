@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!-- Beans to add to the current Application context definition -->
+<beans>
+     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+				<prop key="/module/@MODULE_ID@/conceptDictionary.form">conceptDictionaryController</prop>
+	  		</props>
+		</property>
+	</bean>
+	
+	<bean id="conceptDictionaryController" class="@MODULE_PACKAGE@.web.controller.ConceptDictionaryController">
+ 		<property name="viewName"><value>/module/@MODULE_ID@/conceptDictionary</value></property> 
+	</bean>
+	
+</beans>

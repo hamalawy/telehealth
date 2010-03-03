@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "http://resources.openmrs.org/doctype/config-1.0.dtd">
+<module configVersion="1.0">
+	
+	<!-- BulkImport Module Properties -->
+	<id>bulkimport</id>
+	<name>BulkImport Module</name>
+	<version>0.1</version>
+	<package>org.openmrs.module.@MODULE_ID@</package>
+	<author>telehealth</author>
+	<description>Imports concepts into dictionary by parsing provided CSV file.</description>
+	<activator>@MODULE_PACKAGE@.BulkImportModuleActivator</activator>
+    <require_version>1.4</require_version>
+	<!-- /BulkImport Module Properties -->
+	
+	
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.extension.AdminList</class>
+	</extension>
+	
+	<extension>
+		<point>org.openmrs.dictionary.index</point>
+		<class>@MODULE_PACKAGE@.extension.ConceptDictionary</class>
+	</extension>
+	
+	<servlet>
+		<servlet-name>conceptDictionaryServlet</servlet-name>
+		<servlet-class>@MODULE_PACKAGE@.web.servlet.ConceptDictionaryServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>conceptCounterServlet</servlet-name>
+		<servlet-class>@MODULE_PACKAGE@.web.servlet.ConceptCounterServlet</servlet-class>
+	</servlet>
+	
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	
+	
+</module>
