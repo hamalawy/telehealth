@@ -27,7 +27,8 @@ class BP:
         #self.pb = pBar(self)
         self.runBP = False
         #self.pb.run()
-
+        self.sys_list=15*[0]
+        self.dias_list=15*[0]
         """ Initialize Serial Port Settings """
         self.SerialPort = port
         self.SerialBaudRate = baud
@@ -101,6 +102,9 @@ class BP:
                 break
         print "Systolic Pressure: ",self.bp_systolic
         print "Diastolic Pressure: ",self.bp_diastolic
+        self.sys_list=15*[self.bp_systolic]
+        self.dias_list=15*[self.bp_diastolic]
+        
         self.parent.bpvalue_label.SetLabel(str(self.bp_systolic)+'/'+str(self.bp_diastolic))
             
     def checksum(data):

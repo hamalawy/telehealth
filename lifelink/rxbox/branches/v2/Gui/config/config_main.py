@@ -236,7 +236,7 @@ class ConfigMain(MyApp):
         bp_dig_min = 0
         bp_dig_max = 300
         bp_prefiltering = 'None'
-        bp_samples = 1
+        bp_samples = 15
         
         ecg_label = 'ecgII'
         ecg_transducer_type = 'CM'

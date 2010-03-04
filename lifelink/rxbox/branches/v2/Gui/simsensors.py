@@ -96,6 +96,7 @@ class Spo2sim:
         self.spo2sim_counter += 1
         
         self.spo2_list.append(int(self.spo2_value))
+        self.bpm_list.append(int(self.hr_value))
         
         if (self.spo2sim_counter % 15) == 0:
             self.spo2sim_counter = 0
@@ -127,8 +128,8 @@ class BpSim:
         self.bpsim_counter = 0
 
         self.bpvalue = ''
-        self.sys_list = []
-        self.dias_list = []
+        self.sys_list = 15*[0]
+        self.dias_list = 15*[0]
         self.instantiate_file()
         
         self.systolic_value = '--'
@@ -201,8 +202,8 @@ class BpSim:
             self.instantiate_file()
             self.bp_finished()
 
-        self.sys_list.append(int(self.systolic_value))
-        self.dias_list.append(int(self.diastolic_value))
+        self.sys_list=15*[int(self.systolic_value)]
+        self.dias_list=15*[int(self.diastolic_value)]
 
         self.update_bp_display()        
         self.bpsim_counter += 1
