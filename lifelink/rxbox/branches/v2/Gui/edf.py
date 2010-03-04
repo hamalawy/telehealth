@@ -252,6 +252,7 @@ class EDF:
     def get(self,myPatient):
 
         self.EDFFile = self.HeaderRecord + self.DataRecord
-        edffile   = open(myPatient.LastName + '_' + self.timestamp + '.edf', 'wb+')
+        self.edfilename = 'EDF/' + myPatient.LastName + '_' + self.timestamp + '.edf'
+        edffile   = open(self.edfilename, 'wb+')
         edffile.write(self.EDFFile)
         edffile.close()

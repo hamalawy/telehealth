@@ -35,7 +35,7 @@ import datetime
 import ConfigParser
 from lead12dialog import Lead12Dialog
 import wx.lib.plot as plot
-from ecglogfile import ECG
+
 from ecgplotter import Plotter
 #from ecgplot import Plotter
 from ecgplot import extendedPlotter
@@ -74,7 +74,9 @@ from subprocess import Popen, PIPE
 
 from SPO2 import SPO2
 from BP import BP
-#from ECG import ECG
+from ecglogfile import ECG
+import ECGLive
+#from config import *
 
 #import threading
 #try:                   
@@ -484,7 +486,6 @@ class DAQPanel2(DAQPanel):
         self.init_ecglive()
         self.init_daqtimers()
         self.init_config()
-        self.init_simsensors()
         if self.config.get('spo2', 'simulated') == '0':
             self.init_livespo2()
         else:
@@ -498,8 +499,19 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.BirthDayCombo.Bind(wx.EVT_COMBOBOX, self.birthday_update)
         self.RxFrame.BirthYear.Bind(wx.EVT_TEXT, self.birthday_update)    
         
-        if self.config.get('ecg', 'sim_type') != 'Normal':
-            self.ecgdata.ecg_list = self.ecgdata.get_plot()
+        #ECG INIT START
+        
+        self.ECGsimulated = self.config.get('ecg', 'simulated') == '1'
+        if not self.ECGsimulated:
+            print 'Actual ECG'
+            self.init_livesensors()
+            
+        else:
+            print 'Simulated ECG'
+            self.init_simsensors()
+            if self.config.get('ecg', 'sim_type') != 'Normal':
+                self.ecgdata.ecg_list = self.ecgdata.get_plot()
+        #ECG INIT END
         
         self.patient1 = edf.Patient('1', 'Timothy', 'Cena', 'Ebido', 'Servan', \
                                     'Male', '09.27.89', '19')
@@ -514,6 +526,8 @@ class DAQPanel2(DAQPanel):
         self.with_patient_info = 0
         self.ClearPatient()
         self.referflag = 0    
+        self.pressure_timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.bp_pressure_indicator.Enable(False)
         
     def init_daqtimers(self):
@@ -543,20 +557,26 @@ class DAQPanel2(DAQPanel):
         
     def init_ecglive(self):
         """Initializes ecgplotter GUI"""
-#        print 'kelan pumapsok dito'
+        
         self.sizersize = self.ecg_vertical_sizer.GetSize()
         self.plotter = Plotter(self, (1120, 380))
         self.ecg_vertical_sizer.Add(self.plotter.plotpanel, 1, \
                                     wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.getlead = ECG().ecg_lead() 
+        self.plotind = 0
         self.ECGplotcounter = 0
         
     def init_simsensors(self):
         """Initializes simsensors"""
         
         self.Biosignals = []
+        self.getlead = ECG().ecg_lead()
         self.ecgdata = simsensors.EcgSim(self)
-    
+    def init_livesensors (self):
+        """ Initialize live sensors """
+        
+        self.Biosignals = []
+        self.ECGDAQ = ECGLive.ECGThread(self, port='/dev/ttyUSB2')
+        
     def init_livespo2(self):
         self.spo2data=SPO2(self,port='/dev/ttyUSB1')
         
@@ -619,6 +639,7 @@ class DAQPanel2(DAQPanel):
             self.bp_isCyclic = 1
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
+            
             if self.config.get('bp', 'simulated') == '0':
                 self.get_bp()
                 reload_bp_str = self.setBPmins_combobox.GetValue()
@@ -632,6 +653,9 @@ class DAQPanel2(DAQPanel):
                 print "demo bp"
                 self.bpdata.get()
             
+            if not self.ECGsimulated:
+                self.ECGDAQ.ECG_Connect()
+                self.ECGDAQ.Start_Thread()
             self.onECGNodeCheck(self)
    
             self.timer_spo2.Start(1000)
@@ -654,7 +678,10 @@ class DAQPanel2(DAQPanel):
             self.timerEDF.Stop()    
             self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
-            self.timerECGNodeCheck.Stop() 
+            self.timerECGNodeCheck.Stop()
+            if not self.ECGsimulated:
+                self.ECGDAQ.Stop_Thread()
+                 
 #            self.Call_Label.SetLabel("Call")          
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
             self.spo2_infolabel.SetLabel('Pulse Ox Ready')
@@ -757,36 +784,44 @@ class DAQPanel2(DAQPanel):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
             the 12 leads then passes it to the ecgplotter module for plotting
         """
-        self.ECGplotcounter = self.ECGplotcounter + 1
-        ecg_plot = []
-        ecg_plot2 = []
-
-        if self.config.get('ecg', 'sim_type') == 'Normal':
-            self.ecgdata.ecg_list = []
-        
-            for y in range(0, 4):
-                for i in range(100, 400):
-                    self.ecgdata.ecg_list.append(self.getlead[1][i])
-
-        if self.ECGplotcounter == 1:
-            self.plotter.plot(self.ecgdata.ecg_list[0:300])
-        elif self.ECGplotcounter == 2:
-            self.plotter.plot(self.ecgdata.ecg_list[50:350])
-        elif self.ECGplotcounter == 3:
-            self.plotter.plot(self.ecgdata.ecg_list[100:400])
-        elif self.ECGplotcounter == 4:
-            self.plotter.plot(self.ecgdata.ecg_list[150:450])
-        elif self.ECGplotcounter == 5:
-            self.plotter.plot(self.ecgdata.ecg_list[200:500])
-        elif self.ECGplotcounter == 6:
-            self.plotter.plot(self.ecgdata.ecg_list[250:550])
-        elif self.ECGplotcounter == 7:
-            self.plotter.plot(self.ecgdata.ecg_list[300:600])
+        if not self.ECGsimulated:
+            try:
+                print 'DATA', self.plotind
+                self.plotter.plot(self.ECGDAQ.ECG.ecg_leadII[self.plotind:self.plotind+1500])
+                self.plotind = self.plotind + 125
+            except:
+                print 'No New Data'
         else:
-            self.ECGplotcounter = 0
+            self.ECGplotcounter = self.ECGplotcounter + 1
+            ecg_plot = []
+            ecg_plot2 = []
 
-        ecg_plot = []
-        ecg_plot2 = []
+            if self.config.get('ecg', 'sim_type') == 'Normal':
+                self.ecgdata.ecg_list = []
+            
+                for y in range(0, 4):
+                    for i in range(100, 400):
+                        self.ecgdata.ecg_list.append(self.getlead[1][i])
+
+            if self.ECGplotcounter == 1:
+                self.plotter.plot(self.ecgdata.ecg_list[0:300])
+            elif self.ECGplotcounter == 2:
+                self.plotter.plot(self.ecgdata.ecg_list[50:350])
+            elif self.ECGplotcounter == 3:
+                self.plotter.plot(self.ecgdata.ecg_list[100:400])
+            elif self.ECGplotcounter == 4:
+                self.plotter.plot(self.ecgdata.ecg_list[150:450])
+            elif self.ECGplotcounter == 5:
+                self.plotter.plot(self.ecgdata.ecg_list[200:500])
+            elif self.ECGplotcounter == 6:
+                self.plotter.plot(self.ecgdata.ecg_list[250:550])
+            elif self.ECGplotcounter == 7:
+                self.plotter.plot(self.ecgdata.ecg_list[300:600])
+            else:
+                self.ECGplotcounter = 0
+
+            ecg_plot = []
+            ecg_plot2 = []
                 
     def birthday_update(self, evt):
         """Automatically updates the age of patient and the corresponding birth year"""
@@ -836,16 +871,33 @@ class DAQPanel2(DAQPanel):
         
         nDataRecord = 3
         
-        Biosignal_SPO2 = BioSignal('SpO2 finger', 'IR-Red sensor', \
-                                '%', 0, 100, 0, 100, 'None', 15,self.spo2data.spo2_list)
-                                    
-        Biosignal_BPM = BioSignal('SpO2 finger', 'IR-Red sensor', \
-                                'bpm', 0, 300, 0, 300, 'None', 15,self.spo2data.bpm_list)
-
-        self.spo2data.spo2_list = []
-        self.spo2data.bpm_list = []
+        Biosignal_SPO2 = BioSignal('SpO2 finger','IR-Red sensor',\
+                                '%',0,100,0,100,'None',15,self.spo2data.spo2_list)
+        Biosignal_BPM = BioSignal('SpO2 finger','IR-Red sensor',\
+                                'bpm',0,300,0,300,'None',15,self.spo2data.bpm_list)
         self.Biosignals.append(Biosignal_SPO2)
         self.Biosignals.append(Biosignal_BPM) 
+        
+        temp = []
+        if not self.ECGsimulated:
+            if (len(self.ECGDAQ.ECG.ecg_leadII) > 7500):
+                for i in range(0,7500):
+                    temp.append(int(self.ECGDAQ.ECG.ecg_leadII[i]/0.00263+16384))
+                self.ECGDAQ.ECG.Pop(start=0,end=7500)
+                self.plotind = self.plotind - 7500
+                if(self.plotind < 0):
+                    self.plotind = 0
+            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 7500, temp)
+        else:
+            for i in range(0,1200):
+                temp.append(int(self.ecgdata.ecg_list[i]/0.00263+16384))
+            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 1200, temp)
+            
+        self.spo2data.spo2_list = []
+        self.spo2data.bpm_list = []
+
+        
+        
         if self.config.get('bp', 'simulated') == '0':
             if (self.bp.sys_list != 0):
                 Biosignal_pSys = BioSignal('bpsystole', 'NIBP2010', 'mmHg', \
@@ -872,20 +924,8 @@ class DAQPanel2(DAQPanel):
 #                self.bpdata.sys_list = []
 #                self.bpdata.dias_list = []
                 nDataRecord = 5
-         
-#        Biosignal_ECG = BioSignal(self.config.get('edf', 'ecg_label'), \
-#                                    self.config.get('edf', 'ecg_transducer_type'), \
-#                                   self.config.get('edf', 'ecg_phy_dim'), \
-#                                    self.config.getint('edf', 'ecg_phy_min'), \
-#                                    self.config.getint('edf', 'ecg_phy_max'), \
-#                                    self.config.getint('edf', 'ecg_dig_min'), \
-#                                    self.config.getint('edf', 'ecg_dig_max'), \
-#                                    self.config.get('edf', 'ecg_prefiltering'), \
-#                                    self.config.getint('edf', 'ecg_samples'), \
-#                                    self.ecgdata.ecg_list)
-                                    
 #        self.Biosignals.append(Biosignal_ECG)
-      
+        self.Biosignals.append(Biosignal_ECG) 
         self.myedf = edf.EDF(self.patient1, self.Biosignals, self.strDate, self.strStarttime, self.strY2KDate + \
                         ': LifeLink 15 second data of CorScience modules', nDataRecord, 15)
         self.myedf.get(self.patient1)
@@ -1047,7 +1087,9 @@ class DAQPanel2(DAQPanel):
         """
         self.bpNow_Button.Enable(False)
         if self.config.get('bp', 'simulated') == '0':
+
             self.get_bp()
+            
         else:
             self.bpdata.get()
         
@@ -1120,87 +1162,95 @@ class DAQPanel2(DAQPanel):
         calls the 12 lead dialog window for plotting
         """
         #self.lead12_button.Enable(False)
-        CreateDialog2 = Lead12Dialog2(self, self)
+        CreateDialog2 = Lead12Dialog2(self, self.ECGsimulated, self.ECGDAQ.ECG, self)
         CreateDialog2.ShowModal()
         
     def onECGNodeCheck(self, x): 
         """Simulated electrode contact measurement (ECM)"""
-        
         self.timerECGNodeCheck.Start(250)
-        self.nodetimer = self.nodetimer + 1
-        if (self.nodetimer == 1):
-            self.RxFrame.RxFrame_StatusBar.SetStatusText("Checking Node Placement of ECG...")
-            self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Checking Node Placement of ECG...')
-            self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_connected.png", wx.BITMAP_TYPE_ANY))
-            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_connected.png", wx.BITMAP_TYPE_ANY))
-            self.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_connected.png", wx.BITMAP_TYPE_ANY))
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_connected.png", wx.BITMAP_TYPE_ANY))
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_connected.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_connected.png", wx.BITMAP_TYPE_ANY))
-        elif (self.nodetimer == 2):
-            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_initial.png", wx.BITMAP_TYPE_ANY))
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
-        elif (self.nodetimer == 3):
-            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
-        elif (self.nodetimer == 4):
-            self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_connected.png", wx.BITMAP_TYPE_ANY))
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY)) 
-        elif (self.nodetimer == 5):
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))  
-        elif (self.nodetimer == 6):
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))        
-        elif (self.nodetimer == 7):
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))              
-        elif (self.nodetimer == 8):
-            self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_connected.png", wx.BITMAP_TYPE_ANY))       
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))  
-        elif (self.nodetimer == 9):     
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
-        elif (self.nodetimer == 10):      
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
-        elif (self.nodetimer == 11):     
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))            
-        elif (self.nodetimer == 12):
-            self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_connected.png", wx.BITMAP_TYPE_ANY))   
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))  
-        elif (self.nodetimer == 13):  
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY)) 
-        elif (self.nodetimer == 14):  
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY)) 
-        elif (self.nodetimer == 15): 
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))             
-        elif (self.nodetimer == 16):
-            self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png", wx.BITMAP_TYPE_ANY))
+        if not self.ECGsimulated:
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
             self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
             self.timerECGNodeCheck.Stop()    
             self.nodetimer = 0
-            self.timerECG_refresh.Start(125)         
+            self.timerECG_refresh.Start(250) 
+        else:
+            self.timerECGNodeCheck.Start(250)
+            self.nodetimer = self.nodetimer + 1
+            if (self.nodetimer == 1):
+                self.RxFrame.RxFrame_StatusBar.SetStatusText("Checking Node Placement of ECG...")
+                self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Checking Node Placement of ECG...')
+                self.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_connected.png", wx.BITMAP_TYPE_ANY))
+                self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_connected.png", wx.BITMAP_TYPE_ANY))
+                self.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_connected.png", wx.BITMAP_TYPE_ANY))
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_connected.png", wx.BITMAP_TYPE_ANY))
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_connected.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_connected.png", wx.BITMAP_TYPE_ANY))
+            elif (self.nodetimer == 2):
+                self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_initial.png", wx.BITMAP_TYPE_ANY))
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
+            elif (self.nodetimer == 3):
+                self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
+            elif (self.nodetimer == 4):
+                self.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_connected.png", wx.BITMAP_TYPE_ANY))
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY)) 
+            elif (self.nodetimer == 5):
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))  
+            elif (self.nodetimer == 6):
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_initial.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))        
+            elif (self.nodetimer == 7):
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))              
+            elif (self.nodetimer == 8):
+                self.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_connected.png", wx.BITMAP_TYPE_ANY))       
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))  
+            elif (self.nodetimer == 9):     
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))
+            elif (self.nodetimer == 10):      
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_initial.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))
+            elif (self.nodetimer == 11):     
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png", wx.BITMAP_TYPE_ANY))
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))            
+            elif (self.nodetimer == 12):
+                self.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_connected.png", wx.BITMAP_TYPE_ANY))   
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY))  
+            elif (self.nodetimer == 13):  
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY)) 
+            elif (self.nodetimer == 14):  
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_initial.png", wx.BITMAP_TYPE_ANY)) 
+            elif (self.nodetimer == 15): 
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))             
+            elif (self.nodetimer == 16):
+                print 'stop'
+                self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png", wx.BITMAP_TYPE_ANY))
+                self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
+                self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
+                self.timerECGNodeCheck.Stop()    
+                self.nodetimer = 0
+                self.timerECG_refresh.Start(125)         
 
 class CreateRecordDialog2(CreateRecordDialog):
     """ Class for Create Record Dialog instance and methods
-    DAQ
+    
     Methods:
         __init__(CreateRecordDialog) 
         OnCreateRecord        
@@ -1239,6 +1289,9 @@ class CreateRecordDialog2(CreateRecordDialog):
         Address = self.PatientAddress_TextCtrl.GetValue()
         Phone = self.PatientPhoneNumber_TextCtrl.GetValue()        
         PatientName = FirstName + ' ' + MiddleName + ' ' + LastName
+
+        self.RxFrame.topic = self.ReferralTopic_TextCtrl.GetValue()
+        self.RxFrame.body = self.RemarkValue.GetValue()
 
         self.RxFrame.FirstNameValue.SetValue(FirstName)
         self.RxFrame.MiddleNameValue.SetValue(MiddleName)
@@ -1285,7 +1338,7 @@ class Lead12Dialog2(Lead12Dialog):
         __init__(Lead12Dialog)         
          
     """   
-    def __init__(self, parent, *args, **kwds):
+    def __init__(self, parent, ECGSimulated, ECGData, *args, **kwds):
         """ initializes the placement of the plotter to the 12 lead dialog window
 
         Parameters
@@ -1323,21 +1376,37 @@ class Lead12Dialog2(Lead12Dialog):
         self.V4_sizer.Add(self.plotter_V4.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
         self.V5_sizer.Add(self.plotter_V5.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
         self.V6_sizer.Add(self.plotter_V6.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-
-        self.plotter_I.plot(self.parent.getlead[0])
-        self.plotter_II.plot(self.parent.getlead[1])
-        self.plotter_III.plot(self.parent.getlead[2])
-        self.plotter_aVR.plot(self.parent.getlead[3])
-        self.plotter_aVL.plot(self.parent.getlead[4])
-        self.plotter_aVF.plot(self.parent.getlead[5])
-        self.plotter_V1.plot(self.parent.getlead[6])
-        self.plotter_V2.plot(self.parent.getlead[7])
-        self.plotter_V3.plot(self.parent.getlead[8])
-        self.plotter_V4.plot(self.parent.getlead[9])
-        self.plotter_V5.plot(self.parent.getlead[10])
-        self.plotter_V6.plot(self.parent.getlead[11])
         
-        self.plotter_bigII = extendedPlotter(self, bigsizer, self.parent.getlead[1])
+        print ECGSimulated
+        if not ECGSimulated:
+            self.ECGdata = ECGData
+            self.plotter_I.plot(self.ECGdata.ecg_leadI)
+            self.plotter_II.plot(self.ECGdata.ecg_leadII)
+            self.plotter_III.plot(self.ECGdata.ecg_leadIII)
+            self.plotter_aVR.plot(self.ECGdata.ecg_leadaVR)
+            self.plotter_aVL.plot(self.ECGdata.ecg_leadaVL)
+            self.plotter_aVF.plot(self.ECGdata.ecg_leadaVF)
+            self.plotter_V1.plot(self.ECGdata.ecg_leadV1)
+            self.plotter_V2.plot(self.ECGdata.ecg_leadV2)
+            self.plotter_V3.plot(self.ECGdata.ecg_leadV3)
+            self.plotter_V4.plot(self.ECGdata.ecg_leadV4)
+            self.plotter_V5.plot(self.ECGdata.ecg_leadV5)
+            self.plotter_V6.plot(self.ECGdata.ecg_leadV6)
+            self.plotter_bigII = extendedPlotter(self, bigsizer, self.ECGdata.ecg_leadII)
+        else:
+            self.plotter_I.plot(self.parent.getlead[0])
+            self.plotter_II.plot(self.parent.getlead[1])
+            self.plotter_III.plot(self.parent.getlead[2])
+            self.plotter_aVR.plot(self.parent.getlead[3])
+            self.plotter_aVL.plot(self.parent.getlead[4])
+            self.plotter_aVF.plot(self.parent.getlead[5])
+            self.plotter_V1.plot(self.parent.getlead[6])
+            self.plotter_V2.plot(self.parent.getlead[7])
+            self.plotter_V3.plot(self.parent.getlead[8])
+            self.plotter_V4.plot(self.parent.getlead[9])
+            self.plotter_V5.plot(self.parent.getlead[10])
+            self.plotter_V6.plot(self.parent.getlead[11])
+            self.plotter_bigII = extendedPlotter(self, bigsizer, self.parent.getlead[1])
         self.leadII_sizer.Add(self.plotter_bigII, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
         
             

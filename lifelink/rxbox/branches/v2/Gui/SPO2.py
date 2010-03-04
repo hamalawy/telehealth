@@ -18,7 +18,8 @@ class SPO2:
         self.device_message = self.dm = "Device Ready."
         self.patient_message = "Patient Ready."
         self.parent = parent
-        
+        self.spo2_list=[]
+        self.bpm_list=[]
         # Request Command: transmit SPO2 and BPM every 100 ms
         self.command = [0x7f, 0xd1, 0x01, 0x01, 0x01, 0x02,\
                         0x01, 0x03, 0x01, 0x11, 0x01, 0x04, 0x0a]
@@ -86,9 +87,13 @@ class SPO2:
             raw_data = self.get_reply()
             data_packet = self.verify_checksum(raw_data)
             if data_packet == None:
+                self.spo2_list.append(self.spo2_list[-1])
+                self.bpm_list.append(self.bpm_list[-1])
                 return
             data_packet = self.byte_destuff(data_packet)
             self.parse_packet(data_packet)
+            self.spo2_list.append(self.current_spo2)
+            self.bpm_list.append(self.current_bpm)
             self.parent.spo2value_label.SetLabel(str(self.current_spo2))
             self.parent.bpmvalue_label.SetLabel(str(self.current_bpm))
             self.CloseSerial()
@@ -104,6 +109,8 @@ class SPO2:
                 self.current_spo2 = packet[2]
                 self.current_bpm = (packet[3]<<8)+packet[4]
                 self.spo2.append(packet[2])
+                print "SPO2: ", self.current_spo2
+                print "BPM: ", self.current_bpm
                 self.pulse_rate.append((packet[3]<<8)+packet[4])
                 self.signal_quality.append(sig_quality)
                 
@@ -163,16 +170,17 @@ class SPO2:
         """
         if packet[0] == chr(0xa8) and packet[-1]==chr(0xa8):
             data = self.string_to_packet(packet[1:-1])
+            print data
             reply = data[:-2]
-            if len(reply) != 6:
-                return None
             dataCShi = data[-2]
             dataCSlo = data[-1]
             self.checksum(reply)
+            if len(reply) != 6:
+                return None
             if dataCShi == self.CShi and dataCSlo == self.CSlo:
                 return reply
             else:
-#                print 'Checksum Error.'
+               # print 'Checksum Error.'
                 return None
         else:
             print "Transmit Error: Incomplete Packet."
