@@ -571,11 +571,12 @@ class DAQPanel2(DAQPanel):
         self.Biosignals = []
         self.getlead = ECG().ecg_lead()
         self.ecgdata = simsensors.EcgSim(self)
+
     def init_livesensors (self):
         """ Initialize live sensors """
         
         self.Biosignals = []
-        self.ECGDAQ = ECGLive.ECGThread(self, port='/dev/ttyUSB2')
+        self.ECGDAQ = ECGLive.ECGThread(self, port='/dev/ttyUSB0')
         
     def init_livespo2(self):
         self.spo2data=SPO2(self,port='/dev/ttyUSB1')
