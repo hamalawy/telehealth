@@ -105,7 +105,8 @@ class DataGather:
         self.daqdur = daqdur
         
         if self.ECG_Connect(port=port, daqdur=daqdur):
-            self.ECG.Init_ECG()
+            if not self.ECG.Init_ECG():
+            	return False
             self.alive = True
             self.statECG(self.parent)
             self.get_thread = threading.Thread(target=self.Get_ECG)
