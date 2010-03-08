@@ -75,7 +75,7 @@ class BP:
         
     def send_request(self):
         print "*** ONE-SHOT BP ***"
-        request=self.request(self.SET_180mmHg_PRESSURE)
+        request=self.request(self.SET_140mmHg_PRESSURE)
         self.nibp.write(request)
         print "***Start BP Measurement***"
         self.nibp.write(self.request(self.START_MEASUREMENT))
