@@ -752,7 +752,7 @@ class ECG:
             return contact_counter
 
     def electrode_R(self):
-
+ 
         if (ord(self.ecmbyte1[0]) & 2 == 2):
             print "--->>electrode R has contact"
             return True               
