@@ -1071,6 +1071,7 @@ class ECGThread:
         self.alive = False
         self.port = port
         self.daqdur = daqdur
+        self.leadII = []
         
     def ECG_Connect(self):
         """Connect ECG"""
@@ -1089,49 +1090,45 @@ class ECGThread:
         """Threading for obtaining ECG data"""
         self.samples = self.daqdur*500
         
-        if self.ECG_Connect():
-            self.ECG.set_ecm_threshold()
-            self.ECG.start_ecm()
-            contact_counter = 0                                     # initialize counter for determining ECG electrodes contact (contact is "OK" when counter reaches 3)
-            basetime = time.time()
-            while (contact_counter < 3) and (time.time()<(basetime+15)):
-                self.ECG.ecm_status = self.ECG.get_ecm(count=1, check = False)
-                self.statECG(self.parent)
-                if(self.ECG.ecm_status):
-                    contact_counter = contact_counter + 1
-                time.sleep(1)
-            print "ECM STATUS:", self.ECG.ecm_status
-            print "ECM PASS COUNT: ", contact_counter
-            print
-            self.ECG.stop_ecm()
-            if self.ECG.ecm_status == 0:
-                print "\n--->>PATIENT IS NOT READY"
-                print "\nTimeout: Cannot get correct ECM. Please attach the electrodes properly."
-                self.ECG.ecg.close()
-                print "\nSerial port closed."
-            elif self.ECG.ecm_status == 1:
-                print "\n--->>PATIENT IS NOW READY"
-                self.ECG.config_analog()
-                self.ECG.start_ecg()
-                self.ECG.start_flag = 1
-            self.alive = True
-            self.get_thread = threading.Thread(target=self.Get_ECG)
-            self.get_thread.start()
-            return True
-        else:
-            print 'Cannot Connect to ECG'
-            return False
+        self.alive = True
+        self.get_thread = threading.Thread(target=self.Get_ECG)
+        self.get_thread.start()
         
     def Get_ECG(self):
         """Obtain ECG data for threading"""
         while self.alive:
             try:
-                #Get ECG data
-                self.ECG.get_ecg()
-                self.ECG.ecg_lead()
-                
-                time.sleep(0.1)
-
+                if self.ECG_Connect():
+					self.ECG.set_ecm_threshold()
+					self.ECG.start_ecm()
+					contact_counter = 0                                     # initialize counter for determining ECG electrodes contact (contact is "OK" when counter reaches 3)
+					basetime = time.time()
+					while (contact_counter < 3) and (time.time()<(basetime+15)):
+						self.ECG.ecm_status = self.ECG.get_ecm(count=1, check = False)
+						self.statECG(self.parent)
+						if(self.ECG.ecm_status):
+							contact_counter = contact_counter + 1
+						time.sleep(1)
+					print "ECM STATUS:", self.ECG.ecm_status
+					print "ECM PASS COUNT: ", contact_counter
+					print
+					self.ECG.stop_ecm()
+					if self.ECG.ecm_status == 0:
+						print "\n--->>PATIENT IS NOT READY"
+						print "\nTimeout: Cannot get correct ECM. Please attach the electrodes properly."
+						self.ECG.ecg.close()
+						print "\nSerial port closed."
+					elif self.ECG.ecm_status == 1:
+						print "\n--->>PATIENT IS NOW READY"
+						self.ECG.config_analog()
+						self.ECG.start_ecg()
+						self.ECG.start_flag = 1
+						self.ECG.get_ecg()
+						self.ECG.ecg_lead()
+						self.ECG.ecg.close()
+                time.sleep(3)
+                for i in self.ECG.ecg_leadII:
+					self.leadII.append(i)
             except Exception, e:
                 print 'Error: ',e
         print 'STOP'
