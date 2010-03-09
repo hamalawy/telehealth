@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Project LifeLink: RxBox GUI Simulator
 
 Authors:    Chiong, Charles Hernan
