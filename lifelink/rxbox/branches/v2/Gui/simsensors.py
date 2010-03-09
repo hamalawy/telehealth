@@ -6,7 +6,7 @@ simsensors module contains the simulated sensor classes:
     EcgSim - simulated ECG
     stethplay - simulated stethoscope sounds
     
-Author: Tim Ebido and Thomas Rodinel Soler
+Authors: Tim Ebido and Thomas Rodinel Soler
 2009-2010
 """
 
@@ -24,7 +24,7 @@ from reader import Reader
 from matplotlib import pyplot
 
 class Spo2sim:
-    """ Class for simulator for pulse oximeter module
+    """ Class for simulator of pulse oximeter module
     
     Methods:
         __init__(RxFrame)
@@ -75,7 +75,7 @@ class Spo2sim:
     
     def get(self):
         """Extracts heart rate and spo2 data from text files and calls
-        update_spo2_display() to display datas
+        update_spo2_display() to display data
         """
         
         self.parent_panel.heartrate_infolabel.SetLabel('Acquiring pulse rate')
@@ -102,7 +102,7 @@ class Spo2sim:
             self.spo2sim_counter = 0
         
 class BpSim:
-    """ Class for simulator for blood pressure module
+    """ Class for simulator of blood pressure module
     
     Methods:
         __init__(RxFrame)
@@ -166,18 +166,13 @@ class BpSim:
         self.parent_panel.bpNow_Button.Enable(False)
         reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
         self.reload_bp = int(reload_bp_str[0:2])*1000*60
-        
-        #5min -> 15seconds
-        #15min -> 45seconds
-        #30min -> 90seconds
-        #60min -> 180seconds
 
         self.parent_panel.bp_pressure_indicator.Enable(True)
         self.parent_panel.file = open('pressure.txt','r')
         self.parent_panel.pressure_timer.Start(20)
         
     def bp_finished(self):
-        """Method that is called after bp acquistion is finished:
+        """Method that is called after bp acquistion
         
         - Enables NOW button
         - Extracts systolic and diastolic value from text files
@@ -215,7 +210,7 @@ class BpSim:
             self.bpsim_counter = 0
         
 class EcgSim:
-    """ Class for simulator for electrocardiography (ECG) module
+    """ Class for simulator of electrocardiography (ECG) module
     
     Methods:
         __init__(RxFrame)
@@ -269,7 +264,7 @@ class EcgSim:
         return temp_list
         
 class stethplay(threading.Thread):
-    """ Class for simulator for electrocardiography (ECG) module
+    """ Class for simulator of stethoscope module
     
     Methods:
         __init__(RxFrame)

@@ -1,4 +1,4 @@
-"""Project LifeLink: RxBox GUI Simulator
+"""Project LifeLink: RxBox Software (Live and Simulator)
 
 Authors:    Chiong, Charles Hernan
             Cornillez, Dan Simone
@@ -9,14 +9,14 @@ Authors:    Chiong, Charles Hernan
             Instrumentation, Robotics and Control Laboratory
             University of the Philippines - Diliman
             ------------------------------------------------
-            September 2009
+            March 2010
 
 
-This simulator follows the following script when PLAY button is pressed:
+When PLAY button is pressed, the following scripts are done:
 - BP, HR, and SpO2 panels activate
-- ECM Electrodes Blink for 5 seconds (checking all electrodes)
-- ECM electrodes turn green in sequence until all electrodes turn green(i.e. ECM check passed)
-- ECG plots on the grid
+- ECM Electrodes Blink (checking all electrodes) and ECG plots on the grid
+- Database and tables are created (if already existing method is skipped)
+- Updates session, biomedical and patients information in the database
 """
 
 
@@ -464,8 +464,8 @@ class DAQPanel2(DAQPanel):
         onStartStop              onCall
         SaveQuery                onECGNodeCheck
         ClearPatient             onSend
-        DisablePatient           on_timer_bp
-        EnablePatient            on_timer_spo2
+        DisablePatient           cyclicbpdemo
+        EnablePatient            acquirespo2
         pressure_update          sendEmail
         show_email_success       startSaveThread 
     """
@@ -504,7 +504,7 @@ class DAQPanel2(DAQPanel):
         self.ECGsimulated = self.config.get('ecg', 'simulated') == '1'
         if not self.ECGsimulated:
             print 'Actual ECG'
-            self.init_livesensors()
+            self.init_liveecg()
             
         else:
             print 'Simulated ECG'
@@ -531,18 +531,18 @@ class DAQPanel2(DAQPanel):
         self.bp_pressure_indicator.Enable(False)
         
     def init_daqtimers(self):
-        """Initializes various timers for DAQ Panel of RxBox"""
+        """Initializes timers for DAQ Panel of RxBox"""
         
         self.timer_spo2 = wx.Timer(self)
-        self.timer_bp = wx.Timer(self)
+        self.timer_bpdemo = wx.Timer(self)
         self.timerEDF = wx.Timer(self)
         self.pressure_timer = wx.Timer(self)
         self.timerSend = wx.Timer(self)
         self.timerECG_refresh = wx.Timer(self)
         self.timerECGNodeCheck = wx.Timer(self)
         self.timer_bpcyclic = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.on_timer_spo2, self.timer_spo2)
-        self.Bind(wx.EVT_TIMER, self.on_timer_bp, self.timer_bp)
+        self.Bind(wx.EVT_TIMER, self.acquirespo2, self.timer_spo2)
+        self.Bind(wx.EVT_TIMER, self.cyclicbpdemo, self.timer_bpdemo)
         self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
@@ -572,13 +572,14 @@ class DAQPanel2(DAQPanel):
         self.getlead = ECG().ecg_lead()
         self.ecgdata = simsensors.EcgSim(self)
 
-    def init_livesensors (self):
-        """ Initialize live sensors """
+    def init_liveecg (self):
+        """ Initialize live ecg """
         
         self.Biosignals = []
         self.ECGDAQ = ECGLive.ECGThread(self, port='/dev/ttyUSB0')
         
     def init_livespo2(self):
+		""" Initialize live spo2 """
         self.spo2data=SPO2(self,port='/dev/ttyUSB1')
         
         
@@ -587,6 +588,7 @@ class DAQPanel2(DAQPanel):
         self.spo2data = simsensors.Spo2sim(self)
         
     def init_livebp(self):
+		""" Initialize live BP """
         self.bp=BP(self,port='/dev/ttyUSB0')
         
         
@@ -643,12 +645,7 @@ class DAQPanel2(DAQPanel):
             
             if self.config.get('bp', 'simulated') == '0':
                 self.get_bp()
-                #bpreloadlive will be loaded in a timer... it will act as the delay.
-                #
-                #self.get_bp()
-                print "live bp"
             else:
-                print "demo bp"
                 self.bpdata.get()
             
             if not self.ECGsimulated:
@@ -671,7 +668,7 @@ class DAQPanel2(DAQPanel):
             self.Send_Button.Enable(False)
             self.lead12_button.Enable(False)
             self.timer_spo2.Stop()
-            self.timer_bp.Stop()       
+            self.timer_bpdemo.Stop()       
             self.timerEDF.Stop()    
             self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
@@ -679,7 +676,6 @@ class DAQPanel2(DAQPanel):
             if self.bp_isCyclic == 1:
 				self.timer_bpcyclic.Stop()
 				self.bp_isCyclic = 0
-				print "stop bp cyclic"
             if not self.ECGsimulated:
                 self.ECGDAQ.Stop_Thread()
                  
@@ -844,14 +840,14 @@ class DAQPanel2(DAQPanel):
             self.RxFrame.AgeValue.SetValue(str(age))
             self.RxFrame.AgeCombo.SetValue('Years')
         
-    def on_timer_spo2(self, evt):
+    def acquirespo2(self, evt):
         """Starts spo2 data acquisition"""
         self.spo2data.get()
         print 'Acquiring Spo2 data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring Spo2 data')
        
-    def on_timer_bp(self, evt):
-        """Starts cyclic bp data acquisition"""
+    def cyclicbpdemo(self, evt):
+        """Starts simulated cyclic bp data acquisition"""
         self.bpdata.get()
         print 'Acquiring BP data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring BP data')
@@ -1103,9 +1099,14 @@ class DAQPanel2(DAQPanel):
         else:
             self.bpdata.get()
     def get_bpcyclic(self,event):
+		"""
+		Get cyclic BP reading using interval setting from 
+		"""
 		print "get bp cyclic"
 		self.get_bp()    
     def get_bp(self):
+		"""
+		"""
         print "get bp"
         self.bp_pressure_indicator.Enable(True)
         self.bpNow_Button.Enable(False)#disable the bp acquire button until the bp reaidng is finished
@@ -1180,7 +1181,7 @@ class DAQPanel2(DAQPanel):
         CreateDialog2.ShowModal()
         
     def onECGNodeCheck(self, x): 
-        """Simulated electrode contact measurement (ECM)"""
+        """Electrode contact measurement (ECM) check"""
         self.timerECGNodeCheck.Start(250)
         if not self.ECGsimulated:
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
