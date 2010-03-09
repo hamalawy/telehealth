@@ -312,6 +312,7 @@ class RxFrame2(RxFrame):
         
         print 'Destroying Refer Panel'
         self.DAQPanel.refer_panel_shown = 0
+        self.DAQPanel.timerECG_refresh.Start(125)
         
         try:
             self.l.stop()
@@ -946,7 +947,7 @@ class DAQPanel2(DAQPanel):
         self.on_send = 0
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Requesting connection to triage...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Requesting connection to triage...')
-
+        self.timerECG_refresh.Stop()
 
                         
         if (self.Call_Label.GetLabel() == "<<  ") and (self.referflag == 1) : 
