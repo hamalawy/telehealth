@@ -1,0 +1,101 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module filters</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>filters</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/oneil/Desktop/Gui/filters.py">/home/oneil/Desktop/Gui/filters.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;-*-&nbsp;coding:&nbsp;cp1252&nbsp;-*-</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-Notch50hzFs100"><strong>Notch50hzFs100</strong></a>(ECGdata)</dt><dd><tt>Filters&nbsp;the&nbsp;data&nbsp;using&nbsp;50Hz&nbsp;Notch&nbsp;filter<br>
+&nbsp;<br>
+Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Digital&nbsp;filter&nbsp;which&nbsp;computes&nbsp;for&nbsp;the&nbsp;2&nbsp;point&nbsp;moving&nbsp;average&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;ECG&nbsp;data&nbsp;with&nbsp;100&nbsp;sampling&nbsp;frequency.&nbsp;Python&nbsp;translated&nbsp;code<br>
+&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;50Hz&nbsp;Notch&nbsp;Filter&nbsp;C&nbsp;code&nbsp;of&nbsp;the&nbsp;EMI12&nbsp;OEM&nbsp;development&nbsp;kit.<br>
+Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ECGdata&nbsp;--&nbsp;list&nbsp;of&nbsp;integers&nbsp;(ECG&nbsp;data)<br>
+Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filteredECG&nbsp;--&nbsp;filtered&nbsp;ECG&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-bandpass"><strong>bandpass</strong></a>(ECGdata)</dt><dd><tt>Filters&nbsp;the&nbsp;data&nbsp;using&nbsp;bandpass&nbsp;filter<br>
+&nbsp;<br>
+Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Digital&nbsp;filter&nbsp;which&nbsp;returns&nbsp;the&nbsp;filtered&nbsp;signal&nbsp;using&nbsp;0.2-40Hz<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bandpass&nbsp;filter.&nbsp;Transforms&nbsp;the&nbsp;signal&nbsp;into&nbsp;frequency&nbsp;domain<br>
+&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;the&nbsp;fft&nbsp;function&nbsp;of&nbsp;the&nbsp;Scipy&nbsp;Module.&nbsp;Then,&nbsp;suppresses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;60Hz&nbsp;signal&nbsp;by&nbsp;equating&nbsp;it&nbsp;to&nbsp;zero.&nbsp;Finally,&nbsp;transforms<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;signal&nbsp;back&nbsp;to&nbsp;time&nbsp;domain&nbsp;using&nbsp;the&nbsp;ifft&nbsp;function.<br>
+Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ECGdata&nbsp;--&nbsp;list&nbsp;of&nbsp;integers&nbsp;(ECG&nbsp;data)<br>
+Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ifft(fftECG)&nbsp;--&nbsp;inverse&nbsp;fast&nbsp;fourier&nbsp;transformed&nbsp;array&nbsp;of&nbsp;filtered&nbsp;ECG&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-besselfilter"><strong>besselfilter</strong></a>(ECGdata)</dt><dd><tt>Filters&nbsp;the&nbsp;data&nbsp;using&nbsp;IIR&nbsp;bessel&nbsp;filter<br>
+&nbsp;<br>
+Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Digital&nbsp;filter&nbsp;which&nbsp;returns&nbsp;the&nbsp;filtered&nbsp;signal&nbsp;using&nbsp;bessel<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4th&nbsp;order&nbsp;low&nbsp;pass&nbsp;design.&nbsp;The&nbsp;cutoff&nbsp;frequency&nbsp;is&nbsp;0-35Hz&nbsp;with&nbsp;100Hz<br>
+&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;sampling&nbsp;frequency.<br>
+Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ECGdata&nbsp;--&nbsp;list&nbsp;of&nbsp;integers&nbsp;(ECG&nbsp;data)<br>
+Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lfilter(b,a,ECGdata)--&nbsp;filtered&nbsp;data&nbsp;along&nbsp;one-dimension&nbsp;with&nbsp;IIR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bessel&nbsp;filter</tt></dd></dl>
+ <dl><dt><a name="-butterfilter"><strong>butterfilter</strong></a>(ECGdata)</dt><dd><tt>Filters&nbsp;the&nbsp;data&nbsp;using&nbsp;IIR&nbsp;butterworth&nbsp;filter<br>
+&nbsp;<br>
+Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Digital&nbsp;filter&nbsp;which&nbsp;returns&nbsp;the&nbsp;filtered&nbsp;signal&nbsp;using&nbsp;butterworth<br>
+&nbsp;&nbsp;&nbsp;&nbsp;5th&nbsp;order&nbsp;low&nbsp;pass&nbsp;design.&nbsp;The&nbsp;cutoff&nbsp;frequency&nbsp;is&nbsp;0-35Hz&nbsp;with&nbsp;100Hz<br>
+&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;sampling&nbsp;frequency.<br>
+Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ECGdata&nbsp;--&nbsp;list&nbsp;of&nbsp;integers&nbsp;(ECG&nbsp;data)<br>
+Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lfilter(b,a,ECGdata)--&nbsp;filtered&nbsp;data&nbsp;along&nbsp;one-dimension&nbsp;with&nbsp;IIR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;butterworth&nbsp;filter</tt></dd></dl>
+ <dl><dt><a name="-hanning"><strong>hanning</strong></a>(ECGdata)</dt><dd><tt>Filters&nbsp;the&nbsp;data&nbsp;using&nbsp;hanning&nbsp;filter&nbsp;method<br>
+&nbsp;<br>
+Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Digital&nbsp;filter&nbsp;which&nbsp;solves&nbsp;for&nbsp;the&nbsp;computes&nbsp;for&nbsp;the&nbsp;weighted&nbsp;moving&nbsp;average&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;given&nbsp;array&nbsp;of&nbsp;data.The&nbsp;following&nbsp;is&nbsp;the&nbsp;equation&nbsp;used&nbsp;to&nbsp;implement&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Hanning&nbsp;filter: <br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y(nT)=1/4(x(nT)+2x(nT-T)+x(nT-2T))<br>
+Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ECGdata&nbsp;--&nbsp;list&nbsp;of&nbsp;prefiltered&nbsp;integers&nbsp;(ECG&nbsp;data)<br>
+Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smoothed&nbsp;--&nbsp;smoothed&nbsp;ECG&nbsp;signal&nbsp;using&nbsp;hanning&nbsp;method</tt></dd></dl>
+ <dl><dt><a name="-lowpassfilter"><strong>lowpassfilter</strong></a>(ECGdata)</dt><dd><tt>Filters&nbsp;the&nbsp;data&nbsp;using&nbsp;lowpass&nbsp;filter<br>
+&nbsp;<br>
+Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Digital&nbsp;filter&nbsp;which&nbsp;returns&nbsp;the&nbsp;filtered&nbsp;signal&nbsp;using&nbsp;60Hz<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lowpass&nbsp;filter.&nbsp;Transforms&nbsp;the&nbsp;signal&nbsp;into&nbsp;frequency&nbsp;domain<br>
+&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;the&nbsp;fft&nbsp;function&nbsp;of&nbsp;the&nbsp;Scipy&nbsp;Module.&nbsp;Then,&nbsp;suppresses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;60Hz&nbsp;signal&nbsp;by&nbsp;equating&nbsp;it&nbsp;to&nbsp;zero.&nbsp;Finally,&nbsp;transforms<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;signal&nbsp;back&nbsp;to&nbsp;time&nbsp;domain&nbsp;using&nbsp;the&nbsp;ifft&nbsp;function.<br>
+Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ECGdata&nbsp;--&nbsp;list&nbsp;of&nbsp;integers&nbsp;(ECG&nbsp;data)<br>
+Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ifft(fftECG)&nbsp;--&nbsp;inverse&nbsp;fast&nbsp;fourier&nbsp;transformed&nbsp;array&nbsp;of&nbsp;filtered&nbsp;ECG&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-notchfilter"><strong>notchfilter</strong></a>(ECGdata)</dt><dd><tt>Filters&nbsp;the&nbsp;data&nbsp;using&nbsp;notch&nbsp;filter<br>
+&nbsp;<br>
+Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Digital&nbsp;filter&nbsp;which&nbsp;returns&nbsp;the&nbsp;filtered&nbsp;signal&nbsp;using&nbsp;60Hz<br>
+&nbsp;&nbsp;&nbsp;&nbsp;notch&nbsp;filter.&nbsp;Transforms&nbsp;the&nbsp;signal&nbsp;into&nbsp;frequency&nbsp;domain<br>
+&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;the&nbsp;fft&nbsp;function&nbsp;of&nbsp;the&nbsp;Scipy&nbsp;Module.&nbsp;Then,&nbsp;suppresses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;60Hz&nbsp;signal&nbsp;by&nbsp;equating&nbsp;it&nbsp;to&nbsp;zero.&nbsp;Finally,&nbsp;transforms<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;signal&nbsp;back&nbsp;to&nbsp;time&nbsp;domain&nbsp;using&nbsp;the&nbsp;ifft&nbsp;function.<br>
+Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ECGdata&nbsp;--&nbsp;list&nbsp;of&nbsp;integers&nbsp;(ECG&nbsp;data)<br>
+Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ifft(fftECG)&nbsp;--&nbsp;inverse&nbsp;fast&nbsp;fourier&nbsp;transformed&nbsp;array&nbsp;of&nbsp;filtered&nbsp;ECG&nbsp;data</tt></dd></dl>
+</td></tr></table>
+</body></html>
