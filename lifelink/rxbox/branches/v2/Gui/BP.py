@@ -74,6 +74,7 @@ class BP:
         return bprequest
         
     def send_request(self):
+        """Method writes a packet to the serial port"""
         print "*** ONE-SHOT BP ***"
         request=self.request(self.SET_140mmHg_PRESSURE)
         self.nibp.write(request)
@@ -95,6 +96,7 @@ class BP:
         #    print "Patient NOT ready."
 
     def extract_bp(self):
+        """Method extracts Blood pressure readings from the current packet received."""
         for item in range(len(self.PatientStatus)):
             if self.PatientStatus[item] == 'P':
                 self.bp_systolic = int(self.PatientStatus[item+1:item+4])
