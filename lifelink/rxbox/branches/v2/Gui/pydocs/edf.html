@@ -9,7 +9,8 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>edf</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/oneil/Desktop/Gui/edf.py">/home/oneil/Desktop/Gui/edf.py</a></font></td></tr></table>
-    <p></p>
+    <p><tt>RxBox&nbsp;<a href="#EDF">EDF</a>&nbsp;Module:&nbsp;contains&nbsp;the&nbsp;patient,&nbsp;biosignals&nbsp;and&nbsp;<a href="#EDF">EDF</a>&nbsp;methods<br>
+to&nbsp;make&nbsp;the&nbsp;data&nbsp;conform&nbsp;to&nbsp;the&nbsp;European&nbsp;Data&nbsp;Format</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -40,7 +41,7 @@
 <td colspan=2><tt>contains&nbsp;the&nbsp;biomedical&nbsp;signals&nbsp;of&nbsp;the&nbsp;patient&nbsp;as&nbsp;well&nbsp;as&nbsp;their&nbsp;technical&nbsp;information<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="BioSignal-__init__"><strong>__init__</strong></a>(self, Label<font color="#909090">='Label'</font>, TransducerType<font color="#909090">=''</font>, PhyDimension<font color="#909090">='Dimension'</font>, PhyMin<font color="#909090">=-32767</font>, PhyMax<font color="#909090">=32767</font>, DigMin<font color="#909090">=-32767</font>, DigMax<font color="#909090">=32767</font>, Prefiltering<font color="#909090">=''</font>, NRsamples<font color="#909090">=1</font>, RawBioSignal<font color="#909090">=[]</font>)</dt></dl>
+<dl><dt><a name="BioSignal-__init__"><strong>__init__</strong></a>(self, Label<font color="#909090">='Label'</font>, TransducerType<font color="#909090">=''</font>, PhyDimension<font color="#909090">='Dimension'</font>, PhyMin<font color="#909090">=-32767</font>, PhyMax<font color="#909090">=32767</font>, DigMin<font color="#909090">=-32767</font>, DigMax<font color="#909090">=32767</font>, Prefiltering<font color="#909090">=''</font>, NRsamples<font color="#909090">=1</font>, RawBioSignal<font color="#909090">=[]</font>)</dt><dd><tt>initializes&nbsp;biosignals&nbsp;data&nbsp;fields</tt></dd></dl>
 
 <dl><dt><a name="BioSignal-createTechInfo"><strong>createTechInfo</strong></a>(self)</dt><dd><tt>encodes&nbsp;the&nbsp;biomedical&nbsp;signal&nbsp;technical&nbsp;information&nbsp;to&nbsp;the&nbsp;<a href="#EDF">EDF</a>&nbsp;header&nbsp;record</tt></dd></dl>
 
@@ -54,13 +55,15 @@
 <td colspan=2><tt>manipulates&nbsp;the&nbsp;<a href="#Patient">Patient</a>&nbsp;and&nbsp;<a href="#BioSignal">BioSignal</a>&nbsp;objects&nbsp;to&nbsp;create&nbsp;an&nbsp;<a href="#EDF">EDF</a>&nbsp;file<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="EDF-__init__"><strong>__init__</strong></a>(self, Patient, BioSignals, StartDate<font color="#909090">='01.01.01'</font>, StartTime<font color="#909090">='01.59.59'</font>, Location<font color="#909090">=''</font>, nDataRecord<font color="#909090">=-1</font>, DurationDataRecord<font color="#909090">=1</font>)</dt></dl>
+<dl><dt><a name="EDF-__init__"><strong>__init__</strong></a>(self, Patient, BioSignals, StartDate<font color="#909090">='01.01.01'</font>, StartTime<font color="#909090">='01.59.59'</font>, Location<font color="#909090">=''</font>, nDataRecord<font color="#909090">=-1</font>, DurationDataRecord<font color="#909090">=1</font>)</dt><dd><tt>initializes&nbsp;<a href="#EDF">EDF</a>&nbsp;packet,&nbsp;data&nbsp;and&nbsp;header&nbsp;fields</tt></dd></dl>
 
 <dl><dt><a name="EDF-createDataRecord"><strong>createDataRecord</strong></a>(self)</dt><dd><tt>creates&nbsp;the&nbsp;data&nbsp;record&nbsp;fields&nbsp;of&nbsp;the&nbsp;<a href="#EDF">EDF</a>&nbsp;file</tt></dd></dl>
 
 <dl><dt><a name="EDF-createHeaderRecord"><strong>createHeaderRecord</strong></a>(self)</dt><dd><tt>creates&nbsp;the&nbsp;header&nbsp;record&nbsp;fields&nbsp;of&nbsp;the&nbsp;<a href="#EDF">EDF</a>&nbsp;file</tt></dd></dl>
 
-<dl><dt><a name="EDF-get"><strong>get</strong></a>(self, myPatient)</dt></dl>
+<dl><dt><a name="EDF-get"><strong>get</strong></a>(self, myPatient)</dt><dd><tt>Creates&nbsp;an&nbsp;<a href="#EDF">EDF</a>&nbsp;file&nbsp;in&nbsp;the&nbsp;<a href="#EDF">EDF</a>&nbsp;folder.&nbsp;The&nbsp;file&nbsp;name&nbsp;is&nbsp;generated&nbsp;<br>
+using&nbsp;the&nbsp;last&nbsp;name&nbsp;of&nbsp;the&nbsp;patient&nbsp;and&nbsp;timestamp.&nbsp;The&nbsp;data&nbsp;comes&nbsp;from<br>
+the&nbsp;header&nbsp;and&nbsp;data&nbsp;records</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -68,9 +71,11 @@
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="Patient">class <strong>Patient</strong></a></font></td></tr>
     
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;patient&nbsp;information&nbsp;is&nbsp;arranged&nbsp;into&nbsp;packets&nbsp;which&nbsp;conforms&nbsp;to&nbsp;the&nbsp;<a href="#EDF">EDF</a>&nbsp;format<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Patient-__init__"><strong>__init__</strong></a>(self, ID<font color="#909090">=0</font>, firstname<font color="#909090">='First Name'</font>, middlename<font color="#909090">='Middle Name'</font>, lastname<font color="#909090">='Last Name'</font>, maidenname<font color="#909090">='Maiden Name'</font>, gender<font color="#909090">='Gender'</font>, birthday<font color="#909090">='01.01.01'</font>, age<font color="#909090">=0</font>)</dt></dl>
+<dl><dt><a name="Patient-__init__"><strong>__init__</strong></a>(self, ID<font color="#909090">=0</font>, firstname<font color="#909090">='First Name'</font>, middlename<font color="#909090">='Middle Name'</font>, lastname<font color="#909090">='Last Name'</font>, maidenname<font color="#909090">='Maiden Name'</font>, gender<font color="#909090">='Gender'</font>, birthday<font color="#909090">='01.01.01'</font>, age<font color="#909090">=0</font>)</dt><dd><tt>initializes&nbsp;patient&nbsp;information&nbsp;fields</tt></dd></dl>
 
 <dl><dt><a name="Patient-createLocalID"><strong>createLocalID</strong></a>(self)</dt><dd><tt>encodes&nbsp;the&nbsp;patient&nbsp;information&nbsp;to&nbsp;the&nbsp;LocalPatientID&nbsp;in&nbsp;the&nbsp;<a href="#EDF">EDF</a>&nbsp;header&nbsp;record&nbsp;field</tt></dd></dl>
 

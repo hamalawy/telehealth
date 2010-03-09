@@ -1,12 +1,16 @@
+"""
+RxBox EDF Module: contains the patient, biosignals and EDF methods
+to make the data conform to the European Data Format
+"""
 import datetime
 
 class Patient:
-
+    """The patient information is arranged into packets which conforms to the EDF format"""
     def __init__(self,ID = 0,firstname = 'First Name',\
                 middlename = 'Middle Name',lastname = 'Last Name',\
                 maidenname = 'Maiden Name', gender = 'Gender',\
                 birthday = '01.01.01',age = 0):
-        
+        """initializes patient information fields"""
         self.ID = str(ID)
         self.FirstName = firstname
         self.MiddleName = middlename
@@ -63,7 +67,7 @@ class BioSignal:
         # Label = Standard: 'TypeOfSignal Sensor'
         # DigMin > -32767
         # DigMax <  32767
-        
+        """initializes biosignals data fields"""
         Reserved = ' '*32
 
         # fields defined in the EDF format
@@ -118,7 +122,7 @@ class EDF:
                  nDataRecord = -1, DurationDataRecord = 1, ):
         # StartDate = dd.mm.yy
         # StartTime = hh.mm.ss
-        
+        """initializes EDF packet, data and header fields"""
         Reserved = ' '*44
 
         # fields defined in the EDF format
@@ -185,7 +189,6 @@ class EDF:
 
     def createDataRecord(self):
         """creates the data record fields of the EDF file"""
-
         counter = 0
         DataRecordlist = []
         end = []
@@ -250,7 +253,9 @@ class EDF:
         self.DataRecord = ''.join(DataRecordlist)
             
     def get(self,myPatient):
-
+        """ Creates an EDF file in the EDF folder. The file name is generated 
+        using the last name of the patient and timestamp. The data comes from
+        the header and data records"""
         self.EDFFile = self.HeaderRecord + self.DataRecord
         self.edfilename = 'EDF/' + myPatient.LastName + '_' + self.timestamp + '.edf'
         edffile   = open(self.edfilename, 'wb+')
