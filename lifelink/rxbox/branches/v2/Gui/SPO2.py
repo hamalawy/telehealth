@@ -4,6 +4,7 @@ import time
 from threading import Thread
 
 class SPO2:
+    """manages data request and processes reply packets to/from the SPO2 module"""
     def __init__(self, parent, port="COM5",baud=9600,timeout=5):
         """ Initialize port settings and request according
             to the specified setting for ChipOx"""
