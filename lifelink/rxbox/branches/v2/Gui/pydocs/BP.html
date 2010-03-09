@@ -1,0 +1,147 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module BP</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>BP</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/oneil/Desktop/Gui/BP.py">/home/oneil/Desktop/Gui/BP.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="serial.html">serial</a><br>
+</td><td width="25%" valign=top><a href="threading.html">threading</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td><td width="25%" valign=top><a href="wx.html">wx</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="BP.html#BP">BP</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BP">class <strong>BP</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>manages&nbsp;data&nbsp;request&nbsp;and&nbsp;processes&nbsp;reply&nbsp;packets&nbsp;to/from&nbsp;NIBP&nbsp;module<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BP-POST"><strong>POST</strong></a>(self)</dt><dd><tt><a href="#BP-POST">POST</a>()<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;resets&nbsp;the&nbsp;<a href="#BP">BP</a>&nbsp;module.&nbsp;After&nbsp;reset,&nbsp;the&nbsp;reply&nbsp;packet<br>
+is&nbsp;read&nbsp;and&nbsp;method&nbsp;test_power&nbsp;is&nbsp;called&nbsp;to&nbsp;check&nbsp;whether&nbsp;the&nbsp;<a href="#BP">BP</a><br>
+module&nbsp;is&nbsp;powered&nbsp;on&nbsp;and&nbsp;is&nbsp;transmitting&nbsp;data&nbsp;to&nbsp;the&nbsp;RxBox.</tt></dd></dl>
+
+<dl><dt><a name="BP-__init__"><strong>__init__</strong></a>(self, parent, port<font color="#909090">='COM5'</font>, baud<font color="#909090">=4800</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>initializes&nbsp;port&nbsp;settings&nbsp;and&nbsp;request&nbsp;data&nbsp;sequence&nbsp;according&nbsp;to&nbsp;specified&nbsp;setting&nbsp;for&nbsp;EMI12</tt></dd></dl>
+
+<dl><dt><a name="BP-check_device_status"><strong>check_device_status</strong></a>(self)</dt><dd><tt><a href="#BP-check_device_status">check_device_status</a>()<br>
+&nbsp;<br>
+Method&nbsp;evaluates&nbsp;the&nbsp;status&nbsp;transmitted&nbsp;by&nbsp;the&nbsp;module.<br>
+It&nbsp;only&nbsp;checks&nbsp;for&nbsp;cases&nbsp;for&nbsp;device&nbsp;ready&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="BP-check_patient_status"><strong>check_patient_status</strong></a>(self)</dt><dd><tt><a href="#BP-check_patient_status">check_patient_status</a>()<br>
+&nbsp;<br>
+Method&nbsp;evaluates&nbsp;the&nbsp;status&nbsp;transmitted&nbsp;by&nbsp;the&nbsp;module.<br>
+It&nbsp;only&nbsp;checks&nbsp;for&nbsp;cases&nbsp;for&nbsp;patient_ready&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="BP-checksum"><strong>checksum</strong></a>(data)</dt><dd><tt>Computes&nbsp;the&nbsp;checksum&nbsp;of&nbsp;a&nbsp;given&nbsp;string,&nbsp;data.<br>
+&nbsp;&nbsp;&nbsp;data&nbsp;-&gt;&nbsp;string&nbsp;of&nbsp;characters<br>
+&nbsp;&nbsp;&nbsp;[to&nbsp;be&nbsp;later&nbsp;replaced&nbsp;by&nbsp;list&nbsp;from&nbsp;&nbsp;pseudo&nbsp;data]<br>
+&nbsp;<br>
+checksum&nbsp;computation:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;Sum&nbsp;the&nbsp;hex&nbsp;or&nbsp;dec&nbsp;values&nbsp;of&nbsp;the&nbsp;characters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;the&nbsp;data&nbsp;(excluding&nbsp;STX&nbsp;and&nbsp;Checksum&nbsp;values).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;The&nbsp;checksum&nbsp;is&nbsp;equal&nbsp;to&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transmitted&nbsp;modulo&nbsp;256(in&nbsp;decimal).</tt></dd></dl>
+
+<dl><dt><a name="BP-device_ready"><strong>device_ready</strong></a>(self)</dt><dd><tt><a href="#BP-device_ready">device_ready</a>()<br>
+&nbsp;<br>
+Method&nbsp;determines&nbsp;if&nbsp;the&nbsp;device&nbsp;is&nbsp;ready&nbsp;for&nbsp;telemetry.&nbsp;A<br>
+command&nbsp;for&nbsp;leakage&nbsp;test&nbsp;to&nbsp;assess&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;sensor<br>
+is&nbsp;transmitted&nbsp;first.&nbsp;After&nbsp;the&nbsp;leakage&nbsp;test,&nbsp;the&nbsp;status<br>
+of&nbsp;the&nbsp;device&nbsp;will&nbsp;be&nbsp;checked.</tt></dd></dl>
+
+<dl><dt><a name="BP-extract_bp"><strong>extract_bp</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="BP-get"><strong>get</strong></a>(self)</dt><dd><tt>implements&nbsp;pseudo-cycle&nbsp;mode&nbsp;for&nbsp;<a href="#BP">BP</a>&nbsp;measurement</tt></dd></dl>
+
+<dl><dt><a name="BP-get_reply"><strong>get_reply</strong></a>(self)</dt><dd><tt><a href="#BP-get_reply">get_reply</a>()&nbsp;-&gt;&nbsp;string&nbsp;of&nbsp;complete&nbsp;packet<br>
+&nbsp;<br>
+Method&nbsp;acquires&nbsp;data&nbsp;from&nbsp;the&nbsp;module&nbsp;and&nbsp;gets&nbsp;a&nbsp;complete<br>
+packet&nbsp;using&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;flags.&nbsp;Once&nbsp;a&nbsp;complete<br>
+packet&nbsp;is&nbsp;acquired,&nbsp;it&nbsp;is&nbsp;returned.&nbsp;If&nbsp;the&nbsp;serial&nbsp;port<br>
+times&nbsp;out,&nbsp;a&nbsp;Nony&nbsp;type&nbsp;is&nbsp;returned&nbsp;to&nbsp;distuingish&nbsp;the&nbsp;error.</tt></dd></dl>
+
+<dl><dt><a name="BP-leakage_test"><strong>leakage_test</strong></a>(self)</dt><dd><tt><a href="#BP-leakage_test">leakage_test</a>()<br>
+&nbsp;<br>
+Method&nbsp;initiates&nbsp;a&nbsp;leakage&nbsp;test&nbsp;to&nbsp;determine&nbsp;the&nbsp;status&nbsp;of<br>
+the&nbsp;<a href="#BP">BP</a>&nbsp;cuff.&nbsp;Once&nbsp;initiated,&nbsp;the&nbsp;leakage&nbsp;test&nbsp;will&nbsp;inflate<br>
+and&nbsp;the&nbsp;deflate&nbsp;the&nbsp;cuff&nbsp;for&nbsp;status&nbsp;checking.</tt></dd></dl>
+
+<dl><dt><a name="BP-patient_ready"><strong>patient_ready</strong></a>(self)</dt><dd><tt><a href="#BP-patient_ready">patient_ready</a>()<br>
+&nbsp;<br>
+Method&nbsp;determines&nbsp;if&nbsp;the&nbsp;patient&nbsp;is&nbsp;ready&nbsp;for&nbsp;telemetry.&nbsp;A<br>
+command&nbsp;for&nbsp;leakage&nbsp;test&nbsp;to&nbsp;assess&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;sensor<br>
+is&nbsp;transmitted&nbsp;first.&nbsp;After&nbsp;the&nbsp;leakage&nbsp;test,&nbsp;the&nbsp;status<br>
+of&nbsp;the&nbsp;sensor&nbsp;and&nbsp;the&nbsp;patient&nbsp;will&nbsp;be&nbsp;checked.</tt></dd></dl>
+
+<dl><dt><a name="BP-request"><strong>request</strong></a>(self, command)</dt><dd><tt>Arranges&nbsp;the&nbsp;request&nbsp;packet&nbsp;for&nbsp;sending&nbsp;to&nbsp;NIBP2010&nbsp;<a href="#BP">BP</a>&nbsp;Monitor<br>
+Accepts&nbsp;a&nbsp;list&nbsp;of&nbsp;hex&nbsp;numbers&nbsp;called&nbsp;command</tt></dd></dl>
+
+<dl><dt><a name="BP-reset"><strong>reset</strong></a>(self)</dt><dd><tt>reset&nbsp;serial&nbsp;port&nbsp;input&nbsp;buffer</tt></dd></dl>
+
+<dl><dt><a name="BP-run"><strong>run</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="BP-send_request"><strong>send_request</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="BP-string_to_packet"><strong>string_to_packet</strong></a>(self, string)</dt><dd><tt><a href="#BP-string_to_packet">string_to_packet</a>(string)&nbsp;-&gt;&nbsp;equivalent&nbsp;list&nbsp;of&nbsp;binary&nbsp;data&nbsp;of&nbsp;string<br>
+&nbsp;<br>
+Method&nbsp;converts&nbsp;the&nbsp;replies&nbsp;transmitted&nbsp;by&nbsp;the&nbsp;module&nbsp;to<br>
+a&nbsp;list&nbsp;of&nbsp;bytes.&nbsp;The&nbsp;data&nbsp;read&nbsp;from&nbsp;the&nbsp;serial&nbsp;port&nbsp;is<br>
+string&nbsp;so&nbsp;it&nbsp;needs&nbsp;to&nbsp;be&nbsp;converted&nbsp;to&nbsp;a&nbsp;list&nbsp;to&nbsp;be&nbsp;able<br>
+to&nbsp;process&nbsp;the&nbsp;data&nbsp;contained&nbsp;by&nbsp;the&nbsp;packets.</tt></dd></dl>
+
+<dl><dt><a name="BP-test_device"><strong>test_device</strong></a>(self)</dt><dd><tt><a href="#BP-test_device">test_device</a>()<br>
+&nbsp;<br>
+Method&nbsp;checks&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;device&nbsp;by&nbsp;inquiring&nbsp;to<br>
+the&nbsp;module.&nbsp;The&nbsp;status&nbsp;from&nbsp;the&nbsp;module&nbsp;will&nbsp;be&nbsp;evaluated<br>
+by&nbsp;check_device_status&nbsp;method.&nbsp;Method&nbsp;also&nbsp;checks&nbsp;if&nbsp;serial<br>
+port&nbsp;times&nbsp;out&nbsp;for&nbsp;error&nbsp;checking.</tt></dd></dl>
+
+<dl><dt><a name="BP-test_power"><strong>test_power</strong></a>(self)</dt><dd><tt><a href="#BP-test_power">test_power</a>()<br>
+&nbsp;<br>
+Checks&nbsp;if&nbsp;the&nbsp;module&nbsp;transmitted&nbsp;a&nbsp;valid&nbsp;packet.&nbsp;If&nbsp;packet&nbsp;is<br>
+invalid,&nbsp;an&nbsp;appropriate&nbsp;message&nbsp;is&nbsp;displayed&nbsp;in&nbsp;the&nbsp;command<br>
+shell&nbsp;of&nbsp;python.&nbsp;If&nbsp;the&nbsp;packet&nbsp;is&nbsp;valid,&nbsp;EPROM&nbsp;version&nbsp;is&nbsp;saved.</tt></dd></dl>
+
+<dl><dt><a name="BP-test_sensor"><strong>test_sensor</strong></a>(self)</dt><dd><tt><a href="#BP-test_sensor">test_sensor</a>()<br>
+&nbsp;<br>
+Method&nbsp;checks&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;sensor&nbsp;by&nbsp;inquiring&nbsp;to<br>
+the&nbsp;module.&nbsp;The&nbsp;status&nbsp;from&nbsp;the&nbsp;module&nbsp;will&nbsp;be&nbsp;evaluated<br>
+by&nbsp;check_patientd_status&nbsp;method.&nbsp;Method&nbsp;also&nbsp;checks&nbsp;if&nbsp;serial<br>
+port&nbsp;times&nbsp;out&nbsp;for&nbsp;error&nbsp;checking.</tt></dd></dl>
+
+<dl><dt><a name="BP-verify_checksum"><strong>verify_checksum</strong></a>(self, packet)</dt><dd><tt><a href="#BP-verify_checksum">verify_checksum</a>(packet)&nbsp;-&gt;&nbsp;parsed&nbsp;packet&nbsp;data<br>
+&nbsp;<br>
+Method&nbsp;determines&nbsp;the&nbsp;validity&nbsp;of&nbsp;the&nbsp;packet&nbsp;by&nbsp;checking&nbsp;the<br>
+checksum&nbsp;of&nbsp;the&nbsp;packet&nbsp;against&nbsp;the&nbsp;data&nbsp;contained&nbsp;in&nbsp;the<br>
+packet.&nbsp;If&nbsp;data&nbsp;is&nbsp;valid,&nbsp;parsed&nbsp;data&nbsp;is&nbsp;returned.&nbsp;If&nbsp;not,<br>
+the&nbsp;method&nbsp;returns&nbsp;None&nbsp;type.</tt></dd></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>
