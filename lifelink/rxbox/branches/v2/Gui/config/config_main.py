@@ -2,7 +2,10 @@
 
 An application that creates a configuration file to be used by Rxbox
 
-Author: Timothy John Ebido
+Classes: ConfigMain
+
+Author: RxBox Development Team
+        IRC, EEEI, UP Diliman
 
 """
 
@@ -16,8 +19,25 @@ from config_layout import MyApp
 
 
 class ConfigMain(MyApp):
+    """ Main class for configuration generator
+    
+    - Loads application file from config_layout.py
+    
+    Main Methods:
+    __init__
+    createDatabaseConfig
+    createEDFConfig
+    createSensorsConfig
+    createTriageConfig
+
+    onGenerate
+    onLoad
+    
+    """
     
     def __init__(self, *args, **kwds):
+        """Initializes application and displays top frame"""
+        
         MyApp.__init__(self, *args, **kwds)
         
         self.ecg_simulated = 0
@@ -30,7 +50,14 @@ class ConfigMain(MyApp):
         self.frame.Show()
         
     def onGenerate(self, event):
-        """Method for generating configuration file"""
+        """Method for generating configuration file when 'Generate' is pressed
+        
+        - Creates configuration instance
+        - Creates sections and options for triage, sensors, database and EDF
+        - Output configuration file from configuration instance
+        - Display dialog box showing 'Generation successful'        
+        
+        """
 
         self.config = ConfigParser.ConfigParser()       
         self.createTriageConfig()
@@ -48,7 +75,12 @@ class ConfigMain(MyApp):
         print 'Generation Finished'
         
     def onCheckECG(self, event):
-        """Event when checkbox value is changed when clicked"""
+        """Event when checkbox value is changed when clicked
+        
+        - Changes the GUI display as necessary
+        
+        """
+        
         self.ecg_simulated ^= 1
         
         if self.ecg_simulated == 0:
@@ -63,7 +95,12 @@ class ConfigMain(MyApp):
             self.ecg_sim_type_val.Enable()
         
     def onCheckBP(self, event):
-        print 'BP Check'
+        """Event when bp checkbox is changed
+        
+        - Changes the GUI display as necessary
+        
+        """
+        
         self.bp_simulated ^= 1
         if self.bp_simulated == 0:
             self.bp_com_value.Enable()
@@ -73,7 +110,12 @@ class ConfigMain(MyApp):
             self.bp_sim_type_val.Enable()
 
     def onCheckSpo2(self, event):
-        print 'Spo2 Check'
+        """Event when spo2 checkbox is changed
+        
+        - Changes the GUI display as necessary
+        
+        """        
+        
         self.spo2_simulated ^= 1
         if self.spo2_simulated == 0:
             self.spo2_com_value.Enable()
@@ -88,34 +130,54 @@ class ConfigMain(MyApp):
         """Checks if sensor sim type value is 'others'. If yes, display file
             dialog box
         """
+        
         self.ecg_path = ''
         
         if self.ecg_sim_type_val.GetValue() == 'Others':
             self.ecg_path = self.display_file_dialog()
 
     def onBPSimSensorVal(self, event):
-        
+        """Checks if sensor sim type value is 'others'. If yes, display file
+            dialog box
+        """
+                
         if self.bp_sim_type_val.GetValue() == 'Others':
             self.display_file_dialog()
             
     def onHeartRateSimSensorVal(self, event):
+        """Checks if sensor sim type value is 'others'. If yes, display file
+            dialog box
+        """
         
         if self.heartrate_sim_type_val.GetValue() == 'Others':
             self.display_file_dialog()
             
     def onSpo2SimSensorVal(self, event):
-        
+        """Checks if sensor sim type value is 'others'. If yes, display file
+            dialog box
+        """
+
         if self.spo2_sim_type_val.GetValue() == 'Others':
             self.display_file_dialog()
             
     def display_file_dialog(self):
+        """Method for displaying file dialog
+        
+        - Returns file path
+        
+        """
         file_dialog = wx.FileDialog(self.frame)
         file_dialog.ShowModal()
         temp_list = file_dialog.GetPath().split('/')
         return 'simulators/' + temp_list[-1]
         
     def onCheckEmail(self, event):
-        print 'email check'
+        """Event when email checkbox is changed
+        
+        - Changes the GUI display as necessary
+        
+        """
+
         self.email_simulated ^= 1
         if self.email_simulated == 0:
             self.enableEmailFields()
@@ -126,6 +188,7 @@ class ConfigMain(MyApp):
             self.email_sim_connection_val.Enable()
 
     def enableEmailFields(self):
+
         self.smtp_val.Enable()
         self.smtp_user_val.Enable()
         self.smtp_pass_val.Enable()
@@ -135,6 +198,7 @@ class ConfigMain(MyApp):
         self.email_mode.Enable()
         
     def disableEmailFields(self):
+        
         self.smtp_val.Disable()
         self.smtp_user_val.Disable()
         self.smtp_pass_val.Disable()
@@ -144,15 +208,30 @@ class ConfigMain(MyApp):
         self.email_mode.Disable()
 
     def onCheckIM(self, event):
-        print 'im check'
+        """Event when IM checkbox is changed
+        
+        - Changes the GUI display as necessary
+        
+        """
+        
         self.im_simulated ^= 1
         
     def onCheckVoip(self, event):
-        print 'voip check'
+        """Event when VoIP checkbox is changed
+        
+        - Changes the GUI display as necessary
+        
+        """
+
         self.voip_simulated ^= 1
 
     def createTriageConfig(self):
-        """Method for creating sections related to triage"""
+        """Method for creating sections related to triage
+        
+        - Adds necessary sections
+        - Sets necessary options depending on the current values of the GUI
+        
+        """
         
         self.config.add_section('email')
         self.config.add_section('im')
@@ -179,7 +258,12 @@ class ConfigMain(MyApp):
         self.config.set('voip', 'simulated', self.voip_simulated)
         
     def createSensorsConfig(self):
-        """Method for creating sections related to biomedical sensors"""
+        """Method for creating sections related to sensors
+        
+        - Adds necessary sections
+        - Sets necessary options depending on the current values of the GUI
+        
+        """
         
         self.config.add_section('ecg')
         self.config.add_section('bp')
@@ -209,6 +293,7 @@ class ConfigMain(MyApp):
             self.config.set('spo2', 'spo2_sim_type', self.spo2_sim_type_val.GetValue())
             
     def createEDFConfig(self):
+        """Creates sections and options related to creation of EDF"""
         
         spo2_label = 'SpO2 finger'
         spo2_transducer_type = 'IR-Red sensor'
@@ -248,7 +333,6 @@ class ConfigMain(MyApp):
         ecg_dig_max = 32767
         ecg_prefiltering = 'None'
         ecg_samples = 7500
-        
         
         self.config.add_section('edf')
         
@@ -291,13 +375,20 @@ class ConfigMain(MyApp):
         self.config.set('edf', 'hr_samples', hr_samples)
 
     def createDatabaseConfig(self):
-        
+        """Creates sections and options related to access of database (MySQL)"""
+
+
         self.config.add_section('database')
         self.config.set('database', 'password', self.database_pass_val.GetValue())
 
     def onLoad(self, event):
-        """Method for loading and displaying the contents of configuration file"""
-        print 'Load'
+        """Method for loading and displaying the contents of configuration file
+        
+        - Reads configuration file
+        - Change GUI display accordingly
+        
+        """
+
         self.config_load = ConfigParser.ConfigParser()
         self.config_load.read('../rxbox.cfg')
 

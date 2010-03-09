@@ -1,0 +1,466 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module config_layout</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>config_layout</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/tim/Desktop/tim/Personal/Documents/Telemed/workspace/Gui/config/config_layout.py">/home/tim/Desktop/tim/Personal/Documents/Telemed/workspace/Gui/config/config_layout.py</a></font></td></tr></table>
+    <p><tt>Config&nbsp;Layout&nbsp;for&nbsp;Rxbox<br>
+&nbsp;<br>
+Initializes&nbsp;the&nbsp;layout&nbsp;and&nbsp;GUI&nbsp;Elements&nbsp;for&nbsp;Configuration&nbsp;Generator<br>
+&nbsp;<br>
+Classes:&nbsp;<a href="#MyApp">MyApp</a><br>
+&nbsp;<br>
+Author:&nbsp;RxBox&nbsp;Development&nbsp;Team<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IRC,&nbsp;EEEI,&nbsp;UP&nbsp;Diliman</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="wx.html">wx</a><br>
+</td><td width="25%" valign=top><a href="wx.xrc.html">wx.xrc</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="wx._core.html#App">wx._core.App</a>(<a href="wx._core.html#PyApp">wx._core.PyApp</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="config_layout.html#MyApp">MyApp</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MyApp">class <strong>MyApp</strong></a>(<a href="wx._core.html#App">wx._core.App</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Main&nbsp;class&nbsp;for&nbsp;application<br>
+&nbsp;<br>
+-&nbsp;Initializes&nbsp;<a href="#MyApp-OnInit">OnInit</a>()&nbsp;on&nbsp;start-up<br>
+&nbsp;<br>
+Methods:<br>
+OnInit<br>
+init_frame<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="config_layout.html#MyApp">MyApp</a></dd>
+<dd><a href="wx._core.html#App">wx._core.App</a></dd>
+<dd><a href="wx._core.html#PyApp">wx._core.PyApp</a></dd>
+<dd><a href="wx._core.html#EvtHandler">wx._core.EvtHandler</a></dd>
+<dd><a href="wx._core.html#Object">wx._core.Object</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="MyApp-OnInit"><strong>OnInit</strong></a>(self)</dt><dd><tt>Instantiates&nbsp;the&nbsp;xml&nbsp;file</tt></dd></dl>
+
+<dl><dt><a name="MyApp-init_frame"><strong>init_frame</strong></a>(self)</dt><dd><tt>Creates&nbsp;GUI&nbsp;elements<br>
+&nbsp;<br>
+-&nbsp;Binds&nbsp;necessary&nbsp;methods&nbsp;for&nbsp;checkbox&nbsp;and&nbsp;combobox</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="wx._core.html#App">wx._core.App</a>:<br>
+<dl><dt><a name="MyApp-Destroy"><strong>Destroy</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="MyApp-MainLoop"><strong>MainLoop</strong></a>(self)</dt><dd><tt>Execute&nbsp;the&nbsp;main&nbsp;GUI&nbsp;event&nbsp;loop</tt></dd></dl>
+
+<dl><dt><a name="MyApp-OnPreInit"><strong>OnPreInit</strong></a>(self)</dt><dd><tt>Things&nbsp;that&nbsp;must&nbsp;be&nbsp;done&nbsp;after&nbsp;_BootstrapApp&nbsp;has&nbsp;done&nbsp;its<br>
+thing,&nbsp;but&nbsp;would&nbsp;be&nbsp;nice&nbsp;if&nbsp;they&nbsp;were&nbsp;already&nbsp;done&nbsp;by&nbsp;the&nbsp;time<br>
+that&nbsp;OnInit&nbsp;is&nbsp;called.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-RedirectStdio"><strong>RedirectStdio</strong></a>(self, filename<font color="#909090">=None</font>)</dt><dd><tt>Redirect&nbsp;sys.stdout&nbsp;and&nbsp;sys.stderr&nbsp;to&nbsp;a&nbsp;file&nbsp;or&nbsp;a&nbsp;popup&nbsp;window.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-RestoreStdio"><strong>RestoreStdio</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="MyApp-SetOutputWindowAttributes"><strong>SetOutputWindowAttributes</strong></a>(self, title<font color="#909090">=None</font>, pos<font color="#909090">=None</font>, size<font color="#909090">=None</font>)</dt><dd><tt>Set&nbsp;the&nbsp;title,&nbsp;position&nbsp;and/or&nbsp;size&nbsp;of&nbsp;the&nbsp;output&nbsp;window&nbsp;if<br>
+the&nbsp;stdio&nbsp;has&nbsp;been&nbsp;redirected.&nbsp;&nbsp;This&nbsp;should&nbsp;be&nbsp;called&nbsp;before<br>
+any&nbsp;output&nbsp;would&nbsp;cause&nbsp;the&nbsp;output&nbsp;window&nbsp;to&nbsp;be&nbsp;created.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetTopWindow"><strong>SetTopWindow</strong></a>(self, frame)</dt><dd><tt>Set&nbsp;the&nbsp;"main"&nbsp;top&nbsp;level&nbsp;window</tt></dd></dl>
+
+<dl><dt><a name="MyApp-__del__"><strong>__del__</strong></a>(self, destroy<font color="#909090">=&lt;unbound method PyApp.&lt;lambda&gt;&gt;</font>)</dt></dl>
+
+<dl><dt><a name="MyApp-__init__"><strong>__init__</strong></a>(self, redirect<font color="#909090">=False</font>, filename<font color="#909090">=None</font>, useBestVisual<font color="#909090">=False</font>, clearSigInt<font color="#909090">=True</font>)</dt><dd><tt>Construct&nbsp;a&nbsp;``wx.<a href="wx._core.html#App">App</a>``&nbsp;object.&nbsp;&nbsp;<br>
+&nbsp;<br>
+:param&nbsp;redirect:&nbsp;Should&nbsp;``sys.stdout``&nbsp;and&nbsp;``sys.stderr``&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;redirected?&nbsp;&nbsp;Defaults&nbsp;to&nbsp;True&nbsp;on&nbsp;Windows&nbsp;and&nbsp;Mac,&nbsp;False<br>
+&nbsp;&nbsp;&nbsp;&nbsp;otherwise.&nbsp;&nbsp;If&nbsp;`filename`&nbsp;is&nbsp;None&nbsp;then&nbsp;output&nbsp;will&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;redirected&nbsp;to&nbsp;a&nbsp;window&nbsp;that&nbsp;pops&nbsp;up&nbsp;as&nbsp;needed.&nbsp;&nbsp;(You&nbsp;can<br>
+&nbsp;&nbsp;&nbsp;&nbsp;control&nbsp;what&nbsp;kind&nbsp;of&nbsp;window&nbsp;is&nbsp;created&nbsp;for&nbsp;the&nbsp;output&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;resetting&nbsp;the&nbsp;class&nbsp;variable&nbsp;``outputWindowClass``&nbsp;to&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;of&nbsp;your&nbsp;choosing.)<br>
+&nbsp;<br>
+:param&nbsp;filename:&nbsp;The&nbsp;name&nbsp;of&nbsp;a&nbsp;file&nbsp;to&nbsp;redirect&nbsp;output&nbsp;to,&nbsp;if<br>
+&nbsp;&nbsp;&nbsp;&nbsp;redirect&nbsp;is&nbsp;True.<br>
+&nbsp;<br>
+:param&nbsp;useBestVisual:&nbsp;Should&nbsp;the&nbsp;app&nbsp;try&nbsp;to&nbsp;use&nbsp;the&nbsp;best<br>
+&nbsp;&nbsp;&nbsp;&nbsp;available&nbsp;visual&nbsp;provided&nbsp;by&nbsp;the&nbsp;system&nbsp;(only&nbsp;relevant&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;systems&nbsp;that&nbsp;have&nbsp;more&nbsp;than&nbsp;one&nbsp;visual.)&nbsp;&nbsp;This&nbsp;parameter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;must&nbsp;be&nbsp;used&nbsp;instead&nbsp;of&nbsp;calling&nbsp;`SetUseBestVisual`&nbsp;later<br>
+&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;because&nbsp;it&nbsp;must&nbsp;be&nbsp;set&nbsp;before&nbsp;the&nbsp;underlying&nbsp;GUI<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toolkit&nbsp;is&nbsp;initialized.<br>
+&nbsp;<br>
+:param&nbsp;clearSigInt:&nbsp;Should&nbsp;SIGINT&nbsp;be&nbsp;cleared?&nbsp;&nbsp;This&nbsp;allows&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;app&nbsp;to&nbsp;terminate&nbsp;upon&nbsp;a&nbsp;Ctrl-C&nbsp;in&nbsp;the&nbsp;console&nbsp;like&nbsp;other<br>
+&nbsp;&nbsp;&nbsp;&nbsp;GUI&nbsp;apps&nbsp;will.<br>
+&nbsp;<br>
+:note:&nbsp;You&nbsp;should&nbsp;override&nbsp;OnInit&nbsp;to&nbsp;do&nbsp;applicaition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;initialization&nbsp;to&nbsp;ensure&nbsp;that&nbsp;the&nbsp;system,&nbsp;toolkit&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wxWidgets&nbsp;are&nbsp;fully&nbsp;initialized.</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="wx._core.html#App">wx._core.App</a>:<br>
+<dl><dt><strong>outputWindowClass</strong> = &lt;class wx._core.PyOnDemandOutputWindow at 0xb74bac5c&gt;</dl>
+
+<hr>
+Methods inherited from <a href="wx._core.html#PyApp">wx._core.PyApp</a>:<br>
+<dl><dt><a name="MyApp-Dispatch"><strong>Dispatch</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-Dispatch">Dispatch</a>(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Process&nbsp;the&nbsp;first&nbsp;event&nbsp;in&nbsp;the&nbsp;event&nbsp;queue&nbsp;(blocks&nbsp;until&nbsp;an&nbsp;event<br>
+appears&nbsp;if&nbsp;there&nbsp;are&nbsp;none&nbsp;currently)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-Exit"><strong>Exit</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-Exit">Exit</a>(self)<br>
+&nbsp;<br>
+Exit&nbsp;the&nbsp;main&nbsp;loop&nbsp;thus&nbsp;terminating&nbsp;the&nbsp;application.<br>
+:see:&nbsp;`wx.Exit`</tt></dd></dl>
+
+<dl><dt><a name="MyApp-ExitMainLoop"><strong>ExitMainLoop</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-ExitMainLoop">ExitMainLoop</a>(self)<br>
+&nbsp;<br>
+Exit&nbsp;the&nbsp;main&nbsp;GUI&nbsp;loop&nbsp;during&nbsp;the&nbsp;next&nbsp;iteration&nbsp;of&nbsp;the&nbsp;main<br>
+loop,&nbsp;(i.e.&nbsp;it&nbsp;does&nbsp;not&nbsp;stop&nbsp;the&nbsp;program&nbsp;immediately!)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-FilterEvent"><strong>FilterEvent</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-FilterEvent">FilterEvent</a>(self,&nbsp;Event&nbsp;event)&nbsp;-&gt;&nbsp;int<br>
+&nbsp;<br>
+Filters&nbsp;all&nbsp;events.&nbsp;`SetCallFilterEvent`&nbsp;controls&nbsp;whether&nbsp;or&nbsp;not&nbsp;your<br>
+override&nbsp;is&nbsp;called.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetAppName"><strong>GetAppName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetAppName">GetAppName</a>(self)&nbsp;-&gt;&nbsp;String<br>
+&nbsp;<br>
+Get&nbsp;the&nbsp;application&nbsp;name.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetAssertMode"><strong>GetAssertMode</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetAssertMode">GetAssertMode</a>(self)&nbsp;-&gt;&nbsp;int<br>
+&nbsp;<br>
+Get&nbsp;the&nbsp;current&nbsp;OnAssert&nbsp;behaviour&nbsp;setting.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetCallFilterEvent"><strong>GetCallFilterEvent</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetCallFilterEvent">GetCallFilterEvent</a>(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;state&nbsp;of&nbsp;the&nbsp;Call&nbsp;FilterEvent&nbsp;flag.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetClassName"><strong>GetClassName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetClassName">GetClassName</a>(self)&nbsp;-&gt;&nbsp;String<br>
+&nbsp;<br>
+Get&nbsp;the&nbsp;application's&nbsp;class&nbsp;name.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetExitOnFrameDelete"><strong>GetExitOnFrameDelete</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetExitOnFrameDelete">GetExitOnFrameDelete</a>(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Get&nbsp;the&nbsp;current&nbsp;exit&nbsp;behaviour&nbsp;setting.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetLayoutDirection"><strong>GetLayoutDirection</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetLayoutDirection">GetLayoutDirection</a>(self)&nbsp;-&gt;&nbsp;int<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;layout&nbsp;direction&nbsp;for&nbsp;the&nbsp;current&nbsp;locale.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetPrintMode"><strong>GetPrintMode</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetPrintMode">GetPrintMode</a>(self)&nbsp;-&gt;&nbsp;int</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetTopWindow"><strong>GetTopWindow</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetTopWindow">GetTopWindow</a>(self)&nbsp;-&gt;&nbsp;Window<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;*main*&nbsp;top&nbsp;level&nbsp;window&nbsp;(if&nbsp;it&nbsp;hadn't&nbsp;been&nbsp;set&nbsp;previously<br>
+with&nbsp;<a href="#MyApp-SetTopWindow">SetTopWindow</a>(),&nbsp;will&nbsp;return&nbsp;just&nbsp;some&nbsp;top&nbsp;level&nbsp;window&nbsp;and,&nbsp;if<br>
+there&nbsp;not&nbsp;any,&nbsp;will&nbsp;return&nbsp;None)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetTraits"><strong>GetTraits</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetTraits">GetTraits</a>(self)&nbsp;-&gt;&nbsp;wxAppTraits<br>
+&nbsp;<br>
+Return&nbsp;(and&nbsp;create&nbsp;if&nbsp;necessary)&nbsp;the&nbsp;app&nbsp;traits&nbsp;object&nbsp;to&nbsp;which&nbsp;we<br>
+delegate&nbsp;for&nbsp;everything&nbsp;which&nbsp;either&nbsp;should&nbsp;be&nbsp;configurable&nbsp;by&nbsp;the<br>
+user&nbsp;(then&nbsp;he&nbsp;can&nbsp;change&nbsp;the&nbsp;default&nbsp;behaviour&nbsp;simply&nbsp;by&nbsp;overriding<br>
+CreateTraits()&nbsp;and&nbsp;returning&nbsp;his&nbsp;own&nbsp;traits&nbsp;object)&nbsp;or&nbsp;which&nbsp;is<br>
+GUI/console&nbsp;dependent&nbsp;as&nbsp;then&nbsp;wx.AppTraits&nbsp;allows&nbsp;us&nbsp;to&nbsp;abstract&nbsp;the<br>
+differences&nbsp;behind&nbsp;the&nbsp;common&nbsp;facade.<br>
+&nbsp;<br>
+:todo:&nbsp;Add&nbsp;support&nbsp;for&nbsp;overriding&nbsp;CreateAppTraits&nbsp;in&nbsp;wxPython.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetUseBestVisual"><strong>GetUseBestVisual</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetUseBestVisual">GetUseBestVisual</a>(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Get&nbsp;current&nbsp;UseBestVisual&nbsp;setting.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetVendorName"><strong>GetVendorName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetVendorName">GetVendorName</a>(self)&nbsp;-&gt;&nbsp;String<br>
+&nbsp;<br>
+Get&nbsp;the&nbsp;application's&nbsp;vendor&nbsp;name.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-IsActive"><strong>IsActive</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-IsActive">IsActive</a>(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Return&nbsp;True&nbsp;if&nbsp;our&nbsp;app&nbsp;has&nbsp;focus.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-MacHideApp"><strong>MacHideApp</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-MacHideApp">MacHideApp</a>(self)<br>
+&nbsp;<br>
+Hide&nbsp;all&nbsp;application&nbsp;windows&nbsp;just&nbsp;as&nbsp;the&nbsp;user&nbsp;can&nbsp;do&nbsp;with&nbsp;the&nbsp;system<br>
+Hide&nbsp;command.&nbsp;&nbsp;Mac&nbsp;only.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-MacRequestUserAttention"><strong>MacRequestUserAttention</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-MacRequestUserAttention">MacRequestUserAttention</a>(self,&nbsp;int&nbsp;?)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-Pending"><strong>Pending</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-Pending">Pending</a>(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Returns&nbsp;True&nbsp;if&nbsp;there&nbsp;are&nbsp;unprocessed&nbsp;events&nbsp;in&nbsp;the&nbsp;event&nbsp;queue.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-ProcessIdle"><strong>ProcessIdle</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-ProcessIdle">ProcessIdle</a>(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;the&nbsp;MainLoop&nbsp;when&nbsp;the&nbsp;application&nbsp;becomes&nbsp;idle&nbsp;(there&nbsp;are<br>
+no&nbsp;pending&nbsp;events)&nbsp;and&nbsp;sends&nbsp;a&nbsp;`wx.IdleEvent`&nbsp;to&nbsp;all&nbsp;interested<br>
+parties.&nbsp;&nbsp;Returns&nbsp;True&nbsp;if&nbsp;more&nbsp;idle&nbsp;events&nbsp;are&nbsp;needed,&nbsp;False&nbsp;if&nbsp;not.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-ProcessPendingEvents"><strong>ProcessPendingEvents</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-ProcessPendingEvents">ProcessPendingEvents</a>(self)<br>
+&nbsp;<br>
+Process&nbsp;all&nbsp;events&nbsp;in&nbsp;the&nbsp;Pending&nbsp;Events&nbsp;list&nbsp;--&nbsp;it&nbsp;is&nbsp;necessary&nbsp;to<br>
+call&nbsp;this&nbsp;function&nbsp;to&nbsp;process&nbsp;posted&nbsp;events.&nbsp;This&nbsp;normally&nbsp;happens<br>
+during&nbsp;each&nbsp;event&nbsp;loop&nbsp;iteration.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SendIdleEvents"><strong>SendIdleEvents</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SendIdleEvents">SendIdleEvents</a>(self,&nbsp;Window&nbsp;win,&nbsp;IdleEvent&nbsp;event)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Send&nbsp;idle&nbsp;event&nbsp;to&nbsp;window&nbsp;and&nbsp;all&nbsp;subwindows.&nbsp;&nbsp;Returns&nbsp;True&nbsp;if&nbsp;more<br>
+idle&nbsp;time&nbsp;is&nbsp;requested.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetAppName"><strong>SetAppName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetAppName">SetAppName</a>(self,&nbsp;String&nbsp;name)<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;application&nbsp;name.&nbsp;This&nbsp;value&nbsp;may&nbsp;be&nbsp;used&nbsp;automatically&nbsp;by<br>
+`wx.Config`&nbsp;and&nbsp;such.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetAssertMode"><strong>SetAssertMode</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetAssertMode">SetAssertMode</a>(self,&nbsp;int&nbsp;mode)<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;OnAssert&nbsp;behaviour&nbsp;for&nbsp;debug&nbsp;and&nbsp;hybrid&nbsp;builds.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetCallFilterEvent"><strong>SetCallFilterEvent</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetCallFilterEvent">SetCallFilterEvent</a>(self,&nbsp;bool&nbsp;callFilterEvent=True)<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;Call&nbsp;FilterEvent&nbsp;flag.&nbsp;When&nbsp;set&nbsp;your&nbsp;override&nbsp;of&nbsp;FilterEvent<br>
+will&nbsp;be&nbsp;called.&nbsp;&nbsp;SetCallFilterEvent's&nbsp;purpose&nbsp;is&nbsp;to&nbsp;avoid&nbsp;any<br>
+performance&nbsp;penalty&nbsp;when&nbsp;you&nbsp;have&nbsp;overriden&nbsp;FilterEvent,&nbsp;but&nbsp;don't<br>
+want&nbsp;it&nbsp;to&nbsp;be&nbsp;called,&nbsp;and&nbsp;also&nbsp;to&nbsp;reduce&nbsp;the&nbsp;runtime&nbsp;overhead&nbsp;when&nbsp;it<br>
+is&nbsp;not&nbsp;overridden.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetClassName"><strong>SetClassName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetClassName">SetClassName</a>(self,&nbsp;String&nbsp;name)<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;application's&nbsp;class&nbsp;name.&nbsp;This&nbsp;value&nbsp;may&nbsp;be&nbsp;used&nbsp;for<br>
+X-resources&nbsp;if&nbsp;applicable&nbsp;for&nbsp;the&nbsp;platform</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetExitOnFrameDelete"><strong>SetExitOnFrameDelete</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetExitOnFrameDelete">SetExitOnFrameDelete</a>(self,&nbsp;bool&nbsp;flag)<br>
+&nbsp;<br>
+Control&nbsp;the&nbsp;exit&nbsp;behaviour:&nbsp;by&nbsp;default,&nbsp;the&nbsp;program&nbsp;will&nbsp;exit&nbsp;the&nbsp;main<br>
+loop&nbsp;(and&nbsp;so,&nbsp;usually,&nbsp;terminate)&nbsp;when&nbsp;the&nbsp;last&nbsp;top-level&nbsp;program<br>
+window&nbsp;is&nbsp;deleted.&nbsp;&nbsp;Beware&nbsp;that&nbsp;if&nbsp;you&nbsp;disable&nbsp;this&nbsp;behaviour&nbsp;(with<br>
+<a href="#MyApp-SetExitOnFrameDelete">SetExitOnFrameDelete</a>(False)),&nbsp;you'll&nbsp;have&nbsp;to&nbsp;call&nbsp;<a href="#MyApp-ExitMainLoop">ExitMainLoop</a>()<br>
+explicitly&nbsp;from&nbsp;somewhere.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetPrintMode"><strong>SetPrintMode</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetPrintMode">SetPrintMode</a>(self,&nbsp;int&nbsp;mode)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetUseBestVisual"><strong>SetUseBestVisual</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetUseBestVisual">SetUseBestVisual</a>(self,&nbsp;bool&nbsp;flag,&nbsp;bool&nbsp;forceTrueColour=False)<br>
+&nbsp;<br>
+Set&nbsp;whether&nbsp;the&nbsp;app&nbsp;should&nbsp;try&nbsp;to&nbsp;use&nbsp;the&nbsp;best&nbsp;available&nbsp;visual&nbsp;on<br>
+systems&nbsp;where&nbsp;more&nbsp;than&nbsp;one&nbsp;is&nbsp;available,&nbsp;(Sun,&nbsp;SGI,&nbsp;XFree86&nbsp;4,&nbsp;etc.)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetVendorName"><strong>SetVendorName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetVendorName">SetVendorName</a>(self,&nbsp;String&nbsp;name)<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;application's&nbsp;vendor&nbsp;name.&nbsp;This&nbsp;value&nbsp;may&nbsp;be&nbsp;used<br>
+automatically&nbsp;by&nbsp;`wx.Config`&nbsp;and&nbsp;such.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-WakeUpIdle"><strong>WakeUpIdle</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-WakeUpIdle">WakeUpIdle</a>(self)<br>
+&nbsp;<br>
+Make&nbsp;sure&nbsp;that&nbsp;idle&nbsp;events&nbsp;are&nbsp;sent&nbsp;again.<br>
+:see:&nbsp;`wx.WakeUpIdle`</tt></dd></dl>
+
+<dl><dt><a name="MyApp-Yield"><strong>Yield</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-Yield">Yield</a>(self,&nbsp;bool&nbsp;onlyIfNeeded=False)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Process&nbsp;all&nbsp;currently&nbsp;pending&nbsp;events&nbsp;right&nbsp;now,&nbsp;instead&nbsp;of&nbsp;waiting<br>
+until&nbsp;return&nbsp;to&nbsp;the&nbsp;event&nbsp;loop.&nbsp;&nbsp;It&nbsp;is&nbsp;an&nbsp;error&nbsp;to&nbsp;call&nbsp;``Yield``<br>
+recursively&nbsp;unless&nbsp;the&nbsp;value&nbsp;of&nbsp;``onlyIfNeeded``&nbsp;is&nbsp;True.<br>
+&nbsp;<br>
+:warning:&nbsp;This&nbsp;function&nbsp;is&nbsp;dangerous&nbsp;as&nbsp;it&nbsp;can&nbsp;lead&nbsp;to&nbsp;unexpected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reentrancies&nbsp;(i.e.&nbsp;when&nbsp;called&nbsp;from&nbsp;an&nbsp;event&nbsp;handler&nbsp;it&nbsp;may<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;in&nbsp;calling&nbsp;the&nbsp;same&nbsp;event&nbsp;handler&nbsp;again),&nbsp;use&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extreme&nbsp;care&nbsp;or,&nbsp;better,&nbsp;don't&nbsp;use&nbsp;at&nbsp;all!<br>
+&nbsp;<br>
+:see:&nbsp;`wx.Yield`,&nbsp;`wx.YieldIfNeeded`,&nbsp;`wx.SafeYield`</tt></dd></dl>
+
+<dl><dt><a name="MyApp-__repr__"><strong>__repr__</strong></a> = _swig_repr(self)</dt></dl>
+
+<hr>
+Static methods inherited from <a href="wx._core.html#PyApp">wx._core.PyApp</a>:<br>
+<dl><dt><a name="MyApp-GetComCtl32Version"><strong>GetComCtl32Version</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetComCtl32Version">GetComCtl32Version</a>()&nbsp;-&gt;&nbsp;int<br>
+&nbsp;<br>
+Returns&nbsp;400,&nbsp;470,&nbsp;471,&nbsp;etc.&nbsp;for&nbsp;comctl32.dll&nbsp;4.00,&nbsp;4.70,&nbsp;4.71&nbsp;or&nbsp;0&nbsp;if<br>
+it&nbsp;wasn't&nbsp;found&nbsp;at&nbsp;all.&nbsp;&nbsp;Raises&nbsp;an&nbsp;exception&nbsp;on&nbsp;non-Windows&nbsp;platforms.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetMacAboutMenuItemId"><strong>GetMacAboutMenuItemId</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetMacAboutMenuItemId">GetMacAboutMenuItemId</a>()&nbsp;-&gt;&nbsp;long</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetMacExitMenuItemId"><strong>GetMacExitMenuItemId</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetMacExitMenuItemId">GetMacExitMenuItemId</a>()&nbsp;-&gt;&nbsp;long</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetMacHelpMenuTitleName"><strong>GetMacHelpMenuTitleName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetMacHelpMenuTitleName">GetMacHelpMenuTitleName</a>()&nbsp;-&gt;&nbsp;String</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetMacPreferencesMenuItemId"><strong>GetMacPreferencesMenuItemId</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetMacPreferencesMenuItemId">GetMacPreferencesMenuItemId</a>()&nbsp;-&gt;&nbsp;long</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetMacSupportPCMenuShortcuts"><strong>GetMacSupportPCMenuShortcuts</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetMacSupportPCMenuShortcuts">GetMacSupportPCMenuShortcuts</a>()&nbsp;-&gt;&nbsp;bool</tt></dd></dl>
+
+<dl><dt><a name="MyApp-IsDisplayAvailable"><strong>IsDisplayAvailable</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-IsDisplayAvailable">IsDisplayAvailable</a>()&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Tests&nbsp;if&nbsp;it&nbsp;is&nbsp;possible&nbsp;to&nbsp;create&nbsp;a&nbsp;GUI&nbsp;in&nbsp;the&nbsp;current&nbsp;environment.<br>
+This&nbsp;will&nbsp;mean&nbsp;different&nbsp;things&nbsp;on&nbsp;the&nbsp;different&nbsp;platforms.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;*&nbsp;On&nbsp;X&nbsp;Windows&nbsp;systems&nbsp;this&nbsp;function&nbsp;will&nbsp;return&nbsp;``False``&nbsp;if&nbsp;it&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;not&nbsp;able&nbsp;to&nbsp;open&nbsp;a&nbsp;connection&nbsp;to&nbsp;the&nbsp;X&nbsp;display,&nbsp;which&nbsp;can&nbsp;happen<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;$DISPLAY&nbsp;is&nbsp;not&nbsp;set,&nbsp;or&nbsp;is&nbsp;not&nbsp;set&nbsp;correctly.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;*&nbsp;On&nbsp;Mac&nbsp;OS&nbsp;X&nbsp;a&nbsp;``False``&nbsp;return&nbsp;value&nbsp;will&nbsp;mean&nbsp;that&nbsp;wx&nbsp;is&nbsp;not<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;able&nbsp;to&nbsp;access&nbsp;the&nbsp;window&nbsp;manager,&nbsp;which&nbsp;can&nbsp;happen&nbsp;if&nbsp;logged&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remotely&nbsp;or&nbsp;if&nbsp;running&nbsp;from&nbsp;the&nbsp;normal&nbsp;version&nbsp;of&nbsp;python&nbsp;instead<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;framework&nbsp;version,&nbsp;(i.e.,&nbsp;pythonw.)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;*&nbsp;On&nbsp;MS&nbsp;Windows...</tt></dd></dl>
+
+<dl><dt><a name="MyApp-IsMainLoopRunning"><strong>IsMainLoopRunning</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-IsMainLoopRunning">IsMainLoopRunning</a>()&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Returns&nbsp;True&nbsp;if&nbsp;we're&nbsp;running&nbsp;the&nbsp;main&nbsp;loop,&nbsp;i.e.&nbsp;if&nbsp;the&nbsp;events&nbsp;can<br>
+currently&nbsp;be&nbsp;dispatched.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetMacAboutMenuItemId"><strong>SetMacAboutMenuItemId</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetMacAboutMenuItemId">SetMacAboutMenuItemId</a>(long&nbsp;val)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetMacExitMenuItemId"><strong>SetMacExitMenuItemId</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetMacExitMenuItemId">SetMacExitMenuItemId</a>(long&nbsp;val)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetMacHelpMenuTitleName"><strong>SetMacHelpMenuTitleName</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetMacHelpMenuTitleName">SetMacHelpMenuTitleName</a>(String&nbsp;val)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetMacPreferencesMenuItemId"><strong>SetMacPreferencesMenuItemId</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetMacPreferencesMenuItemId">SetMacPreferencesMenuItemId</a>(long&nbsp;val)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetMacSupportPCMenuShortcuts"><strong>SetMacSupportPCMenuShortcuts</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetMacSupportPCMenuShortcuts">SetMacSupportPCMenuShortcuts</a>(bool&nbsp;val)</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="wx._core.html#PyApp">wx._core.PyApp</a>:<br>
+<dl><dt><strong>Active</strong></dt>
+<dd><tt>IsActive(self)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Return&nbsp;True&nbsp;if&nbsp;our&nbsp;app&nbsp;has&nbsp;focus.</tt></dd>
+</dl>
+<dl><dt><strong>AppName</strong></dt>
+<dd><tt>See&nbsp;`GetAppName`&nbsp;and&nbsp;`SetAppName`</tt></dd>
+</dl>
+<dl><dt><strong>AssertMode</strong></dt>
+<dd><tt>See&nbsp;`GetAssertMode`&nbsp;and&nbsp;`SetAssertMode`</tt></dd>
+</dl>
+<dl><dt><strong>ClassName</strong></dt>
+<dd><tt>See&nbsp;`GetClassName`&nbsp;and&nbsp;`SetClassName`</tt></dd>
+</dl>
+<dl><dt><strong>ExitOnFrameDelete</strong></dt>
+<dd><tt>See&nbsp;`GetExitOnFrameDelete`&nbsp;and&nbsp;`SetExitOnFrameDelete`</tt></dd>
+</dl>
+<dl><dt><strong>LayoutDirection</strong></dt>
+<dd><tt>See&nbsp;`GetLayoutDirection`</tt></dd>
+</dl>
+<dl><dt><strong>PrintMode</strong></dt>
+<dd><tt>See&nbsp;`GetPrintMode`&nbsp;and&nbsp;`SetPrintMode`</tt></dd>
+</dl>
+<dl><dt><strong>TopWindow</strong></dt>
+<dd><tt>See&nbsp;`GetTopWindow`&nbsp;and&nbsp;`SetTopWindow`</tt></dd>
+</dl>
+<dl><dt><strong>Traits</strong></dt>
+<dd><tt>See&nbsp;`GetTraits`</tt></dd>
+</dl>
+<dl><dt><strong>UseBestVisual</strong></dt>
+<dd><tt>See&nbsp;`GetUseBestVisual`&nbsp;and&nbsp;`SetUseBestVisual`</tt></dd>
+</dl>
+<dl><dt><strong>VendorName</strong></dt>
+<dd><tt>See&nbsp;`GetVendorName`&nbsp;and&nbsp;`SetVendorName`</tt></dd>
+</dl>
+<dl><dt><strong>thisown</strong></dt>
+<dd><tt>The&nbsp;membership&nbsp;flag</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="wx._core.html#PyApp">wx._core.PyApp</a>:<br>
+<dl><dt><strong>__swig_destroy__</strong> = &lt;built-in function delete_PyApp&gt;</dl>
+
+<hr>
+Methods inherited from <a href="wx._core.html#EvtHandler">wx._core.EvtHandler</a>:<br>
+<dl><dt><a name="MyApp-AddPendingEvent"><strong>AddPendingEvent</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-AddPendingEvent">AddPendingEvent</a>(self,&nbsp;Event&nbsp;event)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-Bind"><strong>Bind</strong></a>(self, event, handler, source<font color="#909090">=None</font>, id<font color="#909090">=-1</font>, id2<font color="#909090">=-1</font>)</dt><dd><tt>Bind&nbsp;an&nbsp;event&nbsp;to&nbsp;an&nbsp;event&nbsp;handler.<br>
+&nbsp;<br>
+:param&nbsp;event:&nbsp;One&nbsp;of&nbsp;the&nbsp;EVT_*&nbsp;objects&nbsp;that&nbsp;specifies&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;of&nbsp;event&nbsp;to&nbsp;bind,<br>
+&nbsp;<br>
+:param&nbsp;handler:&nbsp;A&nbsp;callable&nbsp;object&nbsp;to&nbsp;be&nbsp;invoked&nbsp;when&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;event&nbsp;is&nbsp;delivered&nbsp;to&nbsp;self.&nbsp;&nbsp;Pass&nbsp;None&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disconnect&nbsp;an&nbsp;event&nbsp;handler.<br>
+&nbsp;<br>
+:param&nbsp;source:&nbsp;Sometimes&nbsp;the&nbsp;event&nbsp;originates&nbsp;from&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;different&nbsp;window&nbsp;than&nbsp;self,&nbsp;but&nbsp;you&nbsp;still<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;want&nbsp;to&nbsp;catch&nbsp;it&nbsp;in&nbsp;self.&nbsp;&nbsp;(For&nbsp;example,&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;button&nbsp;event&nbsp;delivered&nbsp;to&nbsp;a&nbsp;frame.)&nbsp;&nbsp;By<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;passing&nbsp;the&nbsp;source&nbsp;of&nbsp;the&nbsp;event,&nbsp;the&nbsp;event<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handling&nbsp;system&nbsp;is&nbsp;able&nbsp;to&nbsp;differentiate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;between&nbsp;the&nbsp;same&nbsp;event&nbsp;type&nbsp;from&nbsp;different<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;controls.<br>
+&nbsp;<br>
+:param&nbsp;id:&nbsp;Used&nbsp;to&nbsp;spcify&nbsp;the&nbsp;event&nbsp;source&nbsp;by&nbsp;ID&nbsp;instead<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;instance.<br>
+&nbsp;<br>
+:param&nbsp;id2:&nbsp;Used&nbsp;when&nbsp;it&nbsp;is&nbsp;desirable&nbsp;to&nbsp;bind&nbsp;a&nbsp;handler<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;a&nbsp;range&nbsp;of&nbsp;IDs,&nbsp;such&nbsp;as&nbsp;with&nbsp;EVT_MENU_RANGE.</tt></dd></dl>
+
+<dl><dt><a name="MyApp-Connect"><strong>Connect</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-Connect">Connect</a>(self,&nbsp;int&nbsp;id,&nbsp;int&nbsp;lastId,&nbsp;int&nbsp;eventType,&nbsp;PyObject&nbsp;func)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-Disconnect"><strong>Disconnect</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-Disconnect">Disconnect</a>(self,&nbsp;int&nbsp;id,&nbsp;int&nbsp;lastId=-1,&nbsp;EventType&nbsp;eventType=wxEVT_NULL,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PyObject&nbsp;func=None)&nbsp;-&gt;&nbsp;bool</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetEvtHandlerEnabled"><strong>GetEvtHandlerEnabled</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetEvtHandlerEnabled">GetEvtHandlerEnabled</a>(self)&nbsp;-&gt;&nbsp;bool</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetNextHandler"><strong>GetNextHandler</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetNextHandler">GetNextHandler</a>(self)&nbsp;-&gt;&nbsp;EvtHandler</tt></dd></dl>
+
+<dl><dt><a name="MyApp-GetPreviousHandler"><strong>GetPreviousHandler</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-GetPreviousHandler">GetPreviousHandler</a>(self)&nbsp;-&gt;&nbsp;EvtHandler</tt></dd></dl>
+
+<dl><dt><a name="MyApp-ProcessEvent"><strong>ProcessEvent</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-ProcessEvent">ProcessEvent</a>(self,&nbsp;Event&nbsp;event)&nbsp;-&gt;&nbsp;bool</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetEvtHandlerEnabled"><strong>SetEvtHandlerEnabled</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetEvtHandlerEnabled">SetEvtHandlerEnabled</a>(self,&nbsp;bool&nbsp;enabled)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetNextHandler"><strong>SetNextHandler</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetNextHandler">SetNextHandler</a>(self,&nbsp;EvtHandler&nbsp;handler)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-SetPreviousHandler"><strong>SetPreviousHandler</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-SetPreviousHandler">SetPreviousHandler</a>(self,&nbsp;EvtHandler&nbsp;handler)</tt></dd></dl>
+
+<dl><dt><a name="MyApp-Unbind"><strong>Unbind</strong></a>(self, event, source<font color="#909090">=None</font>, id<font color="#909090">=-1</font>, id2<font color="#909090">=-1</font>, handler<font color="#909090">=None</font>)</dt><dd><tt>Disconnects&nbsp;the&nbsp;event&nbsp;handler&nbsp;binding&nbsp;for&nbsp;event&nbsp;from&nbsp;self.<br>
+Returns&nbsp;True&nbsp;if&nbsp;successful.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="wx._core.html#EvtHandler">wx._core.EvtHandler</a>:<br>
+<dl><dt><strong>EvtHandlerEnabled</strong></dt>
+<dd><tt>See&nbsp;`GetEvtHandlerEnabled`&nbsp;and&nbsp;`SetEvtHandlerEnabled`</tt></dd>
+</dl>
+<dl><dt><strong>NextHandler</strong></dt>
+<dd><tt>See&nbsp;`GetNextHandler`&nbsp;and&nbsp;`SetNextHandler`</tt></dd>
+</dl>
+<dl><dt><strong>PreviousHandler</strong></dt>
+<dd><tt>See&nbsp;`GetPreviousHandler`&nbsp;and&nbsp;`SetPreviousHandler`</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="wx._core.html#Object">wx._core.Object</a>:<br>
+<dl><dt><a name="MyApp-IsSameAs"><strong>IsSameAs</strong></a>(*args, **kwargs)</dt><dd><tt><a href="#MyApp-IsSameAs">IsSameAs</a>(self,&nbsp;Object&nbsp;p)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+For&nbsp;wx.Objects&nbsp;that&nbsp;use&nbsp;C++&nbsp;reference&nbsp;counting&nbsp;internally,&nbsp;this&nbsp;method<br>
+can&nbsp;be&nbsp;used&nbsp;to&nbsp;determine&nbsp;if&nbsp;two&nbsp;objects&nbsp;are&nbsp;referencing&nbsp;the&nbsp;same&nbsp;data<br>
+object.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="wx._core.html#Object">wx._core.Object</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>
