@@ -25,7 +25,10 @@ import threading
 DAQDUR = 15
 
 class ECGLive:
-    """manages data request and processes reply packets to/from ECG module"""
+    """API for 12-Lead ECG Implementation of EMI12 ECG Module
+    Facilitates Data Acquisition(DAQ) from ECG module. It manages data request
+    and processes reply packets to/from ECG module
+    """
     def __init__(self, port='/dev/ttyUSB0', baud=230400, timeout=None, daqdur=15):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
         
@@ -591,7 +594,7 @@ class ECGLive:
             print "ECG Type: 12-lead", "Sampling Rate: 500Hz"
 
     def ecg_lead(self):
-
+        """implements the bessel filter and lead calculator module on the acquired ECG data"""
         if len(self.leadV6_temp)>1:
 
         #if len(self.leadV6_temp)==7500:
@@ -760,7 +763,7 @@ class ECGLive:
             return contact_counter
 
     def electrode_R(self):
-
+        """checks whether electrode R has contact or none"""
         if (ord(self.ecmbyte1[0]) & 2 == 2):
             print "--->>electrode R has contact"
             return True               
@@ -769,7 +772,7 @@ class ECGLive:
             return False
         
     def electrode_L(self):
-        
+        """checks whether electrode L has contact or none"""       
         if (ord(self.ecmbyte1[0]) & 4 == 4):
             print "--->>electrode L has contact"
             return True
@@ -778,7 +781,7 @@ class ECGLive:
             return False
 
     def electrode_N(self):
-
+        """checks whether electrode N has contact or none"""
         if (ord(self.ecmbyte2[0]) & 64 == 64):
             print "--->>electrode N has contact"
             return True
@@ -787,7 +790,7 @@ class ECGLive:
             return False
 
     def electrode_F(self):    
-
+        """checks whether electrode F has contact or none"""
         if (ord(self.ecmbyte1[0]) & 1 == 1):
             print "--->>electrode F has contact"
             return True
@@ -796,7 +799,7 @@ class ECGLive:
             return False
 
     def electrode_C1(self):
-
+        """checks whether electrode C1 has contact or none"""
         if (ord(self.ecmbyte2[0]) & 1 == 1):
             print "--->>electrode C1 has contact"
             return True
@@ -805,7 +808,7 @@ class ECGLive:
             return False
 
     def electrode_C2(self):
-
+        """checks whether electrode C2 has contact or none"""
         if (ord(self.ecmbyte2[0]) & 2 == 2):
             print "--->>electrode C2 has contact"
             return True
@@ -814,7 +817,7 @@ class ECGLive:
             return False
 
     def electrode_C3(self):
-
+        """checks whether electrode C3 has contact or none"""
         if (ord(self.ecmbyte2[0]) & 4 == 4):
             print "--->>electrode C3 has contact"
             return True
@@ -823,7 +826,7 @@ class ECGLive:
             return False
 
     def electrode_C4(self):
-
+        """checks whether electrode C4 has contact or none"""
         if (ord(self.ecmbyte2[0]) & 8 == 8):
             print "--->>electrode C4 has contact"
             return True
@@ -832,6 +835,7 @@ class ECGLive:
             return False
 
     def electrode_C5(self):
+        """checks whether electrode C5 has contact or none"""		
         if (ord(self.ecmbyte2[0]) & 16 == 16):
             print "--->>electrode C5 has contact"
             return True
@@ -840,6 +844,7 @@ class ECGLive:
             return False
 
     def electrode_C6(self):
+        """checks whether electrode C6 has contact or none"""		
         if (ord(self.ecmbyte2[0]) & 32 == 32):
             print "--->>electrode C6 has contact"
             return True
@@ -1064,7 +1069,7 @@ class ECGLive:
         return list
         
 class ECGThread:
-    #threading
+    """Threaded ECG data acquisition"""
     def __init__(self, parent, port='/dev/ttyUSB0', daqdur=DAQDUR):
         """DataGather Init"""
         self.parent = parent
@@ -1074,7 +1079,7 @@ class ECGThread:
         self.leadII = []
         
     def ECG_Connect(self):
-        """Connect ECG"""
+        """Connect ECG using defined ports and duration"""
         self.ECG = ECGLive(port=self.port, daqdur=self.daqdur)
         self.ECG.stop()
         self.ECG = ECGLive(port=self.port, daqdur=self.daqdur)
@@ -1142,6 +1147,7 @@ class ECGThread:
         self.ECG.stop()
         
     def statECG(self, parent):
+        """conducts ECM checks"""
         try:
             
             if self.ECG.nodeR:
