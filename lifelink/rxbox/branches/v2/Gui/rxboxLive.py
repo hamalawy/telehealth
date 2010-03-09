@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Project LifeLink: RxBox Software (Live and Simulator)
 
 Authors:    Chiong, Charles Hernan
@@ -210,7 +211,6 @@ class RxFrame2(RxFrame):
             self.ReferPanel.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.sendMessage)        
             
         self.Layout()        
-        #self.DAQPanel.bpdata.update_bp_display()
 
 
         if self.DAQPanel.config.getint('voip', 'simulated') == 0:
@@ -553,7 +553,8 @@ class DAQPanel2(DAQPanel):
         self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
         self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
         self.Bind(wx.EVT_TIMER, self.onECGNodeCheck, self.timerECGNodeCheck)
-        self.Bind(wx.EVT_TIMER, self.get_bpcyclic, self.timer_bpcyclic)        
+        self.Bind(wx.EVT_TIMER, self.get_bpcyclic, self.timer_bpcyclic)
+        
     def init_config(self):
         """Initializes configuration file for Rxbox"""
 
@@ -856,7 +857,6 @@ class DAQPanel2(DAQPanel):
         print 'Acquiring BP data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring BP data')
                
-        
     def make_edf(self, evt):
         """Creates 15 second chunks of edf data"""
         self.Endtime = datetime.datetime.today()
@@ -1034,6 +1034,8 @@ class DAQPanel2(DAQPanel):
            Calls the CreatePatientRecord Dialog if if Patient Information is not yet finalized.
            Calls the sendEmail and SendStatus methods. 
         """
+
+        self.timerECG_refresh.Stop()
         self.on_send = 1
         self.sendcount += 1
         print 'SENDING'
@@ -1067,6 +1069,7 @@ class DAQPanel2(DAQPanel):
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Send to Server Successful')
             dlg = wx.MessageDialog(self, "Send to Server Successful", "Send to Server Successful", wx.OK | wx.ICON_QUESTION)
             dlg.ShowModal()
+            self.timerECG_refresh.Start(250) 
     
     def SendStatus(self, event):
         """Shows the status of email sending using a dialog box
