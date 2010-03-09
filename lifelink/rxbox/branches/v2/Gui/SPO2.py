@@ -46,10 +46,14 @@ class SPO2:
         self.SerPort.write(request)
 
     def reset(self):
+        """reset serial port input buffer"""
         self.SerPort.flushInput()
         self.SerPort.flushOutput()
 
     def byte_destuff(self,data):
+        """Extracts SPO2 and BPM reading from packet 'data'. Data are stored
+        in an instance attribute
+		"""
         destuffed = []
         for i in range(len(data)):
             if data[i] == 0xa9 and data[i+1] == 0x88:
@@ -101,6 +105,10 @@ class SPO2:
             print self.status
 
     def parse_packet(self,packet):
+        """Checks if packet is not empty and the signal quality is < 100.
+        Corresponding packet numbers for spo2 and bpm are retrieved and 
+        appended to self.current_spo2 and self.current_bpm respectively
+        """
         if packet == []:
             pass
         elif packet[0] == 127:
@@ -116,6 +124,9 @@ class SPO2:
                 
             
     def OpenSerial(self):
+        """Method will try to open a serial port for communication if possible.
+        If not, error is printed in the python shell
+        """
         try:
             self.SerPort = serial.Serial(port=self.SerialPort,
                                 baudrate=self.SerialBaudRate,
@@ -126,6 +137,7 @@ class SPO2:
             print "Please check serial port settings or the device."
 
     def CloseSerial(self):
+        """Method closes an open serial port instance"""
         self.SerPort.close()
 
     def get_reply(self):
