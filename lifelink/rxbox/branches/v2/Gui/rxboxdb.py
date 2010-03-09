@@ -8,6 +8,7 @@ Author:     Thomas Rodinel Soler
             January 2010
 """
 
+import ConfigParser
 
 from MySQLdb import connect
 
@@ -16,13 +17,16 @@ class rxboxDB:
 
 
 	def __init__(self):
-		pass
+        
+        self.config = ConfigParser.ConfigParser()
+        self.config.read('rxbox.cfg')
 		
 	def dbconnect(self):
 		"""connects to the database and activate a cursor"""
+        
 		self.conn = connect(host = "localhost",
 								user = "root",
-								passwd = "irc311",
+								passwd = self.config.get('database', 'password'),
 								db = "mysql")
 		self.cursor = self.conn.cursor()
 		self.cursor.execute("create database if not exists rxboxdb")

@@ -35,6 +35,7 @@ class ConfigMain(MyApp):
         self.config = ConfigParser.ConfigParser()       
         self.createTriageConfig()
         self.createSensorsConfig()
+        self.createDatabaseConfig()
         self.createEDFConfig()
         
         configfile = open('../rxbox.cfg', 'w')
@@ -288,6 +289,11 @@ class ConfigMain(MyApp):
         self.config.set('edf', 'hr_prefiltering', hr_prefiltering)
         self.config.set('edf', 'spo2_samples', spo2_samples)
         self.config.set('edf', 'hr_samples', hr_samples)
+
+    def createDatabaseConfig(self):
+        
+        self.config.add_section('database')
+        self.config.set('database', 'password', self.database_pass_val.GetValue())
 
     def onLoad(self, event):
         """Method for loading and displaying the contents of configuration file"""
