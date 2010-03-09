@@ -1,4 +1,18 @@
 # -*- coding: cp1252 -*-
+"""
+RxBox ECG Digital Filters Module: contains the different digital filtering 
+design tested and created to suppress the 50-60Hz powerline interference
+noise and the electromyography(EMG) noise. Each module accepts a list of 
+integers (ECGdata) and returns a list of filtered signals.
+
+Authors: Dan Simone M. Cornillez
+		 Luis Sison, PhD
+         ------------------------------------------------
+         Instrumentation, Robotics and Control Laboratory
+         University of the Philippines - Diliman
+         ------------------------------------------------
+         October 2009	
+"""
 from scipy import fft
 from scipy import ifft
 from scipy.signal import butter
