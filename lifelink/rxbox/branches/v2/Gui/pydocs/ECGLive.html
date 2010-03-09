@@ -49,7 +49,9 @@ Authors:&nbsp;&nbsp;&nbsp;&nbsp;Julius&nbsp;Miguel&nbsp;J.&nbsp;Broma<br>
 <font color="#000000" face="helvetica, arial"><a name="ECGLive">class <strong>ECGLive</strong></a></font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>manages&nbsp;data&nbsp;request&nbsp;and&nbsp;processes&nbsp;reply&nbsp;packets&nbsp;to/from&nbsp;ECG&nbsp;module<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>API&nbsp;for&nbsp;12-Lead&nbsp;ECG&nbsp;Implementation&nbsp;of&nbsp;EMI12&nbsp;ECG&nbsp;Module<br>
+Facilitates&nbsp;Data&nbsp;Acquisition(DAQ)&nbsp;from&nbsp;ECG&nbsp;module.&nbsp;It&nbsp;manages&nbsp;data&nbsp;request<br>
+and&nbsp;processes&nbsp;reply&nbsp;packets&nbsp;to/from&nbsp;ECG&nbsp;module<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="ECGLive-Init_ECG"><strong>Init_ECG</strong></a>(self)</dt></dl>
@@ -93,30 +95,30 @@ True&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;Device&nbsp;is&nbsp;Ready&nbsp;=&
 &nbsp;<br>
 False&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;Device&nbsp;Not&nbsp;Ready&nbsp;=&nbsp;failed&nbsp;to&nbsp;pass&nbsp;the&nbsp;series&nbsp;of&nbsp;tests</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-ecg_lead"><strong>ecg_lead</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-ecg_lead"><strong>ecg_lead</strong></a>(self)</dt><dd><tt>implements&nbsp;the&nbsp;bessel&nbsp;filter&nbsp;and&nbsp;lead&nbsp;calculator&nbsp;module&nbsp;on&nbsp;the&nbsp;acquired&nbsp;ECG&nbsp;data</tt></dd></dl>
 
 <dl><dt><a name="ECGLive-ecgreply"><strong>ecgreply</strong></a>(self)</dt><dd><tt>Wait&nbsp;for&nbsp;complete&nbsp;reply&nbsp;packet&nbsp;from&nbsp;ECG&nbsp;module;&nbsp;return&nbsp;a&nbsp;string&nbsp;called&nbsp;packet<br>
 Usage:&nbsp;packet&nbsp;=&nbsp;ECG().<a href="#ECGLive-ecgreply">ecgreply</a>()</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_C1"><strong>electrode_C1</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_C1"><strong>electrode_C1</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;C1&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_C2"><strong>electrode_C2</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_C2"><strong>electrode_C2</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;C2&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_C3"><strong>electrode_C3</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_C3"><strong>electrode_C3</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;C3&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_C4"><strong>electrode_C4</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_C4"><strong>electrode_C4</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;C4&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_C5"><strong>electrode_C5</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_C5"><strong>electrode_C5</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;C5&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_C6"><strong>electrode_C6</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_C6"><strong>electrode_C6</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;C6&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_F"><strong>electrode_F</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_F"><strong>electrode_F</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;F&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_L"><strong>electrode_L</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_L"><strong>electrode_L</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;L&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_N"><strong>electrode_N</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_N"><strong>electrode_N</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;N&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
-<dl><dt><a name="ECGLive-electrode_R"><strong>electrode_R</strong></a>(self)</dt></dl>
+<dl><dt><a name="ECGLive-electrode_R"><strong>electrode_R</strong></a>(self)</dt><dd><tt>checks&nbsp;whether&nbsp;electrode&nbsp;R&nbsp;has&nbsp;contact&nbsp;or&nbsp;none</tt></dd></dl>
 
 <dl><dt><a name="ECGLive-electrode_check"><strong>electrode_check</strong></a>(self)</dt><dd><tt>checks&nbsp;the&nbsp;whether&nbsp;the&nbsp;electrodes&nbsp;L,&nbsp;R,&nbsp;F,&nbsp;and&nbsp;N&nbsp;has&nbsp;contact<br>
 &nbsp;<br>
@@ -200,9 +202,11 @@ Accept&nbsp;a&nbsp;char&nbsp;string&nbsp;called&nbsp;byte</tt></dd></dl>
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="ECGThread">class <strong>ECGThread</strong></a></font></td></tr>
     
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Threaded&nbsp;ECG&nbsp;data&nbsp;acquisition<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="ECGThread-ECG_Connect"><strong>ECG_Connect</strong></a>(self)</dt><dd><tt>Connect&nbsp;ECG</tt></dd></dl>
+<dl><dt><a name="ECGThread-ECG_Connect"><strong>ECG_Connect</strong></a>(self)</dt><dd><tt>Connect&nbsp;ECG&nbsp;using&nbsp;defined&nbsp;ports&nbsp;and&nbsp;duration</tt></dd></dl>
 
 <dl><dt><a name="ECGThread-Get_ECG"><strong>Get_ECG</strong></a>(self)</dt><dd><tt>Obtain&nbsp;ECG&nbsp;data&nbsp;for&nbsp;threading</tt></dd></dl>
 
@@ -212,7 +216,7 @@ Accept&nbsp;a&nbsp;char&nbsp;string&nbsp;called&nbsp;byte</tt></dd></dl>
 
 <dl><dt><a name="ECGThread-__init__"><strong>__init__</strong></a>(self, parent, port<font color="#909090">='/dev/ttyUSB0'</font>, daqdur<font color="#909090">=15</font>)</dt><dd><tt>DataGather&nbsp;Init</tt></dd></dl>
 
-<dl><dt><a name="ECGThread-statECG"><strong>statECG</strong></a>(self, parent)</dt></dl>
+<dl><dt><a name="ECGThread-statECG"><strong>statECG</strong></a>(self, parent)</dt><dd><tt>conducts&nbsp;ECM&nbsp;checks</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
