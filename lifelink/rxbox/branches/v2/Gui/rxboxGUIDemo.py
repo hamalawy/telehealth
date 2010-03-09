@@ -981,6 +981,9 @@ class DAQPanel2(DAQPanel):
            Calls the CreatePatientRecord Dialog if if Patient Information is not yet finalized.
            Calls the sendEmail and SendStatus methods. 
         """
+        
+        self.timerECG_refresh.Stop()
+        
         self.on_send = 1
         self.sendcount += 1
         print 'SENDING'
