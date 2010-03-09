@@ -13,20 +13,20 @@ from MySQLdb import connect
 
 
 class rxboxDB:
-    """
-    Class that creates the local rxbox database and the three tables
-    namely: sessions, biosignals and patients. Includes methods for data
-    storage and update to the database
-    """
-    
-    def __init__(self):
-        
-        self.config = ConfigParser.ConfigParser()
-        self.config.read('rxbox.cfg')
-        
+	"""
+	Class that creates the local rxbox database and the three tables
+	namely: sessions, biosignals and patients. Includes methods for data
+	storage and update to the database
+	"""
+	
+	def __init__(self):
+		self.config = ConfigParser.ConfigParser()
+		self.config.read('rxbox.cfg')
+		
+		
 	def dbconnect(self):
 		"""connects to the database and activate a cursor"""
-        
+
 		self.conn = connect(host = "localhost",
 								user = "root",
 								passwd = self.config.get('database', 'password'),
@@ -34,8 +34,7 @@ class rxboxDB:
 		self.cursor = self.conn.cursor()
 		self.cursor.execute("create database if not exists rxboxdb")
 		self.cursor.execute("use rxboxdb") 
-
-	
+		
 	def dbcreatetables(self):
 		"""creates session, patient and biomed information tables in the database"""
 		# creates session information table (if does not exist) and uses it.
