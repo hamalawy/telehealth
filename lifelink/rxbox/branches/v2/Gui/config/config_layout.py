@@ -1,15 +1,41 @@
+"""Config Layout for Rxbox
+
+Initializes the layout and GUI Elements for Configuration Generator
+
+Classes: MyApp
+
+Author: RxBox Development Team
+        IRC, EEEI, UP Diliman
+
+"""
+
 import wx
 from wx import xrc
 
 class MyApp(wx.App):
+    """Main class for application
+    
+    - Initializes OnInit() on start-up
+    
+    Methods:
+    OnInit
+    init_frame
+    """
 
     def OnInit(self):
         """Instantiates the xml file"""
+        
         self.res = xrc.XmlResource('layout.xrc')
         self.init_frame()
         return True
 
     def init_frame(self):
+        """Creates GUI elements
+        
+        - Binds necessary methods for checkbox and combobox
+        
+        """
+        
         self.frame = self.res.LoadFrame(None, 'frame_1')
         self.smtp_val = xrc.XRCCTRL(self.frame, 'smtp_val')
         self.smtp_user_val = xrc.XRCCTRL(self.frame, 'smtp_user_val')
