@@ -9,18 +9,21 @@ Author:     Thomas Rodinel Soler
 """
 
 import ConfigParser
-
 from MySQLdb import connect
 
 
 class rxboxDB:
-
-
-	def __init__(self):
+    """
+    Class that creates the local rxbox database and the three tables
+    namely: sessions, biosignals and patients. Includes methods for data
+    storage and update to the database
+    """
+    
+    def __init__(self):
         
         self.config = ConfigParser.ConfigParser()
         self.config.read('rxbox.cfg')
-		
+        
 	def dbconnect(self):
 		"""connects to the database and activate a cursor"""
         
