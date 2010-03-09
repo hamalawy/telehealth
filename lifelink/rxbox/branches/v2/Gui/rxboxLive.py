@@ -239,12 +239,12 @@ class RxFrame2(RxFrame):
         print 'ReferPanel initialized'
 
     def init_simvideo(self, event):
-
+        """Starts mplayer"""
         self.timer_video_start.Stop()
         self.mplayer.start()
         
     def init_video(self):
-        
+        """Links the video demo to mplayer for playing"""
         self.simvideo_run = 1
         wid = self.ReferPanel.video_panel.GetHandle()
         self.command = 'mplayer -wid ' + str(wid) + ' simulators/video/water-and-wind.ogv'
@@ -252,6 +252,7 @@ class RxFrame2(RxFrame):
 
         
     def terminate_video(self):
+        """Terminates simulated video"""
         self.simvideo_run = 0
         self.pid = self.mplayer.pid + 2
         cmd = 'kill -15 ' + str(self.pid)
@@ -271,7 +272,7 @@ class RxFrame2(RxFrame):
         self.ReferPanel.IMreply_Text.Clear()
         
     def get_time(self):
-        
+        """Get current date and time"""
         time = datetime.datetime.today()
         time = time.strftime("%H:%M:%S")
         return str(time)
@@ -460,7 +461,10 @@ class DAQPanel2(DAQPanel):
         init_daqtimers           birthday_update
         init_config              make_edf
         init_ecglive             on12Lead
-        init_simsensors          onBPNow
+        init_simsensors_ecg      init_livebp
+        init_simsensors_bp       init_liveecg   
+        init_simsensors_spo2     init_livespo2
+        get_bp                   get_bpcyclic
         onStartStop              onCall
         SaveQuery                onECGNodeCheck
         ClearPatient             onSend
@@ -468,6 +472,7 @@ class DAQPanel2(DAQPanel):
         EnablePatient            acquirespo2
         pressure_update          sendEmail
         show_email_success       startSaveThread 
+        onBPNow                  updateBPDisplay 
     """
     def __init__(self, parent, *args, **kwds):
         """Initializes DAQPanel2 GUI, timers
@@ -508,7 +513,7 @@ class DAQPanel2(DAQPanel):
             
         else:
             print 'Simulated ECG'
-            self.init_simsensors()
+            self.init_simsensors_ecg()
             if self.config.get('ecg', 'sim_type') != 'Normal':
                 self.ecgdata.ecg_list = self.ecgdata.get_plot()
         #ECG INIT END
@@ -565,8 +570,8 @@ class DAQPanel2(DAQPanel):
         self.plotind = 0
         self.ECGplotcounter = 0
         
-    def init_simsensors(self):
-        """Initializes simsensors"""
+    def init_simsensors_ecg(self):
+        """Initializes ecg simsensor"""
         
         self.Biosignals = []
         self.getlead = ECG().ecg_lead()
@@ -579,16 +584,15 @@ class DAQPanel2(DAQPanel):
         self.ECGDAQ = ECGLive.ECGThread(self, port='/dev/ttyUSB0')
         
     def init_livespo2(self):
-		""" Initialize live spo2 """
+        """ Initialize live spo2 """
         self.spo2data=SPO2(self,port='/dev/ttyUSB1')
-        
-        
+
     def init_simsensors_spo2(self):
         """Initializes spo2 simsensor"""
         self.spo2data = simsensors.Spo2sim(self)
         
     def init_livebp(self):
-		""" Initialize live BP """
+        """ Initialize live BP """
         self.bp=BP(self,port='/dev/ttyUSB0')
         
         
@@ -893,9 +897,11 @@ class DAQPanel2(DAQPanel):
         self.spo2data.spo2_list = []
         self.spo2data.bpm_list = []
 
-        
+
         
         if self.config.get('bp', 'simulated') == '0':
+            print self.bp.sys_list
+            print self.bp.dias_list
             if (self.bp.sys_list != 0):
                 Biosignal_pSys = BioSignal('bpsystole', 'NIBP2010', 'mmHg', \
                                         0, 300, 0, 300, 'None', 15,self.bp.sys_list)
@@ -910,6 +916,8 @@ class DAQPanel2(DAQPanel):
                 nDataRecord = 5
         else:
             if (self.bpdata.sys_list != 0):
+                print self.bpdata.sys_list
+                print self.bpdata.dias_list
                 Biosignal_pSys = BioSignal('bpsystole', 'NIBP2010', 'mmHg', \
                                         0, 300, 0, 300, 'None', 15,self.bpdata.sys_list)
             
@@ -1099,14 +1107,17 @@ class DAQPanel2(DAQPanel):
         else:
             self.bpdata.get()
     def get_bpcyclic(self,event):
-		"""
-		Get cyclic BP reading using interval setting from 
-		"""
-		print "get bp cyclic"
-		self.get_bp()    
+        """
+        Get live cyclic BP reading using interval setting from BP combo box
+        Makes use of get_bp() method
+        """
+        print "get bp cyclic"
+        self.get_bp()
+            
     def get_bp(self):
-		"""
-		"""
+        """
+        Acquire live one-shot BP reading
+        """
         print "get bp"
         self.bp_pressure_indicator.Enable(True)
         self.bpNow_Button.Enable(False)#disable the bp acquire button until the bp reaidng is finished
@@ -1115,15 +1126,20 @@ class DAQPanel2(DAQPanel):
         self.count=1
     
     def bp_status_check(self):
+        """Runs the power-on self test (POST) and the device ready checks of BP"""
         self.bp.POST()
         self.bp.device_ready()
         self.bp_infolabel.SetLabel(self.bp.device_message)
         
     def updateBPDisplay(self, data):
+	"""Updates the BP reading in the display panel"""
         self.bpvalue_label.SetLabel(data) 
         
     def pressure_update(self,event):
-        """Method that handles the inflating bar of blood pressure"""
+        """Method that handles the inflating bar of blood pressure
+        If BP is cyclic, checks the BP combo box and starts BP timer
+        If BP is not cyclic, gets one-shot BP reading
+        """
         if self.config.get('bp', 'simulated') == '0':
 			#updates only for live, 200ms interval
 			press = self.bp.get_reply()
@@ -1341,6 +1357,8 @@ class CreateRecordDialog2(CreateRecordDialog):
                 self.RxFrame.DAQPanel.timerSend.Start(5000)
             
     def check_patient_valid(self, firstname, middlename, lastname, gender, age, birth, validity, topic, reason):
+        """Checks if the required fields in the create patient record are filled-up
+        """
         if ((firstname == '')|(middlename == '')|(lastname == '')|(gender == '')|(age == '')|(birth == '')|(validity == '')|(topic == '')|(reason == '')):
             return 0
         else:

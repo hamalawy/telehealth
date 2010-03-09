@@ -204,7 +204,7 @@ class BpSim:
         self.bpsim_counter += 1
         
         if self.parent_panel.bp_isCyclic == 1:
-            self.parent_panel.timer_bp.Start(self.reload_bp)
+            self.parent_panel.timer_bpdemo.Start(self.reload_bp)
 
         if (self.bpsim_counter % 15) == 0:
             self.bpsim_counter = 0
