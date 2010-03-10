@@ -1,6 +1,8 @@
 import wx
 from wx import xrc
 
+login = {'Rxbox':'Engine', 'Telehealth':'Telemed', 'Root':'Root'}
+
 class LoginState:
     def __init__(self,engine):
         """State init"""
@@ -21,19 +23,21 @@ class LoginState:
         self.frameOn = True
         
     def stop(self):
+        """Stop state"""
         if self.frameOn:
             self._app.frame.Destroy()
         print 'Login State Stopped'
         
     def LoginButtonPressed(self,evt):
+        """Login Button Event Handler"""
         print 'Login Button Pressed'
         userInput = self.username.GetValue()
         passInput = self.password.GetValue()
-        if userInput == "Rxbox" and passInput == "Engine":
+        if login.has_key(userInput) and login[userInput] == passInput:
             self._engine.change_state(MainState(self._engine))
         else:
-            self.status.SetLabel("Invalid username and password")
             self.password.SetValue("")
+            self.status.SetLabel("Invalid username and password")
             print 'Invalid username and password'
         
 class MainState:
