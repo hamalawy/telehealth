@@ -391,6 +391,7 @@ class ConfigMain(MyApp):
 
         self.config_load = ConfigParser.ConfigParser()
         self.config_load.read('../rxbox.cfg')
+        self.database_pass_val.SetValue(self.config_load.get('database', 'password'))
 
         if self.config_load.get('email', 'simulated') == '0':
             self.email_simulated = 0
@@ -444,6 +445,7 @@ class ConfigMain(MyApp):
             self.ecg_sim.SetValue(True)
             self.ecg_com_value.Disable()
             self.ecg_lead_value.Disable()
+            self.ecg_baud_value.Disable()
             self.ecg_sim_type_val.SetValue(self.config_load.get('ecg', 'sim_type'))
             self.ecg_sim_type_val.Enable()
             
@@ -473,7 +475,9 @@ class ConfigMain(MyApp):
             self.heartrate_sim_type_val.SetValue(self.config_load.get('spo2', 'hr_sim_type'))
             self.heartrate_sim_type_val.Enable()
             self.spo2_sim_type_val.Enable()
-            self.spo2_com_value.Disable()        
+            self.spo2_com_value.Disable()       
+            
+
     
     def onAbout(self, event):
         """Method that shows an "About" box"""
