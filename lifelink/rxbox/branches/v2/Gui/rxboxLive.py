@@ -263,11 +263,15 @@ class RxFrame2(RxFrame):
     def onMsgRcvd(self, conn, msg):
         """Shows message received in the IM panel"""
         time = self.get_time()
+        msgrcvd = 'DE1: ' + msg.getBody()
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'IM', '', msgrcvd)
         self.ReferPanel.IMtexts_Text.AppendText('('+time+')\n'+'DE1: ' + msg.getBody() + '\n')
        
     def onMsgSent(self, msg):
         """Shows message sent in the IM panel"""
         time = self.get_time()
+        msgsent = 'RXBOX: ' + msg
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'IM', '', msgsent)
         self.ReferPanel.IMtexts_Text.AppendText('('+time+')\n'+'RXBOX: ' + msg + '\n')
         self.ReferPanel.IMreply_Text.Clear()
         
@@ -304,6 +308,10 @@ class RxFrame2(RxFrame):
 
         time = self.get_time()
         prev = self.ReferPanel.IMreply_Text.GetValue()
+        imupdate = "RxBox: "+ prev
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'IM', '', imupdate)
+        imupdate = "DE : "+ prev
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'IM', '', imupdate)
         self.ReferPanel.IMtexts_Text.AppendText('(' + time + ')' + '\nRxBox: ' + prev + '\nDE: ' + prev + '\n')
         self.ReferPanel.IMreply_Text.Clear() 
         
@@ -337,6 +345,7 @@ class RxFrame2(RxFrame):
            Disabled when the oldest image captured is displayed.
         """
         self.RxFrame_StatusBar.SetStatusText("Snapshot previous button toggled...")
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'status message', '', 'Snapshot previous button toggled...')
         print "Snapshot previous button toggled..."
         self.imgcurrent = self.imgcurrent - 1
         #resize image
@@ -356,6 +365,7 @@ class RxFrame2(RxFrame):
            Disabled when the latest image is displayed.
         """
         self.RxFrame_StatusBar.SetStatusText("Snapshot next button toggled...")
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'status message', '', 'Snapshot next button toggled...')
         print "Snapshot next button toggled..."
         if self.imgcurrent < self.imgcount:
             self.imgcurrent = self.imgcurrent + 1
@@ -374,6 +384,7 @@ class RxFrame2(RxFrame):
         """Captures an image.
         """
         self.RxFrame_StatusBar.SetStatusText("Snapshot main button toggled...")
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'status message', '', 'Snapshot main button toggled...')
         print "Snapshot main button toggled..."
         self.imgcount = self.imgcount + 1
         self.imgcurrent = self.imgcount
@@ -407,6 +418,7 @@ class RxFrame2(RxFrame):
            Disables the stethoscope play button.
         """
         print "Steth Recording... "
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'status message', '', 'Snapshot next button toggled...')
         self.RxFrame_StatusBar.SetStatusText("Steth Sound Recording...")
         self.stop_button.Enable(True)
         self.play_button.Enable(False)
@@ -418,6 +430,7 @@ class RxFrame2(RxFrame):
            Disables the stethoscope record button.
         """    
         print "Steth Sound Playing... "
+        self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'status message', '', 'Steth Sound Playing...')
         self.RxFrame_StatusBar.SetStatusText("Steth Sound Playing...")
         self.stop_button.Enable(True)
         self.record_button.Enable(False)
@@ -445,8 +458,10 @@ class RxFrame2(RxFrame):
 
         if self.steth_status == 'Record':
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Record...")
+            self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'status message', '', 'Stopping Steth Record...')
         elif self.steth_status == 'Play':
             self.RxFrame_StatusBar.SetStatusText("Stopping Steth Play...")
+            self.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.DAQPanel.dbuuid, 'status message', '', 'Snapshot next button toggled...')
             self.playwav.stop()    
             self.playwav.join()    
         self.steth_status = 'Stop'
@@ -492,6 +507,7 @@ class DAQPanel2(DAQPanel):
         self.init_ecglive()
         self.init_daqtimers()
         self.init_config()
+
         if self.config.get('spo2', 'simulated') == '0':
             self.init_livespo2()
         else:
@@ -535,7 +551,14 @@ class DAQPanel2(DAQPanel):
         self.pressure_timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.bp_pressure_indicator.Enable(False)
-        
+        self.dbuuid = ""
+        self.dbuuid = str(uuid.uuid1())
+        print "uuid = ", self.dbuuid
+        self.rxboxDB.dbinsert('sessions', 'uuid', self.dbuuid)
+        #set start time in table: sessioninfo
+        dbstart = str(datetime.datetime.today())
+        self.rxboxDB.dbupdate('sessions', 'starttime', dbstart, 'uuid', self.dbuuid)
+        self.rxboxinitialized = 1
     def init_daqtimers(self):
         """Initializes timers for DAQ Panel of RxBox"""
         
@@ -622,13 +645,18 @@ class DAQPanel2(DAQPanel):
         self.EnablePatient()
         if self.StartStop_Label.GetLabel() == "Start":
             #creates universally unique identifier and add it to database as primary key
-            self.dbuuid = ""
-            self.dbuuid = str(uuid.uuid1())
-            print "uuid = ", self.dbuuid
-            self.rxboxDB.dbinsert('sessions', 'uuid', self.dbuuid)
-            #set start time in table: sessioninfo
-            dbstart = str(datetime.datetime.today())
-            self.rxboxDB.dbupdate('sessions', 'starttime', dbstart, 'uuid', self.dbuuid)
+
+            if self.rxboxinitialized == 0:
+                self.dbuuid = ""
+                self.dbuuid = str(uuid.uuid1())
+                print "uuid = ", self.dbuuid
+                self.rxboxDB.dbinsert('sessions', 'uuid', self.dbuuid)
+                dbstart = str(datetime.datetime.today())
+                self.rxboxDB.dbupdate('sessions', 'starttime', dbstart, 'uuid', self.dbuuid)
+            elif self.rxboxinitialized == 1:
+                print "revert back to zero"
+                self.rxboxinitialized = 0
+            
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'BP Ready')
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Pulse Ox Ready')
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Pulse Ox Ready')       
