@@ -63,7 +63,7 @@ class ConfigMain(MyApp):
         self.createTriageConfig()
         self.createSensorsConfig()
         self.createDatabaseConfig()
-        self.createEDFConfig()
+        #self.createEDFConfig()
         
         configfile = open('../rxbox.cfg', 'w')
         self.config.write(configfile)
