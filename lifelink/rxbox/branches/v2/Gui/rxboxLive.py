@@ -253,12 +253,14 @@ class RxFrame2(RxFrame):
         
     def terminate_video(self):
         """Terminates simulated video"""
+
         self.simvideo_run = 0
         self.pid = self.mplayer.pid + 2
         cmd = 'kill -15 ' + str(self.pid)
         print cmd
         os.system('kill -15 ' + str(self.pid))
         print 'VIDEO TERMINATED'
+
 
     def onMsgRcvd(self, conn, msg):
         """Shows message received in the IM panel"""
@@ -320,23 +322,29 @@ class RxFrame2(RxFrame):
         
         print 'Destroying Refer Panel'
         self.DAQPanel.refer_panel_shown = 0
-        self.DAQPanel.timerECG_refresh.Start(125)
+#        self.DAQPanel.timerECG_refresh.Start(125)
         
         try:
             self.l.stop()
             self.l.join()
-            self.terminate_video()
+            
 
             self.m.stop()
             self.m.join()
 
         except AttributeError:
             pass
+            
+        try:
+            self.terminate_video()
+            self.mplayer.join()
+        except:
+            pass
         
 #        self.simvideo_run = 0
         self.ReferPanel.Destroy()
-        self.terminate_video()
-        self.mplayer.join()
+#        self.terminate_video()
+        
         self.Layout()
             
     def onPrevSnapshot(self, event): # wxGlade: RxFrame.<event_handler>
