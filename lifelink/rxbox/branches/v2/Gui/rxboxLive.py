@@ -1097,7 +1097,7 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Sending Data to Server...')
 
-        if self.sendcount == 2:
+        if self.sendcount >= 2:
             
             self.timerSend.Stop()
             
