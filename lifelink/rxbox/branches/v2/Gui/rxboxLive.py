@@ -543,8 +543,8 @@ class DAQPanel2(DAQPanel):
                 self.ecgdata.ecg_list = self.ecgdata.get_plot()
         #ECG INIT END
         
-        self.patient1 = edf.Patient('1', 'Timothy', 'Cena', 'Ebido', 'Servan', \
-                                    'Male', '09.27.89', '19')
+        self.patient1 = edf.Patient('1', '', '', '', '', \
+                                    '', '', 0)
                                     
         self.rxboxDB.dbconnect()
         self.rxboxDB.dbcreatetables()                            
@@ -866,20 +866,20 @@ class DAQPanel2(DAQPanel):
                 
     def birthday_update(self, evt):
         """Automatically updates the age of patient and the corresponding birth year"""
-        year_temp = self.RxFrame.BirthYear.GetValue()
-        month_temp = self.RxFrame.BirthMonth.GetSelection()
-        day_temp = self.RxFrame.BirthDayCombo.GetSelection()
+        self.year_temp = self.RxFrame.BirthYear.GetValue()
+        self.month_temp = self.RxFrame.BirthMonth.GetSelection()
+        self.day_temp = self.RxFrame.BirthDayCombo.GetSelection()
 
         age = 0
         
-        if len(year_temp) == 4:
+        if len(self.year_temp) == 4:
             date = datetime.datetime.today()
             year_now = date.year
-            age = int(year_now) - int(year_temp)
-            if int(date.month) < int(month_temp):
+            age = int(year_now) - int(self.year_temp)
+            if int(date.month) < int(self.month_temp):
                 age = age - 1
-            if int(date.month) == int(month_temp):
-                if int(date.day) < int(day_temp) + 1:
+            if int(date.month) == int(self.month_temp):
+                if int(date.day) < int(self.day_temp) + 1:
                     age = age - 1
             self.RxFrame.AgeValue.SetValue(str(age))
             self.RxFrame.AgeCombo.SetValue('Years')
@@ -898,6 +898,18 @@ class DAQPanel2(DAQPanel):
                
     def make_edf(self, evt):
         """Creates 15 second chunks of edf data"""
+        
+
+        
+        if self.RxFrame.DAQPanel.with_patient_info == 1:
+        
+            self.year_temp = self.RxFrame.BirthYear.GetValue()
+            self.month_temp = str(self.RxFrame.BirthMonth.GetSelection()+1)
+            self.day_temp = str(self.RxFrame.BirthDayCombo.GetSelection()+1)
+            self.bday = self.month_temp + '.' + self.day_temp + '.' + self.year_temp[-2:]
+            
+            self.patient1 = edf.Patient('1', str(self.RxFrame.FirstNameValue.GetValue()), str(self.RxFrame.MiddleNameValue.GetValue()), str(self.RxFrame.LastNameValue.GetValue()), '', str(self.RxFrame.GenderCombo.GetValue()), str(self.bday), 20)
+                            
         self.Endtime = datetime.datetime.today()
         self.Starttime = self.Endtime + datetime.timedelta(seconds= -15)
         self.strDate = self.Starttime.strftime("%d.%m.%y")
@@ -936,8 +948,6 @@ class DAQPanel2(DAQPanel):
         self.spo2data.spo2_list = []
         self.spo2data.bpm_list = []
 
-
-        
         if self.config.get('bp', 'simulated') == '0':
             print self.bp.sys_list
             print self.bp.dias_list
