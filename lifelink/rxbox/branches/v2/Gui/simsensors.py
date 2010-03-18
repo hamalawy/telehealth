@@ -81,8 +81,8 @@ class Spo2sim:
         self.parent_panel.heartrate_infolabel.SetLabel('Acquiring pulse rate')
         self.parent_panel.spo2_infolabel.SetLabel('Acquiring Spo2')
 
-        self.hr_value = self.spo2_read.ReadLine(self.spo2file)
-        self.spo2_value = self.spo2_read.ReadLine(self.hrfile)
+        self.hr_value = self.spo2_read.ReadLine(self.hrfile)
+        self.spo2_value = self.spo2_read.ReadLine(self.spo2file)
         
         if self.hr_value == '':
             self.instantiate_file()

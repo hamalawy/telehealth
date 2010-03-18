@@ -545,6 +545,7 @@ class DAQPanel2(DAQPanel):
         
         self.patient1 = edf.Patient('1', 'Timothy', 'Cena', 'Ebido', 'Servan', \
                                     'Male', '09.27.89', '19')
+                                    
         self.rxboxDB.dbconnect()
         self.rxboxDB.dbcreatetables()                            
         self.bp_infolabel.SetLabel('BP ready')
@@ -567,6 +568,7 @@ class DAQPanel2(DAQPanel):
         dbstart = str(datetime.datetime.today())
         self.rxboxDB.dbupdate('sessions', 'starttime', dbstart, 'uuid', self.dbuuid)
         self.rxboxinitialized = 1
+        
     def init_daqtimers(self):
         """Initializes timers for DAQ Panel of RxBox"""
         
