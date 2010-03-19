@@ -32,6 +32,8 @@ from wx import CallAfter
 import time
 import simsensors
 import edf
+import edfviewer
+from pylab import *
 import datetime
 import ConfigParser
 from lead12dialog import Lead12Dialog
@@ -512,7 +514,7 @@ class DAQPanel2(DAQPanel):
                                                 size=(20, 120), style=wx.GA_VERTICAL)    
 #        self.ecg_vertical_sizer = self.RxFrame.ecg_vertical_sizer     
 
-        self.init_ecglive()
+        self.init_ecgplotter()
         self.init_daqtimers()
         self.init_config()
 
@@ -595,7 +597,7 @@ class DAQPanel2(DAQPanel):
         self.config = ConfigParser.ConfigParser()
         self.config.read('rxbox.cfg')
         
-    def init_ecglive(self):
+    def init_ecgplotter(self):
         """Initializes ecgplotter GUI"""
         
         self.sizersize = self.ecg_vertical_sizer.GetSize()
@@ -664,7 +666,6 @@ class DAQPanel2(DAQPanel):
                 dbstart = str(datetime.datetime.today())
                 self.rxboxDB.dbupdate('sessions', 'starttime', dbstart, 'uuid', self.dbuuid)
             elif self.rxboxinitialized == 1:
-                print "revert back to zero"
                 self.rxboxinitialized = 0
             
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'BP Ready')
@@ -984,9 +985,17 @@ class DAQPanel2(DAQPanel):
                         ': LifeLink 15 second data of CorScience modules', nDataRecord, 15)
         self.myedf.get(self.patient1)
         print 'EDF creation finished'
-
+        self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'EDF creation finished')
+        self.EDFtoDB()
         self.Biosignals = []
 
+    def EDFtoDB(self):
+        """Stores newly created EDF file to the rxbox database
+        """
+        edf_inst=edfviewer.EDF_File(self.myedf.edfilename)# edf file input
+        parsededf=edf_inst.parseDataRecords()
+        self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'edf', self.myedf.edfilename[4:-4], parsededf )
+    
     def onCall(self, event):
         """Method is called when Call button is toggled
            Calls the CreatePatientRecord Dialog if Patient Information is not yet finalized.
@@ -1323,7 +1332,6 @@ class DAQPanel2(DAQPanel):
             elif (self.nodetimer == 15): 
                 self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png", wx.BITMAP_TYPE_ANY))             
             elif (self.nodetimer == 16):
-                print 'stop'
                 self.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png", wx.BITMAP_TYPE_ANY))
                 self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")            
                 self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
