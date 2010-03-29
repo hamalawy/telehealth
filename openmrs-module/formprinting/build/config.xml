@@ -6,32 +6,32 @@
 	<id>formprinting</id>
 	<name>FormPrinting Module</name>
 	<version>0.2</version>
-	<package>org.openmrs.module.@MODULE_ID@</package>
+	<package>org.openmrs.module.formprinting</package>
 	<author>telehealth</author>
 	<description>Prints forms (dependent on HTML Form Entry module)</description>
-	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>
+	<activator>org.openmrs.module.formprinting.ModuleActivator</activator>
     <require_version>1.5</require_version>
 	<!-- /BulkImport Module Properties -->
 	
 	
 	<extension>
 		<point>org.openmrs.admin.list</point>
-		<class>@MODULE_PACKAGE@.extension.AdminList</class>
+		<class>org.openmrs.module.formprinting.extension.AdminList</class>
 	</extension>
 	
 	<extension>
 		<point>org.openmrs.headerMinimalIncludeExt</point>
-		<class>@MODULE_PACKAGE@.extension.HeaderInclude</class>
+		<class>org.openmrs.module.formprinting.extension.HeaderInclude</class>
 	</extension>
 	
 	<extension>
 		<point>org.openmrs.headerFullIncludeExt</point>
-		<class>@MODULE_PACKAGE@.extension.HeaderInclude</class>
+		<class>org.openmrs.module.formprinting.extension.HeaderInclude</class>
 	</extension>
 	
 	<servlet>
 		<servlet-name>HtmlToPdfServlet</servlet-name>
-		<servlet-class>@MODULE_PACKAGE@.web.servlet.HtmlToPdfServlet</servlet-class>
+		<servlet-class>org.openmrs.module.formprinting.web.servlet.HtmlToPdfServlet</servlet-class>
 	</servlet>
 		
 	<messages>
