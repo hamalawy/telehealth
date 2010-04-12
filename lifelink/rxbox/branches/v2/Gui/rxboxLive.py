@@ -117,8 +117,10 @@ class SplashApp2(Splash):
     def __init__(self, *args, **kwds):
         Splash.__init__(self, *args, **kwds)
         self.loaded = 0
+        self.image_num = 1
         self.ret_value = 0
         self.init_loadingbar()
+
         
     def init_loadingbar(self):
         self.bar = wx.Gauge(self.gauge, -1, 100, size=(525,30), style=wx.GA_HORIZONTAL)
@@ -142,6 +144,23 @@ class SplashApp2(Splash):
         
         self.EndModal(self.ret_value)
         self.Destroy()
+        
+    def on_next(self, event):
+
+        if self.image_num == 4:
+            self.image_num = 0
+        self.image_num += 1
+        filename = 'splash_screen/screenshots/' + str(self.image_num) + '.png'
+        self.title.SetBitmap(wx.Bitmap(filename, wx.BITMAP_TYPE_ANY))
+
+    def on_prev(self, event):
+        
+        if self.image_num == 1:
+            self.image_num = 5
+        self.image_num -= 1
+        filename = 'splash_screen/screenshots/' + str(self.image_num) + '.png'
+        self.title.SetBitmap(wx.Bitmap(filename, wx.BITMAP_TYPE_ANY))
+
 
 class RxFrame2(RxFrame):
     """ Class for RxFrame GUI instance and methods
