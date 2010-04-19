@@ -1,0 +1,3 @@
+Current Status:
+-Works fine here without plotting. Last time tested, plotting is minimal compare to data acquisition. But not sure if CPU single core affects performance but this computer is weaker than what will be used.
+-Still searching for ways to speed things up.

@@ -1,5 +1,6 @@
 import wx
 from wx import xrc
+from ecgplotter import Plotter
 
 login = {'Rxbox':'Engine', 'Telehealth':'Telemed', 'Root':'Root'}
 
@@ -43,14 +44,16 @@ class LoginState:
 class MainState:
     def __init__(self,engine):
         self._engine = engine
-        self._app = self._engine.app
-        
+        self._app = self._engine.app      
         self.frameOn = False
     
     def start(self):
         """Start state"""
         self._app.frame = self._app.resMain.LoadFrame(None, 'ECGFrame')
         self._app.frame.Show()
+        self.plotgraph_panel = xrc.XRCCTRL(self._app.frame, 'plotgraph_panel')
+        self.plotter = Plotter(self._app.frame, (1120, 380), self.plotgraph_panel)
+        
         self.frameOn = True
         
     def stop(self):
