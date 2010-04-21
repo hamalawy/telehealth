@@ -17,7 +17,7 @@ import wx
 from wx import CallAfter
 
 #rxbox library import
-from filters import besselfilter
+#from filters import besselfilter
 import leadcalc
 
 #checksum parameters (for updating CRC)
@@ -835,7 +835,7 @@ class ECG:
             self.ecg.close()
             print "Serial port for EMI12 ECG closed."
             
-    def Pop(self,start=0,end=0):
+    def pop(self,start=0,end=0):
         """Delete ECG main lead data from 'start' to 'end'"""
         temp = {}
         for keys in self.lead_ecg:
