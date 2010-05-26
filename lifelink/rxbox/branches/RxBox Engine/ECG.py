@@ -3,6 +3,7 @@ Facilitates Data Acquisition (DAQ) from ECG module
 
 Authors:    Julius Miguel J. Broma
             Luis Sison, PhD
+Editted by: Sy, Luke Wicent
             ------------------------------------------------
             Instrumentation, Robotics and Control Laboratory
             University of the Philippines - Diliman
@@ -14,10 +15,10 @@ Authors:    Julius Miguel J. Broma
 import serial
 import time
 import wx
-from wx import CallAfter
 
 #rxbox library import
-#from filters import besselfilter
+from filters import besselfilter
+
 import leadcalc
 
 #checksum parameters (for updating CRC)
@@ -68,17 +69,22 @@ STOP_ECG_TRANSMISSION = [0x05, 0x09, 0x00]
 
 class ECG:
     """manages data request and processes reply packets to/from ECG module"""
-    def __init__(self, port='/dev/ttyUSB0', baud=230400, timeout=0.01, daqdur=15):
+    def __init__(self, panel=False, port='/dev/ttyUSB0', baud=230400, timeout=0.01, daqdur=15, ecmcheck=3, debug=True):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
-        
+
+        self.parentPanel = panel
         self.port = port                
         self.baudrate = baud            
         self.timeout = timeout
+        self.daqdur = daqdur           # DAQ duration in seconds
+        self.ecmcheck = ecmcheck
+        self.debug = debug
+        
         self.ecm_threshold = 2400000
         self.ecm_status = 0
         self.device_status = 0
         self.patient_status = 0
-        self.data_sequence = []             # initialize data_sequence as a list -> to hold old data_sequence and (new)data_sequence_w/checksum
+        self.data_sequence = []             # initialize data_sequence as a list -> to hold old data_sequence and (new)data_sequence_w/checksum ??
         self.packet_num = 0                 # intitialize packet number = 0
         self.checksum_list = []             # initialize checksum data as a list(tuple) 
         self.Request = ''                   # initialize request as a string
@@ -88,9 +94,9 @@ class ECG:
         self.start_flag = 0                 # if start_flag is 1, don't send start_ecg request anymore
         self.required_nr_samples = daqdur*500     # required number of samples for a 15sec DAQ with sampling rate of 100Hz
         self.resolution = 0.00263           # resolution of ecg reading in mV/bit
+        
         self.lead_temp = {'II':[],'III':[],'V1':[],'V2':[],'V3':[],'V4':[],'V5':[],'V6':[]}
         self.lead_ecg = {'I':[],'II':[],'III':[],'V1':[],'V2':[],'V3':[],'V4':[],'V5':[],'V6':[],'VR':[],'VL':[],'VF':[]}
-        self.daqduration = daqdur              # DAQ duration in seconds
         self.firmware_string = ''           # initialize the string which will contain the firmware version
         self.device_ready_counter = 0       # initialize the counter for device ready checking
         self.ecmbyte1 = []                  # initialize the offline ecm status byte1 for electrode contact checking
@@ -101,11 +107,20 @@ class ECG:
             self.ecg = serial.Serial(self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)
             self.serialstatus = True
         except serial.SerialException:
-            print "Unable to open COM port", self.port, "\nPlease check serial port settings and ECG connection."
+            self.Print("Unable to open COM port %d\nPlease check serial port settings and ECG connection."%self.port)
             self.serialstatus = False
             
+        self.stop_ecm()     #in case the program is hang in ecm mode or ecg mode, we can close it properly
+        self.stop_ecg()
+ 
+    def Print(self, msg=""):
+        """self.Print only if in debug mode"""
+        if self.debug:
+            print msg
+            
     def firmware(self):
-        """get firmware version of ecg module
+        """
+        get firmware version of ecg module
 
         Usage: ECG().firmware()
 
@@ -113,11 +128,10 @@ class ECG:
         -------
         True    :  Firmware Version identified
         False   :  Firmware Version unidentified 
-        
         """
 
-        print 
-        print "***Firmware Version Inquiry***"
+        self.Print()
+        self.Print("***Firmware Version Inquiry***")
         self.request(FIRMWARE_VERSION_INQUIRY)             # Inquire about Firmware Version
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # Get reply from ECG module: GET Firmware Version
@@ -125,17 +139,18 @@ class ECG:
 
         if (packet[2]== chr(0x50)) and (packet[3]== chr(0x1)):
             self.firmware_string = ''.join(packet[4:15])
-            print "REPLY: Firmware Version:", self.firmware_string
+            self.Print("REPLY: Firmware Version: %s"%(self.firmware_string))
             self.device_ready_counter+=1
             self.device_status = True
             return self.device_status
         else:
-            print "Error: Firmware Unidentified"
+            self.Print("Error: Firmware Unidentified")
             self.device_status = False
             return self.device_status
 
     def protocol(self):
-        """get protocol version of ecg module
+        """
+        get protocol version of ecg module
 
         Usage: ECG().protocol()
 
@@ -143,29 +158,26 @@ class ECG:
         -------
         True   :  Protocol Version Identified
         False  :  Protocol Version Unidentified
-        
         """
 
-        print 
-        print "***Protocol Version Inquiry***"
+        self.Print() 
+        self.Print("***Protocol Version Inquiry***")
         self.request(PROTOCOL_VERSION_INQUIRY)             # 9. Inquire about Protocol version
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # 10. Get reply from ECG module: GET Protocol Version
         packet = self.byte_destuff(packet)
 
         if (packet[2]== chr(0x0)) and (packet[3]== chr(0x1)):
-            print "REPLY: Protocol Version:", ord(packet[4])
-            #self.device_ready_counter+=1
+            self.Print("REPLY: Protocol Version: %d" % (ord(packet[4])))
             self.device_status = True
-            return self.device_status
-        
         else:
-            print "Unknown Protocol Version"
+            self.Print("Unknown Protocol Version")
             self.device_status = False
-            return self.device_status
+        return self.device_status
             
     def device_id(self):
-        """get identification of ecg module
+        """
+        get identification of ecg module
 
         Usage: ECG().device_id()
 
@@ -173,11 +185,10 @@ class ECG:
         -------
         True  : identified Manufacturer and Device ID
         False : unidentified Manufacturer and Device ID       
-        
         """
 
-        print 
-        print "***Device Identification Inquiry***"
+        self.Print()
+        self.Print("***Device Identification Inquiry***")
         self.request(IDENTIFICATION_INQUIRY)             # Inquire about Device Identification
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # Get reply from ECG module: GET Device Identification
@@ -185,18 +196,18 @@ class ECG:
 
         if (packet[2]== chr(0x0)) and (packet[3]== chr(0x5)) and \
             (packet[4]== chr(0x1)) and (packet[5]== chr(0x1e)):
-            print "REPLY: Manufacturer ID: Corscience"
-            print "REPLY: Device ID: OEM Board"
+            self.Print("REPLY: Manufacturer ID: Corscience")
+            self.Print("REPLY: Device ID: OEM Board")
             self.device_ready_counter+=1
             self.device_status = True
-            return self.device_status
         else:
-            print "Error: Unknown Device"
+            self.Print("Error: Unknown Device")
             self.device_status = False
-            return self.device_status
+        return self.device_status
             
     def selftest(self):
-        """get integrated self test result
+        """
+        get integrated self test result
 
         Usage: ECG().selftest()
 
@@ -206,8 +217,8 @@ class ECG:
         False  :  Failed to pass the Integrated Self Test
         """
 
-        print 
-        print "***Integrated Self Test Inquiry***"
+        self.Print()
+        self.Print("***Integrated Self Test Inquiry***")
         self.request(SELFTEST_INQUIRY)             # Inquire about Integrated Self Test Result
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # Get reply from ECG module: Self Test Result
@@ -215,36 +226,29 @@ class ECG:
 
         if (packet[2]== chr(0x0)) and (packet[3]== chr(0x6)) and\
            (packet[4]== chr(0xe4)) and (packet[5]== chr(0x20)):
-            print "REPLY: Device Successfully Passed!"
+            self.Print("REPLY: Device Successfully Passed!")
             self.device_ready_counter+=1
             self.device_status = True
-            return self.device_status
-            
         elif (packet[2]== chr(0x0)) and (packet[3]== chr(0x6)) and\
            (ord(packet[4]) & 128 !=128):
-            print "Erro: RAM Test Failed!"
+            self.Print("Erro: RAM Test Failed!")
             self.device_status = False
-            return self.device_status
-            
         elif (packet[2]== chr(0x0)) and (packet[3]== chr(0x6)) and\
            (ord(packet[4]) & 64 !=64):
-            print "Error: int_FLASH Test Failed!"
+            self.Print("Error: int_FLASH Test Failed!")
             self.device_status = False
-            return self.device_status
-            
         elif (packet[2]== chr(0x0)) and (packet[3]== chr(0x6)) and\
            (ord(packet[4]) & 32 !=32):
-            print "Error: PLD/ADC Test Failed!"
+            self.Print("Error: PLD/ADC Test Failed!")
             self.device_status = False
-            return self.device_status
-
         else:
-            print "Error: Self Test Error!"
+            self.Print("Error: Self Test Error!")
             self.device_status = False
-            return self.device_status
+        return self.device_status
             
     def device_ready(self):
-        """identifies the status of the ECG. It checks the serial port setting
+        """
+        identifies the status of the ECG. It checks the serial port setting
         and runs the four methods: device_id(), protocol(), selftest(); to get
         the status of the ECG device.
 
@@ -254,9 +258,7 @@ class ECG:
         -------
         True    :   Device is Ready = passed all the four tests: device_id(),
                     firmware(), protocol(),selftest()
-
         False   :   Device Not Ready = failed to pass the series of tests
-                                     
         """
      
         if self.serialstatus == True:
@@ -265,23 +267,15 @@ class ECG:
             prot_status = self.protocol()
             test_status = self.selftest()
             #print ID_status,firm_status,prot_status,test_status
-           
             if ID_status==True and firm_status==True and prot_status==True\
                and test_status==True:
-                #print "\n--->>ECG IS READY!"
-                #self.device_status = True
                 self.device_status = "\nDevice Ready"
-                #self.ecg.close()
-                return self.device_status
-
             else:
                 self.device_status = "\nDevice Not Ready"
                 self.ecg.close()
-                return self.device_status
-
         elif self.serialstatus == False:
             self.device_status = "\nDevice Not Ready"
-            return self.device_status
+        return self.device_status
            
     def reset(self):
         """reset serial port input buffer"""
@@ -290,15 +284,12 @@ class ECG:
     def packet_number(self, data_sequence):
         """
         Update self.packet_num for monitor side; Return data_sequence (list of char strings) with updated packet number
-        Accept a list of hex numbers called data_sequence"""
-
+        Accept a list of hex numbers called data_sequence
+        """
         numbered_data_seq = [chr(elem) for elem in data_sequence]
         PacketNum = chr(self.packet_num)
         numbered_data_seq.insert(0, PacketNum)
-        if self.packet_num < 255:
-            self.packet_num = self.packet_num + 1
-        elif self.packet_num == 255:
-            self.packet_num = 0
+        self.packet_num = (self.packet_num+1)%256
         return numbered_data_seq
     
     def checksum(self, data_sequence2):
@@ -306,13 +297,12 @@ class ECG:
         Calculate the checksum(BASED ON CRC16 CCITT) from the ECG request/repy data sequence, append checksum at the end of the sequence
         Return a tuple: crc_LoByte, crc_HiByte, data_sequence_w/checksum_list
         """
-        
         data_seq_cs = [(elem) for elem in data_sequence2]
         crc_startval = 0xFFFF
         crc = int(crc_startval)
         for char in data_seq_cs:
             tmp = (crc>>8)^(ord(char))                          # calculate index called tmp for corresponding crc_polynomial in crctttab
-            crc = ((crc<<8)&int(0xFFFF))^(int(CRC[tmp]))   # Or-link shifted version of crc(get 16bits only) with the crc_polynomial referenced by the index
+            crc = ((crc<<8)&int(0xFFFF))^(int(CRC[tmp]))        # Or-link shifted version of crc(get 16bits only) with the crc_polynomial referenced by the index
         crc_HiByte = crc>>8                                     # get high-byte of checksum
         crc_LoByte = crc&int(0xFF)                              # get low-byte of checksum
         
@@ -411,8 +401,8 @@ class ECG:
     def request(self, data_sequence3):
         """
         Arrange the request packet for sending to EMI12 ECG module
-        Accept a list of char strings called data_sequence3"""
-        
+        Accept a list of char strings called data_sequence3
+        """
         data_wpacket_num = self.packet_number(data_sequence3)       # append packet number at the start of data sequence
         data_wchecksum = self.checksum(data_wpacket_num)            # get checksum and append it to the data sequence list
         data_wbyte_stuff = self.byte_stuff(data_wchecksum[2])       # data sequence w/ checksum undergoes byte stuffing
@@ -420,31 +410,29 @@ class ECG:
         request.insert(0,chr(0xfc))                                 # insert start flag at the begining of request sequence  
         request.append(chr(0xfd))                                   # append end flag at the end of request
         self.Request = ''.join(request)                             # convert request into string
-        #print "Request:", request
 
     def ecgreply(self):
         """
         Wait for complete reply packet from ECG module; return a string called packet
-        Usage: packet = ECG().ecgreply()"""
-        
-        
+        Usage: packet = ECG().ecgreply()
+        """
         reply = ''
         byte = chr(0x00)
         basetime = time.time()
         while (byte[-1] != chr(0xfd)) and (time.time()<(basetime+3)):
-            byte = self.ecg.readline(size=200,eol=0xfd)
+            byte = self.ecg.readline(size=None,eol=0xfd)
             reply = reply + byte
             if(len(byte)==0):
                 byte=chr(0x00)
         if time.time()>(basetime+3):
-            print "timeout! Reply packet incomplete:",list(reply)
+            self.Print("timeout! Reply packet incomplete: %s"%(list(reply)))
         return reply
 
     def payload_parser(self,packet,ecg_data):
         """
         Extract the reading for each ecg channel
-        Usage: ECG_channels = ECG().payload_parser()"""
-
+        Usage: ECG_channels = ECG().payload_parser()
+        """
         sign = self.sign_checker(packet[self.packet_index])
         if ecg_data[0] == 1:
              if sign > 0:
@@ -465,15 +453,14 @@ class ECG:
     def reply_parser(self, packet):
         """
         Extract the reading for each ecg channel and update the lists ecg_leadII and ecg_leadIII for plotting.
-        Usage: ECG_channels = ECG().reply_parser()"""
-        
+        Usage: ECG_channels = ECG().reply_parser()
+        """
         new_dataset_counter = ((ord(packet[len(packet)-4]) & int(0x7f))<<14) + \
                               ((ord(packet[len(packet)-5]) & int(0x7f))<<7) + \
                               (ord(packet[len(packet)-6]) & int(0x7f))
         frames = new_dataset_counter - self.old_dataset_counter
         #print frames
         self.prev_dataset_counter = self.old_dataset_counter
-        
         
         payload_index = 0
         self.packet_index = 9
@@ -490,24 +477,22 @@ class ECG:
     def config_analog(self):
         """set ecg-type and sampling rate"""
 
-        print
-        print "***Configure Analog Request***"              
+        self.Print()
+        self.Print("***Configure Analog Request***")
 
         self.request(CONFIG_ANALOG_REQ_500_12L)            # 1. Configure sampling rate and active ECG channels
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # 2. Get reply from ECG module: To CONFIRM Configure Analog Setting
         if (packet[2]== chr(0x1)) and (packet[3]== chr(0x7)) and \
             (packet[4]== chr(0x2)) and (packet[5]== chr(0x5)):
-            print "REPLY: Configure Analog Request Confirmed"
-            print "ECG Type: 12-lead", "Sampling Rate: 500Hz"
+            self.Print("REPLY: Configure Analog Request Confirmed")
+            self.Print("ECG Type: 12-lead Sampling Rate: 500Hz")
 
     def ecg_lead(self):
         filtered = {}
         if len(self.lead_temp['II'])>1:
             for keys in self.lead_temp:
                 filtered[keys] = besselfilter(self.lead_temp[keys])
-                #filtered[keys] = self.lead_temp[keys]
-                del self.lead_temp[keys][:]
                 
             filtered['I'] = leadcalc.LI(self.lead_temp['II'],self.lead_temp['III'])
             filtered['VR'] = leadcalc.LVR(self.lead_temp['II'],self.lead_temp['III'])
@@ -515,27 +500,29 @@ class ECG:
             filtered['VF'] = leadcalc.LVF(self.lead_temp['II'],self.lead_temp['III'])
             
             for keys in self.lead_ecg:
-                for i in range(len(filtered[keys])):
-                    self.lead_ecg[keys].append(filtered[keys][i])
+                self.lead_ecg[keys].extend(filtered[keys])
+
+            for keys in self.lead_temp:
+                del self.lead_temp[keys][:]
         
     def set_ecm_threshold(self):
         """set electrode contact measurement (ecm) threshold for the ecg module"""
 
-        print          
-        print "***Set ECM Threshold Request***"
-        self.request(SET_ECM_THRESHOLD_REQ)                # 3. Set ECM Threshold
+        self.Print()
+        self.Print("***Set ECM Threshold Request***")
+        self.request(SET_ECM_THRESHOLD_REQ)                     # 3. Set ECM Threshold
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # 4. Get reply from ECG module: To CONFIRM ECM Threshold
         if (packet[2]== chr(0x18)) and (packet[3]== chr(0x7)) and \
             (packet[4]== chr(0x0)) and (packet[5]== chr(0x9f))and \
             (packet[6]== chr(0x24)):                          
-            print "REPLY: Set ECM Threshold Request Confirmed"
+            self.Print("REPLY: Set ECM Threshold Request Confirmed")
 
     def start_ecm(self):
         """start offline electrode contact measurement (ecm)"""
 
-        print
-        print "***Start Offline ECM***"
+        self.Print()
+        self.Print("***Start Offline ECM***")
         self.request(START_OFFLINE_ECM)                    # 5. Start Offline ECM
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # 6. Get reply from ECG module: To ACKNOWLEDGE last received packet
@@ -545,14 +532,14 @@ class ECG:
             last_received_packet = self.packet_num - 1
         if (packet[2]== chr(0x0)) and (packet[3]== chr(0x2)) and \
             (packet[4]==chr(last_received_packet)):                          
-            print "REPLY: Start_Offline_ECM ACK"
+            self.Print("REPLY: Start_Offline_ECM ACK")
 
     def get_ecm(self):
-        """get ecm readings; stop only after three consecutive successful ecm"""
+        """get ecm readings; stop only after 'self.ecmcheck' consecutive successful ecm"""
 
-        contact_counter = 0                                     # initialize counter for determining ECG electrodes contact (contact is "OK" when counter reaches 3)
+        contact_counter = 0                                     # initialize counter for determining ECG electrodes contact (contact is "OK" when counter reaches self.ecmcheck)
         basetime = time.time()
-        while (contact_counter < 3) and (time.time()<(basetime+15)):
+        while (contact_counter < self.ecmcheck) and (time.time()<(basetime+15)):
             raw_packet = self.ecgreply()                        # get reply from ECG module: To determine if ECM is ok (if so, plus 1 to contact_counter)
             packet = self.byte_destuff(raw_packet)              # decodes reply packet for byte-stuffed data; packet here is a list
              
@@ -567,30 +554,28 @@ class ECG:
                 ecm_V3 = (ord(packet[29])<<16)+(ord(packet[28])<<8)+(ord(packet[27]))
                 ecm_V2 = (ord(packet[32])<<16)+(ord(packet[31])<<8)+(ord(packet[30]))
                 ecm_V1 = (ord(packet[35])<<16)+(ord(packet[34])<<8)+(ord(packet[33]))
-                print "\t------------------------"
-                print "\tECM for lead N:", ecm_N
-                print "\tECM for lead F:", ecm_F
-                print "\tECM for lead L:", ecm_L
-                print "\tECM for lead R:", ecm_R
-                print "\tECM for lead C6:", ecm_V6
-                print "\tECM for lead C5:", ecm_V5
-                print "\tECM for lead C4:", ecm_V4
-                print "\tECM for lead C3:", ecm_V3
-                print "\tECM for lead C2:", ecm_V2
-                print "\tECM for lead C1:", ecm_V1
-                print "\t------------------------"
+                self.Print("\t------------------------")
+                self.Print("\tECM for lead N: %d"%(ecm_N))
+                self.Print("\tECM for lead F: %d"%(ecm_F))
+                self.Print("\tECM for lead L: %d"%(ecm_L))
+                self.Print("\tECM for lead R: %d"%(ecm_R))
+                self.Print("\tECM for lead C6: %d"%(ecm_V6))
+                self.Print("\tECM for lead C5: %d"%(ecm_V5))
+                self.Print("\tECM for lead C4: %d"%(ecm_V4))
+                self.Print("\tECM for lead C3: %d"%(ecm_V3))
+                self.Print("\tECM for lead C2: %d"%(ecm_V2))
+                self.Print("\tECM for lead C1: %d"%(ecm_V1))
+                self.Print("\t------------------------")
                 self.ecmbyte1 = packet[4:5]              # get the offline ecm byte1 and ecm byte2 data to check which electrodes are in contact
                 self.ecmbyte2 = packet[5:6]              
                 contact_counter += self.electrode_check()
-                print
-                print "--->> ECM PASS COUNT:", contact_counter
+                self.Print()
+                self.Print("--->> ECM PASS COUNT: %d"%(contact_counter))
         ecm_endtime = time.time()
-        #print "ecm check duration:", (ecm_endtime - basetime)
         if ecm_endtime >(basetime+15):
             self.ecm_status = 0
         else:
             self.ecm_status = 1
-            
         return self.ecm_status
 
     def electrode_check(self):
@@ -601,8 +586,8 @@ class ECG:
         that has contact.
         
         Usage: ECG().electrode_check()
-
         """
+        
         self.nodeR = self.electrode_R()
         self.nodeL = self.electrode_L()
         self.nodeN = self.electrode_N()
@@ -618,111 +603,134 @@ class ECG:
            self.nodeC1 == True and self.nodeC2 == True and self.nodeC3 == True and self.nodeC4 == True and\
            self.nodeC5 == True and self.nodeC6 == True:
             contact_counter = 1
-            print "All electrodes has contact"
+            self.Print("All electrodes has contact")
             return contact_counter
         elif self.nodeR == True and self.nodeL==True and self.nodeN == True and self.nodeF == True:
             contact_counter = 1
-            print "R,L,N,F has contact"
+            self.Print("R,L,N,F has contact")
             return contact_counter
         else:
             contact_counter = 0
-            print "Check electrodes"
+            self.Print("Check electrodes")
             return contact_counter
 
     def electrode_R(self):
 
         if (ord(self.ecmbyte1[0]) & 2 == 2):
-            print "--->>electrode R has contact"
+            self.Print("--->>electrode R has contact")
+#            self.parentPanel.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_connected.png"))
             return True               
         else:
-            print "--->>electrode R has no contact"
+            self.Print("--->>electrode R has no contact")
+#            self.parentPanel.R_bitmap.SetBitmap(wx.Bitmap("Icons/R_unconnected.png"))
             return False
         
     def electrode_L(self):
         
         if (ord(self.ecmbyte1[0]) & 4 == 4):
-            print "--->>electrode L has contact"
+            self.Print("--->>electrode L has contact")
+#            self.parentPanel.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_connected.png"))
             return True
         else:
-            print "--->>electrode L has no contact"
+            self.Print("--->>electrode L has no contact")
+#            self.parentPanel.L_bitmap.SetBitmap(wx.Bitmap("Icons/L_unconnected.png"))
             return False
 
     def electrode_N(self):
 
         if (ord(self.ecmbyte2[0]) & 64 == 64):
-            print "--->>electrode N has contact"
+            self.Print("--->>electrode N has contact")
+#            self.parentPanel.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_connected.png"))
             return True
         else:
-            print "--->>electrode N has no contact"
+            self.Print("--->>electrode N has no contact")
+#            self.parentPanel.N_bitmap.SetBitmap(wx.Bitmap("Icons/N_unconnected.png"))
             return False
 
     def electrode_F(self):    
 
         if (ord(self.ecmbyte1[0]) & 1 == 1):
-            print "--->>electrode F has contact"
+            self.Print("--->>electrode F has contact")
+#            self.parentPanel.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_connected.png"))
             return True
         else:
-            print "--->>electrode F has no contact"
+            self.Print("--->>electrode F has no contact")
+#            self.parentPanel.F_bitmap.SetBitmap(wx.Bitmap("Icons/F_unconnected.png"))
             return False
 
     def electrode_C1(self):
 
         if (ord(self.ecmbyte2[0]) & 1 == 1):
-            print "--->>electrode C1 has contact"
+            self.Print("--->>electrode C1 has contact")
+#            self.parentPanel.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_connected.png"))
             return True
         else:
-            print "--->>electrode C1 has no contact"
+            self.Print("--->>electrode C1 has no contact")
+#            self.parentPanel.C1_bitmap.SetBitmap(wx.Bitmap("Icons/C1_unconnected.png"))
             return False
 
     def electrode_C2(self):
 
         if (ord(self.ecmbyte2[0]) & 2 == 2):
-            print "--->>electrode C2 has contact"
+            self.Print("--->>electrode C2 has contact")
+#            self.parentPanel.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_connected.png"))
+
             return True
         else:
-            print "--->>electrode C2 has no contact"
+            self.Print("--->>electrode C2 has no contact")
+#            self.parentPanel.C2_bitmap.SetBitmap(wx.Bitmap("Icons/C2_unconnected.png"))
             return False
 
     def electrode_C3(self):
 
         if (ord(self.ecmbyte2[0]) & 4 == 4):
-            print "--->>electrode C3 has contact"
+            self.Print("--->>electrode C3 has contact")
+#            self.parentPanel.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_connected.png"))
+
             return True
         else:
-            print "--->>electrode C3 has no contact"
+            self.Print("--->>electrode C3 has no contact")
+#            self.parentPanel.C3_bitmap.SetBitmap(wx.Bitmap("Icons/C3_unconnected.png"))
             return False
 
     def electrode_C4(self):
 
         if (ord(self.ecmbyte2[0]) & 8 == 8):
-            print "--->>electrode C4 has contact"
+            self.Print("--->>electrode C4 has contact")
+#            self.parentPanel.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_connected.png"))
             return True
         else:
-            print "--->>electrode C4 has no contact"
+            self.Print("--->>electrode C4 has no contact")
+#            self.parentPanel.C4_bitmap.SetBitmap(wx.Bitmap("Icons/C4_unconnected.png"))
             return False
 
     def electrode_C5(self):
+
         if (ord(self.ecmbyte2[0]) & 16 == 16):
-            print "--->>electrode C5 has contact"
+            self.Print("--->>electrode C5 has contact")
+#            self.parentPanel.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_connected.png"))
             return True
         else:
-            print "--->>electrode C5 has no contact"
+            self.Print("--->>electrode C5 has no contact")
+#            self.parentPanel.C5_bitmap.SetBitmap(wx.Bitmap("Icons/C5_unconnected.png"))
             return False
 
     def electrode_C6(self):
         if (ord(self.ecmbyte2[0]) & 32 == 32):
-            print "--->>electrode C6 has contact"
+            self.Print("--->>electrode C6 has contact")
+#            self.parentPanel.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_connected.png"))
             return True
         else:
-            print "--->>electrode C6 has no contact"
+            self.Print("--->>electrode C6 has no contact")
+#            self.parentPanel.C6_bitmap.SetBitmap(wx.Bitmap("Icons/C6_unconnected.png"))
             return False  
 
     def stop_ecm(self):
         """stop offline electrode contact measurement (ecm)"""
 
-        print
-        print "***Stop Offline ECM***"
-        self.request(STOP_OFFLINE_ECM)                     # 7. Stop Offline ECM
+        self.Print()
+        self.Print("***Stop Offline ECM***")
+        self.request(STOP_OFFLINE_ECM)                          # 7. Stop Offline ECM
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # 8. Get reply from ECG module: To ACKNOWLEDGE last received packet
         if self.packet_num == 0:
@@ -731,13 +739,12 @@ class ECG:
             last_received_packet = self.packet_num - 1
         if (packet[2]==chr(0x0)) and (packet[3]==chr(0x2)) and \
             (packet[4]==chr(last_received_packet)):                          
-            print "REPLY: Stop_Offline_ECM ACK"
+            self.Print("REPLY: Stop_Offline_ECM ACK")
 
     def start_ecg(self):
         """start ecg transmission"""
-
-        print
-        print "***Start ECG Transmission***"
+        self.Print()
+        self.Print("***Start ECG Transmission***")
         self.request(START_ECG_TRANSMISSION)               # 13. Start ECG transmission
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # 14. Get reply from ECG module: To ACKNOWLEDGE last received packet
@@ -748,24 +755,20 @@ class ECG:
             last_received_packet = self.packet_num - 1
         if (packet[2]== chr(0x0)) and (packet[3]==chr(0x2)) and \
            (packet[4]==chr(last_received_packet)):                          
-            print "REPLY: Start_ECG_TRANSMISSION ACK"
+            self.Print("REPLY: Start_ECG_TRANSMISSION ACK")
 
     def get_ecg(self):
         """get ecg readings"""
-
-        BaseTime = time.time()                                  # get reference time
-        print
-        print "Acquiring ECG readings..."
-        print "DAQ started at:", time.ctime()                   # get start time
-        count = 0
-        #self.leadII_values = []
-        #self.leadIII_values = []
-        while (time.time() - BaseTime <= self.daqduration):
-            raw_packet = self.ecgreply()                        # get reply packet; raw_packet is a string
+        self.getecg = True
+        BaseTime = time.time()                                   # get reference time
+        self.Print()
+        self.Print("Acquiring ECG readings...")
+        self.Print("DAQ started at: %s"%time.ctime())                 # get start time
+        while (time.time()-BaseTime <= self.daqdur and self.getecg):
+            raw_packet = self.ecgreply()                         # get reply packet; raw_packet is a string
             packet = self.byte_destuff(raw_packet)
             self.reply_parser(packet)
-            count = count + 1
-        print "DAQ ended at:", time.ctime()      # get end time
+        self.Print("DAQ ended at: %s"%time.ctime())                   # get end time
 
     def real_val(self, digital_readings):
         """convert digital readings into the actual readings using resolution"""
@@ -775,13 +778,12 @@ class ECG:
     def stop_ecg(self):
         """stop ecg transmission"""
 
-        print 
-        print "***Stop ECG Transmission***"
+        self.Print()
+        self.Print("***Stop ECG Transmission***")
         self.request(STOP_ECG_TRANSMISSION)                # 15. Stop ECG transmission
         self.ecg.write(self.Request)
         packet = self.ecgreply()                                # 16. Get reply from ECG module: To ACKNOWLEDGE last received packet
         destuffed_reply = self.byte_destuff(packet)
-        #print "reply from ecg module:", destuffed_reply
         if self.packet_num == 0:
             last_received_packet = 255
         else:
@@ -789,35 +791,24 @@ class ECG:
         
         if (packet[2]== chr(0x0)) and (packet[3]==chr(0x2)) and \
            (packet[4]==chr(last_received_packet)):                          
-            print "REPLY: Stop_ECG_TRANSMISSION ACK"
+            self.Print("REPLY: Stop_ECG_TRANSMISSION ACK")
     
-    def get(self):
-        """acquire ecg readings from EMI12 ECG module every 15 seconds"""
-        
-        if self.serialstatus == True:
-            if self.start_flag == 0:                                # send start_ecg request only once
-                self.patient_ready()
-                
-        elif self.serialstatus == False:
-             print "Unable to open COM port", self.port, "\nPlease check serial port settings and ECG connection."
-
-            
     def patient_ready(self):
         """checks whether the patient is ready for ECG by electrode contact measurement"""
-        if self.start_flag == 0:            
+        if self.start_flag == 0:
             self.set_ecm_threshold()
             self.start_ecm()
             self.ecm_status = self.get_ecm()
-            print "ECM STATUS:", self.ecm_status
-            print
+            self.Print("ECM STATUS: %d"%self.ecm_status)
+            self.Print()
             self.stop_ecm()
             if self.ecm_status == 0:
-                print "\n--->>PATIENT IS NOT READY"
-                print "\nTimeout: Cannot get correct ECM. Please attach the electrodes properly."
+                self.Print("\n--->>PATIENT IS NOT READY")
+                self.Print("\nTimeout: Cannot get correct ECM. Please attach the electrodes properly.")
                 self.ecg.close()
-                print "\nSerial port closed."
+                self.Print("\nSerial port closed.")
             elif self.ecm_status == 1:
-                print "\n--->>PATIENT IS NOW READY"
+                self.Print("\n--->>PATIENT IS NOW READY")
                 self.config_analog()
                 self.start_ecg()
                 self.start_flag = 1
@@ -828,7 +819,10 @@ class ECG:
     
     def stop(self):
         """stop acquisition of ecg readings and close the serial port"""
-        if self.start_flag == 1:   
+        if self.start_flag == 1:
+            self.getecg = False
+            time.sleep(0.1)
+            self.stop_ecm()     #in case the program is hang in ecm mode or ecg mode, we can close it properly
             self.stop_ecg()
             self.start_flag = 0
         if self.serialstatus:
