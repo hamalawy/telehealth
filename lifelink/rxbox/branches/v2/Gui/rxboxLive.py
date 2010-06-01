@@ -19,7 +19,9 @@ When PLAY button is pressed, the following scripts are done:
 - Database and tables are created (if already existing method is skipped)
 - Updates session, biomedical and patients information in the database
 """
-
+ECGPORT = '/dev/ttyUSB0'
+SPO2PORT = '/dev/ttyUSB1'
+BPPORT = '/dev/ttyUSB2'
 
 import wx
 
@@ -38,7 +40,9 @@ import datetime
 import ConfigParser
 from lead12dialog import Lead12Dialog
 import wx.lib.plot as plot
+import copy
 
+from CPlotter import *
 from ecgplotter import Plotter
 #from ecgplot import Plotter
 from ecgplot import extendedPlotter
@@ -532,10 +536,11 @@ class DAQPanel2(DAQPanel):
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel, -1, 200, \
                                                 size=(20, 120), style=wx.GA_VERTICAL)    
 #        self.ecg_vertical_sizer = self.RxFrame.ecg_vertical_sizer     
-
+        self.init_config()
+        self.ECGsimulated = self.config.get('ecg', 'simulated') == '1'
+        
         self.init_ecgplotter()
         self.init_daqtimers()
-        self.init_config()
 
         if self.config.get('spo2', 'simulated') == '0':
             self.init_livespo2()
@@ -551,8 +556,6 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.BirthYear.Bind(wx.EVT_TEXT, self.birthday_update)    
         
         #ECG INIT START
-        
-        self.ECGsimulated = self.config.get('ecg', 'simulated') == '1'
         if not self.ECGsimulated:
             print 'Actual ECG'
             self.init_liveecg()
@@ -561,7 +564,7 @@ class DAQPanel2(DAQPanel):
             print 'Simulated ECG'
             self.init_simsensors_ecg()
             if self.config.get('ecg', 'sim_type') != 'Normal':
-                self.ecgdata.ecg_list = self.ecgdata.get_plot()
+                self.ECGDAQ.ecg_list = self.ECGDAQ.get_plot()
         #ECG INIT END
         
         self.patient1 = edf.Patient('1', '', '', '', '', \
@@ -595,7 +598,7 @@ class DAQPanel2(DAQPanel):
         
         self.timer_spo2 = wx.Timer(self)
         self.timer_bpdemo = wx.Timer(self)
-        self.timerEDF = wx.Timer(self)
+        #self.timerEDF = wx.Timer(self)
         self.pressure_timer = wx.Timer(self)
         self.timerSend = wx.Timer(self)
         self.timerECG_refresh = wx.Timer(self)
@@ -603,7 +606,7 @@ class DAQPanel2(DAQPanel):
         self.timer_bpcyclic = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.acquirespo2, self.timer_spo2)
         self.Bind(wx.EVT_TIMER, self.cyclicbpdemo, self.timer_bpdemo)
-        self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
+        #self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
         self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
@@ -620,8 +623,13 @@ class DAQPanel2(DAQPanel):
         """Initializes ecgplotter GUI"""
         
         self.sizersize = self.ecg_vertical_sizer.GetSize()
-        self.plotter = Plotter(self, (1120, 380))
-        self.ecg_vertical_sizer.Add(self.plotter.plotpanel, 1, \
+        if self.ECGsimulated: 
+            self.plotter = Plotter(self, (1120, 380))
+            self.ecg_vertical_sizer.Add(self.plotter.plotpanel, 1, \
+                                    wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+        else:
+            self.plotpanel = wx.Panel(self)
+            self.ecg_vertical_sizer.Add(self.plotpanel, 1, \
                                     wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
         self.plotind = 0
         self.ECGplotcounter = 0
@@ -631,17 +639,18 @@ class DAQPanel2(DAQPanel):
         
         self.Biosignals = []
         self.getlead = ECG().ecg_lead()
-        self.ecgdata = simsensors.EcgSim(self)
+        self.ECGDAQ = simsensors.EcgSim(self)
 
     def init_liveecg (self):
         """ Initialize live ecg """
-        
         self.Biosignals = []
-        self.ECGDAQ = ECGLive.ECGThread(self, port='/dev/ttyUSB0')
+        self.ECGDAQ = ECGLive.ECG(panel=self,port='/dev/ttyUSB0',daqdur=1,ecmcheck=0,debug=True)
+        self.ECGDAQ.device_ready()
+        self.ECGDAQ.stop()
         
     def init_livespo2(self):
         """ Initialize live spo2 """
-        self.spo2data=SPO2(self,port='/dev/ttyUSB1')
+        self.spo2data=SPO2(self,port=SPO2PORT)
 
     def init_simsensors_spo2(self):
         """Initializes spo2 simsensor"""
@@ -649,7 +658,7 @@ class DAQPanel2(DAQPanel):
         
     def init_livebp(self):
         """ Initialize live BP """
-        self.bp=BP(self,port='/dev/ttyUSB0')
+        self.bp=BP(self,port=BPPORT)
         
         
     def init_simsensors_bp(self):
@@ -713,12 +722,16 @@ class DAQPanel2(DAQPanel):
                 self.bpdata.get()
             
             if not self.ECGsimulated:
-                self.ECGDAQ.ECG_Connect()
-                self.ECGDAQ.Start_Thread()
+                self.ECGDAQ = ECGLive.ECG(panel=self,port=ECGPORT,daqdur=1,ecmcheck=0,debug=True)
+                self.plotter = CPlotter(self,panel=self.plotpanel,mode='normal',cont=True,time=3,data=[0])
+                self.plotter.Open()
+                self.alive = True
+                self.get_thread = threading.Thread(target=self.Get_ECG)
+                self.get_thread.start()
             self.onECGNodeCheck(self)
    
             self.timer_spo2.Start(1000)
-            self.timerEDF.Start(15000)
+            #self.timerEDF.Start(15000)
             
         else:
 
@@ -733,7 +746,7 @@ class DAQPanel2(DAQPanel):
             self.lead12_button.Enable(False)
             self.timer_spo2.Stop()
             self.timer_bpdemo.Stop()       
-            self.timerEDF.Stop()    
+            #self.timerEDF.Stop()    
             self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
             self.timerECGNodeCheck.Stop()
@@ -741,7 +754,9 @@ class DAQPanel2(DAQPanel):
 				self.timer_bpcyclic.Stop()
 				self.bp_isCyclic = 0
             if not self.ECGsimulated:
-                self.ECGDAQ.Stop_Thread()
+                self.alive = False
+                self.ECGDAQ.stop()
+                self.plotter.Close()
                  
 #            self.Call_Label.SetLabel("Call")          
             self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
@@ -840,44 +855,50 @@ class DAQPanel2(DAQPanel):
         self.RxFrame.BirthYear.Enable(True)
         self.RxFrame.BirthMonth.Enable(True)        
         self.RxFrame.BirthDayCombo.Enable(True)  
-                  
+
+    def Get_ECG(self):
+        self.ind = 0
+        while self.alive:
+            try:
+                self.ECGDAQ.patient_ready()
+                self.ind = self.plotter.Plot(self.ECGDAQ.lead_ecg['II'][-500:],xs=self.ind)
+                if len(self.ECGDAQ.lead_ecg['II']) > 7500:
+                    self.ECGDAQ.pop(end=(len(self.ECGDAQ.lead_ecg['II']) - 7500))
+            except Exception, e:
+                self.ECGDAQ = ECGLive.ECG(panel=self,port=ECGPORT,daqdur=1,ecmcheck=0,debug=True)
+                print 'ECG Error', e
+        print 'Thread Stopped'
+                          
     def displayECG(self, evt):
         """ Calls the ecg_lead() method of the ecglogfile module to extract
             the 12 leads then passes it to the ecgplotter module for plotting
         """
-        if not self.ECGsimulated:
-            try:
-                print 'DATA', self.plotind
-                self.plotter.plot(self.ECGDAQ.ECG.ecg_leadII[self.plotind:self.plotind+1500])
-                self.plotind = self.plotind + 125
-            except:
-                print 'No New Data'
-        else:
+        if self.ECGsimulated:
             self.ECGplotcounter = self.ECGplotcounter + 1
             ecg_plot = []
             ecg_plot2 = []
 
             if self.config.get('ecg', 'sim_type') == 'Normal':
-                self.ecgdata.ecg_list = []
+                self.ECGDAQ.ecg_list = []
             
                 for y in range(0, 4):
                     for i in range(100, 400):
-                        self.ecgdata.ecg_list.append(self.getlead[1][i])
+                        self.ECGDAQ.ecg_list.append(self.getlead[1][i])
 
             if self.ECGplotcounter == 1:
-                self.plotter.plot(self.ecgdata.ecg_list[0:300])
+                self.plotter.plot(self.ECGDAQ.ecg_list[0:300])
             elif self.ECGplotcounter == 2:
-                self.plotter.plot(self.ecgdata.ecg_list[50:350])
+                self.plotter.plot(self.ECGDAQ.ecg_list[50:350])
             elif self.ECGplotcounter == 3:
-                self.plotter.plot(self.ecgdata.ecg_list[100:400])
+                self.plotter.plot(self.ECGDAQ.ecg_list[100:400])
             elif self.ECGplotcounter == 4:
-                self.plotter.plot(self.ecgdata.ecg_list[150:450])
+                self.plotter.plot(self.ECGDAQ.ecg_list[150:450])
             elif self.ECGplotcounter == 5:
-                self.plotter.plot(self.ecgdata.ecg_list[200:500])
+                self.plotter.plot(self.ECGDAQ.ecg_list[200:500])
             elif self.ECGplotcounter == 6:
-                self.plotter.plot(self.ecgdata.ecg_list[250:550])
+                self.plotter.plot(self.ECGDAQ.ecg_list[250:550])
             elif self.ECGplotcounter == 7:
-                self.plotter.plot(self.ecgdata.ecg_list[300:600])
+                self.plotter.plot(self.ECGDAQ.ecg_list[300:600])
             else:
                 self.ECGplotcounter = 0
 
@@ -916,10 +937,8 @@ class DAQPanel2(DAQPanel):
         print 'Acquiring BP data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring BP data')
                
-    def make_edf(self, evt):
+    def make_edf(self):
         """Creates 15 second chunks of edf data"""
-        
-
         
         if self.RxFrame.DAQPanel.with_patient_info == 1:
         
@@ -939,7 +958,7 @@ class DAQPanel2(DAQPanel):
         print self.spo2data.spo2_list
         print self.spo2data.bpm_list
 
-#        print self.ecgdata.ecg_list_scaled
+#        print self.ECGDAQ.ecg_list_scaled
         
         nDataRecord = 3
         
@@ -952,17 +971,12 @@ class DAQPanel2(DAQPanel):
         
         temp = []
         if not self.ECGsimulated:
-            if (len(self.ECGDAQ.ECG.ecg_leadII) > 7500):
-                for i in range(0,7500):
-                    temp.append(int(self.ECGDAQ.ECG.ecg_leadII[i]/0.00263+16384))
-                self.ECGDAQ.ECG.Pop(start=0,end=7500)
-                self.plotind = self.plotind - 7500
-                if(self.plotind < 0):
-                    self.plotind = 0
-            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 7500, temp)
+            for i in self.ECGDAQ.lead_ecg['II']:
+                temp.append(int(i/0.00263+16384))
+            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', len(temp), temp)
         else:
             for i in range(0,1200):
-                temp.append(int(self.ecgdata.ecg_list[i]/0.00263+16384))
+                temp.append(int(self.ECGDAQ.ecg_list[i]/0.00263+16384))
             Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 1200, temp)
             
         self.spo2data.spo2_list = []
@@ -1111,7 +1125,8 @@ class DAQPanel2(DAQPanel):
            Calls the CreatePatientRecord Dialog if if Patient Information is not yet finalized.
            Calls the sendEmail and SendStatus methods. 
         """
-
+        if self.sendcount == 1:
+            self.make_edf()
         self.timerECG_refresh.Stop()
         self.on_send = 1
         self.sendcount += 1
@@ -1122,13 +1137,13 @@ class DAQPanel2(DAQPanel):
             CreateDialog = CreateRecordDialog2(self.RxFrame, self)
             CreateDialog.ShowModal()
             self.with_patient_info = 1
+        if self.RxFrame.DAQPanel.on_send == 1:
+            self.RxFrame.DAQPanel.timerSend.Start(5000)
         self.RxFrame.RxFrame_StatusBar.SetStatusText("Sending Data to Server...")
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Sending Data to Server...')
 
         if self.sendcount >= 2:
-            
             self.timerSend.Stop()
-            
             if (self.config.getint('email', 'simulated') == 0):
                 self.sendEmail()
                 self.show_email_success()
@@ -1137,17 +1152,40 @@ class DAQPanel2(DAQPanel):
             elif (self.config.getint('email', 'simulated') == 1):
                 self.sendcount = 1
                 self.SendStatus(self)
+
+        self.bpNow_Button.Enable(True)
+        self.StartStop_Button.SetBitmapLabel(wx.Bitmap("Icons/PlayButton.png", wx.BITMAP_TYPE_ANY))
+        self.StartStop_Label.SetLabel("Start")
+        self.bpNow_Button.Enable(True)
+        self.Call_Button.Enable(False)
+        self.Send_Button.Enable(False)
+        self.lead12_button.Enable(False)
+        self.timer_spo2.Stop()
+        self.timer_bpdemo.Stop()       
+        self.timerECG_refresh.Stop()
+        self.timerECGNodeCheck.Stop()
+        if self.bp_isCyclic == 1:
+			self.timer_bpcyclic.Stop()
+			self.bp_isCyclic = 0
+        if not self.ECGsimulated:
+            self.alive = False
+            self.ECGDAQ.stop()
+            self.plotter.Close()
+        self.heartrate_infolabel.SetLabel('Pulse Ox Ready')
+        self.spo2_infolabel.SetLabel('Pulse Ox Ready')
+        self.RxFrame.DAQPanel.RemarkValueDaq.SetValue('')
+        print 'stopping...'
     
     def show_email_success(self):
-            """
-            Shows a dialog box that affirms successful sending of data 
-            """
-            self.RxFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
-            self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Send to Server Successful')
-            dlg = wx.MessageDialog(self, "Send to Server Successful", "Send to Server Successful", wx.OK | wx.ICON_QUESTION)
-            dlg.ShowModal()
-            self.timerECG_refresh.Start(250) 
-    
+        """
+        Shows a dialog box that affirms successful sending of data 
+        """
+        self.RxFrame.RxFrame_StatusBar.SetStatusText("Send to Server Successful")
+        self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Send to Server Successful')
+        dlg = wx.MessageDialog(self, "Send to Server Successful", "Send to Server Successful", wx.OK | wx.ICON_QUESTION)
+        dlg.ShowModal()
+        self.timerECG_refresh.Start(250) 
+
     def SendStatus(self, event):
         """Shows the status of email sending using a dialog box
         """
@@ -1273,8 +1311,22 @@ class DAQPanel2(DAQPanel):
         calls the 12 lead dialog window for plotting
         """
         #self.lead12_button.Enable(False)
-        CreateDialog2 = Lead12Dialog2(self, self.ECGsimulated, self.ECGDAQ.ECG, self)
-        CreateDialog2.ShowModal()
+        CreateDialog2 = Lead12Dialog2(self, self.ECGsimulated, self)
+        CreateDialog2.Show()
+        if not self.ECGsimulated:
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_I,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['I'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_II,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['II'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_III,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['III'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVR,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['VR'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVL,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['VL'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVF,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['VF'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V1,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['V1'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V2,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['V2'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V3,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['V3'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V4,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['V4'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V5,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['V5'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V6,mode='small',time=3,cont=False,data=self.ECGDAQ.lead_ecg['V6'][-1500:])
+            plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_bigII,mode='extend',time=15,cont=False,data=self.ECGDAQ.lead_ecg['II'][-7500:])
         
     def onECGNodeCheck(self, x): 
         """Electrode contact measurement (ECM) check"""
@@ -1284,7 +1336,6 @@ class DAQPanel2(DAQPanel):
             self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
             self.timerECGNodeCheck.Stop()    
             self.nodetimer = 0
-            self.timerECG_refresh.Start(250) 
         else:
             self.timerECGNodeCheck.Start(250)
             self.nodetimer = self.nodetimer + 1
@@ -1432,9 +1483,6 @@ class CreateRecordDialog2(CreateRecordDialog):
                 self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings... Call Panel Initiated.")
                 self.RxFrame.DAQPanel.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.RxFrame.DAQPanel.dbuuid, 'status message', '', 'Acquiring biomedical readings... Call Panel Initiated.')
             
-            if self.RxFrame.DAQPanel.on_send == 1:
-                self.RxFrame.DAQPanel.timerSend.Start(5000)
-            
     def check_patient_valid(self, firstname, middlename, lastname, gender, age, birth, validity, topic, reason):
         """Checks if the required fields in the create patient record are filled-up
         """
@@ -1450,7 +1498,7 @@ class Lead12Dialog2(Lead12Dialog):
         __init__(Lead12Dialog)         
          
     """   
-    def __init__(self, parent, ECGSimulated, ECGData, *args, **kwds):
+    def __init__(self, parent, ECGSimulated, *args, **kwds):
         """ initializes the placement of the plotter to the 12 lead dialog window
 
         Parameters
@@ -1463,49 +1511,33 @@ class Lead12Dialog2(Lead12Dialog):
         self.parent = parent
         sizersize = self.leadI_sizer.GetSize()
         bigsizer = self.leadII_sizer.GetSize()
-        self.plotter_I = Plotter(self, (308, 162))
-        self.plotter_II = Plotter(self, (308, 162))
-        self.plotter_III = Plotter(self, (308, 162))
-        self.plotter_aVR = Plotter(self, (308, 162))
-        self.plotter_aVL = Plotter(self, (308, 162))
-        self.plotter_aVF = Plotter(self, (308, 162))
-        self.plotter_V1 = Plotter(self, (308, 162))
-        self.plotter_V2 = Plotter(self, (308, 162))
-        self.plotter_V3 = Plotter(self, (308, 162))
-        self.plotter_V4 = Plotter(self, (308, 162))
-        self.plotter_V5 = Plotter(self, (308, 162))
-        self.plotter_V6 = Plotter(self, (308, 162))
-        
-        self.leadI_sizer.Add(self.plotter_I.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.small_leadII_sizer.Add(self.plotter_II.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.leadIII_sizer.Add(self.plotter_III.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.aVR_sizer.Add(self.plotter_aVR.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.aVL_sizer.Add(self.plotter_aVL.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.aVF_sizer.Add(self.plotter_aVF.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.V1_sizer.Add(self.plotter_V1.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.V2_sizer.Add(self.plotter_V2.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.V3_sizer.Add(self.plotter_V3.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.V4_sizer.Add(self.plotter_V4.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.V5_sizer.Add(self.plotter_V5.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        self.V6_sizer.Add(self.plotter_V6.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
-        
-        print ECGSimulated
-        if not ECGSimulated:
-            self.ECGdata = ECGData
-            self.plotter_I.plot(self.ECGdata.ecg_leadI)
-            self.plotter_II.plot(self.ECGdata.ecg_leadII)
-            self.plotter_III.plot(self.ECGdata.ecg_leadIII)
-            self.plotter_aVR.plot(self.ECGdata.ecg_leadaVR)
-            self.plotter_aVL.plot(self.ECGdata.ecg_leadaVL)
-            self.plotter_aVF.plot(self.ECGdata.ecg_leadaVF)
-            self.plotter_V1.plot(self.ECGdata.ecg_leadV1)
-            self.plotter_V2.plot(self.ECGdata.ecg_leadV2)
-            self.plotter_V3.plot(self.ECGdata.ecg_leadV3)
-            self.plotter_V4.plot(self.ECGdata.ecg_leadV4)
-            self.plotter_V5.plot(self.ECGdata.ecg_leadV5)
-            self.plotter_V6.plot(self.ECGdata.ecg_leadV6)
-            self.plotter_bigII = extendedPlotter(self, bigsizer, self.ECGdata.ecg_leadII)
-        else:
+        if ECGSimulated:
+            self.plotter_I = Plotter(self, (308, 162))
+            self.plotter_II = Plotter(self, (308, 162))
+            self.plotter_III = Plotter(self, (308, 162))
+            self.plotter_aVR = Plotter(self, (308, 162))
+            self.plotter_aVL = Plotter(self, (308, 162))
+            self.plotter_aVF = Plotter(self, (308, 162))
+            self.plotter_V1 = Plotter(self, (308, 162))
+            self.plotter_V2 = Plotter(self, (308, 162))
+            self.plotter_V3 = Plotter(self, (308, 162))
+            self.plotter_V4 = Plotter(self, (308, 162))
+            self.plotter_V5 = Plotter(self, (308, 162))
+            self.plotter_V6 = Plotter(self, (308, 162))
+            
+            self.leadI_sizer.Add(self.plotter_I.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.small_leadII_sizer.Add(self.plotter_II.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.leadIII_sizer.Add(self.plotter_III.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.aVR_sizer.Add(self.plotter_aVR.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.aVL_sizer.Add(self.plotter_aVL.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.aVF_sizer.Add(self.plotter_aVF.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V1_sizer.Add(self.plotter_V1.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V2_sizer.Add(self.plotter_V2.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V3_sizer.Add(self.plotter_V3.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V4_sizer.Add(self.plotter_V4.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V5_sizer.Add(self.plotter_V5.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V6_sizer.Add(self.plotter_V6.plotpanel, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            
             self.plotter_I.plot(self.parent.getlead[0])
             self.plotter_II.plot(self.parent.getlead[1])
             self.plotter_III.plot(self.parent.getlead[2])
@@ -1519,8 +1551,35 @@ class Lead12Dialog2(Lead12Dialog):
             self.plotter_V5.plot(self.parent.getlead[10])
             self.plotter_V6.plot(self.parent.getlead[11])
             self.plotter_bigII = extendedPlotter(self, bigsizer, self.parent.getlead[1])
-        self.leadII_sizer.Add(self.plotter_bigII, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.leadII_sizer.Add(self.plotter_bigII, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+        else:
+            self.plotter_I = wx.Panel(self)
+            self.plotter_II = wx.Panel(self)
+            self.plotter_III = wx.Panel(self)
+            self.plotter_aVR = wx.Panel(self)
+            self.plotter_aVL = wx.Panel(self)
+            self.plotter_aVF = wx.Panel(self)
+            self.plotter_V1 = wx.Panel(self)
+            self.plotter_V2 = wx.Panel(self)
+            self.plotter_V3 = wx.Panel(self)
+            self.plotter_V4 = wx.Panel(self)
+            self.plotter_V5 = wx.Panel(self)
+            self.plotter_V6 = wx.Panel(self)
+            self.plotter_bigII = wx.Panel(self)
         
+            self.leadI_sizer.Add(self.plotter_I, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.small_leadII_sizer.Add(self.plotter_II, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.leadIII_sizer.Add(self.plotter_III, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.aVR_sizer.Add(self.plotter_aVR, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.aVL_sizer.Add(self.plotter_aVL, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.aVF_sizer.Add(self.plotter_aVF, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V1_sizer.Add(self.plotter_V1, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V2_sizer.Add(self.plotter_V2, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V3_sizer.Add(self.plotter_V3, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V4_sizer.Add(self.plotter_V4, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V5_sizer.Add(self.plotter_V5, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.V6_sizer.Add(self.plotter_V6, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
+            self.leadII_sizer.Add(self.plotter_bigII, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)        
             
 # end of rxboxGUI classes
 

@@ -156,10 +156,10 @@ class ECG:
         for i in range(0,30):
             ecg_data=self.reply_parser(destuffed[i])
 
-        self.ecg_leadI = leadcalc.calcLI(self.ecg_leadII,self.ecg_leadIII)
-        self.ecg_leadaVR = leadcalc.calcLVR(self.ecg_leadII,self.ecg_leadIII)
-        self.ecg_leadaVL = leadcalc.calcLVL(self.ecg_leadII,self.ecg_leadIII)
-        self.ecg_leadaVF = leadcalc.calcLVF(self.ecg_leadII,self.ecg_leadIII)
+        self.ecg_leadI = leadcalc.LI(self.ecg_leadII,self.ecg_leadIII)
+        self.ecg_leadaVR = leadcalc.LVR(self.ecg_leadII,self.ecg_leadIII)
+        self.ecg_leadaVL = leadcalc.LVL(self.ecg_leadII,self.ecg_leadIII)
+        self.ecg_leadaVF = leadcalc.LVF(self.ecg_leadII,self.ecg_leadIII)
 
         #return self.ecg_leadII
         #return self.ecg_leadI, self.ecg_leadII, self.ecg_leadIII, \
