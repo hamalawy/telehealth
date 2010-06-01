@@ -9,11 +9,11 @@ import wx
 
 
 
-class Lead12Dialog(wx.Dialog):
+class Lead12Dialog(wx.Frame):
     def __init__(self, *args, **kwds):
         # begin wxGlade: Lead12Dialog.__init__
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX
-        wx.Dialog.__init__(self, *args, **kwds)
+        wx.Frame.__init__(self, *args, **kwds)
         self.aVR_sizer_staticbox = wx.StaticBox(self, -1, "aVR")
         self.V1_sizer_staticbox = wx.StaticBox(self, -1, "V1")
         self.V4_sizer_staticbox = wx.StaticBox(self, -1, "V4")
@@ -86,7 +86,7 @@ class Lead12Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.PySimpleApp(0)
     wx.InitAllImageHandlers()
-    dialog_1 = (None, -1, "")
+    dialog_1 = Lead12Dialog(None, -1, "")
     app.SetTopWindow(dialog_1)
     dialog_1.Show()
     app.MainLoop()
