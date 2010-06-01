@@ -86,7 +86,7 @@ class Lead12Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.PySimpleApp(0)
     wx.InitAllImageHandlers()
-    dialog_1 = (None, -1, "")
+    dialog_1 = Lead12Dialog(None, -1, "")
     app.SetTopWindow(dialog_1)
     dialog_1.Show()
     app.MainLoop()
