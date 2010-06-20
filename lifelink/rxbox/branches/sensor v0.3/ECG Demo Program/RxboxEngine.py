@@ -3,6 +3,7 @@ from wx import xrc
 import ECG
 import threading
 import time
+import copy
 import math
 import random
 from lead12dialog import Lead12Dialog
@@ -22,7 +23,7 @@ class MainState:
         self._app.frame.Show()
         
         self.plotgraph_panel = xrc.XRCCTRL(self._app.frame, 'plotgraph_panel')
-        self.plotter = CPlotter(self,panel=self.plotgraph_panel,mode='normal',cont=True,time=3)
+        self.plotter = CPlotter(self,panel=self.plotgraph_panel,mode='normal',cont=True,time=1)
         self.frameOn = True
         
         self._app.Bind(wx.EVT_BUTTON, self.PlayButtonPressed, id=xrc.XRCID('play_button'))
@@ -70,9 +71,12 @@ class MainState:
 
     def Get_ECG(self):
         self.ind = 0
+        past = 0
         while self.alive:
+            past = len(self.ECGData.lead_ecg['II'])
             self.ECGData.patient_ready()
-            self.ind = self.plotter.Plot(self.ECGData.lead_ecg['II'][-500:],xs=self.ind)
+            print len(self.ECGData.lead_ecg['II'])-past
+            self.ind = self.plotter.Plot(self.ECGData.lead_ecg['II'][past:],xs=self.ind)
             if len(self.ECGData.lead_ecg['II']) > 7500:
                 minus = len(self.ECGData.lead_ecg['II']) - 7500
                 self.ECGData.pop(end=len(self.ECGData.lead_ecg['II'][0:minus]))
@@ -81,19 +85,30 @@ class MainState:
     def Lead12ButtonPressed(self,evt):
         CreateDialog2 = Lead12Dialog2(self._app.frame, False, False, self._app.frame)
         CreateDialog2.Show()
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_I,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['I'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_II,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['II'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_III,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['III'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVR,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['VR'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVL,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['VL'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVF,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['VF'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V1,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['V1'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V2,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['V2'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V3,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['V3'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V4,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['V4'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V5,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['V5'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V6,mode='small',time=3,cont=False,data=self.ECGData.lead_ecg['V6'][-1500:])
-        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_bigII,mode='extend',time=15,cont=False,data=self.ECGData.lead_ecg['II'][-7500:])
+        self.plotter.Close()
+#        self.ECGData.stop()
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_I,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['I'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_II,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['II'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_III,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['III'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVR,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['VR'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVL,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['VL'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_aVF,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['VF'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V1,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['V1'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V2,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['V2'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V3,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['V3'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V4,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['V4'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V5,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['V5'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_V6,mode='small',time=3,tlen=3,cont=False,data=self.ECGData.lead_ecg['V6'][-1500:])
+        plot1 = CPlotter(CreateDialog2,panel=CreateDialog2.plotter_bigII,mode='extend',time=15,tlen=15,cont=False,data=self.ECGData.lead_ecg['II'][-7500:])
+        
+        self.plotter = CPlotter(self,panel=self.plotgraph_panel,mode='normal',cont=True,time=3)
+        self.plotter.Open()
+        """
+        self.ECGData = ECG.ECG(panel=self,port='/dev/ttyUSB0',daqdur=DURATION,ecmcheck=0,debug=True)
+        self.alive = True
+        self.get_thread = threading.Thread(target=self.Get_ECG)
+        self.get_thread.start()
+        """
 
 class Lead12Dialog2(Lead12Dialog):
     """ Class that creates the 12 Lead Dialog Window where the 12 leads will be plotted
@@ -116,19 +131,19 @@ class Lead12Dialog2(Lead12Dialog):
         sizersize = self.leadI_sizer.GetSize()
         bigsizer = self.leadII_sizer.GetSize()
         
-        self.plotter_I = wx.Panel(self)
-        self.plotter_II = wx.Panel(self)
-        self.plotter_III = wx.Panel(self)
-        self.plotter_aVR = wx.Panel(self)
-        self.plotter_aVL = wx.Panel(self)
-        self.plotter_aVF = wx.Panel(self)
-        self.plotter_V1 = wx.Panel(self)
-        self.plotter_V2 = wx.Panel(self)
-        self.plotter_V3 = wx.Panel(self)
-        self.plotter_V4 = wx.Panel(self)
-        self.plotter_V5 = wx.Panel(self)
-        self.plotter_V6 = wx.Panel(self)
-        self.plotter_bigII = wx.Panel(self)
+        self.plotter_I = wx.Panel(parent)
+        self.plotter_II = wx.Panel(parent)
+        self.plotter_III = wx.Panel(parent)
+        self.plotter_aVR = wx.Panel(parent)
+        self.plotter_aVL = wx.Panel(parent)
+        self.plotter_aVF = wx.Panel(parent)
+        self.plotter_V1 = wx.Panel(parent)
+        self.plotter_V2 = wx.Panel(parent)
+        self.plotter_V3 = wx.Panel(parent)
+        self.plotter_V4 = wx.Panel(parent)
+        self.plotter_V5 = wx.Panel(parent)
+        self.plotter_V6 = wx.Panel(parent)
+        self.plotter_bigII = wx.Panel(parent)
         
         self.leadI_sizer.Add(self.plotter_I, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)
         self.small_leadII_sizer.Add(self.plotter_II, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 4)

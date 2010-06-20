@@ -15,9 +15,7 @@ Editted by: Sy, Luke Wicent
 import serial
 import time
 import wx
-
-#rxbox library import
-from filters import besselfilter
+import copy
 
 import leadcalc
 
@@ -468,7 +466,7 @@ class ECG:
             for keys in self.lead_temp:
                 ecg_data = self.byte_decoder(packet[self.packet_index])
                 lead_value = self.payload_parser(packet,ecg_data)
-                self.lead_temp[keys].append(lead_value[1]*0.00263)
+                self.lead_temp[keys].append(lead_value[1])
                 self.packet_index = self.packet_index + lead_value[0]
              
         self.old_dataset_counter = new_dataset_counter
@@ -491,18 +489,13 @@ class ECG:
     def ecg_lead(self):
         filtered = {}
         if len(self.lead_temp['II'])>1:
-            for keys in self.lead_temp:
-                filtered[keys] = besselfilter(self.lead_temp[keys])
-                
-            filtered['I'] = leadcalc.LI(self.lead_temp['II'],self.lead_temp['III'])
-            filtered['VR'] = leadcalc.LVR(self.lead_temp['II'],self.lead_temp['III'])
-            filtered['VL'] = leadcalc.LVL(self.lead_temp['II'],self.lead_temp['III'])
-            filtered['VF'] = leadcalc.LVF(self.lead_temp['II'],self.lead_temp['III'])
+            self.lead_ecg['I'].extend(leadcalc.LI(self.lead_temp['II'],self.lead_temp['III']))    
+            self.lead_ecg['VR'].extend(leadcalc.LVR(self.lead_temp['II'],self.lead_temp['III']))
+            self.lead_ecg['VL'].extend(leadcalc.LVL(self.lead_temp['II'],self.lead_temp['III']))
+            self.lead_ecg['VF'].extend(leadcalc.LVF(self.lead_temp['II'],self.lead_temp['III']))
             
-            for keys in self.lead_ecg:
-                self.lead_ecg[keys].extend(filtered[keys])
-
             for keys in self.lead_temp:
+                self.lead_ecg[keys].extend(self.lead_temp[keys])
                 del self.lead_temp[keys][:]
         
     def set_ecm_threshold(self):
