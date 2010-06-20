@@ -23,23 +23,18 @@ if __name__ == '__main__':
 #        print 
 #        cnt = cnt + 1
 #    print cnt
+    data = open('data','w')
     try:
-        nECG = ECG.ECG(port=3,daqdur=3)
-        nECG.device_ready()
+        nECG = ECG.ECG(port='/dev/ttyUSB0',daqdur=3)
         i = 0
         later = time.time()+20
-        
-        while i < 10:
-            nECG.patient_ready()
-            nECG.pop(0,1000)
-            i = i + 1
         nECG.config_analog()
         nECG.start_ecg()
         nECG.start_flag = 1
         while later > time.time():
-			nECG.ecg.readline(size=100,eol=0xfd)
+    		data.write(nECG.ecg.readline(size=None,eol=0xfd))
+        nECG.stop_ecg()
+        nECG.ecg.close()
     except Exception:
         pass
-        raise
-    nECG.stop_ecg()
-    nECG.ecg.close()
+    data.close()

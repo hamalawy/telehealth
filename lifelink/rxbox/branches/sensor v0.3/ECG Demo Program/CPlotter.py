@@ -5,13 +5,14 @@ CPlotterMode = {'small':(308,162,4,2,297,156,'smallgrid.bmp'), \
                 'extend':(924,162,13,3,897,155,'extendgrid.bmp') }
 
 class CPlotter:
-    def __init__(self, parent, panel=None, mode='normal', time=3, cont=True,data=False):
+    def __init__(self, parent, panel=None, mode='normal', time=1, tlen=3, cont=True, data=False):
         if panel:
             self.panel = panel
         else:
             self.panel = wx.Panel(parent)
         self.mode = mode
         self.time = time
+        self.tlen = tlen
         self.cont = cont
         
         self.woffset = CPlotterMode[self.mode][2]
@@ -42,11 +43,11 @@ class CPlotter:
                                             
     def Plot(self, data, xs=0):
         if self.on:
-            inc = 1.0*self.walen/self.time/500
+            inc = 1.0*self.walen/self.tlen*self.time/len(data)
             for i in data:
                 self.comm.stdin.write("%d,%d\n"% \
                           (self.woffset+int(xs),\
-                           self.hoffset+int(round(self.halen/2-self.halen*i/3))))
+                           self.hoffset+int(round(i/2.0))))
                 xs = (xs+inc)%self.walen
         return xs
         
