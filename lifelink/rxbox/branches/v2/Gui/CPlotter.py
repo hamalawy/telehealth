@@ -45,8 +45,8 @@ class CPlotter:
             inc = 1.0*self.walen/self.time/500
             for i in data:
                 self.comm.stdin.write("%d,%d\n"% \
-                          (self.woffset+int(xs),\
-                           self.hoffset+int(round(self.halen/2-self.halen*i/0.00263/32768))))
+                          (self.woffset+int(round(xs)),\
+                           self.hoffset+int(round(self.halen/2-self.halen*i/3))))
                 xs = (xs+inc)%self.walen
         return xs
         

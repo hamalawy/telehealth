@@ -5,6 +5,8 @@ Authors:    Chiong, Charles Hernan
             Cornillez, Dan Simone
             Timothy John Ebido
             Thomas Rodinel Soler
+            Bangoy, Mark Jan
+            Sy, Luke Wicent
             Luis Sison, PhD
             ------------------------------------------------
             Instrumentation, Robotics and Control Laboratory
@@ -19,9 +21,9 @@ When PLAY button is pressed, the following scripts are done:
 - Database and tables are created (if already existing method is skipped)
 - Updates session, biomedical and patients information in the database
 """
-ECGPORT = '/dev/ttyUSB0'
+ECGPORT = '/dev/ttyUSB2'
 SPO2PORT = '/dev/ttyUSB1'
-BPPORT = '/dev/ttyUSB2'
+BPPORT = '/dev/ttyUSB0'
 
 import wx
 
@@ -581,8 +583,7 @@ class DAQPanel2(DAQPanel):
         self.with_patient_info = 0
         self.ClearPatient()
         self.referflag = 0    
-        self.pressure_timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
+ #       self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.bp_pressure_indicator.Enable(False)
         self.dbuuid = ""
         self.dbuuid = str(uuid.uuid1())
@@ -597,21 +598,18 @@ class DAQPanel2(DAQPanel):
         """Initializes timers for DAQ Panel of RxBox"""
         
         self.timer_spo2 = wx.Timer(self)
-        self.timer_bpdemo = wx.Timer(self)
+        self.timer_bpcyclic = wx.Timer(self)
         #self.timerEDF = wx.Timer(self)
-        self.pressure_timer = wx.Timer(self)
         self.timerSend = wx.Timer(self)
         self.timerECG_refresh = wx.Timer(self)
         self.timerECGNodeCheck = wx.Timer(self)
         self.timer_bpcyclic = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.acquirespo2, self.timer_spo2)
-        self.Bind(wx.EVT_TIMER, self.cyclicbpdemo, self.timer_bpdemo)
+        self.Bind(wx.EVT_TIMER, self.get_bpcyclic, self.timer_bpcyclic)
         #self.Bind(wx.EVT_TIMER, self.make_edf, self.timerEDF)
-        self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
         self.Bind(wx.EVT_TIMER, self.onSend, self.timerSend)
         self.Bind(wx.EVT_TIMER, self.displayECG, self.timerECG_refresh)
         self.Bind(wx.EVT_TIMER, self.onECGNodeCheck, self.timerECGNodeCheck)
-        self.Bind(wx.EVT_TIMER, self.get_bpcyclic, self.timer_bpcyclic)
         
     def init_config(self):
         """Initializes configuration file for Rxbox"""
@@ -644,7 +642,7 @@ class DAQPanel2(DAQPanel):
     def init_liveecg (self):
         """ Initialize live ecg """
         self.Biosignals = []
-        self.ECGDAQ = ECGLive.ECG(panel=self,port='/dev/ttyUSB0',daqdur=1,ecmcheck=0,debug=True)
+        self.ECGDAQ = ECGLive.ECG(panel=self,port=ECGPORT,daqdur=1,ecmcheck=0,debug=True)
         self.ECGDAQ.device_ready()
         self.ECGDAQ.stop()
         
@@ -715,14 +713,10 @@ class DAQPanel2(DAQPanel):
             self.bp_isCyclic = 1
             self.RxFrame.RxFrame_StatusBar.SetStatusText("Acquiring biomedical readings...")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring biomedical readings...')
-            
-            if self.config.get('bp', 'simulated') == '0':
-                self.get_bp()
-            else:
-                self.bpdata.get()
+            self.get_bp()
             
             if not self.ECGsimulated:
-                self.ECGDAQ = ECGLive.ECG(panel=self,port=ECGPORT,daqdur=1,ecmcheck=0,debug=True)
+                self.ECGDAQ = ECGLive.ECG(panel=self,port=ECGPORT,daqdur=1,ecmcheck=2,debug=True)
                 self.plotter = CPlotter(self,panel=self.plotpanel,mode='normal',cont=True,time=3,data=[0])
                 self.plotter.Open()
                 self.alive = True
@@ -734,7 +728,9 @@ class DAQPanel2(DAQPanel):
             #self.timerEDF.Start(15000)
             
         else:
-
+            self.cyclic_alive=False
+            self.bp_updatealive=False
+            self.bp_alive=False
             self.RxFrame.RxFrame_StatusBar.SetStatusText("RxBox Ready")
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'RxBox Ready')
             self.bpNow_Button.Enable(True)
@@ -745,15 +741,21 @@ class DAQPanel2(DAQPanel):
             self.Send_Button.Enable(False)
             self.lead12_button.Enable(False)
             self.timer_spo2.Stop()
-            self.timer_bpdemo.Stop()       
+#            self.timer_bpdemo.Stop()       
             #self.timerEDF.Stop()    
             self.timerSend.Stop()  
             self.timerECG_refresh.Stop()
             self.timerECGNodeCheck.Stop()
+            self.timer_bpcyclic.Stop()
+            self.make_edf()
+            self.spo2data.spo2_list=15*[0]
+            self.spo2data.bpm_list=15*[0]
+            
             if self.bp_isCyclic == 1:
-				self.timer_bpcyclic.Stop()
-				self.bp_isCyclic = 0
+                self.bp_isCyclic = 0
+                
             if not self.ECGsimulated:
+                print 'stopping thread'
                 self.alive = False
                 self.ECGDAQ.stop()
                 self.plotter.Close()
@@ -863,7 +865,8 @@ class DAQPanel2(DAQPanel):
                 self.ECGDAQ.patient_ready()
                 self.ind = self.plotter.Plot(self.ECGDAQ.lead_ecg['II'][-500:],xs=self.ind)
                 if len(self.ECGDAQ.lead_ecg['II']) > 7500:
-                    self.ECGDAQ.pop(end=(len(self.ECGDAQ.lead_ecg['II']) - 7500))
+                    minus = len(self.ECGDAQ.lead_ecg['II']) - 7500
+                    self.ECGDAQ.pop(end=len(self.ECGDAQ.lead_ecg['II'][0:minus]))
             except Exception, e:
                 self.ECGDAQ = ECGLive.ECG(panel=self,port=ECGPORT,daqdur=1,ecmcheck=0,debug=True)
                 print 'ECG Error', e
@@ -928,7 +931,7 @@ class DAQPanel2(DAQPanel):
     def acquirespo2(self, evt):
         """Starts spo2 data acquisition"""
         self.spo2data.get()
-        print 'Acquiring Spo2 data'
+#        print 'Acquiring Spo2 data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring Spo2 data')
        
     def cyclicbpdemo(self, evt):
@@ -936,7 +939,9 @@ class DAQPanel2(DAQPanel):
         self.bpdata.get()
         print 'Acquiring BP data'
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Acquiring BP data')
-               
+    
+
+        
     def make_edf(self):
         """Creates 15 second chunks of edf data"""
         
@@ -968,19 +973,7 @@ class DAQPanel2(DAQPanel):
                                 'bpm',0,300,0,300,'None',15,self.spo2data.bpm_list)
         self.Biosignals.append(Biosignal_SPO2)
         self.Biosignals.append(Biosignal_BPM) 
-        
-        temp = []
-        if not self.ECGsimulated:
-            for i in self.ECGDAQ.lead_ecg['II']:
-                temp.append(int(i/0.00263+16384))
-            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', len(temp), temp)
-        else:
-            for i in range(0,1200):
-                temp.append(int(self.ECGDAQ.ecg_list[i]/0.00263+16384))
-            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 1200, temp)
-            
-        self.spo2data.spo2_list = []
-        self.spo2data.bpm_list = []
+             
 
         if self.config.get('bp', 'simulated') == '0':
             print self.bp.sys_list
@@ -996,6 +989,7 @@ class DAQPanel2(DAQPanel):
                 self.Biosignals.append(Biosignal_pDias)
                 print self.bp.sys_list
                 print self.bp.dias_list
+                print 'hello'
                 nDataRecord = 5
         else:
             if (self.bpdata.sys_list != 0):
@@ -1009,10 +1003,21 @@ class DAQPanel2(DAQPanel):
                                         
                 self.Biosignals.append(Biosignal_pSys)
                 self.Biosignals.append(Biosignal_pDias)
+                print 'hi'
 #                self.bpdata.sys_list = []
 #                self.bpdata.dias_list = []
                 nDataRecord = 5
 #        self.Biosignals.append(Biosignal_ECG)
+        temp = []
+        if not self.ECGsimulated:
+            for i in self.ECGDAQ.lead_ecg['II']:
+                temp.append(int(i/0.00263+16384))
+            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', len(temp), temp)
+        else:
+            for i in range(0,1200):
+                temp.append(int(self.ECGDAQ.ecg_list[i]/0.00263+16384))
+            Biosignal_ECG = BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', 1200, temp)
+            print len(temp)
         self.Biosignals.append(Biosignal_ECG) 
         self.myedf = edf.EDF(self.patient1, self.Biosignals, self.strDate, self.strStarttime, self.strY2KDate + \
                         ': LifeLink 15 second data of CorScience modules', nDataRecord, 15)
@@ -1128,6 +1133,8 @@ class DAQPanel2(DAQPanel):
         if self.sendcount == 1:
             self.make_edf()
         self.timerECG_refresh.Stop()
+        self.bp_isCyclic = 0
+        self.timer_bpcyclic.Stop()  
         self.on_send = 1
         self.sendcount += 1
         print 'SENDING'
@@ -1161,12 +1168,14 @@ class DAQPanel2(DAQPanel):
         self.Send_Button.Enable(False)
         self.lead12_button.Enable(False)
         self.timer_spo2.Stop()
-        self.timer_bpdemo.Stop()       
+        self.timer_bpdemo.Stop()     
+
         self.timerECG_refresh.Stop()
         self.timerECGNodeCheck.Stop()
         if self.bp_isCyclic == 1:
-			self.timer_bpcyclic.Stop()
-			self.bp_isCyclic = 0
+            self.bp_isCyclic = 0
+            self.cyclic_alive = False
+            print 'stopping bp cycle'
         if not self.ECGsimulated:
             self.alive = False
             self.ECGDAQ.stop()
@@ -1214,16 +1223,18 @@ class DAQPanel2(DAQPanel):
         """
         print "on BP now toggled"
         self.bpNow_Button.Enable(False)
-        if self.config.get('bp', 'simulated') == '0':
-            if self.bp_isCyclic == 1:
-                print "cyclic"
+        self.get_bp()
+#        if self.config.get('bp', 'simulated') == '0':
+#            if self.bp_isCyclic == 1:
+#                print "cyclic"
                 #self.timer_bpcyclic.Stop()
-                self.get_bp()
-            else:
-                print "not cyclic"
-                self.get_bp()            
-        else:
-            self.bpdata.get()
+#                self.get_bp()
+#            else:
+#                print "not cyclic"
+#                self.get_bp()            
+#        else:
+#            self.bpdata.get()
+    
     def get_bpcyclic(self,event):
         """
         Get live cyclic BP reading using interval setting from BP combo box
@@ -1236,13 +1247,98 @@ class DAQPanel2(DAQPanel):
         """
         Acquire live one-shot BP reading
         """
-        print "get bp"
+        print "getting bp"
+        self.timer_bpcyclic.Stop()
         self.bp_pressure_indicator.Enable(True)
+        self.press=0
+        self.cyclic_alive=False
         self.bpNow_Button.Enable(False)#disable the bp acquire button until the bp reaidng is finished
-        self.bp.send_request() #request bp not yet reading
-        self.pressure_timer.Start(200)#one shot/ cyclic updates the readings every 200ms
-        self.count=1
+        if self.config.get('bp', 'simulated') == '0':
+            self.bp.send_request()
+        else:
+            self.bpdata.get()
+        self.bp_alive=True       
+        self.bp_updatealive=True 
+        self.bp_get_thread = threading.Thread(target=self.Get_bp)
+        self.bp_get_thread1 = threading.Thread(target=self.thread_bplabel)
+        self.bp_get_thread.start()
+        self.bp_get_thread1.start()
+        reload_bp_str = self.setBPmins_combobox.GetValue()
+        self.reload_bp = int(reload_bp_str[0:2])*60000
+        print self.reload_bp
     
+    def Get_bp(self):
+        while self.bp_alive:
+#            print "threading"
+            if self.config.get('bp', 'simulated') == '0':
+                press = self.bp.get_reply()
+                self.bp.nibp.read(1)
+                if ord(press[1])==2:
+                    continue
+                self.press = int(press[1:4])
+                if self.press== 999:
+                    self.bp_alive=False
+            else:
+                self.press = int(self.file.readline())
+                if self.press== 999:
+                    self.bp_alive=False
+                time.sleep(0.08)
+        print "Get_bp stop"
+                
+    def thread_bplabel(self):
+        while self.bp_updatealive:
+#            print "update_thread"
+            if self.config.get('bp', 'simulated') == '0':
+                time.sleep(0.2)
+                if self.press==999:
+                    self.bp.get()
+                    self.bp_updatealive=False
+                wx.CallAfter(self.pressure_update_live)
+            else:
+                time.sleep(0.1)
+                if self.press==999:
+                    self.bpdata.bp_finished()
+                    self.bp_updatealive=False
+                wx.CallAfter(self.pressure_update_demo)
+        print "thread bp stop"
+
+    def pressure_update_live(self):
+        if self.press != 999:
+            self.bpNow_Button.Enable(False)
+            self.bp_pressure_indicator.SetValue(self.press)
+            self.bp_infolabel.SetLabel(str(self.press)+' mmHg')
+            #self.bp_pressure_indicator.SetValue(press)
+        else:
+            self.bp_updatealive=False
+            self.bp_alive=False
+            self.bp_pressure_indicator.SetValue(0)
+            self.bp_infolabel.SetLabel('BP Acquired')
+            self.bp_pressure_indicator.Enable(False)
+            self.bpNow_Button.Enable(True)
+            self.bpvalue_label.SetLabel(str(self.bp.bp_systolic)+'/'+str(self.bp.bp_diastolic))
+            if self.bp_isCyclic==1:
+                self.timer_bpcyclic.Start(self.reload_bp)
+
+    def pressure_update_demo(self):
+        if self.press != 999:
+            self.bpNow_Button.Enable(False)
+            self.bp_pressure_indicator.SetValue(self.press)
+            self.bp_infolabel.SetLabel(str(self.press)+' mmHg')
+            #self.bp_pressure_indicator.SetValue(press)
+        else:
+            self.bp_updatealive=False
+            self.bp_alive=False
+            self.bp_pressure_indicator.SetValue(0)
+            self.bp_infolabel.SetLabel('BP Acquired')
+            self.bp_pressure_indicator.Enable(False)
+            self.bpNow_Button.Enable(True)
+            self.bpvalue_label.SetLabel(str(self.bpdata.systolic_value)+'/'+str(self.bpdata.diastolic_value))
+            if self.bp_isCyclic==1:            
+                self.timer_bpcyclic.Start(self.reload_bp)
+            
+            
+                
+            
     def bp_status_check(self):
         """Runs the power-on self test (POST) and the device ready checks of BP"""
         self.bp.POST()
@@ -1252,55 +1348,6 @@ class DAQPanel2(DAQPanel):
     def updateBPDisplay(self, data):
 	"""Updates the BP reading in the display panel"""
         self.bpvalue_label.SetLabel(data) 
-        
-    def pressure_update(self,event):
-        """Method that handles the inflating bar of blood pressure
-        If BP is cyclic, checks the BP combo box and starts BP timer
-        If BP is not cyclic, gets one-shot BP reading
-        """
-        if self.config.get('bp', 'simulated') == '0':
-			#updates only for live, 200ms interval
-			press = self.bp.get_reply()
-			self.bp.nibp.read(1)
-			#print "pressure: ", press, " mmHg"
-			if ord(press[1])==2:
-				return
-			press = int(press[1:4])
-			#print press
-			if press != 999:
-				self.bpNow_Button.Enable(False)
-				self.bp_pressure_indicator.SetValue(press)
-				self.bp_infolabel.SetLabel(str(press)+' mmHg')
-				#print str(press)
-				self.count=0
-				#self.bp_pressure_indicator.SetValue(press)
-			else:
-				self.bp_pressure_indicator.SetValue(0)
-				self.bp_infolabel.SetLabel('BP Acquired')
-				self.bp_pressure_indicator.Enable(False)
-				self.bpNow_Button.Enable(True)
-				self.bp.get() #extract systolic and diastolic pressure readings
-				self.pressure_timer.Stop()
-				if self.bp_isCyclic == 1:
-					print "cyclic BP\n\n\n"
-					self.timer_bpcyclic.Stop()
-					reload_bp_str = self.setBPmins_combobox.GetValue()
-					self.bpreloadlive = int(reload_bp_str[0:2])*1000*12  #60
-					self.timer_bpcyclic.Start(self.bpreloadlive)
-         
-        else:
-            #demo
-            press = int(self.file.readline())
-            if press != 999:
-                self.bp_pressure_indicator.SetValue(press)
-            else:
-                self.file.close()
-                self.pressure_timer.Stop()
-                self.bp_pressure_indicator.Enable(False)
-                self.bpNow_Button.Enable(True)
-                self.setBPmins_combobox.Enable(True)
-                self.bpdata.bp_finished()
-            
         
     def startSaveThread (self):
 ##        """ calls makeEDF.SaveThread.run() """

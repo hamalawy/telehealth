@@ -22,6 +22,7 @@ from matplotlib import pyplot
 import filters
 from reader import Reader
 from matplotlib import pyplot
+import copy
 
 class Spo2sim:
     """ Class for simulator of pulse oximeter module
@@ -50,8 +51,8 @@ class Spo2sim:
         self.spo2sim_counter = 0
         self.spo2 = 0
         self.bpm = 0        
-        self.spo2_list = []
-        self.bpm_list = []
+        self.spo2_list = 15*[0]
+        self.bpm_list = 15*[0]
         self.instantiate_file()
     
     def instantiate_file(self):
@@ -95,9 +96,15 @@ class Spo2sim:
         self.update_spo2_display()
         self.spo2sim_counter += 1
         
-        self.spo2_list.append(int(self.spo2_value))
-        self.bpm_list.append(int(self.hr_value))
-        
+        self.spo2_temp=copy.copy(self.spo2_list)
+        self.bpm_temp=copy.copy(self.bpm_list)
+        self.spo2_temp.append(int(self.spo2_value))
+        self.bpm_temp.append(int(self.hr_value))
+        self.spo2_temp.pop(0)
+        self.bpm_temp.pop(0)
+        self.spo2_list=copy.copy(self.spo2_temp)
+        self.bpm_list=copy.copy(self.bpm_temp)
+
         if (self.spo2sim_counter % 15) == 0:
             self.spo2sim_counter = 0
         
@@ -164,12 +171,10 @@ class BpSim:
         
         self.parent_panel.bp_infolabel.SetLabel('Getting BP')
         self.parent_panel.bpNow_Button.Enable(False)
-        reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
-        self.reload_bp = int(reload_bp_str[0:2])*1000*60
-
+#        reload_bp_str = self.parent_panel.setBPmins_combobox.GetValue()
+#        self.reload_bp = int(reload_bp_str[0:2])*1000*60
         self.parent_panel.bp_pressure_indicator.Enable(True)
         self.parent_panel.file = open('pressure.txt','r')
-        self.parent_panel.pressure_timer.Start(20)
         
     def bp_finished(self):
         """Method that is called after bp acquistion
@@ -183,8 +188,7 @@ class BpSim:
         self.sys_list = []
         self.dias_list = []
         
-        self.parent_panel.bp_infolabel.SetLabel('BP acquired')
-        self.parent_panel.bpNow_Button.Enable(True)
+
         
         self.systolic_value = self.bpread.ReadLine(self.bpfile)
         self.diastolic_value = self.bpread.ReadLine(self.bpfile)
@@ -203,11 +207,12 @@ class BpSim:
         self.update_bp_display()        
         self.bpsim_counter += 1
         
-        if self.parent_panel.bp_isCyclic == 1:
-            self.parent_panel.timer_bpdemo.Start(self.reload_bp)
+#        if self.parent_panel.bp_isCyclic == 1:
+#            self.parent_panel.timer_bpdemo.Start(self.reload_bp)
 
         if (self.bpsim_counter % 15) == 0:
             self.bpsim_counter = 0
+        self.parent_panel.file.close()
         
 class EcgSim:
     """ Class for simulator of electrocardiography (ECG) module

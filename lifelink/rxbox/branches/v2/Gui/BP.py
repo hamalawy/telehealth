@@ -3,6 +3,7 @@ import threading
 import time
 import wx
 from threading import Thread
+import copy
 
 class BP:
     """manages data request and processes reply packets to/from NIBP module"""
@@ -106,8 +107,6 @@ class BP:
         print "Diastolic Pressure: ",self.bp_diastolic
         self.sys_list=15*[self.bp_systolic]
         self.dias_list=15*[self.bp_diastolic]
-        
-        self.parent.bpvalue_label.SetLabel(str(self.bp_systolic)+'/'+str(self.bp_diastolic))
             
     def checksum(data):
         """

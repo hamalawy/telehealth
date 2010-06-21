@@ -15,7 +15,6 @@ Editted by: Sy, Luke Wicent
 import serial
 import time
 import wx
-import copy
 
 #rxbox library import
 from filters import besselfilter
@@ -110,12 +109,9 @@ class ECG:
         except serial.SerialException:
             self.Print("Unable to open COM port %d\nPlease check serial port settings and ECG connection."%self.port)
             self.serialstatus = False
-        
-        try:    
-            self.stop_ecm()     #in case the program is hang in ecm mode or ecg mode, we can close it properly
-            self.stop_ecg()
-        except:
-            pass
+            
+        self.stop_ecm()     #in case the program is hang in ecm mode or ecg mode, we can close it properly
+        self.stop_ecg()
  
     def Print(self, msg=""):
         """self.Print only if in debug mode"""
@@ -496,8 +492,7 @@ class ECG:
         filtered = {}
         if len(self.lead_temp['II'])>1:
             for keys in self.lead_temp:
-                #filtered[keys] = besselfilter(self.lead_temp[keys])
-                filtered[keys] = copy.copy(self.lead_temp[keys])
+                filtered[keys] = besselfilter(self.lead_temp[keys])
                 
             filtered['I'] = leadcalc.LI(self.lead_temp['II'],self.lead_temp['III'])
             filtered['VR'] = leadcalc.LVR(self.lead_temp['II'],self.lead_temp['III'])
