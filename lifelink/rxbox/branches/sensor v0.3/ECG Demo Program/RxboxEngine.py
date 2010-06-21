@@ -21,9 +21,8 @@ class MainState:
         """Start state"""
         self._app.frame = self._app.resMain.LoadFrame(None, 'ECGFrame')
         self._app.frame.Show()
-        
         self.plotgraph_panel = xrc.XRCCTRL(self._app.frame, 'plotgraph_panel')
-        self.plotter = CPlotter(self,panel=self.plotgraph_panel,mode='normal',cont=True,time=1)
+        self.plotter = CPlotter(panel=self.plotgraph_panel, mode='normal', sample_time=1, plot_timelength=3, cont=True, filterOn = True, data=False)
         self.frameOn = True
         
         self._app.Bind(wx.EVT_BUTTON, self.PlayButtonPressed, id=xrc.XRCID('play_button'))

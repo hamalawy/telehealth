@@ -11,10 +11,12 @@ int XOFFSET = 16;
 char BMPIMAGE[50];
 const char* WINDOW_TITLE = "SDL Start";
 int cont = 1;
+int filter = 1;
+int CENTER = WINDOW_HEIGHT/2;
    
 int main(int argc, char **argv)
 {
-   scanf("%d,%d,%d,%d,%s",&WINDOW_WIDTH,&WINDOW_HEIGHT,&XOFFSET,&cont,BMPIMAGE);
+   scanf("%d,%d,%d,%d,%d,%d,%s",&WINDOW_WIDTH,&WINDOW_HEIGHT,&XOFFSET,&CENTER,&cont,&filter,BMPIMAGE);
    
    SDL_Init( SDL_INIT_VIDEO );
 
@@ -36,7 +38,8 @@ int main(int argc, char **argv)
    
    scanf("%d,%d",&x,&y);
    if(x==WINDOW_WIDTH) return 0;
-   y = WINDOW_HEIGHT/2 - oBPfilterFS500(y, 2);
+   if(filter) y = CENTER - oBPfilterFS500(y, 2);
+   else y = CENTER - y;
    x2=x;
    y2=y;
    printf("Plotter Start\n");
@@ -53,8 +56,9 @@ int main(int argc, char **argv)
       
       scanf("%d,%d",&x,&y);
       if(x==WINDOW_WIDTH) break;
-      y = WINDOW_HEIGHT/2 - oBPfilterFS500(y, 2);
-      if(x==XOFFSET){
+      if(filter) y = CENTER - oBPfilterFS500(y, 2);
+      else y = CENTER - y;
+      if(x<=XOFFSET){
     	 SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
     	 SDL_BlitSurface(grid, NULL, screen, &gridLocation);
     	 x1 = XOFFSET;
@@ -71,7 +75,7 @@ int main(int argc, char **argv)
       lineRGBA(screen, x1, y1+1, x2, y2+1, 255, 0, 0, 255);
       lineRGBA(screen, x1, y1, x2, y2, 255, 0, 0, 255);
 //      lineRGBA(screen, x1, y1-1, x2, y2-1, 255, 0, 0, 255);
-      if(cont && x1%7==1) SDL_Flip(screen);
+      if(cont && x1%2==1) SDL_Flip(screen);
 //      SDL_Delay(0.01);
 //        printf("%d %d\n",x1,y1);
    }
