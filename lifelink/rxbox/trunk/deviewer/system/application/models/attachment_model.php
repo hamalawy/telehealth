@@ -22,6 +22,13 @@ class Attachment_model extends Model {
 	}
     }
 
+    function getFrom($msg_uuid)
+    {
+	$query = $this->db->get_where('msg_headers', array('msg_uuid' => $msg_uuid, 'field' => 'from'));
+        $result = $query->result();
+        return $result[0]->value;
+    }
+
     function getSubject($msg_uuid)
     {
         $query = $this->db->get_where('msg_headers', array('msg_uuid' => $msg_uuid, 'field' => 'subject'));
@@ -34,6 +41,25 @@ class Attachment_model extends Model {
 	$query = $this->db->get_where('msg_contents', array('msg_uuid' => $msg_uuid));
 	$result = $query->result();
 	return $result[0]->body;
+    }
+
+    function setReply($msg_uuid, $subject, $reply, $receiver, $de_email)
+    {
+	$content = "<msg><headers subject='$subject' from='$de_email' to='$receiver'/><content contact='$receiver' text_content='$reply'/><attachments /></msg>";
+	$data = array(
+		'msg_uuid'=> $msg_uuid,
+		'receiver'=> $receiver,
+		'content' => $content,
+		'mode' => 'triage',
+		'module' => 'buddyworks',
+		'date_sent' => date("Y-m-d H:i:s")
+		);
+	$query = $this->db->insert('msg_outgoing', $data);
+/*
+	echo "<pre>";
+	print_r($data);
+	echo "</pre>";
+*/
     }
 
 }

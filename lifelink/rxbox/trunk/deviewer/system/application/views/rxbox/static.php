@@ -57,37 +57,33 @@ $(function () {
 
   </div>
 */ ?>
-
-  <div class="ui-widget ui-widget-content ui-corner-all">
-  <center><h2 class="widget-headers ui-widget-header ui-corner-all">Rx Panel</h2></center>
-
 <center>
-<table width="95%" border="1" style="border-collapse: collapse; margin: 2%; border:1px solid #DFD9C3;">
+<table width="98%" border="1" class="ui-widget ui-widget-content" style="border-collapse: collapse; border:1px solid #DFD9C3;">
 <tr>
 <td height="114" colspan="4" valign="top">
-   <center><h3 class="widget-headers ui-widget-header">Patient and Referral Information</h3></center>
+   <center><h3 class="widget-headers ui-widget-header ui-corner-all">Patient and Referral Information</h3></center>
    <h2><?php echo $subject; ?></h2><h3><?php echo $patient;?></h3><p><?php echo $description; ?></p></td>
 </tr>
 <tr>
-<td height="329" colspan="3" rowspan="2">
-<center><h3 class="widget-headers ui-widget-header">Electrocardiograph</h3>
-<center><div id="placeholder" style="width:57em;height:26em;"></div></center>
+<td height="329" colspan="3" rowspan="2" valign="top">
+<center><h3 class="ui-corner-all widget-headers ui-widget-header">Electrocardiograph</h3>
+<center><div id="placeholder" style="width: 75em; height: 26em;"></div></center>
 </td>
-<td height="275" valign="top"><center><h3 class="widget-headers ui-widget-header">Photos</h3></td>
+<td height="275" valign="top"><center><h3 class="ui-corner-all widget-headers ui-widget-header">Photos</h3></td>
 </tr>
 <tr>
 <td rowspan="3" valign="top">
-      <center><h3 class="ui-widget-header widget-headers">Reply</h3></center>
+      <center><h3 class="ui-corner-all ui-widget-header widget-headers">Reply</h3></center>
       <form name="replyForm" method="post" action="<?php echo current_url(); ?>">
-        <div class="spaced"><textarea name="msg" id='msgArea' rows="8" cols="80" tabindex="2" <?php if (!empty($msg)) echo "value='$msg'";?>></textarea></div>
+        <div class="spaced"><textarea name="msg" id='msgArea' rows="8" cols="70" tabindex="2" <?php if (!empty($msg)) echo "value='$msg'";?>></textarea></div>
         <center><div class="spaced"><button type="submit" class="ui-state-default ui-corner-all">Send</button></div></center><br/>
       </form>
 </td>
 </tr>
 <tr>
-<td width="23%"><center><h3 class="widget-headers ui-widget-header">Blood Pressure</h3></center></td>
-<td width="23%"><center><h3 class="widget-headers ui-widget-header">Heart Rate</h3></center></td>
-<td width="24%"><center><h3 class="widget-headers ui-widget-header">Blood Oxygen Saturation</h3></center></td>
+<td width="23%"><center><h3 class="ui-corner-all widget-headers ui-widget-header">Blood Pressure</h3></center></td>
+<td width="23%"><center><h3 class="ui-corner-all widget-headers ui-widget-header">Heart Rate</h3></center></td>
+<td width="24%"><center><h3 class="ui-corner-all widget-headers ui-widget-header">Blood Oxygen Saturation</h3></center></td>
 </tr>
 <tr>
 <td height="86">
@@ -102,7 +98,7 @@ $(function () {
 </tr>
 </table>
 </center>
-    </div></div>
+    </div>
 
 <?php $this->load->view('footer'); ?>
 

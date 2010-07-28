@@ -39,8 +39,8 @@ $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
 $db['default']['username'] = "msghandler";
-$db['default']['password'] = "";
-$db['default']['database'] = "";
+$db['default']['password'] = "N1T2h3C4";
+$db['default']['database'] = "msghandler";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
 $db['default']['pconnect'] = TRUE;
