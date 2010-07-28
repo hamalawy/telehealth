@@ -10,10 +10,6 @@
         function session($view='static', $q='')
         {
 	    $data['sent']=false;
-	    if (!empty($_POST['msg'])) {
-		$data['sent']= true;
-		$data['msg'] = $_POST['msg'];
-	    }
 
             $data['title'] = "Domain Expert's Window";
             $data['extraHeadContent'] =
@@ -42,6 +38,10 @@
             $attachments = $this->attachment_model->getAttachmentsByHash($q);
 	    $data['subject'] = $this->attachment_model->getSubject($attachments[0]->msg_uuid);
 	    $data['description'] = $this->attachment_model->getBody($attachments[0]->msg_uuid);
+	
+	    //FIXME: 
+	    //$data['from'] = $this->attachment_model->getFrom($attachments[0]->msg_uuid);
+	    $data['from'] = 'dttb.rxbox@gmail.com';
 
 	    //TODO: Check file extension first
 
@@ -52,7 +52,7 @@
 	    $data['q'] = $q;
 	    $data['view'] = $view;
 
-            exec('cd /home/jerome/public_html/deviewer/edfviewer && python viewer2.py ' . $filename, $edf);
+	    exec('cd /home/jerome/public_html/deviewer/edfviewer && python viewer2.py ' . $filename, $edf);
             $data['ecg'] = $edf[1];
             $data['patient'] = $edf[0];
             $data['bp'] = $edf[3];
@@ -62,6 +62,11 @@
 
 	    #delete temporary file
 	    unlink($filename);
+
+            if (!empty($_POST['msg'])) {
+                $data['msg'] = $_POST['msg'];
+                $data['sent'] = $this->attachment_model->setReply($attachments[0]->msg_uuid, $data['subject'], $data['msg'], $data['from'], 'de.hospital@gmail.com');
+            }
 
 
             $this->load->view("rxbox/$view", $data);
@@ -76,7 +81,6 @@
 
 		return $tmpfilename;
 	}
-
     }
         
 ?>
