@@ -14,11 +14,11 @@ print c_inst.LocalPatientID
 print [list(a) for a in c]
 
 #Spo2
-print x[1][len(x[1])-1]
+print x[0][len(x[0])-1]
 
 #BP
-print str(x[2][len(x[2])-1]) + '/' + str(x[0][len(x[0])-1])
+print str(x[2][len(x[2])-1]) + '/' + str(x[3][len(x[3])-1])
 
 #Heart rate
-print x[3][len(x[3])-1]
+print x[1][len(x[1])-1]
 
