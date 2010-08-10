@@ -1,9 +1,29 @@
 <?php $this->load->view('header'); ?>
-
 <script id="source" language="javascript" type="text/javascript">
 $(function () {
+    var placeholder = $("#placeholder");
     var d1 = <?php echo $ecg; ?>;
-    $.plot($("#placeholder"), [d1]);
+    var options = {
+	xaxis: { max: 3, panRange: [0, 15] },
+	yaxis: { min: 16084, max: 16684, panRange: [16084, 16684]  },
+	shadowSize: 0,
+        pan: {
+            interactive: true
+        }
+    };
+
+    var plot = $.plot(placeholder, [d1], options);
+
+    function addArrow(dir, right, top, offset) {
+        $('<img class="button" src="<?php echo base_url() ?>public/images/arrow-' + dir + '.gif" style="position: absolute; right:' + right + 'px;top:' + top + 'px">').appendTo(placeholder).click(function (e) {
+            e.preventDefault();
+            plot.pan(offset);
+        });
+    }
+ 
+    addArrow('left', 1020, 10, { left: -50 });
+    addArrow('right', 10, 10, { left: 50 });
+
 });
 </script>
 
@@ -67,7 +87,7 @@ $(function () {
 <tr>
 <td height="329" colspan="3" rowspan="2" valign="top">
 <center><h3 class="ui-corner-all widget-headers ui-widget-header">Electrocardiograph</h3>
-<center><div id="placeholder" style="width: 75em; height: 26em;"></div></center>
+<center><div id="placeholder" style="width: 1080px; height: 367px;"></div></center>
 </td>
 <td height="275" valign="top"><center><h3 class="ui-corner-all widget-headers ui-widget-header">Photos</h3></td>
 </tr>
