@@ -13,7 +13,7 @@ $(function () {
 
     var ticks = [];
     for (i=0;i<=7500;i++) {
-	if(i%250 == 0) {
+	if(i%500 == 0) {
 		ticks.push([i, Math.floor(i * .002)]);
 	}
 	else if (i%20 ==0) {
@@ -32,7 +32,7 @@ $(function () {
         }
     };
 
-    var plot = $.plot(placeholder, [d1], options);
+    var plot = $.plot(placeholder,  [d1], options);
 
     function addArrow(dir, right, top, offset) {
         $('<img class="button" src="<?php echo base_url() ?>public/images/arrow-' + dir + '.gif" style="position: absolute; right:' + right + 'px;top:' + top + 'px">').appendTo(placeholder).click(function (e) {
