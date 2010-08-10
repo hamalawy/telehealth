@@ -16,6 +16,8 @@
                 array(
                     '<script type="text/javascript" src="' . base_url() . 'public/js/flot/jquery.js"></script>',
                     '<script type="text/javascript" src="' . base_url() . 'public/js/flot/jquery.flot.js"></script>',
+		    '<script type="text/javascript" src="' . base_url() . 'public/js/flot/jquery.flot.image.js"></script>',
+		    '<script type="text/javascript" src="' . base_url() . 'public/js/flot/jquery.flot.navigate.js"></script>',
 		    //'<script type="text/javascript" src="' . base_url() . 'public/js/jsjac-1.3.2/jsjac.js"></script>',
 		    //'<script type="text/javascript" src="' . base_url() . 'public/js/chat.js"></script>',
 		    '<link rel="stylesheet" type="text/css" href="' . base_url() . 'public/jquery-ui/css/south-street/jquery-ui.css"></link>',

@@ -4,7 +4,7 @@ c_inst=edfviewer.EDF_File(sys.argv[1])
 # edf file input
 x=c_inst.parseDataRecords()
 
-y = range(len(x[4]));
+y = [i * 0.002 for i in range(len(x[4]))];
 c = zip(y,x[4])
 
 #patient info
