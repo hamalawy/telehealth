@@ -8,31 +8,61 @@ function formatter(val, axis){
 }
 
 $(function () {
+    var samples = 7500;
+    var frequency = 500;
+    var ymin = 16084;
+    var ymax = 16684;
+    var xmax = 1500;
+    var maj_grid_color = "#C0C0C0";
+    var grid_bgcolor = "#FFFFFF";
+
     var placeholder = $("#placeholder");
     var d1 = <?php echo $ecg; ?>;
 
-    var ticks = [];
-    for (i=0;i<=7500;i++) {
-	if(i%500 == 0) {
-		ticks.push([i, Math.floor(i * .002)]);
+    var xticks = [];
+    for (i=0;i<=samples;i++) {
+	if(i%100 == 0) {
+		xticks.push([i, (i*.002).toFixed(2)]);
 	}
 	else if (i%20 ==0) {
-		ticks.push([i, ""]);
+		xticks.push([i, ""]);
 	}
-   }
+    }
+
+    var yticks = [];
+    for (i=ymin;i<=ymax;i+=20) {
+        yticks.push([i, ""]);
+    }
 
 
     var options = {
-	color: "rgb(255, 0, 0)",
-	xaxis: { ticks: ticks, max: 1500, panRange: [0, 7500] },
-	yaxis: { min: 16084, max: 16684, panRange: [16084, 16684]  },
-	shadowSize: 0,
-        pan: {
-            interactive: true
-        }
+	series: {
+	    lines: { show: true},
+	    shadowSize: 0
+	},
+	colors: ["#ff0000", "#00ff00", "#000033"],
+	grid: {
+	    backgroundColor: grid_bgcolor,
+	    markings: function (axes) {
+	    	var markings =[];
+	    	for (var x = Math.floor(axes.xaxis.min); x < samples; x += 100)
+	    	      markings.push({ xaxis: { from: x, to: x }, color: maj_grid_color });
+                for (var y = Math.floor(axes.yaxis.min); y < axes.yaxis.max; y += 100)
+                      markings.push({ yaxis: { from: y, to: y }, color: maj_grid_color });
+	    	return markings;
+	    }
+	},
+	xaxis: { position: 'bottom', ticks: xticks, max: xmax, panRange: [0, samples] },
+	yaxis: { ticks: yticks, min: ymin, max: ymax, panRange: [ymin, ymax] },
+        pan: { interactive: true,  },
     };
 
     var plot = $.plot(placeholder,  [d1], options);
+
+    //placeholder.bind('plotpan', function (event, plot) {
+    //    var axes = plot.getAxes();
+    //});
+
 
     function addArrow(dir, right, top, offset) {
         $('<img class="button" src="<?php echo base_url() ?>public/images/arrow-' + dir + '.gif" style="position: absolute; right:' + right + 'px;top:' + top + 'px">').appendTo(placeholder).click(function (e) {
@@ -41,8 +71,8 @@ $(function () {
         });
     }
  
-    addArrow('left', 1020, 10, { left: -50 });
-    addArrow('right', 10, 10, { left: 50 });
+    addArrow('left', 1050, 10, { left: -plot.width()/15 });
+    addArrow('right', 10, 10, { left: plot.width()/15 });
 
 });
 </script>
