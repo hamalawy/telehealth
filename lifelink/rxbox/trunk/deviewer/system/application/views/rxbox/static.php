@@ -1,10 +1,30 @@
 <?php $this->load->view('header'); ?>
 <script id="source" language="javascript" type="text/javascript">
+function formatter(val, axis){
+    if (val == "11.0"){
+	return "1.0";
+    }
+    else return "";
+}
+
 $(function () {
     var placeholder = $("#placeholder");
     var d1 = <?php echo $ecg; ?>;
+
+    var ticks = [];
+    for (i=0;i<=7500;i++) {
+	if(i%250 == 0) {
+		ticks.push([i, Math.floor(i * .002)]);
+	}
+	else if (i%20 ==0) {
+		ticks.push([i, ""]);
+	}
+   }
+
+
     var options = {
-	xaxis: { max: 3, panRange: [0, 15] },
+	color: "rgb(255, 0, 0)",
+	xaxis: { ticks: ticks, max: 1500, panRange: [0, 7500] },
 	yaxis: { min: 16084, max: 16684, panRange: [16084, 16684]  },
 	shadowSize: 0,
         pan: {
