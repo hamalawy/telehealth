@@ -1,4 +1,37 @@
 <?php $this->load->view('header'); ?>
+<style type="text/css"> 
+	/* jQuery lightBox plugin - Gallery style */
+	#gallery {
+		text-align:left;
+		padding: 5px;
+	}
+	#gallery ul { list-style: none; }
+	#gallery ul li { display: inline; }
+	#gallery ul img {
+		border: 5px solid #D4CCB0;
+		border-width: 5px 5px 20px;
+	}
+	#gallery ul a:hover img {
+		border: 5px solid #fff;
+		border-width: 5px 5px 20px;
+		color: #fff;
+	}
+	#gallery ul a:hover { color: #fff; }
+</style> 
+
+<script type="text/javascript">
+$(function() {
+	$('#gallery a').lightBox({
+	    overlayOpacity: 0.6,
+	    imageLoading: '<?php echo base_url() ?>public/lightbox/images/lightbox-ico-loading.gif',
+	    imageBtnClose: '<?php echo base_url() ?>public/lightbox/images/lightbox-btn-close.gif',
+	    imageBtnPrev: '<?php echo base_url() ?>public/lightbox/images/lightbox-btn-prev.gif',
+	    imageBtnNext: '<?php echo base_url() ?>public/lightbox/images/lightbox-btn-next.gif',
+   	}); // Select all links in object with gallery ID
+});
+
+</script>
+
 <script id="source" language="javascript" type="text/javascript">
 function formatter(val, axis){
     if (val == "11.0"){
@@ -132,14 +165,44 @@ $(function () {
 <tr>
 <td height="114" colspan="4" valign="top">
    <center><h3 class="widget-headers ui-widget-header ui-corner-all">Patient and Referral Information</h3></center>
-   <h2><?php echo $subject; ?></h2><h3><?php echo $patient;?></h3><p><?php echo $description; ?></p></td>
+   <div style="margin-left: 50px;"><h2><?php echo $subject; ?></h2><h3><?php echo $patient;?></h3><p><?php echo $description; ?></p></div></td>
 </tr>
 <tr>
 <td height="329" colspan="3" rowspan="2" valign="top">
 <center><h3 class="ui-corner-all widget-headers ui-widget-header">Electrocardiograph</h3>
 <center><div id="placeholder" style="width: 1080px; height: 367px;"></div></center>
 </td>
-<td height="275" valign="top"><center><h3 class="ui-corner-all widget-headers ui-widget-header">Photos</h3></td>
+<td height="275" valign="top"><center><h3 class="ui-corner-all widget-headers ui-widget-header">Photos</h3>
+<div id="gallery">
+                	<ul>
+                    	<li>
+                        	<a href="<?php echo base_url() ?>public/lightbox/photos/image1.jpg" title="Image a">
+                            	<img src="<?php echo base_url() ?>public/lightbox/photos/thumb_image1.jpg" width="72" height="72" alt="">
+                            </a>
+                        </li>
+                    	<li>
+                        	<a href="<?php echo base_url() ?>public/lightbox/photos/image2.jpg" title="Image b">
+                            	<img src="<?php echo base_url() ?>public/lightbox/photos/thumb_image2.jpg" width="72" height="72" alt="">
+                            </a>
+                        </li>
+                    	<li>
+                        	<a href="<?php echo base_url() ?>public/lightbox/photos/image3.jpg" title="Image c">
+                            	<img src="<?php echo base_url() ?>public/lightbox/photos/thumb_image3.jpg" width="72" height="72" alt="">
+                            </a>
+                        </li>
+                    	<li>
+                        	<a href="<?php echo base_url() ?>public/lightbox/photos/image4.jpg" title="Image d">
+                            	<img src="<?php echo base_url() ?>public/lightbox/photos/thumb_image4.jpg" width="72" height="72" alt="">
+                            </a>
+                        </li>
+                        <li>
+                        	<a href="<?php echo base_url() ?>public/lightbox/photos/image5.jpg" title="Image e">
+                            	<img src="<?php echo base_url() ?>public/lightbox/photos/thumb_image5.jpg" width="72" height="72" alt="">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+</td>
 </tr>
 <tr>
 <td rowspan="3" valign="top">
