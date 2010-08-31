@@ -1,0 +1,244 @@
+/usr/lib/python2.6/dist-packages/xmpp/auth.py:24: DeprecationWarning: the sha module is deprecated; use the hashlib module instead
+  import sha,base64,random,dispatcher,re
+/usr/lib/python2.6/dist-packages/xmpp/auth.py:26: DeprecationWarning: the md5 module is deprecated; use hashlib instead
+  import md5
+/home/rxboxpilot04/.Rxbox/rxboxdb.py:35: Warning: Can't create database 'rxboxdb'; database exists
+  self.cursor.execute("create database if not exists rxboxdb")
+/home/rxboxpilot04/.Rxbox/rxboxdb.py:49: Warning: Table 'sessions' already exists
+  """)
+/home/rxboxpilot04/.Rxbox/rxboxdb.py:65: Warning: Table 'patients' already exists
+  """)
+/home/rxboxpilot04/.Rxbox/rxboxdb.py:77: Warning: Table 'biosignals' already exists
+  """)
+Plotter Start
+Plotter Stop
+End Splash Screen
+['[   13.474402] usb 1-6.4: pl2303 converter now attached to ', '0\n']
+spo2 init
+BP: /dev/ttyUSB2
+BP Module Powered On.
+EPROM Version: AR       3.41
+Actual ECG
+ECG: /dev/ttyUSB1
+
+***Integrated Self Test Inquiry***
+Device Successfully Passed!
+uuid =  df152e62-a36e-11df-b5af-4b66aa182e53
+
+***Integrated Self Test Inquiry***
+Device Successfully Passed!
+
+***Configure Analog Request***
+Configure Analog Request Confirmed
+ECG Type: 12-lead Sampling Rate: 500Hz
+
+***Start ECG Transmission***
+REPLY: Start_ECG_TRANSMISSION ACK
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:49 2010
+hello
+hi
+DAQ ended at: Mon Aug  9 12:30:50 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:50 2010
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:51 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:51 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:52 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:52 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:53 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:53 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:54 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:54 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:55 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:55 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:56 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:56 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:57 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:57 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:58 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:58 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:30:59 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:30:59 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:00 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:31:00 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:01 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:31:01 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:02 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:31:03 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:04 2010
+Acquiring ECG readiPlotter Start
+Plotter Stop
+ngs...
+DAQ started at: Mon Aug  9 12:31:04 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:05 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:31:05 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:06 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:31:06 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:07 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:31:07 2010
+hello
+hi
+SPO2:  0
+BPM:  0
+spo2 data
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Acquiring Spo2 data
+DAQ ended at: Mon Aug  9 12:31:08 2010
+Acquiring ECG readings...
+DAQ started at: Mon Aug  9 12:31:08 2010
+stopping thread
+DAQ ended at: Mon Aug  9 12:31:09 2010
+
+***Stop ECG Transmission***
+Thread Stopped
+stopping...
