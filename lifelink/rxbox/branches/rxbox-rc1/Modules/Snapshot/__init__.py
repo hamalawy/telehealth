@@ -139,8 +139,6 @@ class SnapshotWindow(SnapshotPanel2):
 
     def Start(self):
         self.webcam.close_phone()
-        for i in xrange(self.list.GetImageCount()):
-            self.image_list.DeleteItem(0)
         self.webcam.init_phone()   
         
     def load_image(self, name):
