@@ -22,6 +22,8 @@ class Snapshot (SnapshotPanel):
         
         self.list = wx.ImageList(100,70, True)
         self.image_list.AssignImageList(self.list, wx.IMAGE_LIST_NORMAL)
+        self.list2 = False
+        self.image_list2 = False
 
         self.pics = []
         """
@@ -38,7 +40,9 @@ class Snapshot (SnapshotPanel):
         
         self.pics.append(name)
         il_max = self.list.Add(img)
+        il_max2 = self.list2.Add(img)
         self.image_list.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
+        self.image_list2.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
 
     def onSnapshot(self, event): # wxGlade: SnapshotPanel.<event_handler>
         self._frame._mgr.GetPane("snapshot2").Float().Show()
@@ -77,6 +81,7 @@ class Snapshot (SnapshotPanel):
                 print "Deleted: %s"%self.pics[itemIndex]
                 os.system('rm "%s"'%self.pics[itemIndex])
                 self.image_list.DeleteItem(itemIndex)
+                self.image_list2.DeleteItem(itemIndex)
                 del self.pics[itemIndex]
                 count = 0
                 
@@ -94,12 +99,14 @@ class Snapshot (SnapshotPanel):
             else:
                 print "Removed: %s"%self.pics[itemIndex]
                 self.image_list.DeleteItem(itemIndex)
+                self.image_list2.DeleteItem(itemIndex)
                 del self.pics[itemIndex]
                 count = 0
 
     def OnRemoveAll(self, event): # wxGlade: SnapshotPanel.<event_handler>
         for i in self.pics:
             self.image_list.DeleteItem(0)
+            self.image_list2.DeleteItem(0)
         self.pics = []
         
     def setGui(self, mode='unlock'):
@@ -123,6 +130,8 @@ class SnapshotWindow(SnapshotPanel2):
         self.pics = self._panel['snapshot'].pics
         self.list = wx.ImageList(100,70, True)
         self.image_list.AssignImageList(self.list, wx.IMAGE_LIST_NORMAL)
+        self._panel['snapshot'].list2 = self.list
+        self._panel['snapshot'].image_list2 = self.image_list
         self.list2 = self._panel['snapshot'].list
         self.image_list2 = self._panel['snapshot'].image_list
         self.video_device = '/dev/video0'
@@ -144,8 +153,8 @@ class SnapshotWindow(SnapshotPanel2):
         self.pics.append(name)
         il_max = self.list.Add(img)
         il_max2 = self.list2.Add(img)
-        self._panel['snapshot'].image_list.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
         self.image_list.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
+        self.image_list2.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
         
     def OnSnapshot(self, event): # wxGlade: SnapshotPanel2.<event_handler>
         """Main function for taking images
