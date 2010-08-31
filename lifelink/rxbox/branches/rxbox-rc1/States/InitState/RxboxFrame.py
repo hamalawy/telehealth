@@ -1,6 +1,7 @@
 import wx
 import wx.aui
 from wx.lib.wordwrap import wordwrap
+import os
 
 from Panels import *
 
@@ -20,6 +21,7 @@ ID_HorizontalGradient = wx.NewId()
 ID_AllowFloating = wx.NewId()
 ID_FirstPerspective = wx.NewId()
 ID_LogFileSend = wx.NewId()
+ID_Update = wx.NewId()
 ID_About = wx.NewId()
 
 CAPTION2NAME = {"12 Lead ECG":"lead12", "Create Patient Record":"createrecord","Support":"logfile","Snapshot":"snapshot2"}
@@ -67,6 +69,7 @@ class RxboxFrame(wx.Frame):
 
         self.help_menu = wx.Menu()
         self.help_menu.Append(ID_LogFileSend, "Support")
+        self.help_menu.Append(ID_Update, "Update")
         self.help_menu.Append(ID_About, "About")
 
         self.RxboxFrame_menubar.Append(self.file_menu, "File")        
@@ -171,6 +174,7 @@ class RxboxFrame(wx.Frame):
 
         self.Bind(wx.EVT_MENU_RANGE, self.OnRestorePerspective, id=ID_FirstPerspective)
         self.Bind(wx.EVT_MENU_RANGE, self.OnLogFileSend, id=ID_LogFileSend)
+        self.Bind(wx.EVT_MENU_RANGE, self.OnUpdate, id=ID_Update)
         self.Bind(wx.EVT_MENU_RANGE, self.OnAbout, id=ID_About)
         
         self.SetTitle("Rxbox Frame")
@@ -262,7 +266,13 @@ class RxboxFrame(wx.Frame):
             self._mgr.LoadPerspective(self._perspectives[0])
       
     def OnLogFileSend(self, event):
-        self._engine.change_state('SendState','LogFileSend')  
+        self._engine.change_state('SendState','LogFileSend')
+
+    def OnUpdate(self, event):
+        os.system('mv rxbox.cfg rxbox.bk')
+        os.system('svn update')
+        os.system('rm rxbox.cfg')
+        os.system('mv rxbox.bk rxbox.cfg')
 
     def OnAbout(self, evt):
         # First we create and fill the info object
