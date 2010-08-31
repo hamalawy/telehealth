@@ -1,6 +1,0 @@
-<virtualhost *>
-	DocumentRoot "/var/www/triageviewer"
-	AddDefaultCharset UTF-8
-	ProxyRequests On
-	ProxyPass /http-bind/ http://127.0.0.1:7070/http-bind/
-</virtualhost>
