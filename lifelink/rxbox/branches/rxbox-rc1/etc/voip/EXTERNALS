@@ -1,0 +1,2 @@
+linphone -r561 svn://svn.savannah.nongnu.org/linphone/trunk/linphone
+ffmpeg -r19568 svn://svn.ffmpeg.org/ffmpeg/trunk
