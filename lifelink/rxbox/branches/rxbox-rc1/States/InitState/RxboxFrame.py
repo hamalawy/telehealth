@@ -269,10 +269,27 @@ class RxboxFrame(wx.Frame):
         self._engine.change_state('SendState','LogFileSend')
 
     def OnUpdate(self, event):
-        os.system('mv rxbox.cfg rxbox.bk')
-        os.system('svn update')
-        os.system('rm rxbox.cfg')
-        os.system('mv rxbox.bk rxbox.cfg')
+        
+        dlg = wx.MessageDialog(self, 'Are you sure you want to Update?', 'Update', \
+                                wx.YES_NO)
+        responce = dlg.ShowModal()
+        if responce == wx.ID_YES:
+            dlg = wx.ProgressDialog("Updating Rxbox",
+                                   "Updating... Please Wait...",
+                                   maximum = 5,
+                                   parent=self,
+                                   style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
+                                    )
+            dlg.Update(1,"Making Back Up")
+            os.system('mv rxbox.cfg rxbox.bk')
+            dlg.Update(2,"Updating Modules")
+            os.system('svn update')
+            dlg.Update(4,"Restoring Config Files")
+            os.system('rm rxbox.cfg')
+            os.system('mv rxbox.bk rxbox.cfg')
+            dlg.Update(5,"Update Complete..Please Restart Rxbox to commit changes")
+            wx.MessageBox('Update Complete..Please Restart Rxbox..', 'Info')
+            self._engine.change_state('ExitState')
 
     def OnAbout(self, evt):
         # First we create and fill the info object

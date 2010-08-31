@@ -134,7 +134,6 @@ class SendState:
                             'X-Eccs-Rxboxextension': '2001'}
             body = self.body
             afilename = [self._engine._myedf.edfilename]+self._panel['snapshot'].pics
-            print afilename
             attach = {}
             for i in afilename:
                     f = open(i, 'r')
