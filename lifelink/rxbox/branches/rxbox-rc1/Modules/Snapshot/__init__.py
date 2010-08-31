@@ -118,6 +118,8 @@ class Snapshot (SnapshotPanel):
         if mode not in ['unlock', 'lock']:
             print 'mode unsupported'
             return
+
+        self.snapshot.Enable(mode=='unlock')
             
 class SnapshotWindow(SnapshotPanel2):
     def __init__(self, *args, **kwds):
