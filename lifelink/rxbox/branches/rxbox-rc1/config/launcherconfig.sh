@@ -1,3 +1,3 @@
 
-cd $HOME/Rxbox\ 1.0/config
+cd $HOME/.Rxbox/config
 python config_main.py
