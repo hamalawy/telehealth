@@ -47,7 +47,8 @@ class ConfigMain(MyApp):
         self.im_simulated = 0
         self.voip_simulated = 0
         self.configlinphone=ConfigParser.ConfigParser()
-        self.configlinphone.read(os.getcwd()+'.linphonerc')
+        print os.getenv('HOME')+'.linphonerc'
+        print self.configlinphone.read(os.getenv('HOME')+'/.linphonerc')
         temp=self.configlinphone.get('proxy_0','reg_identity')
         index = 0
         for x in temp:
