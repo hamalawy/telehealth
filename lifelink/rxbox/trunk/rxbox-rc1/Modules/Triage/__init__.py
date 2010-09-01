@@ -6,8 +6,8 @@ import pycurl
 import time, random
 
 class Triage(mailer.EmailReader, mailer.EmailSender):
-    def __init__(self, config_file):
-    	mailer.EmailReader.__init__(self, config_file)
+    def __init__(self, config_file, target = 'msghandler'):
+    	mailer.EmailReader.__init__(self, config_file, target = 'msghandler')
     	mailer.EmailSender.__init__(self, config_file)
     
         self.stop_event = threading.Event()

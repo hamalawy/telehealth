@@ -14,7 +14,7 @@ import ConfigParser
 imaplib.debug = 10
 
 class EmailReader:
-    def __init__(self, config_file):
+    def __init__(self, config_file, target = 'msghandler'):
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(config_file)
         
@@ -23,7 +23,7 @@ class EmailReader:
                                 'user': self.cfg.get('email', 'imapuser'),
                                 'passwd': self.cfg.get('email', 'imappasswd')}
             self.sleep = int(self.cfg.get('email', 'sleep'))
-            self.msghandler = self.cfg.get('email', 'msghandler')                
+            self.msghandler = self.cfg.get('email', target)              
         except ConfigParser.NoSectionError, e:
             pass
         except ConfigParser.NoOptionError, e:

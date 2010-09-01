@@ -46,20 +46,23 @@ class DAQState:
                        parent=self._frame,
                        style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
                         )
-                
-        #stop the modules
-        dlg.Update(1,"Stopping ECG")
-        self._panel['ecg'].Stop()
-        dlg.Update(2,"Stopping SPO2")
-        self._panel['spo2'].Stop()
-        dlg.Update(3,"Stopping BP")
-        self._panel['bp'].Stop()
-        dlg.Update(4,"Generating EDF")
-        self.make_edf()
-        dlg.Update(6,"Saving to Database")
-        #no yet implemented
-        #reset the gui
-        dlg.Update(7,"Updating")
+        try:
+            #stop the modules
+            dlg.Update(1,"Stopping ECG")
+            self._panel['ecg'].Stop()
+            dlg.Update(2,"Stopping SPO2")
+            self._panel['spo2'].Stop()
+            dlg.Update(3,"Stopping BP")
+            self._panel['bp'].Stop()
+            dlg.Update(4,"Generating EDF")
+            self.make_edf()
+            dlg.Update(6,"Saving to Database")
+            #no yet implemented
+            #reset the gui
+            dlg.Update(7,"Updating")
+        except:
+            pass
+            
         self._panel['ecg'].ecm_statreset()
         self._panel['comm'].setGui('standby')
         [self._panel[i].setGui('lock') for i in ['ecg', 'bp', 'spo2']]
