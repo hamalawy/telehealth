@@ -156,7 +156,7 @@ class SendState:
                            style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE 
                             )
             dlg.Update(1,"Loading")
-            t = Triage('rxbox.cfg')
+            t = Triage('rxbox.cfg', target='support')
             dlg.Update(2,"Logging In")
             t.login()
             dlg.Update(3,"Loading Data")

@@ -46,7 +46,9 @@ config.set('email','smtppasswd','telehealth')
 config.set('email','mode','testtriage')
 config.set('email','simulated','false')
 config.set('email','sleep','3')
-config.set('email','msghandler','sylukewicent@gmail.com')
+#config.set('email','msghandler','sylukewicent@gmail.com')
+config.set('email','support','sylukewicent@gmail.com')
+config.set('email','msghandler','randy@one.telehealth.ph')
 
 config.add_section('voip')
 config.set('voip','simulated','false') #not yet implemented
