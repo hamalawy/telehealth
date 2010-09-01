@@ -10,7 +10,7 @@ Author: RxBox Development Team
 """
 
 import ConfigParser
-
+import os
 import wx
 from wx import xrc
 
@@ -47,7 +47,7 @@ class ConfigMain(MyApp):
         self.im_simulated = 0
         self.voip_simulated = 0
         self.configlinphone=ConfigParser.ConfigParser()
-        self.configlinphone.read('/home/rxboxpilot01/.linphonerc')
+        self.configlinphone.read(os.getcwd()+'.linphonerc')
         temp=self.configlinphone.get('proxy_0','reg_identity')
         index = 0
         for x in temp:
