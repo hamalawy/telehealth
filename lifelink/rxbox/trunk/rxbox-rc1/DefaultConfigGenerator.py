@@ -25,7 +25,7 @@ config.set('ECG','dynamic','|grep FTDI')
 config.add_section('BP')
 config.set('BP','simulated','false')
 config.set('BP','port','/dev/ttyUSB0')
-config.set('BP','dynamic','|grep usb\ 1-6.3|grep ch341-uart')
+config.set('BP','dynamic','|grep usb\ 1-6.3|grep pl2303')
 
 config.add_section('SPO2')
 config.set('SPO2','simulated','false')
