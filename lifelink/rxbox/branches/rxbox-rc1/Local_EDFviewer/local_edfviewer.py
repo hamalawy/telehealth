@@ -64,7 +64,7 @@ class EDFmain(MyFrame):
 
     def onFileopen(self, event): # wxGlade: MyFrame.<event_handler>
         dlg = wx.FileDialog(self, "Choose a file", os.getcwd(), "", "*.edf*", wx.OPEN)
-        dlg.SetDirectory(os.getcwd()+'.Rxbox/EDF')
+        dlg.SetDirectory(os.getenv('HOME')+'/.Rxbox/EDF')
         if dlg.ShowModal() == wx.ID_OK:
             self.path = dlg.GetPath() 
             self.parse_edf()
