@@ -160,7 +160,7 @@ class SendState:
             dlg.Update(2,"Logging In")
             t.login()
             dlg.Update(3,"Loading Data")
-            headers = {'Subject': self.emailmode + ' ' + self.topic, 'X-Eccs-Priority': 'emergency',
+            headers = {'Subject': 'Support: %s'%self._config.get('info', 'id'), 'X-Eccs-Priority': 'emergency',
                             'X-Eccs-Rxboxextension': '2001'}
             body = self.body
             
