@@ -136,7 +136,6 @@ class Linphone(threading.Thread):
     def run(self):
         while self.isrunning():
             line = self.__subprocess.stdout.readline() 
-            print line
 
             if (line.find("Service Unavailable") != -1 or  line.find("Could not reach destination.") != -1):
                 self.onCall = True

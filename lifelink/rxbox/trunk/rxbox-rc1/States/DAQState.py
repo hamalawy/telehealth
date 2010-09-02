@@ -30,12 +30,14 @@ class DAQState:
         self.rxboxDB.dbupdate('sessions', 'starttime', str(datetime.datetime.today()), 'uuid', self.dbuuid)
 
         #update the gui
-        self._panel['comm'].setGui('acquire')
-        [self._panel[i].setGui('unlock') for i in ['ecg', 'bp', 'spo2']]
+        self._panel['comm'].setGui('lock')
+        wx.Yield()
         
         #start daq for each module
         self._panel['ecg'].Start()
         self._panel['spo2'].Start()
+        self._panel['comm'].setGui('acquire')
+        [self._panel[i].setGui('unlock') for i in ['ecg', 'bp', 'spo2']]
 
     def stop(self):
         print 'State Machine: DAQState Stop'

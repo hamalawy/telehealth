@@ -2,6 +2,7 @@ import wx
 import wx.aui
 from wx.lib.wordwrap import wordwrap
 import os
+import ConfigParser
 
 from Panels import *
 
@@ -278,19 +279,37 @@ class RxboxFrame(wx.Frame):
                 self._engine.change_state('StandbyState')
                 dlg = wx.ProgressDialog("Updating Rxbox",
                                        "Updating... Please Wait...",
-                                       maximum = 5,
+                                       maximum = 8,
                                        parent=self,
                                        style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
                                         )
+
                 dlg.Update(1,"Making Back Up")
                 os.system('mv rxbox.cfg rxbox.bk')
                 dlg.Update(2,"Updating Modules")
                 os.system('svn update')
-                dlg.Update(4,"Restoring Config Files")
+                dlg.Update(5,"Checking Config Files")
+                configorig = ConfigParser.ConfigParser()
+                confignew = ConfigParser.ConfigParser()
+                configorig.read('rxbox.bk')
+                confignew.read('rxbox.cfg')
+                origsections = configorig.sections()
+                for newsection in confignew.sections():
+                    if newsection not in origsections:
+                        print 'Added Section: %s'%newsection
+                        configorig.add_section(newsection)
+                    origoptions = configorig.options(newsection)
+                    for newoption in confignew.options(newsection):
+                        if newoption not in origoptions:
+                            print 'Added Option: %s'%newoption
+                            configorig.set(newsection,newoption,confignew.get(newsection, newoption))
+                configorig.write(open('rxbox.bk', 'w'))
+                dlg.Update(7,"Restoring Config Files")
                 os.system('rm rxbox.cfg')
                 os.system('mv rxbox.bk rxbox.cfg')
-                dlg.Update(5,"Update Complete..Please Restart Rxbox to commit changes")
-                wx.MessageBox('Update Complete..Please Restart Rxbox..', 'Info')
+                dlg.Update(8,"Update Complete..Please Restart Rxbox to commit changes")
+                updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
+                wx.MessageBox('%sUpdate Complete..Please Restart Rxbox..'%updateinfo, 'Info')
             except:
                 dlg.Destroy()
             self._engine.change_state('ExitState')
