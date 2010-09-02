@@ -72,7 +72,7 @@ class ECG(ECGPanel):
         self.daqdur = self._config.getfloat('ECG', 'daqdur')
         self.debug = self._config.getboolean('ECG', 'debug')
             
-        self.ECGData = False
+        self.ECGData = self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug)
         self.plotter = False
         self.alive = False
         self.status = 'stop'
@@ -107,6 +107,16 @@ class ECG(ECGPanel):
     
     def ecm_update(self):
         [getattr(self, ('%s_bitmap') % i).SetBitmap(wx.Bitmap(("Icons/%s_%s.png") % (i, 'connected' if self.ECGData.ecm_stat[i] else 'unconnected'), wx.BITMAP_TYPE_ANY)) for i in ECGLEADKEY]
+
+    def ecm_fail(self):
+        dlg = wx.MessageDialog(self, 'ECM Failed! Would you life to proceed?', 'ECM Check', \
+                            wx.YES_NO)
+        responce = dlg.ShowModal()
+        if responce == wx.ID_YES:
+            self.alive = True
+            self.daq = True
+            self.getecgthread = threading.Thread(target=self.get_ecg_thread)
+            self.getecgthread.start()
         
     def get_ecg_thread(self):
         self.plotter.Open()
@@ -127,7 +137,6 @@ class ECG(ECGPanel):
                 self.status = 'error'
                 self.error = e
                 self.ECGData.stop_ecg()
-                #self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug)
                 self.ECGData.config_analog()
                 self.ECGData.start_ecg()
                 self.status = 'start'
@@ -141,10 +150,11 @@ class ECG(ECGPanel):
         self.ECGData.set_ecm_threshold()
         self.ECGData.start_ecm()
         count = 0
-        Basetime = time.time() + 15
+        Basetime = time.time() + 5
         while time.time() < Basetime and count < self.ecmcheck:
             if self.ECGData.get_ecm(): count += 1
             wx.CallAfter(self.ecm_update)
+        self.ECGData.stop_ecm()
         self.ECGData.stop_ecm()
         if count >= self.ecmcheck and self.status == 'start':
             self.alive = True
@@ -153,11 +163,12 @@ class ECG(ECGPanel):
             self.getecgthread.start()
         else:
             self.status = 'stop'
+            wx.CallAfter(self.ecm_fail)
         
     def Start(self):
         try:
             self.status = 'start'
-            self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug)
+            self.ECGData.Open()
             self.plotter = CPlotter(panel=self.plot_panel, mode='normal', sample_time=self.daqdur, plot_timelength=3, cont=True, filterOn=self.filter, data=False)
             if self.ECGData.status:
                 self.getecmthread = threading.Thread(target=self.get_ecm_thread)
@@ -174,8 +185,6 @@ class ECG(ECGPanel):
             self.status = 'stop'
             self.alive = False
             self.getecgthread.join(30)
-            self.ECGData.stop_ecg()
-            self.ECGData.abort_ecg()
             return True
         except Exception, e:
             self.status = 'error'

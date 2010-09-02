@@ -55,8 +55,8 @@ class InitState:
         self._frame.Show()
  
         #init bp since bp needs to be active at init state
-        if self._panel['bp'].minor_check() == False:
-            print "BP not initialized, check connection"
+        #if self._panel['bp'].minor_check() == False:
+        #    print "BP not initialized, check connection"
         self._engine.change_state('StandbyState')
         
     def stop(self):
