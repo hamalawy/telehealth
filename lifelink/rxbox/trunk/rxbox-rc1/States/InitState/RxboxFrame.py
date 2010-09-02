@@ -286,7 +286,9 @@ class RxboxFrame(wx.Frame):
 
                 dlg.Update(1,"Making Back Up")
                 os.system('mv rxbox.cfg rxbox.bk')
-                dlg.Update(2,"Updating Modules")
+                dlg.Update(2,"Cleaning Up")
+                os.system('svn cleanup')
+                dlg.Update(3,"Updating Modules")
                 os.system('svn update')
                 dlg.Update(5,"Checking Config Files")
                 configorig = ConfigParser.ConfigParser()
