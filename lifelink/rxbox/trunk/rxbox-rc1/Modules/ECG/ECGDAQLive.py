@@ -152,7 +152,7 @@ class ECGDAQ:
                 break
             elif temp == mid: buff += chr(ord(read(1))^0x20)
             else: buff += temp
-        print array.array('B',buff).tolist()
+        #print array.array('B',buff).tolist()
         return array.array('B',buff).tolist()
 
     def firmware(self):

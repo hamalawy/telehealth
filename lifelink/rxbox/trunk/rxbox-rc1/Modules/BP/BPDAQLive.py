@@ -39,6 +39,7 @@ class BPDAQ:
         self.sys_list=15*[0]
         self.dias_list=15*[0]
         self.list_reply=[]
+        self.bpstatus= 'Retry Again'
         
         self.retry=0
         
