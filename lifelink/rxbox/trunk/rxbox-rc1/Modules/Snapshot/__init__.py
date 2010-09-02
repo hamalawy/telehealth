@@ -41,8 +41,15 @@ class Snapshot (SnapshotPanel):
         self.pics.append(name)
         il_max = self.list.Add(img)
         il_max2 = self.list2.Add(img)
-        self.image_list.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
-        self.image_list2.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
+        self.image_list.InsertImageStringItem(0,'', len(self.pics)-1)
+        self.image_list2.InsertImageStringItem(0,'', len(self.pics)-1)
+
+    def remove_image(self, index=0):
+        self.list.Remove(index)
+        self.list2.Remove(index)
+        self.image_list.DeleteItem(index)
+        self.image_list2.DeleteItem(index)
+        self.pics.pop(index)
 
     def onSnapshot(self, event): # wxGlade: SnapshotPanel.<event_handler>
         self._frame._mgr.GetPane("snapshot2").Float().Show()
@@ -80,9 +87,7 @@ class Snapshot (SnapshotPanel):
             else:
                 print "Deleted: %s"%self.pics[itemIndex]
                 os.system('rm "%s"'%self.pics[itemIndex])
-                self.image_list.DeleteItem(itemIndex)
-                self.image_list2.DeleteItem(itemIndex)
-                del self.pics[itemIndex]
+                self.remove_image(itemIndex)
                 count = 0
                 
     def OnRemove(self, event): # wxGlade: SnapshotPanel.<event_handler>
@@ -98,16 +103,12 @@ class Snapshot (SnapshotPanel):
                     break
             else:
                 print "Removed: %s"%self.pics[itemIndex]
-                self.image_list.DeleteItem(itemIndex)
-                self.image_list2.DeleteItem(itemIndex)
-                del self.pics[itemIndex]
+                self.remove_image(itemIndex)
                 count = 0
 
     def OnRemoveAll(self, event): # wxGlade: SnapshotPanel.<event_handler>
-        for i in self.pics:
-            self.image_list.DeleteItem(0)
-            self.image_list2.DeleteItem(0)
-        self.pics = []
+        for i in xrange(len(self.pics)):
+            self.remove_image(0)
         
     def setGui(self, mode='unlock'):
         """
@@ -153,9 +154,16 @@ class SnapshotWindow(SnapshotPanel2):
         self.pics.append(name)
         il_max = self.list.Add(img)
         il_max2 = self.list2.Add(img)
-        self.image_list.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
-        self.image_list2.InsertImageStringItem(len(self.pics)-1,'', len(self.pics)-1)
-        
+        self.image_list.InsertImageStringItem(0,'', len(self.pics)-1)
+        self.image_list2.InsertImageStringItem(0,'', len(self.pics)-1)
+
+    def remove_image(self, index=0):
+        self.list.Remove(index)
+        self.list2.Remove(index)
+        self.image_list.DeleteItem(index)
+        self.image_list2.DeleteItem(index)
+        self.pics.pop(index)
+       
     def OnSnapshot(self, event): # wxGlade: SnapshotPanel2.<event_handler>
         """Main function for taking images
             - Closes linphone to access device
@@ -166,6 +174,7 @@ class SnapshotWindow(SnapshotPanel2):
         self.webcam.close_phone()
         tnow = datetime.now()
         tnow = tnow.strftime("%Y_%m_%d_%H_%M_%S")+("_%s"%tnow.microsecond.__str__().replace('.',''))
+        print tnow
         os.system("v4lctl -c %s snap jpeg 176x144 Pictures/%s.jpg"%(self.video_device,tnow))
         self.load_image("Pictures/%s.jpg"%(tnow))
         self.webcam.init_phone()
@@ -184,9 +193,7 @@ class SnapshotWindow(SnapshotPanel2):
             else:
                 print "Deleted: %s"%self.pics[itemIndex]
                 os.system('rm "%s"'%self.pics[itemIndex])
-                self.image_list.DeleteItem(itemIndex)
-                self.image_list2.DeleteItem(itemIndex)
-                del self.pics[itemIndex]
+                self.remove_image(itemIndex)
                 count = 0
         
     def OnPaneClose(self):
