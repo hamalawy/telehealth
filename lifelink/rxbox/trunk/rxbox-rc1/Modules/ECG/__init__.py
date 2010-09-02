@@ -60,7 +60,8 @@ class ECG(ECGPanel):
         
         self.simulated = self._config.getboolean('ECG', 'simulated')
         self.ecmcheck = self._config.getint('ECG', 'ecmcheck')
-        self.ecmchecktimeout = self._config.getint('ECG', 'ecmchecktimeout')
+        #self.ecmchecktimeout = self._config.getint('ECG', 'ecmchecktimeout')
+        self.ecmchecktimeout = 15
         self.filter = self._config.getboolean('ECG', 'filter')
         
         self.port = self._config.get('ECG', 'port')
