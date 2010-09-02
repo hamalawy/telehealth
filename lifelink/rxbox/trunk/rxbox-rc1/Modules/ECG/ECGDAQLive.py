@@ -97,19 +97,27 @@ class ECGDAQ:
         self.ecm_stat = {}
         for i in ECM_KEYS1: self.ecm_stat[i]=False
         
-        self.status = self.Open()
+        #self.status = self.Open()
 
     def Print(self, string=''):
         if self.debug:
             print string
             
     def Open(self):
+        data = self.ecg_lead
+        for key in data:
+            del data[key][:]
+            data[key] = [0]*7500
+
         self.ecgserial = serial.Serial(self.port, baudrate=self.baud, timeout=self.timeout, xonxoff=0)
         FIX = [self.stop_ecg, self.selftest, self.stop_ecm,  self.selftest, self.stop_ecg, self.selftest]
         for i in FIX:
             time.sleep(0.5)
-            if i(): return True
+            if i(): 
+                self.status = True
+                return True
             time.sleep(0.5)
+        self.status = False
         return False
 
     def ecgrequest(self, bits):
@@ -144,6 +152,7 @@ class ECGDAQ:
                 break
             elif temp == mid: buff += chr(ord(read(1))^0x20)
             else: buff += temp
+        print array.array('B',buff).tolist()
         return array.array('B',buff).tolist()
 
     def firmware(self):
@@ -190,7 +199,6 @@ class ECGDAQ:
             self.Print("***Integrated Self Test Inquiry***")
             self.ecgrequest(SELFTEST_INQUIRY)
             packet = self.ecgreply()
-            print list(packet)
             if packet[2]==0x00 and packet[3]==0x06 and packet[4]==0xe4 and packet[5]==0x20:
                 self.Print('Device Successfully Passed!')
                 return True
@@ -230,14 +238,16 @@ class ECGDAQ:
             
     def stop_ecm(self):
         """stop offline electrode contact measurement (ecm)"""
-
-        self.Print()
-        self.Print("***Stop Offline ECM***")
-        self.ecgrequest(STOP_OFFLINE_ECM)                
-        packet = self.ecgreply()                         
-        if packet[2]==0x00 and packet[3]==0x02 and packet[4]==(self.packet_num-1)%256:                          
-            self.Print("REPLY: Stop_Offline_ECM ACK")
-            return True
+        try:
+            self.Print()
+            self.Print("***Stop Offline ECM***")
+            self.ecgrequest(STOP_OFFLINE_ECM)                
+            packet = self.ecgreply()
+            if packet[2]==0x00 and packet[3]==0x02 and packet[4]==(self.packet_num-1)%256:                          
+                self.Print("REPLY: Stop_Offline_ECM ACK")
+                return True
+        except:
+            pass
         return False
             
     def get_ecm(self):

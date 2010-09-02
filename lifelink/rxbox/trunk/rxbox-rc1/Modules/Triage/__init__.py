@@ -7,7 +7,7 @@ import time, random
 
 class Triage(mailer.EmailReader, mailer.EmailSender):
     def __init__(self, config_file, target = 'msghandler'):
-    	mailer.EmailReader.__init__(self, config_file, target = 'msghandler')
+    	mailer.EmailReader.__init__(self, config_file, starget = target)
     	mailer.EmailSender.__init__(self, config_file)
     
         self.stop_event = threading.Event()
