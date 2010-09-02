@@ -19,6 +19,7 @@ class ExitState:
         self._config.write(open('rxbox.cfg', 'w'))
         print 'Configuration Saved'
         self._frame.Destroy()
+        wx.Yield()
         self._engine.change_state(None)
         
     def stop(self):

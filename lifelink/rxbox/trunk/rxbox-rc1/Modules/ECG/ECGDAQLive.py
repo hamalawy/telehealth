@@ -110,13 +110,12 @@ class ECGDAQ:
             data[key] = [0]*7500
 
         self.ecgserial = serial.Serial(self.port, baudrate=self.baud, timeout=self.timeout, xonxoff=0)
-        FIX = [self.stop_ecg, self.selftest, self.stop_ecm,  self.selftest, self.stop_ecg, self.selftest]
+        FIX = [self.selftest, self.stop_ecg, self.selftest, self.stop_ecm,  self.selftest, self.stop_ecg, self.selftest]
         for i in FIX:
-            time.sleep(0.5)
             if i(): 
                 self.status = True
                 return True
-            time.sleep(0.5)
+            self.flushout()
         self.status = False
         return False
 
@@ -134,6 +133,7 @@ class ECGDAQ:
             elif i == 0xfd: packet += [0xfe,0xde]
             else: packet.append(i)
         packet.append(0xfd)
+        
         self.ecgserial.write(array.array('B',packet).tostring())
         self.packet_num = (self.packet_num+1)%256
 
@@ -152,8 +152,11 @@ class ECGDAQ:
                 break
             elif temp == mid: buff += chr(ord(read(1))^0x20)
             else: buff += temp
-        #print array.array('B',buff).tolist()
+        
         return array.array('B',buff).tolist()
+
+    def flushout(self):
+        return self.ecgreply()
 
     def firmware(self):
         self.Print()

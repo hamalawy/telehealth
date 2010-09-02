@@ -1,4 +1,5 @@
 import wx
+import sys
 import traceback
 
 from multiprocessing import Process
@@ -56,7 +57,9 @@ class RxboxEngine:
                 self.state.stop()
                 
             if state is None:
+                print 'Exit Rxbox App'
                 self._app.Exit()
+                sys.exit()
             else:
                 self.state = getattr(States, state)(self, *args)
                 self.state.start()
