@@ -1,22 +1,19 @@
-from Modules.VoIP import *
-from Modules.IM import *
 import wx
 
-class ReferState:
+from States.State import *
+from Modules.VoIP import *
+from Modules.IM import *
+
+class ReferState(State):
     def __init__(self, engine, *args, **kwds):
-        self._engine = engine
-        self._app = self._engine._app
-        self._config = self._engine._config
-        
-        self._frame = self._engine._frame
+        State.__init__(self, engine, *args, **kwds)
         self._mgr = self._frame._mgr
-        self._panel = self._frame._panel
     
     def __name__(self):
         return 'ReferState'
     
     def start(self):
-        print 'State Machine: ReferState Start'
+        self._logger.info('State Machine: %s Start'%self.__name__())
         #load refer perspective
         self._mgr.LoadPerspective(self._config.get('Perspective', 'refer'))
         self._mgr.Update()
@@ -29,7 +26,7 @@ class ReferState:
         self._panel['comm'].Call_Label.SetLabel('Drop')
         
     def stop(self):
-        print 'State Machine: ReferState Stop'
+        self._logger.info('State Machine: %s Stop'%self.__name__())
         try:
             dlg = wx.ProgressDialog("Stopping Refer Session",
                            "Stopping Refer Session... Please Wait...",

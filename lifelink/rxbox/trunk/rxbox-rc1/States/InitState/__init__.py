@@ -1,41 +1,43 @@
 import ConfigParser
 import datetime
+import traceback
 
+from States.State import *
 from RxboxFrame import *
 from Modules import rxboxdb
 
-class InitState:
-    def __init__(self, engine, *args):
+class InitState(State):
+    def __init__(self, engine, *args, **kwds):
         self._engine = engine
         self._app = self._engine._app
         self._config = self._engine._config
+        self._logger = logging.getLogger(self.__name__())
 
     def __name__(self):
         return 'InitState'
     
     def start(self):
-        print 'State Machine: InitState Start'
-
+        self._logger.info('State Machine: %s Start'%self.__name__())
         try:
             #dynamic port allocation
             comm = subprocess.Popen("dmesg%s"%self._config.get('ECG', 'dynamic'), shell=True, stdout=subprocess.PIPE)
             ecgport=comm.stdout.read().split('ttyUSB')[-1].strip()
-            print 'ECG: /dev/ttyUSB%s'%ecgport[0]
+            self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
             self._config.set('ECG', 'port', '/dev/ttyUSB%s'%ecgport[0])
             
             comm = subprocess.Popen("dmesg%s"%self._config.get('SPO2', 'dynamic'), shell=True, stdout=subprocess.PIPE)
             spoport=comm.stdout.read().split('ttyUSB')[-1].strip()
-            print 'SPO2: /dev/ttyUSB%s'%spoport[0]
+            self._logger.info('SPO2: /dev/ttyUSB%s'%spoport[0])
             self._config.set('SPO2', 'port', '/dev/ttyUSB%s'%spoport[0])
             
             comm = subprocess.Popen("dmesg%s"%self._config.get('BP', 'dynamic'), shell=True, stdout=subprocess.PIPE)
             bpport=comm.stdout.read().split('ttyUSB')[-1].strip()
-            print 'BP: /dev/ttyUSB%s'%bpport[0]
+            self._logger.info('BP: /dev/ttyUSB%s'%bpport[0])
             self._config.set('BP', 'port', '/dev/ttyUSB%s'%bpport[0])
 
             self._config.write(open('rxbox.cfg', 'w'))
         except:
-            pass
+            self._logger.error(ERROR('Dynamic Port Allocation Failed'))
        
         self._frame = RxboxFrame(self._engine, None, -1, "")
         self._mgr = self._frame._mgr
@@ -48,7 +50,7 @@ class InitState:
         try:
             self._mgr.LoadPerspective(self._config.get('Perspective', 'onoff'))
         except:
-            print 'No Default SetUp'
+            self._logger.error(ERROR('Failed to load perspective'))
 
         #initialize window
         self._frame.Maximize(True)
@@ -60,4 +62,4 @@ class InitState:
         self._engine.change_state('StandbyState')
         
     def stop(self):
-        print 'State Machine: InitState Stop'
+        self._logger.info('State Machine: %s Stop'%self.__name__())
