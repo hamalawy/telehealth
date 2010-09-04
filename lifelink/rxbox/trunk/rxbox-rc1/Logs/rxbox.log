@@ -1,0 +1,38 @@
+2010-09-05 01:52:48,106 root         INFO     RxboxEngine Start
+2010-09-05 01:52:48,106 InitState    INFO     State Machine: InitState Start
+2010-09-05 01:52:48,121 InitState    ERROR    Dynamic Port Allocation Failed
+Traceback (most recent call last):
+  File "/home/luke/Rxbox 1.0/States/InitState/__init__.py", line 25, in start
+    self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
+IndexError: string index out of range
+
+2010-09-05 01:52:48,467 InitState    INFO     State Machine: InitState Stop
+2010-09-05 01:52:48,468 StandbyState INFO     State Machine: StandbyState Start
+2010-09-05 01:52:58,851 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-05 01:52:58,870 DAQState     INFO     State Machine: DAQState Start
+2010-09-05 01:52:58,881 DAQState     INFO     Session uuid = 411cd676-b84d-11df-939e-001cbf6378e5
+2010-09-05 01:53:02,360 DAQState     INFO     State Machine: DAQState Stop
+2010-09-05 01:53:02,838 StandbyState INFO     State Machine: StandbyState Start
+2010-09-05 01:53:04,221 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-05 01:53:04,231 SendState    INFO     State Machine: SendState Start
+2010-09-05 01:53:12,409 SendState    ERROR    Sending Failed
+Traceback (most recent call last):
+  File "/home/luke/Rxbox 1.0/States/SendState/__init__.py", line 72, in sendEmail
+    getattr(self, mode)()
+  File "/home/luke/Rxbox 1.0/States/SendState/__init__.py", line 133, in sendEDF
+    afilename = [self._engine._myedf.edfilename]+self._panel['snapshot'].pics
+AttributeError: 'NoneType' object has no attribute 'edfilename'
+
+2010-09-05 01:53:14,299 SendState    INFO     State Machine: SendState Stop
+2010-09-05 01:53:14,300 StandbyState INFO     State Machine: StandbyState Start
+2010-09-05 01:53:32,313 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-05 01:53:32,327 SendState    INFO     State Machine: SendState Start
+2010-09-05 01:53:47,491 SendState    INFO     State Machine: SendState Stop
+2010-09-05 01:53:47,493 ReferState   INFO     State Machine: ReferState Start
+2010-09-05 01:54:01,111 ReferState   INFO     State Machine: ReferState Stop
+2010-09-05 01:54:06,847 StandbyState INFO     State Machine: StandbyState Start
+2010-09-05 01:54:16,064 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-05 01:54:16,171 ExitState    INFO     State Machine: ExitState Start
+2010-09-05 01:54:16,175 ExitState    INFO     Configurations Saved
+2010-09-05 01:54:16,318 ExitState    INFO     State Machine: ExitState Stop
+2010-09-05 01:54:16,318 root         INFO     RxboxEngine Exit
