@@ -1,23 +1,20 @@
-class StandbyState:
-    def __init__(self, engine, *args):
-        self._engine = engine
-        self._app = self._engine._app
-        self._config = self._engine._config
-        
-        self._frame = self._engine._frame
-        self._panel = self._frame._panel
+from States.State import *
+
+class StandbyState(State):
+    def __init__(self, engine, *args, **kwds):
+        State.__init__(self, engine, *args, **kwds)
     
     def __name__(self):
         return 'StandbyState'
         
     def start(self):
-        print 'State Machine: StandbyState Start'
+        self._logger.info('State Machine: %s Start'%self.__name__())
         self._panel['comm'].setGui('standby')
         [self._panel[i].setGui('unlock') for i in ['patientinfo','bp','snapshot']]
         [self._panel[i].setGui('lock') for i in ['ecg','spo2']]
         
     def stop(self):
-        print 'State Machine: StandbyState Stop'
+        self._logger.info('State Machine: %s Stop'%self.__name__())
         pane = self._frame._mgr.GetPane("snapshot2")
         self._frame._mgr.ClosePane(pane)
         self._frame._mgr.Update()

@@ -1,17 +1,14 @@
+import subprocess
+import wx
+
+from States.State import *
 from SendPanels import *
 from Modules.Triage import *
 
-import subprocess
-import wx
                                   
-class SendState:
-    def __init__(self, engine, *args):
-        self._engine = engine
-        self._app = self._engine._app
-        self._config = self._engine._config
-        
-        self._frame = self._engine._frame
-        self._panel = self._frame._panel
+class SendState(State):
+    def __init__(self, engine, *args, **kwds):
+        State.__init__(self, engine, *args, **kwds)
         self.dbuuid = self._engine.dbuuid
         self.rxboxDB = self._engine.rxboxDB
         
@@ -29,7 +26,7 @@ class SendState:
         return 'SendState'
         
     def start(self):
-        print 'State Machine: SendState Start'
+        self._logger.info('State Machine: %s Start'%self.__name__())
         self._frame.setGui('lock')
         if (self.args == 'LogFileSend'):
             self.panelmode = 'logfile'
@@ -63,7 +60,7 @@ class SendState:
             self._engine.change_state('StandbyState')
         
     def stop(self):
-        print 'State Machine: SendState Stop'
+        self._logger.info('State Machine: %s Stop'%self.__name__())
         self._frame.setGui('unlock')
         
     def sendEmail(self,mode='sendEDF',msg='EDF'):
@@ -79,7 +76,7 @@ class SendState:
                 self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', '%s Sent...'%msg)
                 break
             except Exception, e:
-                print 'Sending Error: ',e
+                self._logger.error(ERROR('Sending Failed'))
                 self._frame.RxFrame_StatusBar.SetStatusText("Sending %s Failed: %s"%(msg,e))
                 self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Send %s Failed'%msg)
             dlg = wx.MessageDialog(self._frame, "Would you like to resend data?", "Send %s Failed"%msg, wx.YES_NO | wx.ICON_QUESTION)

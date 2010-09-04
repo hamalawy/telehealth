@@ -4,16 +4,12 @@ import wx
 import traceback
 import time
 
+from States.State import *
 from Modules.EDF import *
 
-class DAQState:
-    def __init__(self, engine, *args):
-        self._engine = engine
-        self._app = self._engine._app
-        self._config = self._engine._config
-        
-        self._frame = self._engine._frame
-        self._panel = self._frame._panel
+class DAQState(State):
+    def __init__(self, engine, *args, **kwds):
+        State.__init__(self, engine, *args, **kwds)
         self.dbuuid = self._engine.dbuuid
         self.rxboxDB = self._engine.rxboxDB
         
@@ -21,11 +17,11 @@ class DAQState:
         return 'DAQState'
     
     def start(self):
-        print 'State Machine: DAQState Start'
+        self._logger.info('State Machine: %s Start'%self.__name__())
         
         #record the session
         self.dbuuid = str(uuid.uuid1())
-        print "uuid = ", self.dbuuid
+        self._logger.info('Session uuid = %s'%self.dbuuid)
         self.rxboxDB.dbinsert('sessions', 'uuid', self.dbuuid)
         self.rxboxDB.dbupdate('sessions', 'starttime', str(datetime.datetime.today()), 'uuid', self.dbuuid)
 
@@ -40,7 +36,7 @@ class DAQState:
         [self._panel[i].setGui('unlock') for i in ['ecg', 'bp', 'spo2']]
 
     def stop(self):
-        print 'State Machine: DAQState Stop'
+        self._logger.info('State Machine: %s Stop'%self.__name__())
         #process bar
         dlg = wx.ProgressDialog("Stopping DAQ Session",
                        "Stopping DAQ Session... Please Wait...",
@@ -73,7 +69,7 @@ class DAQState:
         
     def make_edf(self):
         try:
-            print "edf start"
+            self._logger.info('Generate EDF Start')
             patientpanel = self._panel['patientinfo']
             bday = '.'.join([str(patientpanel.BirthMonth.GetSelection() + 1), str(patientpanel.BirthDayCombo.GetSelection() + 1), patientpanel.BirthYear.GetValue()[-2:]])
             if bday[-1] == '.': bday = ''
@@ -102,16 +98,13 @@ class DAQState:
             
             myedf = EDF(patient, Biosignal, strDate, strStarttime, strY2KDate + ': LifeLink 15 second data of CorScience modules', nDataRecord, 15)
             myedf.get(patient)
-            print 'edf done'      
+
             self._engine._myedf = myedf
             self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'EDF creation finished')
             #self.EDFtoDB(myedf)
-            print 'EDF Creation Finished'
+            self._logger.info('Generate EDF Done')
         except:
-            print '***EDF Creation Error***'
-            print traceback.format_exc()
-            
-
+            self._logger.error(ERROR('EDF Generation Failed'))
 
     def EDFtoDB(self, myedf):
         """Stores newly created EDF file to the rxbox database"""
