@@ -1,5 +1,4 @@
 import traceback
 
-def ERROR(errortype="***System Error***"):
-    print errortype
-    print traceback.format_exc()
+def ERROR(comment=''):
+    return '%s\n%s'%(comment,traceback.format_exc())
