@@ -1,6 +1,7 @@
 import ConfigParser
 import threading
 
+from Modules.Module import *
 from ECGPanel import *
 from CPlotter import *
 from Lead12Panel import *
@@ -47,16 +48,10 @@ class Lead12Panel2(Lead12Panel):
         self._frame.setGui('unlock')
         
 
-class ECG(ECGPanel):
+class ECG(Module, ECGPanel):
     def __init__(self, *args, **kwds):
+        Module.__init__(self, *args, **kwds)
         ECGPanel.__init__(self, *args, **kwds)
-        
-        self._frame = args[0]
-        self._engine = self._frame._engine
-        self._config = self._engine._config
-        self.rxboxDB = self._engine.rxboxDB
-        self.dbuuid = self._engine.dbuuid
-        self._panel = self._frame._panel
         
         self.simulated = self._config.getboolean('ECG', 'simulated')
         self.ecmcheck = self._config.getint('ECG', 'ecmcheck')
@@ -77,11 +72,10 @@ class ECG(ECGPanel):
         self.ECGData = self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug)
         self.plotter = False
         self.alive = False
-        self.status = 'stop'
-        self.error = ''
+    
+    def __name__(self):
+        return 'ECG'
         
-        self.SetStatusText = self._frame.RxFrame_StatusBar.SetStatusText
-            
     def lead12_button_clicked(self, event): # wxGlade: ECGPanel.<event_handler>
         self._frame.setGui('lock')
         self._panel['lead12'] = Lead12Panel2(self._frame, -1)
@@ -117,7 +111,6 @@ class ECG(ECGPanel):
         responce = dlg.ShowModal()
         if responce == wx.ID_YES:
             self.alive = True
-            self.daq = True
             self.getecgthread = threading.Thread(target=self.get_ecg_thread)
             self.getecgthread.start()
         
@@ -136,9 +129,8 @@ class ECG(ECGPanel):
                 minus = len(leadII) - 7500
                 if minus > 0: pop(end=minus)
             except Exception, e:
-                print 'ECG Error: ', e
+                self._logger.error(ERROR('DAQ Error'))
                 self.status = 'error'
-                self.error = e
                 self.alive = False
                 self.status = 'restart'
 
@@ -168,7 +160,6 @@ class ECG(ECGPanel):
         if self.status != 'start':
             return False
         if count >= self.ecmcheck:
-            self.daq = True
             self.getecgthread = threading.Thread(target=self.get_ecg_thread)
             self.getecgthread.start()
         else:
@@ -178,37 +169,39 @@ class ECG(ECGPanel):
         
     def Start(self):
         try:
-            self.status = 'start'
             self.ECGData.Open()
             self.plotter = CPlotter(panel=self.plot_panel, mode='normal', sample_time=self.daqdur, plot_timelength=3, cont=True, filterOn=self.filter, data=False)
             if self.ECGData.status:
                 self.alive = True
                 self.getecmthread = threading.Thread(target=self.get_ecm_thread)
                 self.getecmthread.start()
+                self._logger.info('DAQ Start')
+                self.status = 'start'
                 return True
         except Exception, e:
             self.status = 'error'
-            print 'ECG Error: ', e
+            self._logger.error(ERROR('DAQ Start Failed'))
             wx.PostEvent(self._frame, ECGEvent())
         return False
         
     def Stop(self):
         try:
-            self.status = 'stop'
             self.alive = False
             self.getecmthread.join(8)
             self.getecgthread.join(8)
             self.ECGData.flushout()
+            self._logger.info('DAQ Stop')
+            self.status = 'stop'
             return True
         except Exception, e:
             self.status = 'error'
-            print 'ECG Error: ', e
+            self._logger.error(ERROR('DAQ Stop Failed'))
             wx.PostEvent(self._frame, ECGEvent())
         return False
         
     def setGui(self, mode='unlock'):
         if mode not in ['lock','unlock']:
-            print 'mode unsupported'
+            self._logger.info('setGui mode unsupported')
             return
             
         modeb = (mode == 'unlock')

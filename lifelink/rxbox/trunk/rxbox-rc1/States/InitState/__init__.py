@@ -4,7 +4,6 @@ import traceback
 
 from States.State import *
 from RxboxFrame import *
-from Modules import rxboxdb
 
 class InitState(State):
     def __init__(self, engine, *args, **kwds):

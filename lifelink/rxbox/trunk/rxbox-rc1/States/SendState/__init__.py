@@ -60,9 +60,8 @@ class SendState(State):
             self._engine.change_state('StandbyState')
         
     def stop(self):
-        self._logger.info('State Machine: %s Stop'%self.__name__())
         self._frame.setGui('unlock')
-        
+        self._logger.info('State Machine: %s Stop'%self.__name__())        
     def sendEmail(self,mode='sendEDF',msg='EDF'):
         self._frame.RxFrame_StatusBar.SetStatusText("Sending %s to Server..."%msg)
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Sending %s to Server...'%msg)
@@ -161,7 +160,7 @@ class SendState(State):
                             'X-Eccs-Rxboxextension': '2001'}
             body = self.body
             
-            afilename = ['rxboxlog']
+            afilename = ['Logs/%s'%i for i in subprocess.Popen("ls Logs",shell=True,stdout=subprocess.PIPE).stdout.read().strip().split('\n')]
 
             attach = {}
             for i in afilename:

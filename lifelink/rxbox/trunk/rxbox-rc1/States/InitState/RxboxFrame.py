@@ -6,7 +6,6 @@ import ConfigParser
 
 from Panels import *
 
-
 ID_TransparentHint = wx.NewId()
 ID_VenetianBlindsHint = wx.NewId()
 ID_RectangleHint = wx.NewId()

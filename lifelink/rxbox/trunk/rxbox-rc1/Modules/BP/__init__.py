@@ -1,4 +1,3 @@
-from BPPanel import *
 import wx
 import time
 import threading
@@ -10,15 +9,16 @@ if config.getboolean('BP', 'simulated'):
 else:
     from BPDAQLive import BPDAQ
 
-class BP (BPPanel):
+from BPPanel import *
+from Modules.Module import *
+
+class BP (Module, BPPanel):
     def __init__(self, *args, **kwds):
         BPPanel.__init__(self, *args, **kwds)
+        Module.__init__(self, *args, **kwds)
         self.Bind(wx.EVT_BUTTON, self.onBPNow, self.bpNow_Button)
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 250, size=(50, 100),style=wx.GA_VERTICAL)
         self.bp_pressure_indicator.Enable(False)
-        self._frame = args[0]
-        self._engine = self._frame._engine
-        self._config = self._engine._config
 #coeff=(1.593,-1.148,17.98,0.107,0.227,39.25)
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.981,0,-6.59,0,0.38741,38.45))
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 250, size=(50, 100),style=wx.GA_VERTICAL)
@@ -27,13 +27,14 @@ class BP (BPPanel):
         self.updatealive=False
         self.bp_infolabel.SetLabel('Not Ready')
         self.bpNow_Button.Enable(False)
-        
+    
+    def __name__(self):
+        return 'BP'
 
     def onBPNow(self, event):
         self.Start()
 
     def Start(self):
-        print 'BP START'
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.981,0,-6.59,0,0.38741,38.45))
         self.bp.OpenSerial()
         self.bp.send_request(self.setBPmaxpressure_combobox.GetValue()[:3])
@@ -41,26 +42,27 @@ class BP (BPPanel):
         self.bpNow_Button.SetToolTipString("Acquiring BP")
         self.bpdaq_thread = threading.Thread(target=self.Get_bp)
         self.bpdaq_thread.start()
+        self._logger.info('DAQ Start')
         return True
         
     def Stop(self):
-        print 'BP STOP'
         self.bp.OpenSerial()
         self.bp.stop()
         self.bp.CloseSerial()
+        self._logger.info('DAQ Stop')
         return True
         
     def setGui(self, mode='unlock'):
+        if mode not in ['lock','unlock']:
+            self._logger.info('setGui mode unsupported')
+            return
+            
         if mode == 'lock':
-            print 'BP Panel lock'
             self.bpNow_Button.Enable(False)
             self.setBPmaxpressure_combobox.Enable(False)
         elif mode == 'unlock':
-            print 'BP Panel unlock'
             self.bpNow_Button.Enable(True)
             self.setBPmaxpressure_combobox.Enable(True)
-        else:
-            print 'mode unsupported'
 
     def minor_check(self):
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.981,0,-6.59,0,0.38741,38.45))

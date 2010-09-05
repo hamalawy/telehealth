@@ -2,7 +2,7 @@ import datetime
 
 from PatientInfoPanel import *
 from CommPanel import *
-from Modules import *
+from Modules.All import *
 
 class PatientInfoPanel2 (PatientInfoPanel):
     def __init__(self, *args, **kwds):

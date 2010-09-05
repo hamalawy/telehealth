@@ -1,5 +1,7 @@
+
 from Linphone import *
 from VoIPPanel import *
+from Modules.Module import *
 
 class LinphoneHandle(Linphone):
     def __init__(self):
@@ -21,40 +23,37 @@ class LinphoneHandle(Linphone):
         print "Call failed"
         #you may put GUI codes here (callafter function maybe?)
         
-class VoIP (VoIPPanel):
+class VoIP (Module, VoIPPanel):
     def __init__(self, *args, **kwds):
+        Module.__init__(self, *args, **kwds)
         VoIPPanel.__init__(self, *args, **kwds)
         
-        self._frame = args[0]
-        self._engine = self._frame._engine
-        self._config = self._engine._config
-        
-        self.rxboxDB = self._engine.rxboxDB
-        self.dbuuid = self._engine.dbuuid
-        self._panel = self._frame._panel
-        self.status = 'stop'
-        self.error = ''
+    def __name__(self):
+        return 'VoIP'
         
     def Start(self):
         """
         Starts the function of the module
         Includes DAQ and GUI
         """
-        self.status = 'start'
         self.linphone = LinphoneHandle()
         wid = self.video_panel.GetHandle()
         self.linphone.set_window(wid)
         self.linphone.spawn()
         self.linphone.start()
+        self.status = 'start'
+        self._logger.info('Start')
         
     def Stop(self):
         """
         Stops the function of the module
         Includes DAQ and GUI
         """
-        self.status = 'stop'
+
         self.linphone.stop()
         self.linphone.join()
+        self.status = 'stop'
+        self._logger.info('Stop')
         
     def setGui(self, mode='unlock'):
         """

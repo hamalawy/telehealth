@@ -2,6 +2,8 @@ import datetime
 
 from IMPanel import *
 from messenger import *
+from Modules.Module import *
+
 """
 This is the template module
 A module is the class which combines the GUI and the DAQ
@@ -12,19 +14,10 @@ basic functions include:
     setGui
     OnPaneClose
 """
-class IM (IMPanel):
+class IM (Module, IMPanel):
     def __init__(self, *args, **kwds):
+        Module.__init__(self, *args, **kwds)
         IMPanel.__init__(self, *args, **kwds)
-        
-        self._frame = args[0]
-        self._engine = self._frame._engine
-        self._config = self._engine._config
-        
-        self.rxboxDB = self._engine.rxboxDB
-        self.dbuuid = self._engine.dbuuid
-        self._panel = self._frame._panel
-        self.status = 'stop'
-        self.error = ''
 
         self.usrname = self._config.get('im', 'id')
         self.domain = self._config.get('im', 'domain')
@@ -32,13 +25,15 @@ class IM (IMPanel):
         self.recepient = self._config.get('im', 'recepient')
         
         self.IMreply_Text.Bind(wx.EVT_TEXT_ENTER, self.sendMessage)        
+    
+    def __name__(self):
+        return 'IM'
         
     def Start(self):
         """
         Starts the function of the module
         Includes DAQ and GUI
         """
-        self.status = 'start'
         self.m = Messenger('%s@%s'%(self.usrname,self.domain), self.passwd)
         self.m.handler_new_message = self.onMsgRcvd
         self.m.handler_sent_message = self.onMsgSent
@@ -47,14 +42,18 @@ class IM (IMPanel):
         self.m.connect()
         self.m.start()
         
+        self._logger.info('Start')
+        self.status = 'start'
+        
     def Stop(self):
         """
         Stops the function of the module
         Includes DAQ and GUI
         """
-        self.status = 'stop'
         self.m.stop()
         self.m.join()
+        self.status = 'stop'
+        self._logger.info('Stop')
         
     def setGui(self, mode='unlock'):
         """
