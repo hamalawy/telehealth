@@ -7,18 +7,16 @@ from SnapshotPanel import *
 from SnapshotPanel2 import *
 from camera_control import WebcamControl
 
+from Modules.Module import *
+
 wildcard = "Jpeg (*.jpg)|*.jpg|"        \
            "Bitmap (*.bmp)|*.bmp|"        \
            "All files (*.*)|*.*"
            
-class Snapshot (SnapshotPanel):
+class Snapshot (Module, SnapshotPanel):
     def __init__(self, *args, **kwds):
+        Module.__init__(self, *args, **kwds)
         SnapshotPanel.__init__(self, *args, **kwds)
-
-        self._frame = args[0]
-        self._engine = self._frame._engine
-        self._config = self._engine._config
-        self._panel = self._frame._panel
         
         self.list = wx.ImageList(100,70, True)
         self.image_list.AssignImageList(self.list, wx.IMAGE_LIST_NORMAL)
@@ -31,6 +29,10 @@ class Snapshot (SnapshotPanel):
         for i in modules:
             self.load_image('Pictures/%s'%i)
         """
+        
+    def __name__(self):
+        return 'SnapshotControl'
+        
     def load_image(self, name):
         img = wx.Bitmap(name, wx.BITMAP_TYPE_ANY)
         size = img.GetSize() 
@@ -117,18 +119,15 @@ class Snapshot (SnapshotPanel):
         Boolean may also be used but who knows, there might be the need of another mode other than lock and unlock.
         """
         if mode not in ['unlock', 'lock']:
-            print 'mode unsupported'
+            self._logger.info('setGui mode unsupported')
             return
 
         self.snapshot.Enable(mode=='unlock')
             
-class SnapshotWindow(SnapshotPanel2):
+class SnapshotWindow(Module, SnapshotPanel2):
     def __init__(self, *args, **kwds):
+        Module.__init__(self, *args, **kwds)
         SnapshotPanel2.__init__(self, *args, **kwds)
-        self._frame = args[0]
-        self._engine = self._frame._engine
-        self._config = self._engine._config
-        self._panel = self._frame._panel
         
         self.pics = self._panel['snapshot'].pics
         self.list = wx.ImageList(100,70, True)
@@ -140,9 +139,13 @@ class SnapshotWindow(SnapshotPanel2):
         self.video_device = '/dev/video0'
         self.webcam = WebcamControl(self, self.video_device[-1])
 
+    def __name__(self):
+        return 'Snapshot'
+        
     def Start(self):
         self.webcam.close_phone()
-        self.webcam.init_phone()   
+        self.webcam.init_phone()
+        self._logger.info('Start')
         
     def load_image(self, name):
         img = wx.Bitmap(name, wx.BITMAP_TYPE_ANY)
@@ -202,3 +205,4 @@ class SnapshotWindow(SnapshotPanel2):
             - Destroys current frame
         """
         self.webcam.close_phone()
+        self._logger.info('Stop')

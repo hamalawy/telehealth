@@ -1,7 +1,6 @@
-
-from SPO2Panel import *
 import wx
 import time
+import threading
 import ConfigParser
 config = ConfigParser.ConfigParser()
 config.read('rxbox.cfg')
@@ -10,29 +9,28 @@ if config.getboolean('SPO2', 'simulated'):
 else:
     from SPO2DAQLive import *
 
-import threading
+from SPO2Panel import *
+from Modules.Module import *
 
-class SPO2 (SPO2Panel):
+class SPO2 (Module, SPO2Panel):
     def __init__(self, *args, **kwds):
+        Module.__init__(self, *args, **kwds)
         SPO2Panel.__init__(self, *args, **kwds)
-        
-        self._frame = args[0]
-        self._engine = self._frame._engine
-        self._config = self._engine._config
-        
+
+    def __name__(self):
+        return 'SPO2'
+                
     def Start(self):
-        print 'SPO2Panel START'
         self.spo2data=SPO2DAQ(self, port =config.get('SPO2','port'))
         self.spo2_get_thread = threading.Thread(target=self.get_spo2)
         self.spo2_thread_alive=True
         self.spo2_get_thread.start()
+        self._logger.info('DAQ Start')
         return True
  
-            
-
     def Stop(self):
-        print 'SPO2Panel STOP'
         self.spo2_thread_alive=False
+        self._logger.info('DAQ Stop')
         return True
 
     def get_spo2(self):
@@ -48,9 +46,11 @@ class SPO2 (SPO2Panel):
         self.bpmvalue_label.SetLabel(str(self.heart_rate))
         
     def setGui(self, mode='unlock'):
+        if mode not in ['lock','unlock']:
+            self._logger.info('setGui mode unsupported')
+            return
+            
         if mode == 'lock':
             print 'SPO2 Panel lock'
         elif mode == 'unlock':
             print 'SPO2 Panel unlock'
-        else:
-            print 'mode unsupported'

@@ -1,3 +1,4 @@
+"""
 import subprocess
 
 modules = subprocess.Popen("ls Modules/",shell=True,stdout=subprocess.PIPE)
@@ -8,3 +9,4 @@ modulelist.remove('Template')
 for i in modulelist:
     if '.pyc' not in i:
         exec 'from %s import *'%i.replace('.py','')
+"""

@@ -26,7 +26,6 @@ class ReferState(State):
         self._panel['comm'].Call_Label.SetLabel('Drop')
         
     def stop(self):
-        self._logger.info('State Machine: %s Stop'%self.__name__())
         try:
             dlg = wx.ProgressDialog("Stopping Refer Session",
                            "Stopping Refer Session... Please Wait...",
@@ -51,3 +50,4 @@ class ReferState(State):
             dlg.Update(6,"Stopping IM")
         except:
             dlg.Destroy()
+        self._logger.info('State Machine: %s Stop'%self.__name__())
