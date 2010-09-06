@@ -1,26 +1,22 @@
-2010-09-05 23:32:51,696 root         INFO     RxboxEngine Start
-2010-09-05 23:32:51,697 InitState    INFO     State Machine: InitState Start
-2010-09-05 23:32:51,713 InitState    ERROR    Dynamic Port Allocation Failed
+2010-09-06 15:38:59,292 root         INFO     RxboxEngine Start
+2010-09-06 15:38:59,292 InitState    INFO     State Machine: InitState Start
+2010-09-06 15:38:59,316 InitState    ERROR    Dynamic Port Allocation Failed
 Traceback (most recent call last):
   File "/home/luke/Rxbox 1.0/States/InitState/__init__.py", line 24, in start
     self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
 IndexError: string index out of range
 
-2010-09-05 23:32:51,844 SnapshotControl INFO     SnapshotControl Module Initialized
-2010-09-05 23:32:51,904 BP           INFO     BP Module Initialized
-2010-09-05 23:32:51,906 SPO2         INFO     SPO2 Module Initialized
-2010-09-05 23:32:51,916 ECG          INFO     ECG Module Initialized
-2010-09-05 23:32:51,991 VoIP         INFO     VoIP Module Initialized
-2010-09-05 23:32:51,993 IM           INFO     IM Module Initialized
-2010-09-05 23:32:52,001 Snapshot     INFO     Snapshot Module Initialized
-2010-09-05 23:32:52,152 InitState    INFO     State Machine: InitState Stop
-2010-09-05 23:32:52,153 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:32:55,958 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:32:55,959 SendState    INFO     State Machine: SendState Start
-2010-09-05 23:33:14,372 SendState    INFO     State Machine: SendState Stop
-2010-09-05 23:33:14,373 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:34:15,634 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:34:15,634 ExitState    INFO     State Machine: ExitState Start
-2010-09-05 23:34:15,636 ExitState    INFO     Configurations Saved
-2010-09-05 23:34:15,754 ExitState    INFO     State Machine: ExitState Stop
-2010-09-05 23:34:15,754 root         INFO     RxboxEngine Exit
+2010-09-06 15:38:59,474 SnapshotControl INFO     SnapshotControl Module Initialized
+2010-09-06 15:38:59,564 BP           INFO     BP Module Initialized
+2010-09-06 15:38:59,566 SPO2         INFO     SPO2 Module Initialized
+2010-09-06 15:38:59,576 ECG          INFO     ECG Module Initialized
+2010-09-06 15:38:59,637 VoIP         INFO     VoIP Module Initialized
+2010-09-06 15:38:59,638 IM           INFO     IM Module Initialized
+2010-09-06 15:38:59,645 Snapshot     INFO     Snapshot Module Initialized
+2010-09-06 15:38:59,782 InitState    INFO     State Machine: InitState Stop
+2010-09-06 15:38:59,782 StandbyState INFO     State Machine: StandbyState Start
+2010-09-06 15:39:02,112 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-06 15:39:02,112 ExitState    INFO     State Machine: ExitState Start
+2010-09-06 15:39:02,113 ExitState    INFO     Configurations Saved
+2010-09-06 15:39:02,171 ExitState    INFO     State Machine: ExitState Stop
+2010-09-06 15:39:02,172 root         INFO     RxboxEngine Exit
