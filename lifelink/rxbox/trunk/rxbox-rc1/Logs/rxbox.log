@@ -1,87 +1,26 @@
-2010-09-05 23:21:23,506 root         INFO     RxboxEngine Start
-2010-09-05 23:21:23,506 InitState    INFO     State Machine: InitState Start
-2010-09-05 23:21:23,523 InitState    ERROR    Dynamic Port Allocation Failed
+2010-09-05 23:32:51,696 root         INFO     RxboxEngine Start
+2010-09-05 23:32:51,697 InitState    INFO     State Machine: InitState Start
+2010-09-05 23:32:51,713 InitState    ERROR    Dynamic Port Allocation Failed
 Traceback (most recent call last):
   File "/home/luke/Rxbox 1.0/States/InitState/__init__.py", line 24, in start
     self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
 IndexError: string index out of range
 
-2010-09-05 23:21:23,657 SnapshotControl INFO     SnapshotControl Module Initialized
-2010-09-05 23:21:23,743 BP           INFO     BP Module Initialized
-2010-09-05 23:21:23,745 SPO2         INFO     SPO2 Module Initialized
-2010-09-05 23:21:23,755 ECG          INFO     ECG Module Initialized
-2010-09-05 23:21:23,828 VoIP         INFO     VoIP Module Initialized
-2010-09-05 23:21:23,830 IM           INFO     IM Module Initialized
-2010-09-05 23:21:23,838 Snapshot     INFO     Snapshot Module Initialized
-2010-09-05 23:21:24,000 InitState    INFO     State Machine: InitState Stop
-2010-09-05 23:21:24,000 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:21:31,127 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:21:31,128 SendState    INFO     State Machine: SendState Start
-2010-09-05 23:21:48,568 SendState    INFO     State Machine: SendState Stop
-2010-09-05 23:21:48,568 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:23:13,540 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:23:13,541 DAQState     INFO     State Machine: DAQState Start
-2010-09-05 23:23:13,552 DAQState     INFO     Session uuid = 7fda50dc-b901-11df-bb30-001cbf6378e5
-2010-09-05 23:23:13,578 ECG          ERROR    DAQ Start Failed
-Traceback (most recent call last):
-  File "/home/luke/Rxbox 1.0/Modules/ECG/__init__.py", line 172, in Start
-    self.ECGData.Open()
-  File "/home/luke/Rxbox 1.0/Modules/ECG/ECGDAQLive.py", line 112, in Open
-    self.ecgserial = serial.Serial(self.port, baudrate=self.baud, timeout=self.timeout, xonxoff=0)
-  File "/usr/lib/python2.6/dist-packages/serial/serialutil.py", line 166, in __init__
-    self.open()
-  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 175, in open
-    raise SerialException("could not open port %s: %s" % (self._port, msg))
-SerialException: could not open port /dev/ttyUSB2: [Errno 2] No such file or directory: '/dev/ttyUSB2'
-
-2010-09-05 23:23:13,579 SPO2         INFO     DAQ Start
-2010-09-05 23:23:14,160 ECG          ERROR    DAQ Stop Failed
-Traceback (most recent call last):
-  File "/home/luke/Rxbox 1.0/Modules/ECG/__init__.py", line 190, in Stop
-    self.getecmthread.join(8)
-AttributeError: 'ECG' object has no attribute 'getecmthread'
-
-2010-09-05 23:23:14,167 SPO2         INFO     DAQ Stop
-2010-09-05 23:23:14,308 DAQState     INFO     State Machine: DAQState Stop
-2010-09-05 23:23:14,308 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:23:17,433 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:23:17,434 SendState    INFO     State Machine: SendState Start
-2010-09-05 23:23:25,287 SendState    ERROR    Sending Failed
-Traceback (most recent call last):
-  File "/home/luke/Rxbox 1.0/States/SendState/__init__.py", line 71, in sendEmail
-    getattr(self, mode)()
-  File "/home/luke/Rxbox 1.0/States/SendState/__init__.py", line 132, in sendEDF
-    afilename = [self._engine._myedf.edfilename]+self._panel['snapshot'].pics
-AttributeError: 'NoneType' object has no attribute 'edfilename'
-
-2010-09-05 23:23:26,952 SendState    INFO     State Machine: SendState Stop
-2010-09-05 23:23:26,953 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:23:28,148 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:23:28,149 SendState    INFO     State Machine: SendState Start
-2010-09-05 23:23:42,131 SendState    INFO     State Machine: SendState Stop
-2010-09-05 23:23:42,131 ReferState   INFO     State Machine: ReferState Start
-2010-09-05 23:23:42,480 VoIP         INFO     Start
-2010-09-05 23:24:04,777 IM           INFO     Start
-2010-09-05 23:24:07,980 VoIP         INFO     Stop
-2010-09-05 23:24:07,998 IM           INFO     Stop
-2010-09-05 23:24:08,048 ReferState   INFO     State Machine: ReferState Stop
-2010-09-05 23:24:08,049 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:24:14,454 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:24:14,455 SendState    INFO     State Machine: SendState Start
-2010-09-05 23:24:30,724 SendState    INFO     State Machine: SendState Stop
-2010-09-05 23:24:30,724 ReferState   INFO     State Machine: ReferState Start
-2010-09-05 23:24:31,030 VoIP         INFO     Start
-2010-09-05 23:24:37,153 IM           INFO     Start
-2010-09-05 23:24:52,928 VoIP         INFO     Stop
-2010-09-05 23:24:53,909 IM           INFO     Stop
-2010-09-05 23:24:53,935 ReferState   INFO     State Machine: ReferState Stop
-2010-09-05 23:24:53,940 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:24:55,093 Snapshot     INFO     Start
-2010-09-05 23:25:05,041 Snapshot     INFO     Stop
-2010-09-05 23:25:25,733 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:25:25,733 StandbyState INFO     State Machine: StandbyState Start
-2010-09-05 23:26:01,168 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-05 23:26:01,169 ExitState    INFO     State Machine: ExitState Start
-2010-09-05 23:26:01,170 ExitState    INFO     Configurations Saved
-2010-09-05 23:26:01,277 ExitState    INFO     State Machine: ExitState Stop
-2010-09-05 23:26:01,277 root         INFO     RxboxEngine Exit
+2010-09-05 23:32:51,844 SnapshotControl INFO     SnapshotControl Module Initialized
+2010-09-05 23:32:51,904 BP           INFO     BP Module Initialized
+2010-09-05 23:32:51,906 SPO2         INFO     SPO2 Module Initialized
+2010-09-05 23:32:51,916 ECG          INFO     ECG Module Initialized
+2010-09-05 23:32:51,991 VoIP         INFO     VoIP Module Initialized
+2010-09-05 23:32:51,993 IM           INFO     IM Module Initialized
+2010-09-05 23:32:52,001 Snapshot     INFO     Snapshot Module Initialized
+2010-09-05 23:32:52,152 InitState    INFO     State Machine: InitState Stop
+2010-09-05 23:32:52,153 StandbyState INFO     State Machine: StandbyState Start
+2010-09-05 23:32:55,958 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-05 23:32:55,959 SendState    INFO     State Machine: SendState Start
+2010-09-05 23:33:14,372 SendState    INFO     State Machine: SendState Stop
+2010-09-05 23:33:14,373 StandbyState INFO     State Machine: StandbyState Start
+2010-09-05 23:34:15,634 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-05 23:34:15,634 ExitState    INFO     State Machine: ExitState Start
+2010-09-05 23:34:15,636 ExitState    INFO     Configurations Saved
+2010-09-05 23:34:15,754 ExitState    INFO     State Machine: ExitState Stop
+2010-09-05 23:34:15,754 root         INFO     RxboxEngine Exit
