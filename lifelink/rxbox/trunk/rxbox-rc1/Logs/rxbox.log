@@ -1,22 +1,40 @@
-2010-09-06 15:38:59,292 root         INFO     RxboxEngine Start
-2010-09-06 15:38:59,292 InitState    INFO     State Machine: InitState Start
-2010-09-06 15:38:59,316 InitState    ERROR    Dynamic Port Allocation Failed
+2010-09-09 17:22:59,374 root         INFO     RxboxEngine Start
+2010-09-09 17:22:59,375 InitState    INFO     State Machine: InitState Start
+2010-09-09 17:22:59,396 InitState    INFO     ECG: /dev/ttyUSB2
+2010-09-09 17:22:59,421 InitState    INFO     SPO2: /dev/ttyUSB1
+2010-09-09 17:22:59,442 InitState    INFO     BP: /dev/ttyUSB0
+2010-09-09 17:22:59,697 SnapshotControl INFO     SnapshotControl Module Initialized
+2010-09-09 17:22:59,849 BP           INFO     BP Module Initialized
+2010-09-09 17:22:59,854 SPO2         INFO     SPO2 Module Initialized
+2010-09-09 17:22:59,881 ECG          INFO     ECG Module Initialized
+2010-09-09 17:23:00,029 VoIP         INFO     VoIP Module Initialized
+2010-09-09 17:23:00,033 IM           INFO     IM Module Initialized
+2010-09-09 17:23:00,051 Snapshot     INFO     Snapshot Module Initialized
+2010-09-09 17:23:01,544 InitState    INFO     State Machine: InitState Stop
+2010-09-09 17:23:01,546 StandbyState INFO     State Machine: StandbyState Start
+2010-09-09 17:24:05,820 BP           INFO     DAQ Start
+2010-09-09 17:24:53,567 StandbyState INFO     State Machine: StandbyState Stop
+2010-09-09 17:24:53,568 DAQState     INFO     State Machine: DAQState Start
+2010-09-09 17:24:53,656 DAQState     INFO     Session uuid = 1a9169cc-bbf4-11df-8e5b-00301bbe2ba6
+2010-09-09 17:24:53,871 ECG          INFO     DAQ Start
+2010-09-09 17:24:53,874 SPO2         INFO     DAQ Start
+2010-09-09 17:25:03,136 BP           INFO     DAQ Start
+2010-09-09 17:30:08,146 ECG          ERROR    DAQ Stop Failed
 Traceback (most recent call last):
-  File "/home/luke/Rxbox 1.0/States/InitState/__init__.py", line 24, in start
-    self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
-IndexError: string index out of range
+  File "/home/rxboxpilot01/Rxbox 1.0/Modules/ECG/__init__.py", line 192, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot01/Rxbox 1.0/Modules/ECG/ECGDAQLive.py", line 159, in flushout
+    return self.ecgreply()
+  File "/home/rxboxpilot01/Rxbox 1.0/Modules/ECG/ECGDAQLive.py", line 146, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
 
-2010-09-06 15:38:59,474 SnapshotControl INFO     SnapshotControl Module Initialized
-2010-09-06 15:38:59,564 BP           INFO     BP Module Initialized
-2010-09-06 15:38:59,566 SPO2         INFO     SPO2 Module Initialized
-2010-09-06 15:38:59,576 ECG          INFO     ECG Module Initialized
-2010-09-06 15:38:59,637 VoIP         INFO     VoIP Module Initialized
-2010-09-06 15:38:59,638 IM           INFO     IM Module Initialized
-2010-09-06 15:38:59,645 Snapshot     INFO     Snapshot Module Initialized
-2010-09-06 15:38:59,782 InitState    INFO     State Machine: InitState Stop
-2010-09-06 15:38:59,782 StandbyState INFO     State Machine: StandbyState Start
-2010-09-06 15:39:02,112 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-06 15:39:02,112 ExitState    INFO     State Machine: ExitState Start
-2010-09-06 15:39:02,113 ExitState    INFO     Configurations Saved
-2010-09-06 15:39:02,171 ExitState    INFO     State Machine: ExitState Stop
-2010-09-06 15:39:02,172 root         INFO     RxboxEngine Exit
+2010-09-09 17:30:08,213 SPO2         INFO     DAQ Stop
+2010-09-09 17:30:08,270 BP           INFO     DAQ Stop
+2010-09-09 17:30:08,289 DAQState     INFO     Generate EDF Start
+2010-09-09 17:30:08,699 DAQState     INFO     Generate EDF Done
+2010-09-09 17:30:09,043 DAQState     INFO     State Machine: DAQState Stop
+2010-09-09 17:30:09,044 StandbyState INFO     State Machine: StandbyState Start
+2010-09-09 17:30:10,607 BP           INFO     DAQ Start
