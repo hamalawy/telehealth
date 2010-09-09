@@ -17,7 +17,7 @@ from errorlog_config import ERRORLOG_Configurationmain
 from db_config import DB_Configurationmain
 from gen_config import Geninfo_Configurationmain
 
-path = '/home/rxboxpilot04/Rxbox 1.0/Modules'
+path = '../Modules'
 sys.path.append( path+'/BP' )
 from bp_config  import BP_Configurationmain
 sys.path.append( path + '/SPO2' )
