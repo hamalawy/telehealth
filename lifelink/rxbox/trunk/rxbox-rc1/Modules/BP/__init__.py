@@ -46,9 +46,9 @@ class BP (Module, BPPanel):
         return True
         
     def Stop(self):
-        self.bp.OpenSerial()
-        self.bp.stop()
-        self.bp.CloseSerial()
+        if self.bp.nibp.isOpen()== True:
+            self.bp.stop()
+            print 'serial active'
         self._logger.info('DAQ Stop')
         return True
         

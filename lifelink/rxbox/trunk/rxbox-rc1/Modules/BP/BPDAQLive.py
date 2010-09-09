@@ -82,13 +82,17 @@ class BPDAQ:
     def extract_bp(self):
         for item in range(len(self.PatientStatus)):
             if self.PatientStatus[item] == 'P':
-                rawsys = int(self.PatientStatus[item+1:item+4])
-                rawdias = int(self.PatientStatus[item+7:item+10])
-                coeff = self.coeff
-                self.bp_systolic = int(round(coeff[0]*rawsys+coeff[1]*rawdias+coeff[2]))
-                self.bp_diastolic = int(round(coeff[3]*rawsys+coeff[4]*rawdias+coeff[5]))
-                print "Raw Systolic Pressure:",rawsys
-                print "Raw Diastolic Pressure:",rawdias
+                if self.PatientStatus[item+1:item+4] == '---':
+                    self.bp_systolic = 0
+                    self.bp_diastolic = 0
+                else:
+                    rawsys = int(self.PatientStatus[item+1:item+4])
+                    rawdias = int(self.PatientStatus[item+7:item+10])
+                    coeff = self.coeff
+                    self.bp_systolic = int(round(coeff[0]*rawsys+coeff[1]*rawdias+coeff[2]))
+                    self.bp_diastolic = int(round(coeff[3]*rawsys+coeff[4]*rawdias+coeff[5]))
+                    print "Raw Systolic Pressure:",rawsys
+                    print "Raw Diastolic Pressure:",rawdias
                 break
         print "Systolic Pressure: ",self.bp_systolic
         print "Diastolic Pressure: ",self.bp_diastolic
@@ -282,7 +286,7 @@ class BPDAQ:
         self.nibp.write('\x0218;;DF\x03') # print/output command via serial port to SPO2 module
         self.nibp.flushInput() # flush input buffer of serial port
         self.PatientStatus = self.get_reply()
-#        print list(self.PatientStatus), "this is the status of the patient"
+        print list(self.PatientStatus), "this is the status of the patient"
         self.PatientReady = False
         if self.PatientStatus == None:
             print "ERROR: Module does not reply."
