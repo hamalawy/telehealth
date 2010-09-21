@@ -285,6 +285,7 @@ class RxboxFrame(wx.Frame):
 
                 dlg.Update(1,"Making Back Up")
                 os.system('mv rxbox.cfg rxbox.bk')
+                os.system('mv Logs Logsbk')
                 dlg.Update(2,"Cleaning Up")
                 os.system('svn cleanup')
                 dlg.Update(3,"Updating Modules")
@@ -307,6 +308,8 @@ class RxboxFrame(wx.Frame):
                 configorig.write(open('rxbox.bk', 'w'))
                 dlg.Update(7,"Restoring Config Files")
                 os.system('rm rxbox.cfg')
+                os.system('rm -rf Logs')
+                os.system('mv Logsbk Logs')
                 os.system('mv rxbox.bk rxbox.cfg')
                 dlg.Update(8,"Update Complete..Please Restart Rxbox to commit changes")
                 updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
