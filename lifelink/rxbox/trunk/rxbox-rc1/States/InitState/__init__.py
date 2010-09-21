@@ -35,6 +35,7 @@ class InitState(State):
             self._config.set('BP', 'port', '/dev/ttyUSB%s'%bpport[0])
 
             self._config.write(open('rxbox.cfg', 'w'))
+            self._config.read('rxbox.cfg')
         except:
             self._logger.error(ERROR('Dynamic Port Allocation Failed'))
        
