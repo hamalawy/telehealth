@@ -21,6 +21,8 @@ class SPO2DAQ:
         self.parent = parent
         self.spo2_list=15*[0]
         self.bpm_list=15*[0]
+        self.current_spo2=0
+        self.current_bpm=0
         # Request Command: transmit SPO2 and BPM every 100 ms
         self.command = [0x7f, 0xd1, 0x01, 0x01, 0x01, 0x02,\
                         0x01, 0x03, 0x01, 0x11, 0x01, 0x04, 0x0a]
