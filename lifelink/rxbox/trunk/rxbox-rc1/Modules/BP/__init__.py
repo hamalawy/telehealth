@@ -65,7 +65,7 @@ class BP (Module, BPPanel):
             self.setBPmaxpressure_combobox.Enable(True)
 
     def minor_check(self):
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.981,0,-6.59,0,0.38741,38.45))
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
 
         status=self.bp.init_status_check()
         if status== False:

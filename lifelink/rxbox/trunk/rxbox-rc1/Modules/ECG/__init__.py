@@ -119,13 +119,14 @@ class ECG(Module, ECGPanel):
         self.ECGData.config_analog()
         self.ECGData.start_ecg()
         ind = 0
+        interval = int(-500*self.daqdur)
         get_ecg = self.ECGData.get_ecg
         leadII = self.ECGData.ecg_lead['II']
         pop = self.ECGData.Pop
         while self.alive:
             try:
                 get_ecg()
-                ind = self.plotter.Plot(leadII[-500:], xs=ind)
+                ind = self.plotter.Plot(leadII[interval:], xs=ind)
                 minus = len(leadII) - 7500
                 if minus > 0: pop(end=minus)
             except Exception, e:

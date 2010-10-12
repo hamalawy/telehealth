@@ -1,40 +1,61 @@
-2010-09-09 17:22:59,374 root         INFO     RxboxEngine Start
-2010-09-09 17:22:59,375 InitState    INFO     State Machine: InitState Start
-2010-09-09 17:22:59,396 InitState    INFO     ECG: /dev/ttyUSB2
-2010-09-09 17:22:59,421 InitState    INFO     SPO2: /dev/ttyUSB1
-2010-09-09 17:22:59,442 InitState    INFO     BP: /dev/ttyUSB0
-2010-09-09 17:22:59,697 SnapshotControl INFO     SnapshotControl Module Initialized
-2010-09-09 17:22:59,849 BP           INFO     BP Module Initialized
-2010-09-09 17:22:59,854 SPO2         INFO     SPO2 Module Initialized
-2010-09-09 17:22:59,881 ECG          INFO     ECG Module Initialized
-2010-09-09 17:23:00,029 VoIP         INFO     VoIP Module Initialized
-2010-09-09 17:23:00,033 IM           INFO     IM Module Initialized
-2010-09-09 17:23:00,051 Snapshot     INFO     Snapshot Module Initialized
-2010-09-09 17:23:01,544 InitState    INFO     State Machine: InitState Stop
-2010-09-09 17:23:01,546 StandbyState INFO     State Machine: StandbyState Start
-2010-09-09 17:24:05,820 BP           INFO     DAQ Start
-2010-09-09 17:24:53,567 StandbyState INFO     State Machine: StandbyState Stop
-2010-09-09 17:24:53,568 DAQState     INFO     State Machine: DAQState Start
-2010-09-09 17:24:53,656 DAQState     INFO     Session uuid = 1a9169cc-bbf4-11df-8e5b-00301bbe2ba6
-2010-09-09 17:24:53,871 ECG          INFO     DAQ Start
-2010-09-09 17:24:53,874 SPO2         INFO     DAQ Start
-2010-09-09 17:25:03,136 BP           INFO     DAQ Start
-2010-09-09 17:30:08,146 ECG          ERROR    DAQ Stop Failed
+2010-10-12 18:15:28,494 root         INFO     RxboxEngine Start
+2010-10-12 18:15:28,495 InitState    INFO     State Machine: InitState Start
+2010-10-12 18:15:28,520 InitState    INFO     ECG: /dev/ttyUSB2
+2010-10-12 18:15:28,548 InitState    INFO     SPO2: /dev/ttyUSB0
+2010-10-12 18:15:28,577 InitState    INFO     BP: /dev/ttyUSB1
+2010-10-12 18:15:28,799 SnapshotControl INFO     SnapshotControl Module Initialized
+2010-10-12 18:15:28,948 BP           INFO     BP Module Initialized
+2010-10-12 18:15:28,953 SPO2         INFO     SPO2 Module Initialized
+2010-10-12 18:15:28,981 ECG          INFO     ECG Module Initialized
+2010-10-12 18:15:29,088 VoIP         INFO     VoIP Module Initialized
+2010-10-12 18:15:29,093 IM           INFO     IM Module Initialized
+2010-10-12 18:15:29,112 Snapshot     INFO     Snapshot Module Initialized
+2010-10-12 18:15:29,534 InitState    INFO     State Machine: InitState Stop
+2010-10-12 18:15:29,536 StandbyState INFO     State Machine: StandbyState Start
+2010-10-12 18:15:34,944 Snapshot     INFO     Start
+2010-10-12 18:16:09,212 Snapshot     INFO     Stop
+2010-10-12 18:16:10,470 Snapshot     INFO     Start
+2010-10-12 18:16:15,625 BP           INFO     DAQ Start
+2010-10-12 18:16:19,099 Snapshot     INFO     Stop
+2010-10-12 18:16:26,904 StandbyState INFO     State Machine: StandbyState Stop
+2010-10-12 18:16:26,905 DAQState     INFO     State Machine: DAQState Start
+2010-10-12 18:16:26,915 DAQState     INFO     Session uuid = c5ed231a-d5e9-11df-8eaa-00301bbf7b6b
+2010-10-12 18:16:27,074 ECG          INFO     DAQ Start
+2010-10-12 18:16:27,076 SPO2         INFO     DAQ Start
+2010-10-12 18:16:52,903 ECG          ERROR    DAQ Stop Failed
 Traceback (most recent call last):
-  File "/home/rxboxpilot01/Rxbox 1.0/Modules/ECG/__init__.py", line 192, in Stop
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 193, in Stop
     self.ECGData.flushout()
-  File "/home/rxboxpilot01/Rxbox 1.0/Modules/ECG/ECGDAQLive.py", line 159, in flushout
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 159, in flushout
     return self.ecgreply()
-  File "/home/rxboxpilot01/Rxbox 1.0/Modules/ECG/ECGDAQLive.py", line 146, in ecgreply
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 146, in ecgreply
     temp = read(1)
   File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
     if self.fd is None: raise portNotOpenError
 SerialException: Port not open
 
-2010-09-09 17:30:08,213 SPO2         INFO     DAQ Stop
-2010-09-09 17:30:08,270 BP           INFO     DAQ Stop
-2010-09-09 17:30:08,289 DAQState     INFO     Generate EDF Start
-2010-09-09 17:30:08,699 DAQState     INFO     Generate EDF Done
-2010-09-09 17:30:09,043 DAQState     INFO     State Machine: DAQState Stop
-2010-09-09 17:30:09,044 StandbyState INFO     State Machine: StandbyState Start
-2010-09-09 17:30:10,607 BP           INFO     DAQ Start
+2010-10-12 18:16:52,941 SPO2         INFO     DAQ Stop
+2010-10-12 18:16:52,956 BP           INFO     DAQ Stop
+2010-10-12 18:16:52,971 DAQState     INFO     Generate EDF Start
+2010-10-12 18:16:53,322 DAQState     INFO     Generate EDF Done
+2010-10-12 18:16:53,524 DAQState     INFO     State Machine: DAQState Stop
+2010-10-12 18:16:53,525 StandbyState INFO     State Machine: StandbyState Start
+2010-10-12 18:16:56,193 StandbyState INFO     State Machine: StandbyState Stop
+2010-10-12 18:16:56,194 SendState    INFO     State Machine: SendState Start
+2010-10-12 18:17:12,894 SendState    INFO     State Machine: SendState Stop
+2010-10-12 18:17:12,895 StandbyState INFO     State Machine: StandbyState Start
+2010-10-12 18:17:17,529 StandbyState INFO     State Machine: StandbyState Stop
+2010-10-12 18:17:17,530 SendState    INFO     State Machine: SendState Start
+2010-10-12 18:17:33,550 SendState    INFO     State Machine: SendState Stop
+2010-10-12 18:17:33,551 ReferState   INFO     State Machine: ReferState Start
+2010-10-12 18:17:34,070 VoIP         INFO     Start
+2010-10-12 18:17:36,538 IM           INFO     Start
+2010-10-12 18:19:23,914 VoIP         INFO     Stop
+2010-10-12 18:19:24,738 IM           INFO     Stop
+2010-10-12 18:19:24,767 ReferState   INFO     State Machine: ReferState Stop
+2010-10-12 18:19:24,768 StandbyState INFO     State Machine: StandbyState Start
+2010-10-12 18:19:27,941 StandbyState INFO     State Machine: StandbyState Stop
+2010-10-12 18:19:27,942 ExitState    INFO     State Machine: ExitState Start
+2010-10-12 18:19:27,945 ExitState    INFO     Configurations Saved
+2010-10-12 18:19:28,169 ExitState    INFO     State Machine: ExitState Stop
+2010-10-12 18:19:28,170 root         INFO     RxboxEngine Exit
