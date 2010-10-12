@@ -2,6 +2,7 @@ import subprocess
 import os
 import wx
 from datetime import datetime
+import ConfigParser
 
 from SnapshotPanel import *
 from SnapshotPanel2 import *
@@ -178,9 +179,25 @@ class SnapshotWindow(Module, SnapshotPanel2):
         tnow = datetime.now()
         tnow = tnow.strftime("%Y_%m_%d_%H_%M_%S")+("_%s"%tnow.microsecond.__str__().replace('.',''))
         print tnow
-        os.system("v4lctl -c %s snap jpeg 176x144 Pictures/%s.jpg"%(self.video_device,tnow))
+        self.process_config(tnow)
+        os.system("python Modules/Snapshot/camera.py")
         self.load_image("Pictures/%s.jpg"%(tnow))
         self.webcam.init_phone()
+
+    def process_config(self, tnow):
+        
+        filename = tnow + '.jpg'
+        pathname = '%s/Modules/Snapshot/webcam.cfg'%os.getcwd()
+        print pathname
+        config = ConfigParser.ConfigParser()
+        config.read(pathname)
+        config.set('ftp', 'file', filename)
+        config.set('ftp', 'dir', '%s/Pictures'%os.getcwd())
+        print filename
+        print config.get('ftp', 'file')
+        
+        with open(pathname, 'wb') as configfile:
+            config.write(configfile)   
 
     def OnDelete(self, event): # wxGlade: SnapshotPanel2.<event_handler>
         itemIndex = -1

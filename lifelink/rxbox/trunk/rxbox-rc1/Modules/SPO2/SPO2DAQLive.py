@@ -30,6 +30,8 @@ class SPO2DAQ:
         self.spo2 = []
         self.pulse_rate = []
         self.signal_quality = []
+        self.current_spo2=0
+        self.current_bpm =0
         #self.send_request()
 
     def send_request(self):
