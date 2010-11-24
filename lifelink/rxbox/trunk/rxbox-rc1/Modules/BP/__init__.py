@@ -19,8 +19,8 @@ class BP (Module, BPPanel):
         self.Bind(wx.EVT_BUTTON, self.onBPNow, self.bpNow_Button)
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 250, size=(50, 100),style=wx.GA_VERTICAL)
         self.bp_pressure_indicator.Enable(False)
-#coeff=(1.593,-1.148,17.98,0.107,0.227,39.25)
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.981,0,-6.59,0,0.38741,38.45))
+#coeff=(1.593,-1.148,17.98,0.107,0.227,39.25),coeff=(0.981,0,-6.59,0,0.38741,38.45)
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 250, size=(50, 100),style=wx.GA_VERTICAL)
         self.bp_pressure_indicator.Enable(False)
         self.alive=False       
@@ -35,7 +35,7 @@ class BP (Module, BPPanel):
         self.Start()
 
     def Start(self):
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.981,0,-6.59,0,0.38741,38.45))
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
         self.bp.OpenSerial()
         self.bp.send_request(self.setBPmaxpressure_combobox.GetValue()[:3])
         self.setBPmaxpressure_combobox.Enable(False)
