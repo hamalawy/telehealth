@@ -35,7 +35,12 @@ class BP (Module, BPPanel):
         self.Start()
 
     def Start(self):
+<<<<<<< .mine
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
+        #(0.981,0,-6.59,0,0.38741,38.45)
+=======
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
+>>>>>>> .r572
         self.bp.OpenSerial()
         self.bp.send_request(self.setBPmaxpressure_combobox.GetValue()[:3])
         self.setBPmaxpressure_combobox.Enable(False)

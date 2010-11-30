@@ -23,6 +23,8 @@ ID_FirstPerspective = wx.NewId()
 ID_LogFileSend = wx.NewId()
 ID_Update = wx.NewId()
 ID_About = wx.NewId()
+ID_BPcal=wx.NewId()
+ID_Conf=wx.NewId()
 
 CAPTION2NAME = {"12 Lead ECG":"lead12", "Create Patient Record":"createrecord","Support":"logfile","Snapshot":"snapshot2"}
 
@@ -67,6 +69,11 @@ class RxboxFrame(wx.Frame):
         self.options_menu.AppendSeparator();
         self.options_menu.Append(ID_FirstPerspective + 0, "Default Startup")
 
+        self.tools_menu = wx.Menu()
+        self.tools_menu.Append(ID_BPcal, "BP Calibrate")
+        self.tools_menu.Append(ID_Conf, "Configuration")
+
+
         self.help_menu = wx.Menu()
         self.help_menu.Append(ID_LogFileSend, "Support")
         self.help_menu.Append(ID_Update, "Update")
@@ -74,7 +81,9 @@ class RxboxFrame(wx.Frame):
 
         self.RxboxFrame_menubar.Append(self.file_menu, "File")        
         self.RxboxFrame_menubar.Append(self.options_menu, "Option")
+        self.RxboxFrame_menubar.Append(self.tools_menu, "Tools")        
         self.RxboxFrame_menubar.Append(self.help_menu, "Help")
+        
         self.SetMenuBar(self.RxboxFrame_menubar)
         # Menu Bar end
         
@@ -176,7 +185,8 @@ class RxboxFrame(wx.Frame):
         self.Bind(wx.EVT_MENU_RANGE, self.OnLogFileSend, id=ID_LogFileSend)
         self.Bind(wx.EVT_MENU_RANGE, self.OnUpdate, id=ID_Update)
         self.Bind(wx.EVT_MENU_RANGE, self.OnAbout, id=ID_About)
-        
+        self.Bind(wx.EVT_MENU_RANGE, self.OnBPcal, id=ID_BPcal)
+        self.Bind(wx.EVT_MENU_RANGE, self.OnConfig, id=ID_Conf)
         self.SetTitle("Rxbox Frame")
         self.SetMinSize((1200, 700))
         self.RxFrame_StatusBar.SetStatusWidths([-1])
@@ -317,6 +327,14 @@ class RxboxFrame(wx.Frame):
             except:
                 dlg.Destroy()
             self._engine.change_state('ExitState')
+
+    def OnBPcal(self,evt):
+        print "BP Calibrations started"
+        self._engine.change_state('BPCALState')
+
+    def OnConfig(self,evt):
+        print "Configuration started"
+        self._engine.change_state('CONFIGState')
 
     def OnAbout(self, evt):
         # First we create and fill the info object

@@ -200,12 +200,13 @@ class SnapshotWindow(Module, SnapshotPanel2):
             config.write(configfile)   
 
     def OnDelete(self, event): # wxGlade: SnapshotPanel2.<event_handler>
-        itemIndex = -1
+        itemIndex = 0
         count = 0
         while True:
             itemIndex = self.image_list.GetNextItem(itemIndex,
                                          wx.LIST_NEXT_ALL,
                                          wx.LIST_STATE_SELECTED)
+            print itemIndex
             if itemIndex == -1:
                 count += 1
                 if count == 2:
