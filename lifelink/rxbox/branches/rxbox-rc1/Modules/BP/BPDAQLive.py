@@ -143,6 +143,31 @@ class BPDAQ:
         else:
             return True
 
+
+    def port_check(self):
+        
+        status=self.OpenSerial()
+        if status == False:
+            return False
+        self.stop()
+        command='\x0218;;DF\x03'
+        self.nibp.write(command)
+
+        status = self.get_reply()
+        print status
+        if status == None:
+            print "ERROR: Module does not reply."
+            print "Please check power or serial port settings."
+            self.CloseSerial()
+            return False
+
+        if self.list_reply[0]=='\x02' and self.list_reply[1]=='S':
+            self.CloseSerial()
+            return True
+        else:
+            self.CloseSerial()
+            return False
+        
     def init_firmware_version(self):
         """ 
             Checks if the module transmitted a valid packet. If packet is
@@ -174,7 +199,7 @@ class BPDAQ:
         If not, error is printed in the python shell
         """
         try:
-            self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=2, xonxoff=0)
+            self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=1, xonxoff=0)
             return True
         except serial.SerialException:
             print "Please check serial port settings or the device."
