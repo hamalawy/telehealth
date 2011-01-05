@@ -22,7 +22,7 @@ class bpdemo(MyFrame):
         self.pressure_timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.get_bp, self.timer1)
         self.Bind(wx.EVT_TIMER, self.pressure_update, self.pressure_timer)
-        self.bp = BP(self,'/dev/ttyUSB1')
+        self.bp = BP(self,'COM6')
         self.bp_pressure_indicator = wx.Gauge(self.bpbarpanel,-1, 250, size=(50, 100),style=wx.GA_VERTICAL)
         self.bp_pressure_indicator.Enable(False)
         self.bp_status_check()
