@@ -25,7 +25,7 @@ class SPO2DAQ:
         self.current_bpm=0
         # Request Command: transmit SPO2 and BPM every 100 ms
         self.command = [0x7f, 0xd1, 0x01, 0x01, 0x01, 0x02,\
-                        0x01, 0x03, 0x01, 0x11, 0x01, 0x04, 0x0a]
+                        0x01, 0x03, 0x01]
 
         self.spo2 = []
         self.pulse_rate = []
@@ -36,6 +36,7 @@ class SPO2DAQ:
 
     def send_request(self):
         """ Continuously acquire SPO2 and BPM readings from the module """
+        self.OpenSerial()
         request = []
         self.checksum(self.command)
         for item in self.command:
@@ -163,6 +164,7 @@ class SPO2DAQ:
         """
         reply = ''; flag_counter = 0; start = time.time()
         count = 2; start_found = False
+        bit_count=0
         while (flag_counter < 2):
             byte = self.SerPort.read(1)
             if byte == '':
@@ -179,6 +181,9 @@ class SPO2DAQ:
                 else:
                     reply = reply+byte
                 flag_counter = flag_counter + 1
+            if bit_count>15:
+                return None
+            bit_count+=1
         if byte == '':
             return None
         else:
@@ -263,6 +268,30 @@ class SPO2DAQ:
         else:
             packet = [ord(item) for item in string]
             return packet
+            
+    def port_check(self):
+        status=self.OpenSerial()
+        if self.status is None:
+            self.Power = False
+            self.checksum([0x7f, 0xb2]) # Compute for checksum
+            self.DataPacket = [0xa8, 0x7f, 0xb2, self.CShi, self.CSlo, 0xa8] # Organize data packet
+            self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
+            self.Command = ''.join(self.DataPacket) # combine packets into one string
+            self.SerPort.flushOutput() # flush output buffer of serial port
+            self.SerPort.write(self.Command) # print/output command via serial port to SPO2 module
+            self.SerPort.flushInput() # flush input buffer of serial port
+            self.FirmwareVersion = self.get_reply()
+            if self.FirmwareVersion==None:
+                self.CloseSerial()
+                return False
+            elif self.FirmwareVersion[0] == 127  and self.FirmwareVersion[1] == 0x21:               
+                self.CloseSerial()
+                return True
+            else:
+                self.CloseSerial()
+                return False
+        else:
+            return False
 
     def POST(self):
         """ self.POST() -> 'True' if module is powered on, 'False' otherwise
