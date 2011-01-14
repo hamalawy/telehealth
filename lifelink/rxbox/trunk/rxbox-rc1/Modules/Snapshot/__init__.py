@@ -7,6 +7,7 @@ import ConfigParser
 from SnapshotPanel import *
 from SnapshotPanel2 import *
 from camera_control import WebcamControl
+import dicom_rxbox
 
 from Modules.Module import *
 
@@ -139,6 +140,10 @@ class SnapshotWindow(Module, SnapshotPanel2):
         self.image_list2 = self._panel['snapshot'].image_list
         self.video_device = '/dev/video0'
         self.webcam = WebcamControl(self, self.video_device[-1])
+        self.ds=dicom_rxbox.RDicom()
+        self.dicom_filelist=[]    
+        self.patientpanel = self._panel['patientinfo']   
+        
 
     def __name__(self):
         return 'Snapshot'
@@ -182,6 +187,7 @@ class SnapshotWindow(Module, SnapshotPanel2):
         self.process_config(tnow)
         os.system("python Modules/Snapshot/camera.py")
         self.load_image("Pictures/%s.jpg"%(tnow))
+        self.dicom_filelist.append("Pictures/%s.jpg"%(tnow))
         self.webcam.init_phone()
 
     def process_config(self, tnow):
@@ -216,11 +222,28 @@ class SnapshotWindow(Module, SnapshotPanel2):
                 os.system('rm "%s"'%self.pics[itemIndex])
                 self.remove_image(itemIndex)
                 count = 0
+
+    def generate_dicom(self,files):
+        if self.ds.test_dicom():
+            print "DICOM TEST PASSED"
+            for x in files:
+                self.ds.add_picture(x)
+            tnow = datetime.now()
+            tnow = tnow.strftime("%Y_%m_%d_%H_%M_%S")+("_%s"%tnow.microsecond.__str__().replace('.',''))
+            #bday = '.'.join([str(self.patientpanel.BirthMonth.GetSelection() + 1), str(self.patientpanel.BirthDayCombo.GetSelection() + 1),) 
+            bday=str(self. patientpanel.BirthYear.GetValue())+str(self.patientpanel.BirthMonth.GetSelection() + 1).zfill(2)+str(self.patientpanel.BirthDayCombo.GetSelection() + 1).zfill(2)
+            print bday
+            self.ds.save_picture("DICOM/%s.dcm"%(tnow),str(self.patientpanel.LastNameValue.GetValue()),str(self.patientpanel.FirstNameValue.GetValue()),\
+                                str(self.patientpanel.MiddleNameValue.GetValue()),bday,str(self.patientpanel.GenderCombo.GetValue()),\
+                                str(self.patientpanel.AddressValue.GetValue()))
         
     def OnPaneClose(self):
         """Main function for closing the program
             - Closes Linphone
             - Destroys current frame
         """
+        if self.dicom_filelist!=[]:
+            self.generate_dicom(self.dicom_filelist)
+
         self.webcam.close_phone()
         self._logger.info('Stop')

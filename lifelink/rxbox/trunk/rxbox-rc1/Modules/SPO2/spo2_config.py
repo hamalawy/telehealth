@@ -1,13 +1,19 @@
 import wx
 from spo2_cgui import SPO2_config_frame
 import ConfigParser
+import os
+path=os.getcwd()
+if path[len(path)-13:]=='Configuration':
+    path='../'
+else:
+    path=os.getcwd()+'/'
 
 class SPO2_Configurationmain(SPO2_config_frame):
-    def __init__(self, parent,path,*args, **kwds):
+    def __init__(self, parent,*args, **kwds):
         SPO2_config_frame.__init__(self, parent,*args, **kwds)
-        self.path=path+'/SPO2/'
+        #self.path=path+'/SPO2/'
         self.config=ConfigParser.ConfigParser()
-        self.config.read(self.path+'spo2.cfg')
+        self.config.read(path+'rxbox.cfg')
         self.get_data()
 
     def get_data(self):
@@ -65,11 +71,11 @@ class SPO2_Configurationmain(SPO2_config_frame):
         else:
             self.config.set('SPO2','debug','false')
 
-        configfile = open(self.path+'spo2.cfg', 'wb')
+        configfile = open(path+'rxbox.cfg', 'wb')
         self.config.write(configfile)
 
     def default_data(self):
-        self.config.read(self.path+'spo2_backup.cfg')
+        self.config.read(path+'rxbox_backup.cfg')
 
         if self.config.get('SPO2','simulated') == 'false':
             self.spo2sim_checkbox.SetValue(False)
@@ -97,5 +103,5 @@ class SPO2_Configurationmain(SPO2_config_frame):
         else:
             self.spo2debug_checkbox.SetValue(True)
 
-        self.config.read(self.path+'spo2.cfg')
+        self.config.read(path+'rxbox.cfg')
 

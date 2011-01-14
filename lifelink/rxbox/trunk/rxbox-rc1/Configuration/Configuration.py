@@ -17,7 +17,13 @@ from errorlog_config import ERRORLOG_Configurationmain
 from db_config import DB_Configurationmain
 from gen_config import Geninfo_Configurationmain
 
-path = '../Modules'
+import os
+path=os.getcwd()
+if path[len(path)-13:]=='Configuration':
+    path='../Modules'
+else:
+    path=os.getcwd()+'/Modules'
+
 sys.path.append( path+'/BP' )
 from bp_config  import BP_Configurationmain
 sys.path.append( path + '/SPO2' )
@@ -60,12 +66,12 @@ class Configurationmain(MyFrame_conf):
         self.Bind(wx.EVT_CLOSE, self.onClose)
 
         self.gen=Geninfo_Configurationmain(self.module)
-        self.ecg=ECG_Configurationmain(self.module,path=path)
-        self.bp=BP_Configurationmain(self.module,path=path)
-        self.spo2=SPO2_Configurationmain(self.module,path=path)
-        self.email=EMAIL_Configurationmain(self.module,path=path)
-        self.voip=VOIP_Configurationmain(self.module,path=path)
-        self.im=IM_Configurationmain(self.module,path=path)
+        self.ecg=ECG_Configurationmain(self.module)
+        self.bp=BP_Configurationmain(self.module)
+        self.spo2=SPO2_Configurationmain(self.module)
+        self.email=EMAIL_Configurationmain(self.module)
+        self.voip=VOIP_Configurationmain(self.module)
+        self.im=IM_Configurationmain(self.module)
         self.db=DB_Configurationmain(self.module)
         self.errorlog=ERRORLOG_Configurationmain(self.module)
 

@@ -3,12 +3,17 @@ from ecg_cgui import ECG_config_frame
 import ConfigParser
 import os
 
+path=os.getcwd()
+if path[len(path)-13:]=='Configuration':
+    path='../'
+else:
+    path=os.getcwd()+'/'
+
 class ECG_Configurationmain(ECG_config_frame):
-    def __init__(self, parent,path,*args, **kwds):
+    def __init__(self, parent,*args, **kwds):
         ECG_config_frame.__init__(self, parent,*args, **kwds)
-        self.path=path+'/ECG/'
         self.config=ConfigParser.ConfigParser()
-        self.config.read(self.path+'ecg.cfg')
+        self.config.read(path+'rxbox.cfg')
         self.get_data()
         self.Bind(wx.EVT_COMBOBOX, self.onBrowse)
         self.newpath = ''
@@ -88,11 +93,11 @@ class ECG_Configurationmain(ECG_config_frame):
             self.config.set('ECG','mode','12 Lead')
         self.config.set('ECG','ecmcheck',self.ecg_ecmtxt.GetValue())
 
-        configfile = open(self.path+'ecg.cfg', 'wb')
+        configfile = open(path+'ecg.cfg', 'wb')
         self.config.write(configfile)
 
     def default_data(self):
-        self.config.read(self.path+'ecg_backup.cfg')
+        self.config.read(path+'rxbox_backup.cfg')
         if self.config.get('ECG','simulated') == 'false':
             self.ecgsim_checkbox.SetValue(False)
         else:
@@ -120,7 +125,7 @@ class ECG_Configurationmain(ECG_config_frame):
             self.ecg_modecbox.SetSelection(0)
         else:  
             self.ecg_modecbox.SetSelection(1)
-        self.config.read(self.path+'ecg.cfg')
+        self.config.read(path+'rxbox.cfg')
 
 
 

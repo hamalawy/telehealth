@@ -6,7 +6,13 @@ import wx
 
 # begin wxGlade: extracode
 # end wxGlade
+import os
 
+path=os.getcwd()
+if path[len(path)-13:]=='Configuration':
+    path=os.getcwd()+'/'
+else:
+    path=os.getcwd()+'/Configuration/'
 
 
 class MyFrame_conf(wx.Frame):
@@ -18,7 +24,7 @@ class MyFrame_conf(wx.Frame):
         self.panel_2 = wx.Panel(self.panel_1, -1)
         self.panel_10 = wx.Panel(self, -1)
         self.panel_9 = wx.Panel(self, -1)
-        self.bitmap_1 = wx.StaticBitmap(self, -1, wx.Bitmap("/home/rxboxpilot04/Rxbox 1.0/Configuration/index.jpeg", wx.BITMAP_TYPE_ANY))
+        self.bitmap_1 = wx.StaticBitmap(self, -1, wx.Bitmap(path+"index.jpeg", wx.BITMAP_TYPE_ANY))
         self.label_1 = wx.StaticText(self.panel_10, -1, "   RxBox Configuration", style=wx.ALIGN_CENTRE)
         self.tree = wx.TreeCtrl(self.panel_1, -1, style=wx.TR_HAS_BUTTONS|wx.TR_NO_LINES|wx.TR_HIDE_ROOT|wx.TR_DEFAULT_STYLE|wx.DOUBLE_BORDER|wx.SUNKEN_BORDER)
         self.module = wx.Panel(self.panel_2, -1)
