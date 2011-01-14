@@ -1,0 +1,26 @@
+you can add new dataset by using
+AddNew(TAG, VR, Value)
+
+AddNew((0x08,0x22),'DA', '19930822')
+
+template file of charles is working
+
+pic that is 320x240
+
+column = 320
+row = 240
+
+to dynamically check the image size, use 
+
+import Image
+
+im=Image.open('1.jpg')
+print im.size
+
+
+to follow:
+sex
+bd
+age
+address
+device id 0x18,0x1003
