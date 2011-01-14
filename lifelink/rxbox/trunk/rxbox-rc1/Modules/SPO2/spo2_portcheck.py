@@ -9,7 +9,7 @@ class Spo2_check:
     def check(self):
         for x in self.ports:
             print x
-            self.spo2 = SPO2DAQ(self,port =x)
+            self.spo2 = SPO2DAQ(self,port =x,timeout=1)
             status=self.spo2.port_check()
             if status==True:
                 self.correctport=x       
@@ -18,7 +18,7 @@ class Spo2_check:
             else:
                 continue
 
-port2check=['COM1','COM2','COM3','COM4','COM5','COM6','COM7']
+port2check=['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
 
 c=Spo2_check(port2check)
 c.check()

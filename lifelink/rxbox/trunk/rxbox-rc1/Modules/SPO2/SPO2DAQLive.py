@@ -165,6 +165,7 @@ class SPO2DAQ:
         reply = ''; flag_counter = 0; start = time.time()
         count = 2; start_found = False
         bit_count=0
+        a=[]
         while (flag_counter < 2):
             byte = self.SerPort.read(1)
             if byte == '':
@@ -172,6 +173,7 @@ class SPO2DAQ:
             if flag_counter == 1 and byte != chr(0xa8):
                 reply = reply + byte
             if byte == chr(0xa8):
+                bit_counter=0
                 if flag_counter == 0:
                     next = self.SerPort.read(1)
                     if next == chr(0xa8) and flag_counter == 0:
@@ -272,19 +274,11 @@ class SPO2DAQ:
     def port_check(self):
         status=self.OpenSerial()
         if self.status is None:
-            self.Power = False
-            self.checksum([0x7f, 0xb2]) # Compute for checksum
-            self.DataPacket = [0xa8, 0x7f, 0xb2, self.CShi, self.CSlo, 0xa8] # Organize data packet
-            self.DataPacket = [chr(item) for item in self.DataPacket] # convert hex values to char
-            self.Command = ''.join(self.DataPacket) # combine packets into one string
-            self.SerPort.flushOutput() # flush output buffer of serial port
-            self.SerPort.write(self.Command) # print/output command via serial port to SPO2 module
-            self.SerPort.flushInput() # flush input buffer of serial port
-            self.FirmwareVersion = self.get_reply()
-            if self.FirmwareVersion==None:
+            status = self.get_reply()
+            if status==None:
                 self.CloseSerial()
                 return False
-            elif self.FirmwareVersion[0] == 127  and self.FirmwareVersion[1] == 0x21:               
+            elif status[0]=='\xa8':
                 self.CloseSerial()
                 return True
             else:

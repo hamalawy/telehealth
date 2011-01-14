@@ -11,9 +11,12 @@ else:
 
 from BPPanel import *
 from Modules.Module import *
+import bp_portcheck
+
 
 class BP (Module, BPPanel):
     def __init__(self, *args, **kwds):
+        config.read('rxbox.cfg')
         BPPanel.__init__(self, *args, **kwds)
         Module.__init__(self, *args, **kwds)
         self.Bind(wx.EVT_BUTTON, self.onBPNow, self.bpNow_Button)
@@ -35,13 +38,14 @@ class BP (Module, BPPanel):
         self.Start()
 
     def Start(self):
-<<<<<<< .mine
+
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
         #(0.981,0,-6.59,0,0.38741,38.45)
-=======
+
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
->>>>>>> .r572
+
         self.bp.OpenSerial()
+        print self.setBPmaxpressure_combobox.GetValue()[:3]
         self.bp.send_request(self.setBPmaxpressure_combobox.GetValue()[:3])
         self.setBPmaxpressure_combobox.Enable(False)
         self.bpNow_Button.SetToolTipString("Acquiring BP")
@@ -69,9 +73,14 @@ class BP (Module, BPPanel):
             self.bpNow_Button.Enable(True)
             self.setBPmaxpressure_combobox.Enable(True)
 
+    def find_port(self,port_list):
+        port2check=port_list
+        c=bp_portcheck.Bp_check(port2check)
+        port=c.check()
+        return port
+
     def minor_check(self):
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
-
         status=self.bp.init_status_check()
         if status== False:
             print 'initialization failed'
@@ -91,6 +100,7 @@ class BP (Module, BPPanel):
 
     def Get_bp(self):
         self.alive=True 
+        none_count=0
         while self.alive:
             time.sleep(0.1)
             press = self.bp.get_reply()
@@ -99,13 +109,18 @@ class BP (Module, BPPanel):
                 continue
             if press == None:
                 print 'none type returned'
-                continue
+                none_count+=1
+                if none_count<1:
+                    continue
+                else:
+                    press='09990'
             self.press = int(press[1:4])
             if self.press== 999:
                 self.alive=False
                 self.bp.get()
                 self.updatealive=False
                 self.bp.stop()
+                self.bp.CloseSerial()
             wx.CallAfter(self.pressure_update)
         self.bp.CloseSerial()
                 

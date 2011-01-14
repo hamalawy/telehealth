@@ -16,6 +16,7 @@ class SPO2 (Module, SPO2Panel):
     def __init__(self, *args, **kwds):
         Module.__init__(self, *args, **kwds)
         SPO2Panel.__init__(self, *args, **kwds)
+        config.read('rxbox.cfg')
 
     def __name__(self):
         return 'SPO2'

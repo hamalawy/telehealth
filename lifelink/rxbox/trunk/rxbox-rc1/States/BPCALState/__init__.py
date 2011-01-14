@@ -16,6 +16,8 @@ class BPCALState(State):
         print os.getcwd()
         path=os.getcwd()
         os.system('python '+path+'/Modules/BP/BP_Calibration/bp_cal.py')
+        self._engine.change_state('StanbyState')
+        self._logger.info('State Machine: %s Stop'%self.__name__())
 
     def stop(self):
         self._logger.info('State Machine: %s Stop'%self.__name__())

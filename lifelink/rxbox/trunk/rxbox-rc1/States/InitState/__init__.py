@@ -55,7 +55,12 @@ class InitState(State):
         #initialize window
         self._frame.Maximize(True)
         self._frame.Show()
- 
+        
+        port2check=['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
+        bp_port=self._panel['bp'].find_port(port2check)
+        self._config.set('BP', 'port', bp_port)
+        self._config.write(open('rxbox.cfg', 'w'))
+        
         #init bp since bp needs to be active at init state
         if self._panel['bp'].minor_check() == False:
             print "BP not initialized, check connection"
