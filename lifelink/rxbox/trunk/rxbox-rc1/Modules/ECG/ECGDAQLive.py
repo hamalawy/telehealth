@@ -325,7 +325,7 @@ class ECGDAQ:
                     index += 2
                 else:
                     tmp = ((p1&0x7e)>>1)
-                    if p1 > 0x7f: tmp -= 0x7f
+                    if p1 > 0x7f: tmp -= 0x3f
                     index += 1
                 data[key].append(tmp)
             l2 = data['II'][-1]
