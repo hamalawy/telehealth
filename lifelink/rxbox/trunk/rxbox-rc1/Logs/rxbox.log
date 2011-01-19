@@ -1,20 +1,41 @@
-2011-01-18 19:07:05,462 root         INFO     RxboxEngine Start
-2011-01-18 19:07:05,463 InitState    INFO     State Machine: InitState Start
-2011-01-18 19:07:05,482 InitState    INFO     ECG: /dev/ttyUSB0
-2011-01-18 19:07:05,504 InitState    INFO     SPO2: /dev/ttyUSB2
-2011-01-18 19:07:05,524 InitState    INFO     BP: /dev/ttyUSB1
-2011-01-18 19:07:05,839 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-01-18 19:07:05,988 BP           INFO     BP Module Initialized
-2011-01-18 19:07:05,992 SPO2         INFO     SPO2 Module Initialized
-2011-01-18 19:07:06,020 ECG          INFO     ECG Module Initialized
-2011-01-18 19:07:06,128 VoIP         INFO     VoIP Module Initialized
-2011-01-18 19:07:06,131 IM           INFO     IM Module Initialized
-2011-01-18 19:07:06,143 Snapshot     INFO     Snapshot Module Initialized
-2011-01-18 19:07:07,589 InitState    INFO     State Machine: InitState Stop
-2011-01-18 19:07:07,590 StandbyState INFO     State Machine: StandbyState Start
-2011-01-18 19:07:22,312 BP           INFO     DAQ Start
-2011-01-18 19:09:25,248 StandbyState INFO     State Machine: StandbyState Stop
-2011-01-18 19:09:25,249 ExitState    INFO     State Machine: ExitState Start
-2011-01-18 19:09:25,252 ExitState    INFO     Configurations Saved
-2011-01-18 19:09:25,412 ExitState    INFO     State Machine: ExitState Stop
-2011-01-18 19:09:25,413 root         INFO     RxboxEngine Exit
+2011-01-19 17:08:26,021 root         INFO     RxboxEngine Start
+2011-01-19 17:08:26,022 InitState    INFO     State Machine: InitState Start
+2011-01-19 17:08:26,044 InitState    INFO     ECG: /dev/ttyUSB2
+2011-01-19 17:08:26,067 InitState    INFO     SPO2: /dev/ttyUSB0
+2011-01-19 17:08:26,088 InitState    INFO     BP: /dev/ttyUSB1
+2011-01-19 17:08:26,284 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-01-19 17:08:26,406 BP           INFO     BP Module Initialized
+2011-01-19 17:08:26,410 SPO2         INFO     SPO2 Module Initialized
+2011-01-19 17:08:26,440 ECG          INFO     ECG Module Initialized
+2011-01-19 17:08:26,502 VoIP         INFO     VoIP Module Initialized
+2011-01-19 17:08:26,505 IM           INFO     IM Module Initialized
+2011-01-19 17:08:26,518 Snapshot     INFO     Snapshot Module Initialized
+2011-01-19 17:08:27,345 InitState    INFO     State Machine: InitState Stop
+2011-01-19 17:08:27,347 StandbyState INFO     State Machine: StandbyState Start
+2011-01-19 17:08:56,175 BP           INFO     DAQ Start
+2011-01-19 17:15:29,919 StandbyState INFO     State Machine: StandbyState Stop
+2011-01-19 17:15:29,920 DAQState     INFO     State Machine: DAQState Start
+2011-01-19 17:15:29,931 DAQState     INFO     Session uuid = a916d554-23ac-11e0-999b-00301bbf7b6b
+2011-01-19 17:15:30,030 ECG          INFO     DAQ Start
+2011-01-19 17:15:30,032 SPO2         INFO     DAQ Start
+2011-01-19 17:16:45,383 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 193, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 159, in flushout
+    return self.ecgreply()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 146, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-01-19 17:16:45,406 SPO2         INFO     DAQ Stop
+2011-01-19 17:16:45,423 BP           INFO     DAQ Stop
+2011-01-19 17:16:45,441 DAQState     INFO     Generate EDF Start
+2011-01-19 17:16:45,708 DAQState     INFO     Generate EDF Done
+2011-01-19 17:16:45,843 DAQState     INFO     State Machine: DAQState Stop
+2011-01-19 17:16:45,844 ExitState    INFO     State Machine: ExitState Start
+2011-01-19 17:16:45,848 ExitState    INFO     Configurations Saved
+2011-01-19 17:16:46,054 ExitState    INFO     State Machine: ExitState Stop
+2011-01-19 17:16:46,055 root         INFO     RxboxEngine Exit
