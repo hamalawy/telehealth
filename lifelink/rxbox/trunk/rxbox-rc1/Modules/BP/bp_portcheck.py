@@ -13,11 +13,11 @@ class Bp_check:
             status=self.bp.port_check()
             if status==True:
                 self.correctport=x       
-                print 'The correct port is: '+self.correctport
+                print 'The correct BP port is: '+self.correctport
                 return x
             else:
                 continue
-        
+        return None
             
             
 if __name__== "__main__":
