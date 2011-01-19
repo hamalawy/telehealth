@@ -27,17 +27,24 @@ class InitState(State):
             ecgport=comm.stdout.read().split('ttyUSB')[-1].strip()
             self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
             self._config.set('ECG', 'port', '/dev/ttyUSB%s'%ecgport[0])
-            
+        except:
+            self._logger.error(ERROR('ECG Dynamic Port Allocation Failed'))   
 
+        try:
             comm = subprocess.Popen("dmesg%s"%self._config.get('SPO2', 'dynamic'), shell=True, stdout=subprocess.PIPE)
             spoport=comm.stdout.read().split('ttyUSB')[-1].strip()
             self._logger.info('SPO2: /dev/ttyUSB%s'%spoport[0])
             self._config.set('SPO2', 'port', '/dev/ttyUSB%s'%spoport[0])
-            
+        except:
+            self._logger.error(ERROR('SPO2 Dynamic Port Allocation Failed'))   
+
+        try:
             comm = subprocess.Popen("dmesg%s"%self._config.get('BP', 'dynamic'), shell=True, stdout=subprocess.PIPE)
             bpport=comm.stdout.read().split('ttyUSB')[-1].strip()
             self._logger.info('BP: /dev/ttyUSB%s'%bpport[0])
             self._config.set('BP', 'port', '/dev/ttyUSB%s'%bpport[0])
+        except:
+            self._logger.error(ERROR('BP Dynamic Port Allocation Failed'))   
 
             self._config.write(open('rxbox.cfg', 'w'))
             self._config.read('rxbox.cfg')
@@ -45,8 +52,7 @@ class InitState(State):
             ecgport='/dev/ttyUSB'+ecgport[0]
             spoport='/dev/ttyUSB'+spoport[0]
             bpport='/dev/ttyUSB'+bpport[0]
-        except:
-            self._logger.error(ERROR('Dynamic Port Allocation Failed'))
+        
        
         self._frame = RxboxFrame(self._engine, None, -1, "")
         self._mgr = self._frame._mgr
@@ -58,6 +64,7 @@ class InitState(State):
         self._frame._perspectives.append(self._config.get('Perspective', 'defaultrefer'))
         try:
             self._mgr.LoadPerspective(self._config.get('Perspective', 'onoff'))
+            self._logger.error('Load Perspective')
         except:
             self._logger.error(ERROR('Failed to load perspective'))
 

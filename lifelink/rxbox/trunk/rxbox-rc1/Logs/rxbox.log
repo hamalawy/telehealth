@@ -1,41 +1,194 @@
-2011-01-19 17:08:26,021 root         INFO     RxboxEngine Start
-2011-01-19 17:08:26,022 InitState    INFO     State Machine: InitState Start
-2011-01-19 17:08:26,044 InitState    INFO     ECG: /dev/ttyUSB2
-2011-01-19 17:08:26,067 InitState    INFO     SPO2: /dev/ttyUSB0
-2011-01-19 17:08:26,088 InitState    INFO     BP: /dev/ttyUSB1
-2011-01-19 17:08:26,284 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-01-19 17:08:26,406 BP           INFO     BP Module Initialized
-2011-01-19 17:08:26,410 SPO2         INFO     SPO2 Module Initialized
-2011-01-19 17:08:26,440 ECG          INFO     ECG Module Initialized
-2011-01-19 17:08:26,502 VoIP         INFO     VoIP Module Initialized
-2011-01-19 17:08:26,505 IM           INFO     IM Module Initialized
-2011-01-19 17:08:26,518 Snapshot     INFO     Snapshot Module Initialized
-2011-01-19 17:08:27,345 InitState    INFO     State Machine: InitState Stop
-2011-01-19 17:08:27,347 StandbyState INFO     State Machine: StandbyState Start
-2011-01-19 17:08:56,175 BP           INFO     DAQ Start
-2011-01-19 17:15:29,919 StandbyState INFO     State Machine: StandbyState Stop
-2011-01-19 17:15:29,920 DAQState     INFO     State Machine: DAQState Start
-2011-01-19 17:15:29,931 DAQState     INFO     Session uuid = a916d554-23ac-11e0-999b-00301bbf7b6b
-2011-01-19 17:15:30,030 ECG          INFO     DAQ Start
-2011-01-19 17:15:30,032 SPO2         INFO     DAQ Start
-2011-01-19 17:16:45,383 ECG          ERROR    DAQ Stop Failed
+2011-01-19 18:34:10,225 root         INFO     RxboxEngine Start
+2011-01-19 18:34:10,226 InitState    INFO     State Machine: InitState Start
+2011-01-19 18:34:10,247 InitState    INFO     ECG: /dev/ttyUSB2
+2011-01-19 18:34:10,272 InitState    INFO     SPO2: /dev/ttyUSB0
+2011-01-19 18:34:10,297 InitState    INFO     BP: /dev/ttyUSB1
+2011-01-19 18:34:10,500 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-01-19 18:34:10,617 BP           INFO     BP Module Initialized
+2011-01-19 18:34:10,621 SPO2         INFO     SPO2 Module Initialized
+2011-01-19 18:34:10,659 ECG          INFO     ECG Module Initialized
+2011-01-19 18:34:10,724 VoIP         INFO     VoIP Module Initialized
+2011-01-19 18:34:10,727 IM           INFO     IM Module Initialized
+2011-01-19 18:34:10,740 Snapshot     INFO     Snapshot Module Initialized
+2011-01-19 18:34:10,815 InitState    ERROR    Load Perspective
+2011-01-19 18:34:11,598 InitState    INFO     State Machine: InitState Stop
+2011-01-19 18:34:11,599 StandbyState INFO     State Machine: StandbyState Start
+2011-01-19 18:34:17,975 StandbyState INFO     State Machine: StandbyState Stop
+2011-01-19 18:34:17,976 DAQState     INFO     State Machine: DAQState Start
+2011-01-19 18:34:17,987 DAQState     INFO     Session uuid = ab3ae9dc-23b7-11e0-a075-00301bbf7b6b
+2011-01-19 18:34:18,066 ECG          DEBUG    
+2011-01-19 18:34:18,067 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-01-19 18:34:18,073 ECG          DEBUG    Device Successfully Passed!
+2011-01-19 18:34:18,082 ECG          INFO     ECM Start
+2011-01-19 18:34:18,083 ECG          INFO     DAQ Start
+2011-01-19 18:34:18,084 ECG          DEBUG    
+2011-01-19 18:34:18,086 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-01-19 18:34:18,087 SPO2         INFO     DAQ Start
+2011-01-19 18:34:18,098 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-01-19 18:34:18,099 ECG          DEBUG    
+2011-01-19 18:34:18,100 ECG          DEBUG    ***Start Offline ECM***
+2011-01-19 18:34:18,109 ECG          DEBUG    Start_Offline_ECM ACK
+2011-01-19 18:34:18,110 ECG          DEBUG    
+2011-01-19 18:34:18,111 ECG          DEBUG    ***Stop Offline ECM***
+2011-01-19 18:34:18,119 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-01-19 18:34:18,119 ECG          INFO     ECM Success!!!
+2011-01-19 18:34:18,133 ECG          DEBUG    
+2011-01-19 18:34:18,135 ECG          DEBUG    ***Configure Analog Request***
+2011-01-19 18:34:18,146 ECG          DEBUG    
+2011-01-19 18:34:18,147 ECG          DEBUG    ***Start ECG Transmission***
+2011-01-19 18:34:18,155 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-01-19 18:34:18,156 ECG          DEBUG    Acquiring ECG readings...
+2011-01-19 18:34:18,156 ECG          DEBUG    DAQ started at: Wed Jan 19 18:34:18 2011
+2011-01-19 18:34:19,160 ECG          DEBUG    DAQ ended at: Wed Jan 19 18:34:19 2011
+2011-01-19 18:34:19,180 ECG          DEBUG    Acquiring ECG readings...
+2011-01-19 18:34:19,181 ECG          DEBUG    DAQ started at: Wed Jan 19 18:34:19 2011
+2011-01-19 18:34:20,193 ECG          DEBUG    DAQ ended at: Wed Jan 19 18:34:20 2011
+2011-01-19 18:34:20,211 ECG          DEBUG    
+2011-01-19 18:34:20,212 ECG          DEBUG    ***Stop ECG Transmission***
+2011-01-19 18:34:20,219 ECG          DEBUG    
+2011-01-19 18:34:20,220 ECG          DEBUG    ***Stop ECG Transmission***
+2011-01-19 18:34:20,254 ECG          ERROR    DAQ Stop Failed
 Traceback (most recent call last):
-  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 193, in Stop
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 197, in Stop
     self.ECGData.flushout()
-  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 159, in flushout
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 162, in flushout
     return self.ecgreply()
-  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 146, in ecgreply
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 149, in ecgreply
     temp = read(1)
   File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
     if self.fd is None: raise portNotOpenError
 SerialException: Port not open
 
-2011-01-19 17:16:45,406 SPO2         INFO     DAQ Stop
-2011-01-19 17:16:45,423 BP           INFO     DAQ Stop
-2011-01-19 17:16:45,441 DAQState     INFO     Generate EDF Start
-2011-01-19 17:16:45,708 DAQState     INFO     Generate EDF Done
-2011-01-19 17:16:45,843 DAQState     INFO     State Machine: DAQState Stop
-2011-01-19 17:16:45,844 ExitState    INFO     State Machine: ExitState Start
-2011-01-19 17:16:45,848 ExitState    INFO     Configurations Saved
-2011-01-19 17:16:46,054 ExitState    INFO     State Machine: ExitState Stop
-2011-01-19 17:16:46,055 root         INFO     RxboxEngine Exit
+2011-01-19 18:34:20,289 SPO2         INFO     DAQ Stop
+2011-01-19 18:34:20,302 BP           INFO     DAQ Stop
+2011-01-19 18:34:20,323 DAQState     INFO     Generate EDF Start
+2011-01-19 18:34:20,580 DAQState     INFO     Generate EDF Done
+2011-01-19 18:34:20,714 DAQState     INFO     State Machine: DAQState Stop
+2011-01-19 18:34:20,714 StandbyState INFO     State Machine: StandbyState Start
+2011-01-19 18:34:23,092 StandbyState INFO     State Machine: StandbyState Stop
+2011-01-19 18:34:23,093 SendState    INFO     State Machine: SendState Start
+2011-01-19 18:34:23,096 SendState    INFO     Create Record Mode
+2011-01-19 18:34:28,754 SendState    INFO     Sending EDF
+2011-01-19 18:34:29,088 SendState    ERROR    Send EDF Failed!!!
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 136, in sendEDF
+    t.login()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/Triage/mailer.py", line 34, in login
+    self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
+  File "/usr/lib/python2.6/imaplib.py", line 1138, in __init__
+    IMAP4.__init__(self, host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 163, in __init__
+    self.open(host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 1149, in open
+    self.sock = socket.create_connection((host, port))
+  File "/usr/lib/python2.6/socket.py", line 500, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -2] Name or service not known
+
+2011-01-19 18:34:29,115 SendState    ERROR    Sending Email Failed!!!
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 74, in sendEmail
+    getattr(self, mode)()
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 136, in sendEDF
+    t.login()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/Triage/mailer.py", line 34, in login
+    self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
+  File "/usr/lib/python2.6/imaplib.py", line 1138, in __init__
+    IMAP4.__init__(self, host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 163, in __init__
+    self.open(host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 1149, in open
+    self.sock = socket.create_connection((host, port))
+  File "/usr/lib/python2.6/socket.py", line 500, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -2] Name or service not known
+
+2011-01-19 18:34:39,336 SendState    INFO     Resending Email
+2011-01-19 18:34:39,342 SendState    INFO     Sending EDF
+2011-01-19 18:34:39,651 SendState    ERROR    Send EDF Failed!!!
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 136, in sendEDF
+    t.login()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/Triage/mailer.py", line 34, in login
+    self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
+  File "/usr/lib/python2.6/imaplib.py", line 1138, in __init__
+    IMAP4.__init__(self, host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 163, in __init__
+    self.open(host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 1149, in open
+    self.sock = socket.create_connection((host, port))
+  File "/usr/lib/python2.6/socket.py", line 500, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -2] Name or service not known
+
+2011-01-19 18:34:39,676 SendState    ERROR    Sending Email Failed!!!
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 74, in sendEmail
+    getattr(self, mode)()
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 136, in sendEDF
+    t.login()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/Triage/mailer.py", line 34, in login
+    self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
+  File "/usr/lib/python2.6/imaplib.py", line 1138, in __init__
+    IMAP4.__init__(self, host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 163, in __init__
+    self.open(host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 1149, in open
+    self.sock = socket.create_connection((host, port))
+  File "/usr/lib/python2.6/socket.py", line 500, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -2] Name or service not known
+
+2011-01-19 18:34:42,865 SendState    INFO     State Machine: SendState Stop
+2011-01-19 18:34:42,866 StandbyState INFO     State Machine: StandbyState Start
+2011-01-19 18:35:07,851 StandbyState INFO     State Machine: StandbyState Stop
+2011-01-19 18:35:07,853 SendState    INFO     State Machine: SendState Start
+2011-01-19 18:35:07,855 SendState    INFO     Create Record Mode
+2011-01-19 18:35:18,132 SendState    INFO     Sending VoIP Ticket
+2011-01-19 18:35:18,530 SendState    ERROR    Sending VoIP Ticket Failed!!!
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 109, in requestVoip
+    t.login()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/Triage/mailer.py", line 34, in login
+    self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
+  File "/usr/lib/python2.6/imaplib.py", line 1138, in __init__
+    IMAP4.__init__(self, host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 163, in __init__
+    self.open(host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 1149, in open
+    self.sock = socket.create_connection((host, port))
+  File "/usr/lib/python2.6/socket.py", line 500, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -2] Name or service not known
+
+2011-01-19 18:35:18,555 SendState    ERROR    Sending Email Failed!!!
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 74, in sendEmail
+    getattr(self, mode)()
+  File "/home/rxboxpilot04/Rxbox1.0/States/SendState/__init__.py", line 109, in requestVoip
+    t.login()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/Triage/mailer.py", line 34, in login
+    self.serv = imaplib.IMAP4_SSL(self.email_params['server'])
+  File "/usr/lib/python2.6/imaplib.py", line 1138, in __init__
+    IMAP4.__init__(self, host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 163, in __init__
+    self.open(host, port)
+  File "/usr/lib/python2.6/imaplib.py", line 1149, in open
+    self.sock = socket.create_connection((host, port))
+  File "/usr/lib/python2.6/socket.py", line 500, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -2] Name or service not known
+
+2011-01-19 18:35:38,092 SendState    INFO     State Machine: SendState Stop
+2011-01-19 18:35:38,093 ReferState   INFO     State Machine: ReferState Start
+2011-01-19 18:35:38,477 VoIP         INFO     Start
+2011-01-19 18:36:08,644 IM           INFO     Start
+2011-01-19 18:36:09,823 VoIP         INFO     Stop
+2011-01-19 18:36:09,985 IM           INFO     Stop
+2011-01-19 18:36:10,009 ReferState   INFO     State Machine: ReferState Stop
+2011-01-19 18:36:10,010 StandbyState INFO     State Machine: StandbyState Start
+2011-01-19 18:36:14,402 StandbyState INFO     State Machine: StandbyState Stop
+2011-01-19 18:36:14,403 ExitState    INFO     State Machine: ExitState Start
+2011-01-19 18:36:14,406 ExitState    INFO     Configurations Saved
+2011-01-19 18:36:14,564 ExitState    INFO     State Machine: ExitState Stop
+2011-01-19 18:36:14,566 root         INFO     RxboxEngine Exit

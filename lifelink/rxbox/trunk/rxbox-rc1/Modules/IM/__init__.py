@@ -71,16 +71,18 @@ class IM (Module, IMPanel):
     def onMsgRcvd(self, conn, msg):
         """Shows message received in the IM panel"""
         time = self.get_time()
-        msgrcvd = 'DE1: ' + msg.getBody()
+        msgrcvd = '(%s) DE1: %s\n'%(time,msg.getBody())
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self._engine.dbuuid, 'IM', '', msgrcvd)
-        self.IMtexts_Text.AppendText('(%s) DE1: %s\n'%(time,msg.getBody()))
+        self.IMtexts_Text.AppendText(msgrcvd)
+        self._logger.debug(msgrcvd.strip())
        
     def onMsgSent(self, msg):
         """Shows message sent in the IM panel"""
         time = self.get_time()
-        msgsent = 'RXBOX: ' + msg
+        msgsent = '(%s) RXBOX: %s\n'%(time,msg)
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self._engine.dbuuid, 'IM', '', msgsent)
-        self.IMtexts_Text.AppendText('(%s) RXBOX: %s\n'%(time,msg))
+        self.IMtexts_Text.AppendText(msgsent)
+        self._logger.debug(msgsent.strip())
         self.IMreply_Text.Clear()
         
     def get_time(self):
