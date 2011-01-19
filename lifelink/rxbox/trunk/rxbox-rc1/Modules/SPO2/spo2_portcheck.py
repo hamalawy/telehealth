@@ -13,12 +13,14 @@ class Spo2_check:
             status=self.spo2.port_check()
             if status==True:
                 self.correctport=x       
-                print 'The correct port is: '+self.correctport
-                break
+                print 'The correct spo2 port is: '+self.correctport
+                return x
             else:
                 continue
+        return None
 
-port2check=['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
+if __name__== "__main__":
+    port2check=['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
 
-c=Spo2_check(port2check)
-c.check()
+    c=Spo2_check(port2check)
+    c.check()

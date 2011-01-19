@@ -210,6 +210,7 @@ class SPO2DAQ:
             if len(reply) != 6:
                 return None
             if dataCShi == self.CShi and dataCSlo == self.CSlo:
+
                 return reply
             else:
                # print 'Checksum Error.'
@@ -374,7 +375,6 @@ class SPO2DAQ:
 
     def test_device_ready(self):
         """ test_device_ready()
-
             Method gets reply from the module and determines if the
             the reply is valid or if the serial port timed out.
         """

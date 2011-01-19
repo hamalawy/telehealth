@@ -28,7 +28,7 @@ class BP (Module, BPPanel):
         self.bp_pressure_indicator.Enable(False)
         self.alive=False       
         self.updatealive=False
-        self.bp_infolabel.SetLabel('Not Ready')
+        self.bp_infolabel.SetLabel('Restart Software')
         self.bpNow_Button.Enable(False)
     
     def __name__(self):
@@ -38,11 +38,16 @@ class BP (Module, BPPanel):
         self.Start()
 
     def Start(self):
-
+        port2check=[config.get('BP','port')]
+        c=bp_portcheck.Bp_check(port2check)
+        port=c.check()
+        if port == None:
+            self.bp_infolabel.SetLabel('Cannot Proceed:BP Unavailable')
+            return
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
         #(0.981,0,-6.59,0,0.38741,38.45)
 
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
+        #self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
 
         self.bp.OpenSerial()
         print self.setBPmaxpressure_combobox.GetValue()[:3]
@@ -84,14 +89,14 @@ class BP (Module, BPPanel):
         status=self.bp.init_status_check()
         if status== False:
             print 'initialization failed'
-            self.bp_infolabel.SetLabel('Not Ready')
+            self.bp_infolabel.SetLabel('BP Unavailable:Restart Software')
             return
         print 'bp init part 1 done'
 
         status=self.bp.init_firmware_version()
         if status== False:
             print 'initialization failed'
-            self.bp_infolabel.SetLabel('Not Ready')
+            self.bp_infolabel.SetLabel('BP Unavailable:Restart Software')
             return
         print 'bp init part 2 done'
 

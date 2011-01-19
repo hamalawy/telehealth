@@ -1,20 +1,20 @@
-2011-01-14 19:43:20,089 root         INFO     RxboxEngine Start
-2011-01-14 19:43:20,090 InitState    INFO     State Machine: InitState Start
-2011-01-14 19:43:20,109 InitState    INFO     ECG: /dev/ttyUSB2
-2011-01-14 19:43:20,131 InitState    INFO     SPO2: /dev/ttyUSB0
-2011-01-14 19:43:20,153 InitState    INFO     BP: /dev/ttyUSB1
-2011-01-14 19:43:20,488 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-01-14 19:43:20,637 BP           INFO     BP Module Initialized
-2011-01-14 19:43:20,641 SPO2         INFO     SPO2 Module Initialized
-2011-01-14 19:43:20,671 ECG          INFO     ECG Module Initialized
-2011-01-14 19:43:20,775 VoIP         INFO     VoIP Module Initialized
-2011-01-14 19:43:20,778 IM           INFO     IM Module Initialized
-2011-01-14 19:43:20,790 Snapshot     INFO     Snapshot Module Initialized
-2011-01-14 19:43:23,253 InitState    INFO     State Machine: InitState Stop
-2011-01-14 19:43:23,254 StandbyState INFO     State Machine: StandbyState Start
-2011-01-14 19:43:53,574 BP           INFO     DAQ Start
-2011-01-14 19:46:53,702 StandbyState INFO     State Machine: StandbyState Stop
-2011-01-14 19:46:53,703 ExitState    INFO     State Machine: ExitState Start
-2011-01-14 19:46:53,706 ExitState    INFO     Configurations Saved
-2011-01-14 19:46:53,866 ExitState    INFO     State Machine: ExitState Stop
-2011-01-14 19:46:53,867 root         INFO     RxboxEngine Exit
+2011-01-18 19:07:05,462 root         INFO     RxboxEngine Start
+2011-01-18 19:07:05,463 InitState    INFO     State Machine: InitState Start
+2011-01-18 19:07:05,482 InitState    INFO     ECG: /dev/ttyUSB0
+2011-01-18 19:07:05,504 InitState    INFO     SPO2: /dev/ttyUSB2
+2011-01-18 19:07:05,524 InitState    INFO     BP: /dev/ttyUSB1
+2011-01-18 19:07:05,839 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-01-18 19:07:05,988 BP           INFO     BP Module Initialized
+2011-01-18 19:07:05,992 SPO2         INFO     SPO2 Module Initialized
+2011-01-18 19:07:06,020 ECG          INFO     ECG Module Initialized
+2011-01-18 19:07:06,128 VoIP         INFO     VoIP Module Initialized
+2011-01-18 19:07:06,131 IM           INFO     IM Module Initialized
+2011-01-18 19:07:06,143 Snapshot     INFO     Snapshot Module Initialized
+2011-01-18 19:07:07,589 InitState    INFO     State Machine: InitState Stop
+2011-01-18 19:07:07,590 StandbyState INFO     State Machine: StandbyState Start
+2011-01-18 19:07:22,312 BP           INFO     DAQ Start
+2011-01-18 19:09:25,248 StandbyState INFO     State Machine: StandbyState Stop
+2011-01-18 19:09:25,249 ExitState    INFO     State Machine: ExitState Start
+2011-01-18 19:09:25,252 ExitState    INFO     Configurations Saved
+2011-01-18 19:09:25,412 ExitState    INFO     State Machine: ExitState Stop
+2011-01-18 19:09:25,413 root         INFO     RxboxEngine Exit

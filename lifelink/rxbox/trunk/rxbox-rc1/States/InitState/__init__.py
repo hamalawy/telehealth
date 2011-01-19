@@ -17,6 +17,10 @@ class InitState(State):
     
     def start(self):
         self._logger.info('State Machine: %s Start'%self.__name__())
+        ecgport=''
+        spoport=''
+        bpport=''
+
         try:
             #dynamic port allocation
             comm = subprocess.Popen("dmesg%s"%self._config.get('ECG', 'dynamic'), shell=True, stdout=subprocess.PIPE)
@@ -24,6 +28,7 @@ class InitState(State):
             self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
             self._config.set('ECG', 'port', '/dev/ttyUSB%s'%ecgport[0])
             
+
             comm = subprocess.Popen("dmesg%s"%self._config.get('SPO2', 'dynamic'), shell=True, stdout=subprocess.PIPE)
             spoport=comm.stdout.read().split('ttyUSB')[-1].strip()
             self._logger.info('SPO2: /dev/ttyUSB%s'%spoport[0])
@@ -36,6 +41,10 @@ class InitState(State):
 
             self._config.write(open('rxbox.cfg', 'w'))
             self._config.read('rxbox.cfg')
+
+            ecgport='/dev/ttyUSB'+ecgport[0]
+            spoport='/dev/ttyUSB'+spoport[0]
+            bpport='/dev/ttyUSB'+bpport[0]
         except:
             self._logger.error(ERROR('Dynamic Port Allocation Failed'))
        
@@ -56,15 +65,38 @@ class InitState(State):
         self._frame.Maximize(True)
         self._frame.Show()
         
-        port2check=['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
+        
+        ports=['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
+        port2check=self.port_priority(spoport,ports)
+        print port2check
+        spo2_port=self._panel['spo2'].find_port(port2check)
+        if spo2_port!=None:
+            self._config.set('SPO2', 'port', spo2_port)
+            self._config.write(open('rxbox.cfg', 'w'))
+            ports.remove(spo2_port)
+            self._panel['spo2'].minor_check()
+
+        port2check=self.port_priority(bpport,ports)
+        print port2check
         bp_port=self._panel['bp'].find_port(port2check)
-        self._config.set('BP', 'port', bp_port)
-        self._config.write(open('rxbox.cfg', 'w'))
+        if bp_port!=None:
+            self._config.set('BP', 'port', bp_port)
+            self._config.write(open('rxbox.cfg', 'w'))
+
         
         #init bp since bp needs to be active at init state
         if self._panel['bp'].minor_check() == False:
             print "BP not initialized, check connection"
         self._engine.change_state('StandbyState')
+
+    def port_priority(self,mainport,portlist):
+        try:
+            portlist.remove(mainport)
+            portlist.insert(0,mainport)
+            return portlist
+        except ValueError:
+            return portlist
+        
         
     def stop(self):
         self._logger.info('State Machine: %s Stop'%self.__name__())

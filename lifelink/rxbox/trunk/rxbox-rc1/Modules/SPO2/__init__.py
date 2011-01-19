@@ -11,6 +11,7 @@ else:
 
 from SPO2Panel import *
 from Modules.Module import *
+import spo2_portcheck
 
 class SPO2 (Module, SPO2Panel):
     def __init__(self, *args, **kwds):
@@ -22,6 +23,15 @@ class SPO2 (Module, SPO2Panel):
         return 'SPO2'
                 
     def Start(self):
+#        port2check=[config.get('SPO2','port')]
+#       c=spo2_portcheck.Spo2_check(port2check)
+#        port=c.check()
+#        if port == None:
+#            self.heartrate_infolabel.SetLabel('HeartRate Unavailable:Check Connections')
+#            self.spo2_infolabel.SetLabel(' % Oxygen Unavailable:Check Connections')
+#            return
+#        self.heartrate_infolabel.SetLabel('Ready')
+#        self.spo2_infolabel.SetLabel('      Ready')
         self.spo2data=SPO2DAQ(self, port =config.get('SPO2','port'))
         self.spo2_get_thread = threading.Thread(target=self.get_spo2)
         self.spo2_thread_alive=True
@@ -41,6 +51,19 @@ class SPO2 (Module, SPO2Panel):
             self.heart_rate=self.spo2data.current_bpm
             wx.CallAfter(self.update_label)
             time.sleep(0.1)
+
+    def find_port(self,port_list):
+        port2check=port_list
+        c=spo2_portcheck.Spo2_check(port2check)
+        port=c.check()
+        return port
+
+    def minor_check(self):
+        self.heartrate_infolabel.SetLabel('Ready')
+        self.spo2_infolabel.SetLabel('            Ready')
+        
+        #self.spo2data=SPO2DAQ(self, port =config.get('SPO2','port'))
+        #self.spo2data.POST()
 
     def update_label(self):
         self.spo2value_label.SetLabel(str(self.blood_oxy))
