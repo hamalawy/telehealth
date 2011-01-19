@@ -29,6 +29,7 @@ class SendState(State):
         self._logger.info('State Machine: %s Start'%self.__name__())
         self._frame.setGui('lock')
         if (self.args == 'LogFileSend'):
+            self._logger.info('LogFile Mode')
             self.panelmode = 'logfile'
             self._panel['logfile'] = LogFilePanel2(self._frame, -1)
             self._frame._mgr.AddPane(self._panel['logfile'], wx.aui.AuiPaneInfo().
@@ -36,6 +37,7 @@ class SendState(State):
                           Float().FloatingPosition(wx.Point(25, 25)).DestroyOnClose(True).
                           FloatingSize(wx.Size(300, 400)).CloseButton(True).MaximizeButton(True))
         else:
+            self._logger.info('Create Record Mode')
             self.panelmode = 'createrecord'
             self._panel['createrecord'] = CreateRecordPanel2(self._frame, -1)
             self._frame._mgr.AddPane(self._panel['createrecord'], wx.aui.AuiPaneInfo().
@@ -61,7 +63,8 @@ class SendState(State):
         
     def stop(self):
         self._frame.setGui('unlock')
-        self._logger.info('State Machine: %s Stop'%self.__name__())        
+        self._logger.info('State Machine: %s Stop'%self.__name__())       
+ 
     def sendEmail(self,mode='sendEDF',msg='EDF'):
         self._frame.RxFrame_StatusBar.SetStatusText("Sending %s to Server..."%msg)
         self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Sending %s to Server...'%msg)
@@ -69,18 +72,20 @@ class SendState(State):
         while tries < 2:
             try:
                 getattr(self, mode)()
+                self._logger.info('Send Email Successful!!!')
                 dlg = wx.MessageDialog(self._frame, "Send %s Successful"%msg, "Send %s Successful"%msg, wx.OK | wx.ICON_QUESTION)
                 dlg.ShowModal()
                 self._frame.RxFrame_StatusBar.SetStatusText("%s Sent..."%msg)
                 self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', '%s Sent...'%msg)
                 break
             except Exception, e:
-                self._logger.error(ERROR('Sending Failed'))
+                self._logger.error(ERROR('Sending Email Failed!!!'))
                 self._frame.RxFrame_StatusBar.SetStatusText("Sending %s Failed: %s"%(msg,e))
                 self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Send %s Failed'%msg)
             dlg = wx.MessageDialog(self._frame, "Would you like to resend data?", "Send %s Failed"%msg, wx.YES_NO | wx.ICON_QUESTION)
             
             if dlg.ShowModal() == wx.ID_YES:
+                self._logger.info('Resending Email')
                 self._frame.RxFrame_StatusBar.SetStatusText("Resending %s to server..."%msg)
                 self.rxboxDB.dbbiosignalsinsert('biosignals', 'uuid', 'type', 'filename', 'content', self.dbuuid, 'status message', '', 'Resending %s to server...'%msg)
             else:
@@ -90,6 +95,7 @@ class SendState(State):
             
     def requestVoip(self):
         """Sends an email containing an attachment of biomedical data to a remote server or an email address"""
+        self._logger.info('Sending VoIP Ticket')
         try:
             dlg = wx.ProgressDialog("Sending VoIP Request",
                            "Sending VoIP Ticket... Please Wait...",
@@ -108,12 +114,15 @@ class SendState(State):
             dlg.Update(4,"Sending Ticket")
             t.request(headers, body, {})
             dlg.Update(5,"Sent")
+            self._logger.info('Send VoIP Ticket Successful!!!')
         except:
+            self._logger.error(ERROR('Sending VoIP Ticket Failed!!!'))
             dlg.Destroy()
             raise
 
     def sendEDF(self):
         """Sends an email containing an attachment of biomedical data to a remote server or an email address"""
+        self._logger.info('Sending EDF')
         try:
             dlg = wx.ProgressDialog("Sending EDF",
                            "Sending EDF... Please Wait...",
@@ -138,12 +147,15 @@ class SendState(State):
             dlg.Update(4,"Sending Data")
             t.request(headers, body, attach)
             dlg.Update(5,"Sent")
+            self._logger.info('Send EDF Successful!!!')
         except:
+            self._logger.error(ERROR('Send EDF Failed!!!'))
             dlg.Destroy()
             raise
 
     def sendLog(self):
         """Sends an email containing an attachment of biomedical data to a remote server or an email address"""
+        self._logger.info('Sending Log')
         try:
             dlg = wx.ProgressDialog("Sending Log Files",
                            "Sending Log Files... Please Wait...",
@@ -175,6 +187,8 @@ class SendState(State):
             dlg.Update(4,"Sending Data")
             t.request(headers, body, attach)
             dlg.Update(5,"Sent")
+            self._logger.info('Send Log Successful!!!')
         except:
+            self._logger.error(ERROR('Send Log Failed!!!'))
             dlg.Destroy()
             raise

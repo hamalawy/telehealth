@@ -69,7 +69,7 @@ class ECG(Module, ECGPanel):
         self.daqdur = self._config.getfloat('ECG', 'daqdur')
         self.debug = self._config.getboolean('ECG', 'debug')
             
-        self.ECGData = self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug)
+        self.ECGData = self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug, logger=self._logger)
         self.plotter = False
         self.alive = False
     
@@ -77,6 +77,7 @@ class ECG(Module, ECGPanel):
         return 'ECG'
         
     def lead12_button_clicked(self, event): # wxGlade: ECGPanel.<event_handler>
+        self._logger.info('Lead 12 Button Clicked')
         self._frame.setGui('lock')
         self._panel['lead12'] = Lead12Panel2(self._frame, -1)
         self._frame._mgr.AddPane(self._panel['lead12'], wx.aui.AuiPaneInfo().
@@ -150,6 +151,7 @@ class ECG(Module, ECGPanel):
             
 
     def get_ecm_thread(self):
+        self._logger.info('ECM Start')
         self.ECGData.set_ecm_threshold()
         self.ECGData.start_ecm()
         count = 0
@@ -161,9 +163,11 @@ class ECG(Module, ECGPanel):
         if self.status != 'start':
             return False
         if count >= self.ecmcheck:
+            self._logger.info('ECM Success!!!')
             self.getecgthread = threading.Thread(target=self.get_ecg_thread)
             self.getecgthread.start()
         else:
+            self._logger.info('ECM Failed!!!')
             self.alive = False
             self.status = 'stop'
             wx.CallAfter(self.ecm_fail)

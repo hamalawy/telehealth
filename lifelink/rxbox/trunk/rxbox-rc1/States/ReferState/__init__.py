@@ -50,4 +50,5 @@ class ReferState(State):
             dlg.Update(6,"Stopping IM")
         except:
             dlg.Destroy()
+            self._logger.error(ERROR('Failed to stop refer session properly'))
         self._logger.info('State Machine: %s Stop'%self.__name__())

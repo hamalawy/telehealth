@@ -188,6 +188,7 @@ class SnapshotWindow(Module, SnapshotPanel2):
         os.system("python Modules/Snapshot/camera.py")
         self.load_image("Pictures/%s.jpg"%(tnow))
         self.dicom_filelist.append("Pictures/%s.jpg"%(tnow))
+        self._logger.info('Picture %s taken'%tnow)
         self.webcam.init_phone()
 
     def process_config(self, tnow):
@@ -224,8 +225,9 @@ class SnapshotWindow(Module, SnapshotPanel2):
                 count = 0
 
     def generate_dicom(self,files):
+        self._logger.info('DICOM Generate')
         if self.ds.test_dicom():
-            print "DICOM TEST PASSED"
+            self._logger.info('DICOM Test Passed!!!')
             for x in files:
                 self.ds.add_picture(x)
             tnow = datetime.now()
