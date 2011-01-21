@@ -90,6 +90,7 @@ class InitState(State):
             self._config.set('BP', 'port', bp_port)
             self._config.write(open('rxbox.cfg', 'w'))
 
+
         
         #init bp since bp needs to be active at init state
         if self._panel['bp'].minor_check() == False:

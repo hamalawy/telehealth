@@ -17,6 +17,7 @@ import bp_portcheck
 class BP (Module, BPPanel):
     def __init__(self, *args, **kwds):
         config.read('rxbox.cfg')
+        print "+++++++++++++++++++++++++++++"+str(config.get('BP','port'))
         BPPanel.__init__(self, *args, **kwds)
         Module.__init__(self, *args, **kwds)
         self.Bind(wx.EVT_BUTTON, self.onBPNow, self.bpNow_Button)
@@ -38,6 +39,7 @@ class BP (Module, BPPanel):
         self.Start()
 
     def Start(self):
+        config.read('rxbox.cfg')
         port2check=[config.get('BP','port')]
         c=bp_portcheck.Bp_check(port2check)
         port=c.check()
@@ -85,6 +87,7 @@ class BP (Module, BPPanel):
         return port
 
     def minor_check(self):
+        config.read('rxbox.cfg')
         self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
         status=self.bp.init_status_check()
         if status== False:
