@@ -142,7 +142,8 @@ class SnapshotWindow(Module, SnapshotPanel2):
         self.webcam = WebcamControl(self, self.video_device[-1])
         self.ds=dicom_rxbox.RDicom()
         self.dicom_filelist=[]    
-        self.patientpanel = self._panel['patientinfo']   
+        self.patientpanel = self._panel['patientinfo']
+        self.dicom_filename = ''
         
 
     def __name__(self):
@@ -235,6 +236,7 @@ class SnapshotWindow(Module, SnapshotPanel2):
             #bday = '.'.join([str(self.patientpanel.BirthMonth.GetSelection() + 1), str(self.patientpanel.BirthDayCombo.GetSelection() + 1),) 
             bday=str(self. patientpanel.BirthYear.GetValue())+str(self.patientpanel.BirthMonth.GetSelection() + 1).zfill(2)+str(self.patientpanel.BirthDayCombo.GetSelection() + 1).zfill(2)
             print bday
+            self.dicom_filename = "DICOM/%s.dcm"%(tnow)
             self.ds.save_picture("DICOM/%s.dcm"%(tnow),str(self.patientpanel.LastNameValue.GetValue()),str(self.patientpanel.FirstNameValue.GetValue()),\
                                 str(self.patientpanel.MiddleNameValue.GetValue()),bday,str(self.patientpanel.GenderCombo.GetValue()),\
                                 str(self.patientpanel.AddressValue.GetValue()))

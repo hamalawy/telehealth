@@ -138,7 +138,7 @@ class SendState(State):
             headers = {'Subject': self.emailmode + ' ' + self.topic, 'X-Eccs-Priority': 'emergency',
                             'X-Eccs-Rxboxextension': '2001'}
             body = self.body
-            afilename = [self._engine._myedf.edfilename]+self._panel['snapshot'].pics
+            afilename = [self._engine._myedf.edfilename]+self._panel['snapshot'].pics+[self._panel['snapshot2'].dicom_filename]
             attach = {}
             for i in afilename:
                     f = open(i, 'r')

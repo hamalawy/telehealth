@@ -105,7 +105,13 @@ class ECGDAQ:
             print string
         elif self.debug:
             self._logger.debug(string)
-            
+    
+    def Check(self, port):
+        self.ecgserial = serial.Serial(port, baudrate=self.baud, timeout=1, xonxoff=0)
+        self.flushout()
+        return self.selftest()
+        self.Close()
+
     def Open(self):
         data = self.ecg_lead
         for key in data:
@@ -155,7 +161,7 @@ class ECGDAQ:
                 break
             elif temp == mid: buff += chr(ord(read(1))^0x20)
             else: buff += temp
-        
+            if len(buff)>1000: return ''
         return array.array('B',buff).tolist()
 
     def flushout(self):
