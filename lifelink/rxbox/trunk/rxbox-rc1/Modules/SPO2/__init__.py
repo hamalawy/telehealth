@@ -32,6 +32,7 @@ class SPO2 (Module, SPO2Panel):
 #            return
 #        self.heartrate_infolabel.SetLabel('Ready')
 #        self.spo2_infolabel.SetLabel('      Ready')
+        config.read('rxbox.cfg')
         self.spo2data=SPO2DAQ(self, port =config.get('SPO2','port'))
         self.spo2_get_thread = threading.Thread(target=self.get_spo2)
         self.spo2_thread_alive=True
@@ -59,6 +60,7 @@ class SPO2 (Module, SPO2Panel):
         return port
 
     def minor_check(self):
+        config.read('rxbox.cfg')
         self.heartrate_infolabel.SetLabel('Ready')
         self.spo2_infolabel.SetLabel('            Ready')
         

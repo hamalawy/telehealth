@@ -95,7 +95,7 @@ class SPO2DAQ:
         if self.status is None:
             self.reset()
             raw_data = self.get_reply()
-            data_packet = self.verify_checksum(raw_data)
+            data_packet = raw_data
             if data_packet == None:
                 self.spo2_temp=copy.copy(self.spo2_list)
                 self.bpm_temp=copy.copy(self.bpm_list)
@@ -105,7 +105,19 @@ class SPO2DAQ:
                 self.bpm_temp.pop(0)
                 self.spo2_list=copy.copy(self.spo2_temp)
                 self.bpm_list=copy.copy(self.bpm_temp)
-                
+                self.CloseSerial()
+                return
+            data_packet = self.verify_checksum(data_packet)
+            if data_packet == None:
+                self.spo2_temp=copy.copy(self.spo2_list)
+                self.bpm_temp=copy.copy(self.bpm_list)
+                self.spo2_temp.append(self.spo2_temp[-1])
+                self.bpm_temp.append(self.bpm_temp[-1])
+                self.spo2_temp.pop(0)
+                self.bpm_temp.pop(0)
+                self.spo2_list=copy.copy(self.spo2_temp)
+                self.bpm_list=copy.copy(self.bpm_temp)
+                self.CloseSerial()
                 return
             data_packet = self.byte_destuff(data_packet)
             self.parse_packet(data_packet)
@@ -210,6 +222,7 @@ class SPO2DAQ:
             if len(reply) != 6:
                 return None
             if dataCShi == self.CShi and dataCSlo == self.CSlo:
+
 
                 return reply
             else:
