@@ -1,5 +1,6 @@
 import ConfigParser
 import threading
+import re
 
 from Modules.Module import *
 from ECGPanel import *
@@ -52,7 +53,15 @@ class ECG(Module, ECGPanel):
     def __init__(self, *args, **kwds):
         Module.__init__(self, *args, **kwds)
         ECGPanel.__init__(self, *args, **kwds)
-        
+        self.load_config()
+            
+        self.plotter = False
+        self.alive = False
+    
+    def __name__(self):
+        return 'ECG'
+
+    def load_config(self):
         self.simulated = self._config.getboolean('ECG', 'simulated')
         self.ecmcheck = self._config.getint('ECG', 'ecmcheck')
         #self.ecmchecktimeout = self._config.getint('ECG', 'ecmchecktimeout')
@@ -68,13 +77,8 @@ class ECG(Module, ECGPanel):
         self.freq = self._config.getint('ECG', 'freq')
         self.daqdur = self._config.getfloat('ECG', 'daqdur')
         self.debug = self._config.getboolean('ECG', 'debug')
-            
-        self.ECGData = self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug, logger=self._logger)
-        self.plotter = False
-        self.alive = False
-    
-    def __name__(self):
-        return 'ECG'
+
+        self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug, logger=self._logger)
         
     def lead12_button_clicked(self, event): # wxGlade: ECGPanel.<event_handler>
         self._logger.info('Lead 12 Button Clicked')
@@ -203,7 +207,29 @@ class ECG(Module, ECGPanel):
             self._logger.error(ERROR('DAQ Stop Failed'))
             wx.PostEvent(self._frame, ECGEvent())
         return False
-        
+
+    def get_port(self):
+        comm = subprocess.Popen("dmesg | grep ttyUSB", shell=True, stdout=subprocess.PIPE)
+        port_list = ['/dev/ttyUSB'+i.split('ttyUSB')[-1].strip() for i in comm.stdout.read().strip().split('\n')]
+        port_list_p = [100]*len(port_list)
+
+        comm = subprocess.Popen("dmesg | grep ttyUSB %s"%self._config.get('ECG', 'dynamic'), shell=True, stdout=subprocess.PIPE)
+        ecgport='/dev/ttyUSB'+comm.stdout.read().split('ttyUSB')[-1].strip()
+
+        try:    
+            port_list_p[port_list.index(ecgport)] += 100
+            port_list_p[port_list.index(self._config.get('ECG', 'port'))] += 50
+        except:
+            pass
+        port_list = zip(port_list_p,port_list)
+        port_list.sort()
+        port_list.reverse()
+        for port in port_list:
+            print port
+            if self.ECGData.Check(port[1]):
+                return port[1]
+        return ''
+
     def setGui(self, mode='unlock'):
         if mode not in ['lock','unlock']:
             self._logger.info('setGui mode unsupported')

@@ -22,15 +22,6 @@ class InitState(State):
         bpport=''
 
         try:
-            #dynamic port allocation
-            comm = subprocess.Popen("dmesg%s"%self._config.get('ECG', 'dynamic'), shell=True, stdout=subprocess.PIPE)
-            ecgport=comm.stdout.read().split('ttyUSB')[-1].strip()
-            self._logger.info('ECG: /dev/ttyUSB%s'%ecgport[0])
-            self._config.set('ECG', 'port', '/dev/ttyUSB%s'%ecgport[0])
-        except:
-            self._logger.error(ERROR('ECG Dynamic Port Allocation Failed'))   
-
-        try:
             comm = subprocess.Popen("dmesg%s"%self._config.get('SPO2', 'dynamic'), shell=True, stdout=subprocess.PIPE)
             spoport=comm.stdout.read().split('ttyUSB')[-1].strip()
             self._logger.info('SPO2: /dev/ttyUSB%s'%spoport[0])
@@ -72,7 +63,15 @@ class InitState(State):
         self._frame.Maximize(True)
         self._frame.Show()
         
-        
+        ecgport = self._panel['ecg'].get_port()
+        if ecgport:
+            self._logger.info('ECG: %s'%ecgport)
+            self._config.set('ECG', 'port', '%s'%ecgport)
+            self._config.write(open('rxbox.cfg', 'w'))
+            self._config.read('rxbox.cfg')
+            self._panel['ecg'].load_config()
+        else: self._logger.error(ERROR('ECG Dynamic Port Allocation Failed'))
+
         ports=['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
         port2check=self.port_priority(spoport,ports)
         print port2check
@@ -89,9 +88,9 @@ class InitState(State):
         if bp_port!=None:
             self._config.set('BP', 'port', bp_port)
             self._config.write(open('rxbox.cfg', 'w'))
-
-
+     
         
+
         #init bp since bp needs to be active at init state
         if self._panel['bp'].minor_check() == False:
             print "BP not initialized, check connection"
