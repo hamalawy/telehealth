@@ -17,6 +17,7 @@ from BPDAQLive import BPDAQ
 from least_squares import Ls
 import datetime
 import csv
+import bp_portcheck
 
 class Calibration_main(MyFrame):
     def __init__(self, *args, **kwds):
@@ -35,7 +36,7 @@ class Calibration_main(MyFrame):
         self.Calibrate_button.SetLabel("CALIBRATE NOW")
         self.Sys_Merc_txt.SetValue("0")
         self.Dias_Merc_txt.SetValue("0")
-        self.minor_check()
+        #self.minor_check()
         now = datetime.datetime.now()     
         path=os.getcwd()
         if path[len(path)-14:]=='BP_Calibration':
@@ -43,7 +44,7 @@ class Calibration_main(MyFrame):
         else:
            self.fileopen=open(path+'/Modules/BP/BP_Calibration/Data/'+now.strftime("%m-%d-%y_%H-%M")+".csv","ab")  
         self.csvfile=csv.writer(self.fileopen)
-        data=["Mercurial Systolic_Mercurial Diastolic_Cor Systolic_Cor Diastolic"]
+        data=["Mercurial Systolic","Mercurial Diastolic","Uncalibrated Rxbox Systolic","Uncalibrated Rxbox Diastolic","Calibrated Rxbox Systolic","Calibrated Rxbox Diastolic"]
         self.ls=Ls()
         self.csv_writer(data)
         self.n_samples=0
@@ -79,7 +80,13 @@ class Calibration_main(MyFrame):
 
     def start(self):
         print 'BP START'
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
+        port2check=[config.get('BP','port')]
+        c=bp_portcheck.Bp_check(port2check)
+        port=c.check()
+        if port == None:
+            self.bp_infolabel.SetLabel('Cannot Proceed:BP Unavailable')
+            return
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
         self.bp.OpenSerial()
         self.bp.send_request(self.setBPmaxpressure_combobox.GetValue()[:3])
         self.setBPmaxpressure_combobox.Enable(False)
@@ -102,13 +109,15 @@ class Calibration_main(MyFrame):
             return
         sys_actual=int(self.bp.bp_systolic)
         dias_actual=int(self.bp.bp_diastolic)
+        rawsys=int(self.bp.rawsys)
+        rawdias=int(self.bp.rawdias)
         print "Data"
         print sys_real,sys_actual,dias_real,dias_actual
-        self.ls.add(sys_real,sys_actual,dias_real,dias_actual)
+        self.ls.add(sys_real,rawsys,dias_real,rawdias)
         self.Sys_Merc_txt.SetValue("0")
         self.Dias_Merc_txt.SetValue("0")
         self.bpvalue_label.SetLabel("--/--")
-        data=[sys_real,dias_real,sys_actual,dias_actual]
+        data=[sys_real,dias_real,rawsys,rawdias,sys_actual,dias_actual]
         self.csv_writer(data)
         self.button_1.Enable(False)
         print "add record"
@@ -144,6 +153,7 @@ class Calibration_main(MyFrame):
 
     def Get_bp(self):
         self.alive=True 
+        none_count=0
         while self.alive:
             time.sleep(0.1)
             press = self.bp.get_reply()
@@ -152,13 +162,18 @@ class Calibration_main(MyFrame):
                 continue
             if press == None:
                 print 'none type returned'
-                continue
+                none_count+=1
+                if none_count<1:
+                    continue
+                else:
+                    press='09990'
             self.press = int(press[1:4])
             if self.press== 999:
                 self.alive=False
                 self.bp.get()
                 self.updatealive=False
-                self.bp.stop()
+                self.bp.stop()                
+                self.bp.CloseSerial()
             wx.CallAfter(self.pressure_update)
         self.bp.CloseSerial()
                 
@@ -177,7 +192,7 @@ class Calibration_main(MyFrame):
             self.setBPmaxpressure_combobox.Enable(True)
             self.button_1.Enable(True)
             self.bpNow_Button.SetToolTipString("Acquire BP Reading")
-            self.bpvalue_label.SetLabel(str(self.bp.bp_systolic)+'/'+str(self.bp.bp_diastolic))
+            self.bpvalue_label.SetLabel(' Cal    UnCal \n'+str(self.bp.bp_systolic)+'/'+str(self.bp.bp_diastolic)+' '+str(self.bp.rawsys)+'/'+str(self.bp.rawdias))
 
 if __name__ == "__main__":
     app = wx.PySimpleApp(0)
