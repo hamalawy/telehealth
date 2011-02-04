@@ -5,7 +5,7 @@ import wx
 class BPDAQ:
     """manages data request and processes reply packets to/from NIBP module"""
 
-    def __init__(self, parent, port="COM5", baud=4800, timeout=None, coeff = (1,0,0,0,1,0)):
+    def __init__(self, parent, port="COM5", baud=4800, timeout=3, coeff = (1,0,0,0,1,0)):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
         self.parent = parent
         """ Initialize Serial Port Settings """
@@ -39,7 +39,9 @@ class BPDAQ:
         self.sys_list=15*[0]
         self.dias_list=15*[0]
         self.list_reply=[]
-        
+        self.bpstatus= 'Retry Again'
+        self.rawsys = 0
+        self.rawdias=0
         self.retry=0
         
     
@@ -62,6 +64,8 @@ class BPDAQ:
         
    
         print "*** ONE-SHOT BP ***"
+        self.nibp.flushInput()
+        self.nibp.flushOutput()
         request=self.request(self.Command_Pressure[value])
         self.nibp.write(request)
         print "***Start BP Measurement***"
@@ -81,13 +85,17 @@ class BPDAQ:
     def extract_bp(self):
         for item in range(len(self.PatientStatus)):
             if self.PatientStatus[item] == 'P':
-                rawsys = int(self.PatientStatus[item+1:item+4])
-                rawdias = int(self.PatientStatus[item+7:item+10])
-                coeff = self.coeff
-                self.bp_systolic = int(round(coeff[0]*rawsys+coeff[1]*rawdias+coeff[2]))
-                self.bp_diastolic = int(round(coeff[3]*rawsys+coeff[4]*rawdias+coeff[5]))
-                print "Raw Systolic Pressure:",rawsys
-                print "Raw Diastolic Pressure:",rawdias
+                if self.PatientStatus[item+1:item+4] == '---':
+                    self.bp_systolic = 0
+                    self.bp_diastolic = 0
+                else:
+                    self.rawsys = int(self.PatientStatus[item+1:item+4])
+                    self.rawdias = int(self.PatientStatus[item+7:item+10])
+                    coeff = self.coeff
+                    self.bp_systolic = int(round(coeff[0]*self.rawsys+coeff[1]*self.rawdias+coeff[2]))
+                    self.bp_diastolic = int(round(coeff[3]*self.rawsys+coeff[4]*self.rawdias+coeff[5]))
+                    print "Raw Systolic Pressure:",self.rawsys
+                    print "Raw Diastolic Pressure:",self.rawdias
                 break
         print "Systolic Pressure: ",self.bp_systolic
         print "Diastolic Pressure: ",self.bp_diastolic
@@ -142,6 +150,58 @@ class BPDAQ:
             return False
         else:
             return True
+    
+    def port_check(self):
+        
+        status=self.OpenSerial()
+        if status == False:
+            return False
+        self.stop()
+        command='\x0218;;DF\x03'
+        self.nibp.write(command)
+
+        status= self.get_reply()
+        print status
+        self.CloseSerial()
+        if status == None:
+            print "ERROR: Module does not reply."
+            print "Please check power or serial port settings."
+            return False
+        count=0
+        stat=True
+        passed=0
+        if(self.list_reply[0]=='\x02' and self.list_reply[-1]=='\x03'):
+            passed=1
+            print self.list_reply
+            print 'hello'
+            while(not(self.list_reply[0]=='\x02' and self.list_reply[1:3]==['S','1'] )):
+                print self.list_reply
+                print 'hi'
+                self.ready_module()
+                
+                if count > 5:
+                    stat=False
+                    break
+                count+=1
+                print 'Initializing BP, Please wait'+str(count)
+                print count
+        print stat
+        print passed
+        if passed == 0:
+            return False
+        else:
+            if(stat==False):
+                return False
+            else:
+                return True
+
+    def ready_module(self):
+        self.OpenSerial()
+        command='\x0218;;DF\x03'
+        self.nibp.write(command)
+        print 'popop'
+        status= self.get_reply()
+        self.CloseSerial()
 
     def init_firmware_version(self):
         """ 
@@ -174,7 +234,7 @@ class BPDAQ:
         If not, error is printed in the python shell
         """
         try:
-            self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=2, xonxoff=0)
+            self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)
             return True
         except serial.SerialException:
             print "Please check serial port settings or the device."
@@ -182,7 +242,7 @@ class BPDAQ:
 
     def CloseSerial(self):
         """Method closes an open serial port instance"""
-        self.nibp.close()      
+        self.nibp.close()  
 
     def get_reply(self):
         """ get_reply() -> string of complete packet
@@ -192,10 +252,13 @@ class BPDAQ:
             packet is acquired, it is returned. If the serial port
             times out, a Nony type is returned to distuingish the error.
         """
+        self.nibp.flushInput()
+        self.nibp.flushOutput()
         reply = '' 
         flag_counter = 0
         read=self.nibp.read
-        
+        bit_count=0
+        self.list_reply=[]
         while (flag_counter < 2):
             byte = read(1)
             if byte == '':
@@ -204,6 +267,7 @@ class BPDAQ:
                 self.list_reply.append(byte)
                 reply = reply + byte
                 flag_counter = 1
+                bit_count=0
                 continue
             elif byte == '\x03':
                 self.list_reply.append(byte)
@@ -212,6 +276,9 @@ class BPDAQ:
             if flag_counter == 1:
                 reply = reply + byte
                 self.list_reply.append(byte)
+            if bit_count>42:
+                return None
+            bit_count+=1
         if byte == '':
             return None
         else:
@@ -281,7 +348,7 @@ class BPDAQ:
         self.nibp.write('\x0218;;DF\x03') # print/output command via serial port to SPO2 module
         self.nibp.flushInput() # flush input buffer of serial port
         self.PatientStatus = self.get_reply()
-#        print list(self.PatientStatus), "this is the status of the patient"
+        print list(self.PatientStatus), "this is the status of the patient"
         self.PatientReady = False
         if self.PatientStatus == None:
             print "ERROR: Module does not reply."
