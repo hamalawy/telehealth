@@ -17,7 +17,6 @@ import bp_portcheck
 class BP (Module, BPPanel):
     def __init__(self, *args, **kwds):
         config.read('rxbox.cfg')
-        print "+++++++++++++++++++++++++++++"+str(config.get('BP','port'))
         BPPanel.__init__(self, *args, **kwds)
         Module.__init__(self, *args, **kwds)
         self.Bind(wx.EVT_BUTTON, self.onBPNow, self.bpNow_Button)
@@ -115,7 +114,7 @@ class BP (Module, BPPanel):
             if press == 'S5':
                 press =''
                 continue
-            if press == None:
+            if press == None or press == '':
                 print 'none type returned'
                 none_count+=1
                 if none_count<1:

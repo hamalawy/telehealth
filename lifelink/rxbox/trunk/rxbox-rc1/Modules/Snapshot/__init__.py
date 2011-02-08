@@ -11,6 +11,8 @@ import dicom_rxbox
 
 from Modules.Module import *
 
+import commands
+
 wildcard = "Jpeg (*.jpg)|*.jpg|"        \
            "Bitmap (*.bmp)|*.bmp|"        \
            "All files (*.*)|*.*"
@@ -56,6 +58,14 @@ class Snapshot (Module, SnapshotPanel):
         self.pics.pop(index)
 
     def onSnapshot(self, event): # wxGlade: SnapshotPanel.<event_handler>
+        
+        output=str(commands.getoutput('ls /dev/video*'))
+        if output[1:4]!='dev':
+            dlg = wx.MessageDialog(self, 'Connect Webcam to the USB Port-->> ', 'Error', wx.OK|wx.ICON_HAND)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         self._frame._mgr.GetPane("snapshot2").Float().Show()
         self._frame._mgr.Update()
         wx.Yield()
