@@ -1,79 +1,18 @@
-2011-01-21 19:44:40,701 root         INFO     RxboxEngine Start
-2011-01-21 19:44:40,702 InitState    INFO     State Machine: InitState Start
-2011-01-21 19:44:40,725 InitState    INFO     SPO2: /dev/ttyUSB2
-2011-01-21 19:44:40,751 InitState    INFO     BP: /dev/ttyUSB0
-2011-01-21 19:44:40,953 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-01-21 19:44:41,080 BP           INFO     BP Module Initialized
-2011-01-21 19:44:41,084 SPO2         INFO     SPO2 Module Initialized
-2011-01-21 19:44:41,113 ECG          INFO     ECG Module Initialized
-2011-01-21 19:44:41,182 VoIP         INFO     VoIP Module Initialized
-2011-01-21 19:44:41,185 IM           INFO     IM Module Initialized
-2011-01-21 19:44:41,200 Snapshot     INFO     Snapshot Module Initialized
-2011-01-21 19:44:41,282 InitState    ERROR    Load Perspective
-2011-01-21 19:44:42,422 ECG          DEBUG    Packet Timeout
-2011-01-21 19:44:42,422 ECG          DEBUG    
-2011-01-21 19:44:42,423 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-01-21 19:44:42,427 ECG          DEBUG    Device Successfully Passed!
-2011-01-21 19:44:42,428 InitState    INFO     ECG: /dev/ttyUSB1
-2011-01-21 19:44:45,077 InitState    INFO     State Machine: InitState Stop
-2011-01-21 19:44:45,077 StandbyState INFO     State Machine: StandbyState Start
-2011-01-21 19:44:46,013 StandbyState INFO     State Machine: StandbyState Stop
-2011-01-21 19:44:46,014 DAQState     INFO     State Machine: DAQState Start
-2011-01-21 19:44:46,025 DAQState     INFO     Session uuid = d829cb64-2553-11e0-ac47-00301bbf7b6b
-2011-01-21 19:44:46,098 ECG          DEBUG    
-2011-01-21 19:44:46,099 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-01-21 19:44:46,104 ECG          DEBUG    Device Successfully Passed!
-2011-01-21 19:44:46,113 ECG          INFO     ECM Start
-2011-01-21 19:44:46,113 ECG          INFO     DAQ Start
-2011-01-21 19:44:46,114 ECG          DEBUG    
-2011-01-21 19:44:46,115 ECG          DEBUG    ***Set ECM Threshold Request***
-2011-01-21 19:44:46,121 SPO2         INFO     DAQ Start
-2011-01-21 19:44:46,124 ECG          DEBUG    Set ECM Threshold Request Confirmed
-2011-01-21 19:44:46,126 ECG          DEBUG    
-2011-01-21 19:44:46,128 ECG          DEBUG    ***Start Offline ECM***
-2011-01-21 19:44:46,135 ECG          DEBUG    Start_Offline_ECM ACK
-2011-01-21 19:44:46,136 ECG          DEBUG    
-2011-01-21 19:44:46,137 ECG          DEBUG    ***Stop Offline ECM***
-2011-01-21 19:44:46,144 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
-2011-01-21 19:44:46,145 ECG          INFO     ECM Success!!!
-2011-01-21 19:44:46,157 ECG          DEBUG    
-2011-01-21 19:44:46,158 ECG          DEBUG    ***Configure Analog Request***
-2011-01-21 19:44:46,166 ECG          DEBUG    
-2011-01-21 19:44:46,167 ECG          DEBUG    ***Start ECG Transmission***
-2011-01-21 19:44:46,179 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
-2011-01-21 19:44:46,180 ECG          DEBUG    Acquiring ECG readings...
-2011-01-21 19:44:46,181 ECG          DEBUG    DAQ started at: Fri Jan 21 19:44:46 2011
-2011-01-21 19:44:47,184 ECG          DEBUG    DAQ ended at: Fri Jan 21 19:44:47 2011
-2011-01-21 19:44:47,206 ECG          DEBUG    Acquiring ECG readings...
-2011-01-21 19:44:47,207 ECG          DEBUG    DAQ started at: Fri Jan 21 19:44:47 2011
-2011-01-21 19:44:48,211 ECG          DEBUG    DAQ ended at: Fri Jan 21 19:44:48 2011
-2011-01-21 19:44:48,229 ECG          DEBUG    Acquiring ECG readings...
-2011-01-21 19:44:48,230 ECG          DEBUG    DAQ started at: Fri Jan 21 19:44:48 2011
-2011-01-21 19:44:49,234 ECG          DEBUG    DAQ ended at: Fri Jan 21 19:44:49 2011
-2011-01-21 19:44:49,253 ECG          DEBUG    
-2011-01-21 19:44:49,254 ECG          DEBUG    ***Stop ECG Transmission***
-2011-01-21 19:44:49,262 ECG          DEBUG    
-2011-01-21 19:44:49,263 ECG          DEBUG    ***Stop ECG Transmission***
-2011-01-21 19:44:49,280 ECG          ERROR    DAQ Stop Failed
-Traceback (most recent call last):
-  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
-    self.ECGData.flushout()
-  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 168, in flushout
-    return self.ecgreply()
-  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 155, in ecgreply
-    temp = read(1)
-  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
-    if self.fd is None: raise portNotOpenError
-SerialException: Port not open
-
-2011-01-21 19:44:49,313 SPO2         INFO     DAQ Stop
-2011-01-21 19:44:49,325 BP           INFO     DAQ Stop
-2011-01-21 19:44:49,340 DAQState     INFO     Generate EDF Start
-2011-01-21 19:44:49,618 DAQState     INFO     Generate EDF Done
-2011-01-21 19:44:49,753 DAQState     INFO     State Machine: DAQState Stop
-2011-01-21 19:44:49,754 StandbyState INFO     State Machine: StandbyState Start
-2011-01-21 19:44:51,368 StandbyState INFO     State Machine: StandbyState Stop
-2011-01-21 19:44:51,369 ExitState    INFO     State Machine: ExitState Start
-2011-01-21 19:44:51,374 ExitState    INFO     Configurations Saved
-2011-01-21 19:44:51,544 ExitState    INFO     State Machine: ExitState Stop
-2011-01-21 19:44:51,544 root         INFO     RxboxEngine Exit
+2011-02-08 17:42:10,353 root         INFO     RxboxEngine Start
+2011-02-08 17:42:10,354 InitState    INFO     State Machine: InitState Start
+2011-02-08 17:42:10,569 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-02-08 17:42:10,701 BP           INFO     BP Module Initialized
+2011-02-08 17:42:10,707 SPO2         INFO     SPO2 Module Initialized
+2011-02-08 17:42:10,742 ECG          INFO     ECG Module Initialized
+2011-02-08 17:42:10,812 VoIP         INFO     VoIP Module Initialized
+2011-02-08 17:42:10,817 IM           INFO     IM Module Initialized
+2011-02-08 17:42:10,830 Snapshot     INFO     Snapshot Module Initialized
+2011-02-08 17:42:10,905 InitState    ERROR    Load Perspective
+2011-02-08 17:42:10,997 InitState    INFO     State Machine: InitState Stop
+2011-02-08 17:42:13,673 ECG          DEBUG    Packet Timeout
+2011-02-08 17:42:13,674 ECG          DEBUG    
+2011-02-08 17:42:13,675 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-02-08 17:42:13,680 ECG          DEBUG    Device Successfully Passed!
+2011-02-08 17:42:20,485 InitState    INFO     State Machine: InitState Stop
+2011-02-08 17:42:20,486 StandbyState INFO     State Machine: StandbyState Start
+2011-02-08 17:42:20,490 TestState    INFO     State Machine: TestState Start

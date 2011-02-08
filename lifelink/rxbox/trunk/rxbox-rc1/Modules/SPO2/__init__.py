@@ -23,15 +23,15 @@ class SPO2 (Module, SPO2Panel):
         return 'SPO2'
                 
     def Start(self):
-#        port2check=[config.get('SPO2','port')]
-#       c=spo2_portcheck.Spo2_check(port2check)
-#        port=c.check()
-#        if port == None:
-#            self.heartrate_infolabel.SetLabel('HeartRate Unavailable:Check Connections')
-#            self.spo2_infolabel.SetLabel(' % Oxygen Unavailable:Check Connections')
-#            return
-#        self.heartrate_infolabel.SetLabel('Ready')
-#        self.spo2_infolabel.SetLabel('      Ready')
+        port2check=[config.get('SPO2','port')]
+        c=spo2_portcheck.Spo2_check(port2check)
+        port=c.check()
+        if port == None:
+            self.heartrate_infolabel.SetLabel('HeartRate Unavailable:Check Connections')
+            self.spo2_infolabel.SetLabel(' % Oxygen Unavailable:Check Connections')
+            return
+        self.heartrate_infolabel.SetLabel('Ready')
+        self.spo2_infolabel.SetLabel('      Ready')
         config.read('rxbox.cfg')
         self.spo2data=SPO2DAQ(self, port =config.get('SPO2','port'))
         self.spo2_get_thread = threading.Thread(target=self.get_spo2)

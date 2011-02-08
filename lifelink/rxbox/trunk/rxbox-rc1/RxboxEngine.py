@@ -8,7 +8,7 @@ from multiprocessing import Process
 def splash():
     app = wx.PySimpleApp(0)
     wx.InitAllImageHandlers()
-    SPLASH_SCREEN_TIMEOUT = 10000
+    SPLASH_SCREEN_TIMEOUT = 3000
     splash_image = wx.Bitmap('Splash.bmp', wx.BITMAP_TYPE_BMP)
     wx.SplashScreen(splash_image, 
                     wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT, 

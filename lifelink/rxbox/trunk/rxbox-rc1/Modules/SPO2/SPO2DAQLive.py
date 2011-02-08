@@ -32,7 +32,7 @@ class SPO2DAQ:
         self.signal_quality = []
         self.current_spo2=0
         self.current_bpm =0
-        #self.send_request()
+        self.send_request()
 
     def send_request(self):
         """ Continuously acquire SPO2 and BPM readings from the module """
@@ -50,6 +50,7 @@ class SPO2DAQ:
         request = ''.join(request)
         self.reset()
         self.SerPort.write(request)
+        self.CloseSerial()
 
     def reset(self):
         """reset serial port input buffer"""
@@ -96,6 +97,7 @@ class SPO2DAQ:
             self.reset()
             raw_data = self.get_reply()
             data_packet = raw_data
+            print str(data_packet)+' raw'
             if data_packet == None:
                 self.spo2_temp=copy.copy(self.spo2_list)
                 self.bpm_temp=copy.copy(self.bpm_list)
@@ -108,6 +110,7 @@ class SPO2DAQ:
                 self.CloseSerial()
                 return
             data_packet = self.verify_checksum(data_packet)
+            print str(data_packet)+' part1'
             if data_packet == None:
                 self.spo2_temp=copy.copy(self.spo2_list)
                 self.bpm_temp=copy.copy(self.bpm_list)
@@ -120,6 +123,7 @@ class SPO2DAQ:
                 self.CloseSerial()
                 return
             data_packet = self.byte_destuff(data_packet)
+            print str(data_packet)+' part2'
             self.parse_packet(data_packet)
             self.spo2_temp=copy.copy(self.spo2_list)
             self.bpm_temp=copy.copy(self.bpm_list)
