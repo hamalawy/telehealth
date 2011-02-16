@@ -315,12 +315,13 @@ class RxboxFrame(wx.Frame):
                         if newoption not in origoptions:
                             print 'Added Option: %s'%newoption
                             configorig.set(newsection,newoption,confignew.get(newsection, newoption))
-                configorig.write(open('rxbox.bk', 'w'))
+                configorig.write(open('rxbox2.bk', 'w'))
                 dlg.Update(7,"Restoring Config Files")
                 os.system('rm rxbox.cfg')
+                os.system('rm rxbox.bk')
                 os.system('rm -rf Logs')
                 os.system('mv Logsbk Logs')
-                os.system('mv rxbox.bk rxbox.cfg')
+                os.system('mv rxbox2.bk rxbox.cfg')
                 dlg.Update(8,"Update Complete..Please Restart Rxbox to commit changes")
                 updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
                 wx.MessageBox('%sUpdate Complete..Please Restart Rxbox..'%updateinfo, 'Info')
