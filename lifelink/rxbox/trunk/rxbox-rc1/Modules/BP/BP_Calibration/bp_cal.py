@@ -36,6 +36,8 @@ class Calibration_main(MyFrame):
         self.Calibrate_button.SetLabel("CALIBRATE NOW")
         self.Sys_Merc_txt.SetValue("0")
         self.Dias_Merc_txt.SetValue("0")
+        self.Sys_Comm_txt.SetValue("0")
+        self.Dias_Comm_txt.SetValue("0")
         #self.minor_check()
         now = datetime.datetime.now()     
         path=os.getcwd()
@@ -44,7 +46,7 @@ class Calibration_main(MyFrame):
         else:
            self.fileopen=open(path+'/Modules/BP/BP_Calibration/Data/'+now.strftime("%m-%d-%y_%H-%M")+".csv","ab")  
         self.csvfile=csv.writer(self.fileopen)
-        data=["Mercurial Systolic","Mercurial Diastolic","Uncalibrated Rxbox Systolic","Uncalibrated Rxbox Diastolic","Calibrated Rxbox Systolic","Calibrated Rxbox Diastolic"]
+        data=["Mercurial Systolic","Mercurial Diastolic","Commercial Systolic","Commercial Diastolic","Uncalibrated Rxbox Systolic","Uncalibrated Rxbox Diastolic","Calibrated Rxbox Systolic","Calibrated Rxbox Diastolic"]
         self.ls=Ls()
         self.csv_writer(data)
         self.n_samples=0
@@ -86,7 +88,8 @@ class Calibration_main(MyFrame):
         if port == None:
             self.bp_infolabel.SetLabel('Cannot Proceed:BP Unavailable')
             return
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(float(config.get('BP','sys_coeff_a')),0,float(config.get('BP','sys_coeff_b')),0,float(config.get('BP','dias_coeff_a')),float(config.get('BP','dias_coeff_b'))))
+        #self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
         self.bp.OpenSerial()
         self.bp.send_request(self.setBPmaxpressure_combobox.GetValue()[:3])
         self.setBPmaxpressure_combobox.Enable(False)
@@ -102,7 +105,9 @@ class Calibration_main(MyFrame):
         print self.Dias_Merc_txt.GetValue()
         sys_real=int(self.Sys_Merc_txt.GetValue())
         dias_real=int(self.Dias_Merc_txt.GetValue())
-        if sys_real == 0 and dias_real == 0:
+        sys_comm=int(self.Sys_Comm_txt.GetValue())
+        dias_comm=int(self.Dias_Comm_txt.GetValue())
+        if (sys_real == 0 and dias_real == 0) or (sys_comm == 0 and dias_comm == 0):
             dlg = wx.MessageDialog(self, 'Please fill up the required fields', 'Error', wx.OK|wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
@@ -116,13 +121,15 @@ class Calibration_main(MyFrame):
         self.ls.add(sys_real,rawsys,dias_real,rawdias)
         self.Sys_Merc_txt.SetValue("0")
         self.Dias_Merc_txt.SetValue("0")
+        self.Sys_Comm_txt.SetValue("0")
+        self.Dias_Comm_txt.SetValue("0")
         self.bpvalue_label.SetLabel("--/--")
-        data=[sys_real,dias_real,rawsys,rawdias,sys_actual,dias_actual]
+        data=[sys_real,dias_real,sys_comm,dias_comm,rawsys,rawdias,sys_actual,dias_actual]
         self.csv_writer(data)
         self.button_1.Enable(False)
         print "add record"
         self.n_samples+=1
-        self.Samples_label.SetLabel(str(self.n_samples))
+        self.Samples_txt.SetLabel(str(self.n_samples))
         if self.n_samples>2:
             self.Calibrate_button.Enable(True)
 
@@ -160,7 +167,7 @@ class Calibration_main(MyFrame):
             if press == 'S5':
                 press =''
                 continue
-            if press == None:
+            if press == None or press == '':
                 print 'none type returned'
                 none_count+=1
                 if none_count<1:
