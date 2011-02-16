@@ -123,7 +123,12 @@ class BP (Module, BPPanel):
                     continue
                 else:
                     press='09990'
-            self.press = int(press[1:4])
+            try:
+                self.press = int(press[1:4])
+            except:
+                print 'bp error'
+                print press
+                self.press=999
             if self.press== 999:
                 self.alive=False
                 self.bp.get()

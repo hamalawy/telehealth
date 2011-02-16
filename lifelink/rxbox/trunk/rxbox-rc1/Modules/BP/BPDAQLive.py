@@ -281,6 +281,7 @@ class BPDAQ:
         if byte == '':
             return None
         else:
+            print self.list_reply
             return reply
 
     def string_to_packet(self, string):
