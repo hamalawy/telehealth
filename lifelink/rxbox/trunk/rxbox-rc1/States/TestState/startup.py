@@ -108,9 +108,9 @@ class ShowMain(MyFrame):
         print 'ecg'
         self.bmppanel=self.test_method[self.key][0]
         self.guipic=self.test_method[self.key]
-        
+        ecgport = self._panel['ecg'].get_port()
         try:
-            ecgport = self._panel['ecg'].get_port()
+            #ecgport = self._panel['ecg'].get_port()
             if ecgport:
                 #self._logger.info('ECG: %s'%ecgport)
                 self._config.set('ECG', 'port', '%s'%ecgport)

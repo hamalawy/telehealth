@@ -45,7 +45,9 @@ class BP (Module, BPPanel):
         if port == None:
             self.bp_infolabel.SetLabel('Cannot Proceed:BP Unavailable')
             return
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
+        #(config.get('BP','sys_coeff_a'),0,config.get('BP','sys_coeff_b'),0,config.get('BP','dias_coeff_a'),config.get('BP','dias_coeff_b'))
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(float(config.get('BP','sys_coeff_a')),0,float(config.get('BP','sys_coeff_b')),0,float(config.get('BP','dias_coeff_a')),float(config.get('BP','dias_coeff_b'))))
+        #self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
         #(0.981,0,-6.59,0,0.38741,38.45)
 
         #self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
