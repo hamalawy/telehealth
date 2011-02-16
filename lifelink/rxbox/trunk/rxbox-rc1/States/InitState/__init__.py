@@ -1,6 +1,7 @@
 import ConfigParser
 import datetime
 import traceback
+import os
 
 from States.State import *
 from RxboxFrame import *
@@ -20,7 +21,7 @@ class InitState(State):
         ecgport=''
         spoport=''
         bpport=''
-
+        os.system('mv rxbox.bk rxbox.cfg')
 #        try:
 #            comm = subprocess.Popen("dmesg%s"%self._config.get('SPO2', 'dynamic'), shell=True, stdout=subprocess.PIPE)
 #            spoport=comm.stdout.read().split('ttyUSB')[-1].strip()
