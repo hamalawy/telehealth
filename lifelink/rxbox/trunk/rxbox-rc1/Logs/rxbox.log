@@ -1,24 +1,90 @@
-2011-02-16 16:37:06,309 root         INFO     RxboxEngine Start
-2011-02-16 16:37:06,310 InitState    INFO     State Machine: InitState Start
-2011-02-16 16:37:06,517 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-02-16 16:37:06,638 BP           INFO     BP Module Initialized
-2011-02-16 16:37:06,642 SPO2         INFO     SPO2 Module Initialized
-2011-02-16 16:37:06,670 ECG          INFO     ECG Module Initialized
-2011-02-16 16:37:06,752 VoIP         INFO     VoIP Module Initialized
-2011-02-16 16:37:06,755 IM           INFO     IM Module Initialized
-2011-02-16 16:37:06,766 Snapshot     INFO     Snapshot Module Initialized
-2011-02-16 16:37:06,843 InitState    ERROR    Load Perspective
-2011-02-16 16:37:06,938 InitState    INFO     State Machine: InitState Stop
-2011-02-16 16:37:11,310 ECG          DEBUG    Packet Timeout
-2011-02-16 16:37:11,311 ECG          DEBUG    
-2011-02-16 16:37:11,312 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-02-16 16:37:11,317 ECG          DEBUG    Device Successfully Passed!
-2011-02-16 16:37:16,382 InitState    INFO     State Machine: InitState Stop
-2011-02-16 16:37:16,383 StandbyState INFO     State Machine: StandbyState Start
-2011-02-16 16:37:16,387 TestState    INFO     State Machine: TestState Start
-2011-02-16 16:39:22,429 BP           INFO     DAQ Start
-2011-02-16 16:39:44,127 TestState    INFO     State Machine: TestState Stop
-2011-02-16 16:39:44,128 ExitState    INFO     State Machine: ExitState Start
-2011-02-16 16:39:44,130 ExitState    INFO     Configurations Saved
-2011-02-16 16:39:44,214 ExitState    INFO     State Machine: ExitState Stop
-2011-02-16 16:39:44,215 root         INFO     RxboxEngine Exit
+2011-02-16 16:50:39,266 root         INFO     RxboxEngine Start
+2011-02-16 16:50:39,267 InitState    INFO     State Machine: InitState Start
+2011-02-16 16:50:39,476 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-02-16 16:50:39,597 BP           INFO     BP Module Initialized
+2011-02-16 16:50:39,601 SPO2         INFO     SPO2 Module Initialized
+2011-02-16 16:50:39,632 ECG          INFO     ECG Module Initialized
+2011-02-16 16:50:39,704 VoIP         INFO     VoIP Module Initialized
+2011-02-16 16:50:39,707 IM           INFO     IM Module Initialized
+2011-02-16 16:50:39,721 Snapshot     INFO     Snapshot Module Initialized
+2011-02-16 16:50:39,796 InitState    ERROR    Load Perspective
+2011-02-16 16:50:39,900 InitState    INFO     State Machine: InitState Stop
+2011-02-16 16:50:42,757 ECG          DEBUG    Packet Timeout
+2011-02-16 16:50:42,758 ECG          DEBUG    
+2011-02-16 16:50:42,759 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-02-16 16:50:42,763 ECG          DEBUG    Device Successfully Passed!
+2011-02-16 16:50:48,446 InitState    INFO     State Machine: InitState Stop
+2011-02-16 16:50:48,448 StandbyState INFO     State Machine: StandbyState Start
+2011-02-16 16:50:48,451 TestState    INFO     State Machine: TestState Start
+2011-02-16 16:50:52,105 TestState    INFO     State Machine: TestState Stop
+2011-02-16 16:50:52,106 DAQState     INFO     State Machine: DAQState Start
+2011-02-16 16:50:52,149 DAQState     INFO     Session uuid = dbd43c44-39a9-11e0-8fba-00301bbf7b6b
+2011-02-16 16:50:52,200 ECG          DEBUG    
+2011-02-16 16:50:52,201 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-02-16 16:50:52,208 ECG          DEBUG    Device Successfully Passed!
+2011-02-16 16:50:52,216 ECG          INFO     ECM Start
+2011-02-16 16:50:52,217 ECG          INFO     DAQ Start
+2011-02-16 16:50:52,218 ECG          DEBUG    
+2011-02-16 16:50:52,219 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-02-16 16:50:52,224 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-02-16 16:50:52,225 ECG          DEBUG    
+2011-02-16 16:50:52,225 ECG          DEBUG    ***Start Offline ECM***
+2011-02-16 16:50:52,232 ECG          DEBUG    Start_Offline_ECM ACK
+2011-02-16 16:50:52,233 ECG          DEBUG    
+2011-02-16 16:50:52,233 ECG          DEBUG    ***Stop Offline ECM***
+2011-02-16 16:50:52,243 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-02-16 16:50:52,244 ECG          INFO     ECM Success!!!
+2011-02-16 16:50:52,253 ECG          DEBUG    
+2011-02-16 16:50:52,254 ECG          DEBUG    ***Configure Analog Request***
+2011-02-16 16:50:52,259 ECG          DEBUG    
+2011-02-16 16:50:52,260 ECG          DEBUG    ***Start ECG Transmission***
+2011-02-16 16:50:52,266 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-02-16 16:50:52,266 ECG          DEBUG    Acquiring ECG readings...
+2011-02-16 16:50:52,267 ECG          DEBUG    DAQ started at: Wed Feb 16 16:50:52 2011
+2011-02-16 16:50:53,092 SPO2         INFO     DAQ Start
+2011-02-16 16:50:53,282 ECG          DEBUG    DAQ ended at: Wed Feb 16 16:50:53 2011
+2011-02-16 16:50:53,302 ECG          DEBUG    Acquiring ECG readings...
+2011-02-16 16:50:53,303 ECG          DEBUG    DAQ started at: Wed Feb 16 16:50:53 2011
+2011-02-16 16:50:54,316 ECG          DEBUG    DAQ ended at: Wed Feb 16 16:50:54 2011
+2011-02-16 16:50:54,336 ECG          DEBUG    Acquiring ECG readings...
+2011-02-16 16:50:54,337 ECG          DEBUG    DAQ started at: Wed Feb 16 16:50:54 2011
+2011-02-16 16:50:55,346 ECG          DEBUG    DAQ ended at: Wed Feb 16 16:50:55 2011
+2011-02-16 16:50:55,369 ECG          DEBUG    Acquiring ECG readings...
+2011-02-16 16:50:55,370 ECG          DEBUG    DAQ started at: Wed Feb 16 16:50:55 2011
+2011-02-16 16:50:56,380 ECG          DEBUG    DAQ ended at: Wed Feb 16 16:50:56 2011
+2011-02-16 16:50:56,400 ECG          DEBUG    Acquiring ECG readings...
+2011-02-16 16:50:56,401 ECG          DEBUG    DAQ started at: Wed Feb 16 16:50:56 2011
+2011-02-16 16:50:57,414 ECG          DEBUG    DAQ ended at: Wed Feb 16 16:50:57 2011
+2011-02-16 16:50:57,434 ECG          DEBUG    Acquiring ECG readings...
+2011-02-16 16:50:57,435 ECG          DEBUG    DAQ started at: Wed Feb 16 16:50:57 2011
+2011-02-16 16:50:58,447 ECG          DEBUG    DAQ ended at: Wed Feb 16 16:50:58 2011
+2011-02-16 16:50:58,468 ECG          DEBUG    Acquiring ECG readings...
+2011-02-16 16:50:58,469 ECG          DEBUG    DAQ started at: Wed Feb 16 16:50:58 2011
+2011-02-16 16:50:59,480 ECG          DEBUG    DAQ ended at: Wed Feb 16 16:50:59 2011
+2011-02-16 16:50:59,498 ECG          DEBUG    
+2011-02-16 16:50:59,499 ECG          DEBUG    ***Stop ECG Transmission***
+2011-02-16 16:50:59,506 ECG          DEBUG    
+2011-02-16 16:50:59,507 ECG          DEBUG    ***Stop ECG Transmission***
+2011-02-16 16:50:59,580 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 176, in flushout
+    return self.ecgreply()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 156, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-02-16 16:50:59,614 SPO2         INFO     DAQ Stop
+2011-02-16 16:50:59,626 BP           INFO     DAQ Stop
+2011-02-16 16:50:59,638 DAQState     INFO     Generate EDF Start
+2011-02-16 16:50:59,940 DAQState     INFO     Generate EDF Done
+2011-02-16 16:51:00,083 DAQState     INFO     State Machine: DAQState Stop
+2011-02-16 16:51:00,085 StandbyState INFO     State Machine: StandbyState Start
+2011-02-16 16:51:02,334 StandbyState INFO     State Machine: StandbyState Stop
+2011-02-16 16:51:02,335 ExitState    INFO     State Machine: ExitState Start
+2011-02-16 16:51:02,337 ExitState    INFO     Configurations Saved
+2011-02-16 16:51:02,509 ExitState    INFO     State Machine: ExitState Stop
+2011-02-16 16:51:02,511 root         INFO     RxboxEngine Exit

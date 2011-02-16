@@ -113,7 +113,6 @@ class ECGDAQ:
         self.Close()
 
     def Open(self):
-        self.file = open('data.csv','w')
         data = self.ecg_lead
         for key in data:
             del data[key][:]
@@ -147,7 +146,7 @@ class ECGDAQ:
         self.ecgserial.write(array.array('B',packet).tostring())
         self.packet_num = (self.packet_num+1)%256
 
-    def ecgreply(self,get=False):
+    def ecgreply(self):
         buff = ''
         end = chr(0xfd)
         mid = chr(0xfe)
@@ -171,8 +170,6 @@ class ECGDAQ:
                 buff += temp
                 buff2 += temp
             if len(buff)>1000: return ''
-        if get:
-            self.file.write(buff2)
         return array.array('B',buff).tolist()
 
     def flushout(self):
@@ -364,7 +361,7 @@ class ECGDAQ:
         self.Print("Acquiring ECG readings...")
         self.Print("DAQ started at: %s"%time.ctime())                 # get start time
         while time.time()<Basetime and self.getecg:
-            raw_packet = self.ecgreply(get=True)
+            raw_packet = self.ecgreply()
             self.payload_parser(raw_packet)
         self.Print("DAQ ended at: %s"%time.ctime())                   # get end time
     
@@ -376,7 +373,6 @@ class ECGDAQ:
         
     def Close(self):
         self.ecgserial.close()
-        self.file.close()
         
     def Pop(self,start=0,end=0):
         data = self.ecg_lead

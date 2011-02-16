@@ -22,6 +22,7 @@ class InitState(State):
         spoport=''
         bpport=''
         os.system('mv rxbox.bk rxbox.cfg')
+        self._config.read('rxbox.cfg')
 #        try:
 #            comm = subprocess.Popen("dmesg%s"%self._config.get('SPO2', 'dynamic'), shell=True, stdout=subprocess.PIPE)
 #            spoport=comm.stdout.read().split('ttyUSB')[-1].strip()
@@ -39,10 +40,7 @@ class InitState(State):
 #            bpport='/dev/ttyUSB'+bpport[0]
 #        except:
 #            self._logger.error(ERROR('BP Dynamic Port Allocation Failed'))   
-
-        self._config.write(open('rxbox.cfg', 'w'))
-        self._config.read('rxbox.cfg')
-        
+     
        
         self._frame = RxboxFrame(self._engine, None, -1, "")
         self._mgr = self._frame._mgr
