@@ -299,7 +299,7 @@ class RxboxFrame(wx.Frame):
                 dlg.Update(2,"Cleaning Up")
                 os.system('svn cleanup')
                 dlg.Update(3,"Updating Modules")
-                os.system('svn update')
+                os.system('svn update --accept theirs-full')
                 dlg.Update(5,"Checking Config Files")
                 configorig = ConfigParser.ConfigParser()
                 confignew = ConfigParser.ConfigParser()
