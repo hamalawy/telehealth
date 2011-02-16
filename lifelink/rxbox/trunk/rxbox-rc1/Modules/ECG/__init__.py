@@ -209,7 +209,7 @@ class ECG(Module, ECGPanel):
         return False
 
     def get_port(self):
-        comm = subprocess.Popen("dmesg | grep ttyUSB", shell=True, stdout=subprocess.PIPE)
+        comm = subprocess.Popen("dmesg | grep ttyUSB | grep usb", shell=True, stdout=subprocess.PIPE)
         port_list = ['/dev/ttyUSB'+i.split('ttyUSB')[-1].strip() for i in comm.stdout.read().strip().split('\n')]
         port_list_p = [100]*len(port_list)
 
