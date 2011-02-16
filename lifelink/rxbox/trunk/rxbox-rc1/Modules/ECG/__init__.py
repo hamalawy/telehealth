@@ -213,7 +213,7 @@ class ECG(Module, ECGPanel):
         port_list = ['/dev/ttyUSB'+i.split('ttyUSB')[-1].strip() for i in comm.stdout.read().strip().split('\n')]
         port_list_p = [100]*len(port_list)
 
-        comm = subprocess.Popen("dmesg | grep ttyUSB %s"%self._config.get('ECG', 'dynamic'), shell=True, stdout=subprocess.PIPE)
+        comm = subprocess.Popen("dmesg | grep ttyUSB | grep usb %s"%self._config.get('ECG', 'dynamic'), shell=True, stdout=subprocess.PIPE)
         ecgport='/dev/ttyUSB'+comm.stdout.read().split('ttyUSB')[-1].strip()
 
         try:    
