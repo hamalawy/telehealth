@@ -283,10 +283,11 @@ class RxboxFrame(wx.Frame):
         try:
             con = urllib2.urlopen("http://www.google.com/")
             data = con.read()
-            if data:
-                self._logger('Connection Established: ready for Update')
+            if not data:
+                return
+             #   self._logger('Connection Established: ready for Update')
         except:
-            self._logger('No internet Connection: Update Failed')
+            #self._logger('No internet Connection: Update Failed')
             dlg = wx.MessageDialog(self, 'No Internet Connection Detected', 'Error', wx.OK|wx.ICON_HAND)
             dlg.ShowModal()
             dlg.Destroy()
