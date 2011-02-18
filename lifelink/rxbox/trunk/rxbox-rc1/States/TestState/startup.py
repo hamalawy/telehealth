@@ -11,6 +11,7 @@ class ShowMain(MyFrame):
     def __init__(self, engine, *args, **kwds):
         MyFrame.__init__(self, *args, **kwds)
         self.Center()
+        self.SetTitle('Initializing')
         self._engine = engine
         self._app = self._engine._app
         self._config = self._engine._config
