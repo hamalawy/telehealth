@@ -269,9 +269,12 @@ class BPDAQ:
                 bit_count=0
                 continue
             elif byte == '\x03':
-                self.list_reply.append(byte)
-                reply = reply + byte
-                flag_counter = 2
+                if flag_counter==1:
+                    self.list_reply.append(byte)
+                    reply = reply + byte
+                    flag_counter = 2
+                else:
+                    continue
             if flag_counter == 1:
                 reply = reply + byte
                 self.list_reply.append(byte)
