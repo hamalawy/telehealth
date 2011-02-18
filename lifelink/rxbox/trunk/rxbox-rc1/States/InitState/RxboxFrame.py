@@ -3,7 +3,7 @@ import wx.aui
 from wx.lib.wordwrap import wordwrap
 import os
 import ConfigParser
-
+import urllib2
 from Panels import *
 
 ID_TransparentHint = wx.NewId()
@@ -279,7 +279,21 @@ class RxboxFrame(wx.Frame):
         self._engine.change_state('SendState','LogFileSend')
 
     def OnUpdate(self, event):
-        
+
+        try:
+            con = urllib2.urlopen("http://www.google.com/")
+            data = con.read()
+            if data:
+                self._logger('Connection Established: ready for Update')
+        except:
+            self._logger('No internet Connection: Update Failed')
+            dlg = wx.MessageDialog(self, 'No Internet Connection Detected', 'Error', wx.OK|wx.ICON_HAND)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+
+
         dlg = wx.MessageDialog(self, 'Are you sure you want to Update?', 'Update', \
                                 wx.YES_NO)
         responce = dlg.ShowModal()
