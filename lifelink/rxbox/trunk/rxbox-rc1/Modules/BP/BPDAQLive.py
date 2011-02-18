@@ -5,9 +5,11 @@ import wx
 class BPDAQ:
     """manages data request and processes reply packets to/from NIBP module"""
 
-    def __init__(self, parent, port="COM5", baud=4800, timeout=3, coeff = (1,0,0,0,1,0)):
+    def __init__(self, parent, port="COM5", baud=4800, timeout=3, coeff = (1,0,0,0,1,0),debug=True,logger=''):
         """initializes port settings and request data sequence according to specified setting for EMI12"""
         self.parent = parent
+        self._logger = logger
+        self.debug=debug
         """ Initialize Serial Port Settings """
         self.port = port                
         self.baudrate = baud            
@@ -43,11 +45,16 @@ class BPDAQ:
         
         self.retry=0
         
-    
+    def Print(self, string=''):
+        if self.debug and self._logger=='':
+            print string
+        elif self.debug:
+            self._logger.debug(string)
+
     def stop(self):
         command = '\x02X\x03' # combine packets into one string
         self.nibp.write(command)
-        print 'deflating'
+        self.Print( 'deflating' )
 
     def request(self, command):
         """
@@ -62,20 +69,20 @@ class BPDAQ:
         
         
    
-        print "*** ONE-SHOT BP ***"
+        self.Print( "*** ONE-SHOT BP ***" )
         self.nibp.flushInput()
         self.nibp.flushOutput()
         request=self.request(self.Command_Pressure[value])
         self.nibp.write(request)
-        print "***Start BP Measurement***"
+        self.Print("***Start BP Measurement***")
         self.nibp.write(self.request(self.START_MEASUREMENT))
-        print "***Acquiring Cuff Pressure***"
+        self.Print("***Acquiring Cuff Pressure***")
 
         
     def get(self):
         """implements pseudo-cycle mode for BP measurement"""
 
-        print "***Extracting Status of Operation***"
+        self.Print("***Extracting Status of Operation***")
         self.patient_ready()
         if self.PatientReady:
             self.extract_bp()
@@ -93,11 +100,11 @@ class BPDAQ:
                     coeff = self.coeff
                     self.bp_systolic = int(round(coeff[0]*rawsys+coeff[1]*rawdias+coeff[2]))
                     self.bp_diastolic = int(round(coeff[3]*rawsys+coeff[4]*rawdias+coeff[5]))
-                    print "Raw Systolic Pressure:",rawsys
-                    print "Raw Diastolic Pressure:",rawdias
+                    self.Print( "Raw Systolic Pressure: " + str(rawsys))
+                    self.Print( "Raw Diastolic Pressure: "+ str(rawdias))
                 break
-        print "Systolic Pressure: ",self.bp_systolic
-        print "Diastolic Pressure: ",self.bp_diastolic
+        self.Print("Systolic Pressure: "+str(self.bp_systolic))
+        self.Print("Diastolic Pressure: "+str(self.bp_diastolic))
         self.sys_list=15*[self.bp_systolic]
         self.dias_list=15*[self.bp_diastolic]
             
@@ -113,13 +120,13 @@ class BPDAQ:
 
         status = self.get_reply()
         if status == None:
-            print "ERROR: Module does not reply."
-            print "Please check power or serial port settings."
+            self.Print("ERROR: Module does not reply.")
+            self.Print("Please check power or serial port settings.")
             self.CloseSerial()
             return False
 
         if self.retry == 5:
-            print 'Device not ready, Cannot Proceed'
+            self.Print('Device not ready, Cannot Proceed')
             self.CloseSerial()
             return False
 
@@ -127,7 +134,7 @@ class BPDAQ:
             self.list_reply=[]
             self.retry+=1
             self.CloseSerial()
-            print 'BP HAVING HARD TIME TO PROCEED'
+            self.Print('BP HAVING HARD TIME TO PROCEED')
             self.init_status_check()
         
         try:
@@ -142,10 +149,10 @@ class BPDAQ:
             self.CloseSerial()
             return True
         elif status == 15:
-            print 'System error.'
+            self.Print('System error.')
             self.stop()
             self.CloseSerial()
-            print "Please call RxBox hotline."
+            self.Print("Please call RxBox hotline.")
             return False
         else:
             return True
@@ -160,32 +167,32 @@ class BPDAQ:
         self.nibp.write(command)
 
         status= self.get_reply()
-        print status
+#        print status
         self.CloseSerial()
         if status == None:
-            print "ERROR: Module does not reply."
-            print "Please check power or serial port settings."
+            self.Print("ERROR: Module does not reply.")
+            self.Print("Please check power or serial port settings.")
             return False
         count=0
         stat=True
         passed=0
         if(self.list_reply[0]=='\x02' and self.list_reply[-1]=='\x03'):
             passed=1
-            print self.list_reply
-            print 'hello'
+            #print self.list_reply
+            #print 'hello'
             while(not(self.list_reply[0]=='\x02' and self.list_reply[1:3]==['S','1'] )):
-                print self.list_reply
-                print 'hi'
+                #print self.list_reply
+                #print 'hi'
                 self.ready_module()
                 
                 if count > 5:
                     stat=False
                     break
                 count+=1
-                print 'Initializing BP, Please wait'+str(count)
-                print count
-        print stat
-        print passed
+                self.Print('Initializing BP, Please wait'+str(count))
+                #print count
+        #print stat
+        #print passed
         if passed == 0:
             return False
         else:
@@ -198,7 +205,7 @@ class BPDAQ:
         self.OpenSerial()
         command='\x0218;;DF\x03'
         self.nibp.write(command)
-        print 'popop'
+        #print 'popop'
         status= self.get_reply()
         self.CloseSerial()
 
@@ -217,13 +224,13 @@ class BPDAQ:
 
         EPROMVersion = self.get_reply()
         if EPROMVersion == None:
-            print "ERROR: Module does not reply."
-            print "Please check power or serial port settings."
+            self.Print("ERROR: Module does not reply.")
+            self.Print("Please check power or serial port settings.")
             self.CloseSerial()
             return False
         else:
-            print "BP Firmware Acquired."
-            print "EPROM Version:",EPROMVersion[2:len(EPROMVersion)-1]
+            self.Print("BP Firmware Acquired.")
+            self.Print("EPROM Version:"+str(EPROMVersion[2:len(EPROMVersion)-1]))
             self.CloseSerial()
             return True  
 
@@ -236,7 +243,7 @@ class BPDAQ:
             self.nibp = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=self.timeout, xonxoff=0)
             return True
         except serial.SerialException:
-            print "Please check serial port settings or the device."
+            self.Print("Please check serial port settings or the device.")
             return False
 
     def CloseSerial(self):
@@ -284,7 +291,7 @@ class BPDAQ:
         if byte == '':
             return None
         else:
-            print self.list_reply
+            #print self.list_reply
             return reply
 
     def string_to_packet(self, string):
@@ -351,11 +358,11 @@ class BPDAQ:
         self.nibp.write('\x0218;;DF\x03') # print/output command via serial port to SPO2 module
         self.nibp.flushInput() # flush input buffer of serial port
         self.PatientStatus = self.get_reply()
-        print list(self.PatientStatus), "this is the status of the patient"
+        self.Print( str(self.PatientStatus)+ "this is the status of the patient")
         self.PatientReady = False
         if self.PatientStatus == None:
-            print "ERROR: Module does not reply."
-            print "Please check power or serial port settings."
+            self.Print("ERROR: Module does not reply.")
+            self.Print("Please check power or serial port settings.")
             self.PatientReady = False
         else:
             self.check_patient_status()
@@ -373,7 +380,7 @@ class BPDAQ:
 #                print acquire_status
                 break
         if int(acquire_status)==1:
-            print "Patient ready."
+            self.Print("Patient ready.")
             self.bpstatus= "BP Acquired"
             self.PatientReady = True
         elif int(acquire_status)==2:

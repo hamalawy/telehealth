@@ -38,6 +38,7 @@ class Calibration_main(MyFrame):
         self.Dias_Merc_txt.SetValue("0")
         self.Sys_Comm_txt.SetValue("0")
         self.Dias_Comm_txt.SetValue("0")
+        self.version_label.SetLabel('version: '+str(config.get('GENINFO','model')))
         #self.minor_check()
         now = datetime.datetime.now()     
         path=os.getcwd()
@@ -174,7 +175,12 @@ class Calibration_main(MyFrame):
                     continue
                 else:
                     press='09990'
-            self.press = int(press[1:4])
+            try:
+                self.press = int(press[1:4])
+            except:
+                print 'bp error'
+                print press
+                self.press=999
             if self.press== 999:
                 self.alive=False
                 self.bp.get()

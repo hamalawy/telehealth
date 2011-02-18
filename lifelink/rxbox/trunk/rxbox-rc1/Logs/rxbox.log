@@ -1,19 +1,629 @@
-2011-02-16 16:58:57,457 root         INFO     RxboxEngine Start
-2011-02-16 16:58:57,458 InitState    INFO     State Machine: InitState Start
-2011-02-16 16:58:57,668 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-02-16 16:58:57,782 BP           INFO     BP Module Initialized
-2011-02-16 16:58:57,786 SPO2         INFO     SPO2 Module Initialized
-2011-02-16 16:58:57,815 ECG          INFO     ECG Module Initialized
-2011-02-16 16:58:57,889 VoIP         INFO     VoIP Module Initialized
-2011-02-16 16:58:57,892 IM           INFO     IM Module Initialized
-2011-02-16 16:58:57,903 Snapshot     INFO     Snapshot Module Initialized
-2011-02-16 16:58:57,977 InitState    ERROR    Load Perspective
-2011-02-16 16:58:58,064 InitState    INFO     State Machine: InitState Stop
-2011-02-16 16:59:00,612 ECG          DEBUG    Packet Timeout
-2011-02-16 16:59:00,613 ECG          DEBUG    
-2011-02-16 16:59:00,614 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-02-16 16:59:00,619 ECG          DEBUG    Device Successfully Passed!
-2011-02-16 16:59:06,511 InitState    INFO     State Machine: InitState Stop
-2011-02-16 16:59:06,512 StandbyState INFO     State Machine: StandbyState Start
-2011-02-16 16:59:06,516 TestState    INFO     State Machine: TestState Start
-2011-02-16 16:59:29,533 BP           INFO     DAQ Start
+2011-02-18 16:37:25,131 root         INFO     RxboxEngine Start
+2011-02-18 16:37:25,132 InitState    INFO     State Machine: InitState Start
+2011-02-18 16:37:25,333 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-02-18 16:37:25,444 BP           INFO     BP Module Initialized
+2011-02-18 16:37:25,448 SPO2         INFO     SPO2 Module Initialized
+2011-02-18 16:37:25,477 ECG          INFO     ECG Module Initialized
+2011-02-18 16:37:25,546 VoIP         INFO     VoIP Module Initialized
+2011-02-18 16:37:25,549 IM           INFO     IM Module Initialized
+2011-02-18 16:37:25,564 Snapshot     INFO     Snapshot Module Initialized
+2011-02-18 16:37:25,640 InitState    ERROR    Load Perspective
+2011-02-18 16:37:25,724 InitState    INFO     State Machine: InitState Stop
+2011-02-18 16:37:29,611 ECG          DEBUG    Packet Timeout
+2011-02-18 16:37:29,612 ECG          DEBUG    
+2011-02-18 16:37:29,613 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-02-18 16:37:29,617 ECG          DEBUG    Device Successfully Passed!
+2011-02-18 16:37:29,813 BP           DEBUG    deflating
+2011-02-18 16:37:29,930 BP           DEBUG    BP init part 1 done
+2011-02-18 16:37:29,994 BP           DEBUG    BP Firmware Acquired.
+2011-02-18 16:37:29,994 BP           DEBUG    EPROM Version:AR       3.41
+2011-02-18 16:37:29,995 BP           DEBUG    BP: init part 2 done
+2011-02-18 16:37:35,070 InitState    INFO     State Machine: InitState Stop
+2011-02-18 16:37:35,071 StandbyState INFO     State Machine: StandbyState Start
+2011-02-18 16:37:35,075 TestState    INFO     State Machine: TestState Start
+2011-02-18 16:37:44,022 TestState    INFO     State Machine: TestState Stop
+2011-02-18 16:37:44,023 DAQState     INFO     State Machine: DAQState Start
+2011-02-18 16:37:44,034 DAQState     INFO     Session uuid = 5ae6e694-3b3a-11e0-8a94-00301bbf7b6b
+2011-02-18 16:37:44,063 ECG          DEBUG    
+2011-02-18 16:37:44,064 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-02-18 16:37:44,070 ECG          DEBUG    Device Successfully Passed!
+2011-02-18 16:37:44,085 ECG          INFO     ECM Start
+2011-02-18 16:37:44,087 ECG          INFO     DAQ Start
+2011-02-18 16:37:44,088 ECG          DEBUG    
+2011-02-18 16:37:44,090 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-02-18 16:37:44,099 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-02-18 16:37:44,100 ECG          DEBUG    
+2011-02-18 16:37:44,100 ECG          DEBUG    ***Start Offline ECM***
+2011-02-18 16:37:44,107 ECG          DEBUG    Start_Offline_ECM ACK
+2011-02-18 16:37:44,107 ECG          DEBUG    
+2011-02-18 16:37:44,108 ECG          DEBUG    ***Stop Offline ECM***
+2011-02-18 16:37:44,117 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-02-18 16:37:44,119 ECG          INFO     ECM Success!!!
+2011-02-18 16:37:44,130 ECG          DEBUG    
+2011-02-18 16:37:44,132 ECG          DEBUG    ***Configure Analog Request***
+2011-02-18 16:37:44,142 ECG          DEBUG    
+2011-02-18 16:37:44,143 ECG          DEBUG    ***Start ECG Transmission***
+2011-02-18 16:37:44,154 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-02-18 16:37:44,156 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:44,157 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:44 2011
+2011-02-18 16:37:44,954 SPO2         INFO     DAQ Start
+2011-02-18 16:37:45,022 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:45,168 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:45 2011
+2011-02-18 16:37:45,184 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:45,185 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:45 2011
+2011-02-18 16:37:45,422 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:45,822 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:46,202 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:46 2011
+2011-02-18 16:37:46,220 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:46,221 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:46 2011
+2011-02-18 16:37:46,223 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:46,622 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:47,021 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:47,236 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:47 2011
+2011-02-18 16:37:47,252 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:47,253 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:47 2011
+2011-02-18 16:37:47,421 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:47,822 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:48,221 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:48,272 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:48 2011
+2011-02-18 16:37:48,289 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:48,290 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:48 2011
+2011-02-18 16:37:48,621 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:49,021 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:49,305 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:49 2011
+2011-02-18 16:37:49,321 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:49,322 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:49 2011
+2011-02-18 16:37:49,426 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:49,823 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:50,223 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:50,340 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:50 2011
+2011-02-18 16:37:50,363 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:50,364 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:50 2011
+2011-02-18 16:37:50,622 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:51,025 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:51,372 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:51 2011
+2011-02-18 16:37:51,390 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:51,391 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:51 2011
+2011-02-18 16:37:51,425 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:51,825 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:37:52,224 SPO2         DEBUG    [127, 81, 0, 0, 0, 15]
+2011-02-18 16:37:52,409 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:52 2011
+2011-02-18 16:37:52,429 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:52,430 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:52 2011
+2011-02-18 16:37:52,625 SPO2         DEBUG    [127, 81, 0, 0, 0, 33]
+2011-02-18 16:37:53,002 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:37:53,425 SPO2         DEBUG    [127, 81, 0, 0, 0, 60]
+2011-02-18 16:37:53,443 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:53 2011
+2011-02-18 16:37:53,459 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:53,460 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:53 2011
+2011-02-18 16:37:53,822 SPO2         DEBUG    [127, 81, 98, 0, 0, 73]
+2011-02-18 16:37:54,225 SPO2         DEBUG    [127, 81, 98, 0, 0, 72]
+2011-02-18 16:37:54,472 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:54 2011
+2011-02-18 16:37:54,491 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:54,492 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:54 2011
+2011-02-18 16:37:54,621 SPO2         DEBUG    [127, 81, 98, 0, 0, 72]
+2011-02-18 16:37:55,022 SPO2         DEBUG    [127, 81, 98, 0, 0, 71]
+2011-02-18 16:37:55,423 SPO2         DEBUG    [127, 81, 98, 0, 0, 71]
+2011-02-18 16:37:55,509 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:55 2011
+2011-02-18 16:37:55,525 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:55,526 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:55 2011
+2011-02-18 16:37:55,821 SPO2         DEBUG    [127, 81, 98, 0, 0, 80]
+2011-02-18 16:37:56,223 SPO2         DEBUG    [127, 81, 98, 0, 0, 85]
+2011-02-18 16:37:56,542 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:56 2011
+2011-02-18 16:37:56,559 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:56,560 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:56 2011
+2011-02-18 16:37:56,625 SPO2         DEBUG    [127, 81, 98, 0, 56, 97]
+2011-02-18 16:37:57,025 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:37:57,410 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:37:57,575 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:57 2011
+2011-02-18 16:37:57,591 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:57,592 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:57 2011
+2011-02-18 16:37:57,821 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:37:58,225 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:37:58,611 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:58 2011
+2011-02-18 16:37:58,630 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:58,631 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:58 2011
+2011-02-18 16:37:58,631 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:37:59,023 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:37:59,425 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:37:59,644 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:37:59 2011
+2011-02-18 16:37:59,660 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:37:59,661 ECG          DEBUG    DAQ started at: Fri Feb 18 16:37:59 2011
+2011-02-18 16:37:59,821 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:00,225 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:00,621 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:00,678 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:00 2011
+2011-02-18 16:38:00,700 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:00,700 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:00 2011
+2011-02-18 16:38:01,021 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:01,425 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:01,712 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:01 2011
+2011-02-18 16:38:01,729 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:01,730 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:01 2011
+2011-02-18 16:38:01,822 SPO2         DEBUG    [127, 81, 98, 0, 56, 99]
+2011-02-18 16:38:02,225 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:02,621 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:02,747 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:02 2011
+2011-02-18 16:38:02,764 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:02,765 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:02 2011
+2011-02-18 16:38:03,021 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:03,421 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:03,781 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:03 2011
+2011-02-18 16:38:03,801 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:38:03,804 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:03,805 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:03 2011
+2011-02-18 16:38:04,220 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:04,621 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:04,813 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:04 2011
+2011-02-18 16:38:04,829 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:04,830 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:04 2011
+2011-02-18 16:38:05,022 SPO2         DEBUG    [127, 81, 98, 0, 56, 99]
+2011-02-18 16:38:05,421 SPO2         DEBUG    [127, 81, 98, 0, 56, 99]
+2011-02-18 16:38:05,817 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:38:05,848 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:05 2011
+2011-02-18 16:38:05,865 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:05,866 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:05 2011
+2011-02-18 16:38:06,220 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:06,623 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:06,883 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:06 2011
+2011-02-18 16:38:06,900 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:06,901 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:06 2011
+2011-02-18 16:38:07,022 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:07,421 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:07,821 SPO2         DEBUG    [127, 81, 98, 0, 56, 99]
+2011-02-18 16:38:07,916 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:07 2011
+2011-02-18 16:38:07,934 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:07,935 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:07 2011
+2011-02-18 16:38:08,222 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:08,619 SPO2         DEBUG    [127, 81, 98, 0, 56, 100]
+2011-02-18 16:38:08,951 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:08 2011
+2011-02-18 16:38:08,968 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:08,969 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:08 2011
+2011-02-18 16:38:09,021 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:09,421 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:09,821 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:09,984 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:09 2011
+2011-02-18 16:38:10,000 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:10,001 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:09 2011
+2011-02-18 16:38:10,222 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:10,622 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:11,018 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:11 2011
+2011-02-18 16:38:11,019 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:11,042 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:11,043 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:11 2011
+2011-02-18 16:38:11,421 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:11,818 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:12,052 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:12 2011
+2011-02-18 16:38:12,071 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:12,072 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:12 2011
+2011-02-18 16:38:12,222 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:12,625 SPO2         DEBUG    [127, 81, 98, 0, 58, 100]
+2011-02-18 16:38:13,018 SPO2         DEBUG    [127, 81, 97, 0, 58, 100]
+2011-02-18 16:38:13,089 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:13 2011
+2011-02-18 16:38:13,105 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:13,107 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:13 2011
+2011-02-18 16:38:13,418 SPO2         DEBUG    [127, 81, 97, 0, 58, 100]
+2011-02-18 16:38:14,118 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:14 2011
+2011-02-18 16:38:14,135 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:14,136 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:14 2011
+2011-02-18 16:38:15,152 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:15 2011
+2011-02-18 16:38:15,169 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:15,170 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:15 2011
+2011-02-18 16:38:16,187 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:16 2011
+2011-02-18 16:38:16,208 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:16,209 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:16 2011
+2011-02-18 16:38:17,219 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:17 2011
+2011-02-18 16:38:17,236 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:17,236 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:17 2011
+2011-02-18 16:38:18,252 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:18 2011
+2011-02-18 16:38:18,269 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:18,270 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:18 2011
+2011-02-18 16:38:18,785 SPO2         DEBUG    None Type Returned
+2011-02-18 16:38:19,288 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:19 2011
+2011-02-18 16:38:19,305 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:19,306 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:19 2011
+2011-02-18 16:38:20,320 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:20 2011
+2011-02-18 16:38:20,337 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:20,338 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:20 2011
+2011-02-18 16:38:21,356 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:21 2011
+2011-02-18 16:38:21,373 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:21,374 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:21 2011
+2011-02-18 16:38:22,389 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:22 2011
+2011-02-18 16:38:22,406 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:22,407 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:22 2011
+2011-02-18 16:38:23,424 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:23 2011
+2011-02-18 16:38:23,441 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:23,442 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:23 2011
+2011-02-18 16:38:24,157 SPO2         DEBUG    None Type Returned
+2011-02-18 16:38:24,459 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:24 2011
+2011-02-18 16:38:24,476 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:24,477 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:24 2011
+2011-02-18 16:38:25,492 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:25 2011
+2011-02-18 16:38:25,509 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:25,510 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:25 2011
+2011-02-18 16:38:26,528 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:26 2011
+2011-02-18 16:38:26,545 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:26,546 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:26 2011
+2011-02-18 16:38:27,560 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:27 2011
+2011-02-18 16:38:27,577 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:27,578 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:27 2011
+2011-02-18 16:38:27,657 SPO2         DEBUG    None Type Returned
+2011-02-18 16:38:28,201 SPO2         DEBUG    None Type Returned
+2011-02-18 16:38:28,596 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:28 2011
+2011-02-18 16:38:28,598 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:28,618 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:28,619 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:28 2011
+2011-02-18 16:38:29,001 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:29,402 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:29,628 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:29 2011
+2011-02-18 16:38:29,645 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:29,646 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:29 2011
+2011-02-18 16:38:29,805 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:30,201 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:30,601 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:30,660 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:30 2011
+2011-02-18 16:38:30,677 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:30,679 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:30 2011
+2011-02-18 16:38:31,001 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:31,401 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:31,695 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:31 2011
+2011-02-18 16:38:31,711 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:31,712 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:31 2011
+2011-02-18 16:38:31,801 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:32,200 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:32,601 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:32,728 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:32 2011
+2011-02-18 16:38:32,745 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:32,746 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:32 2011
+2011-02-18 16:38:33,001 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-02-18 16:38:33,401 SPO2         DEBUG    [127, 81, 0, 0, 0, 1]
+2011-02-18 16:38:33,762 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:33 2011
+2011-02-18 16:38:33,780 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:33,781 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:33 2011
+2011-02-18 16:38:33,806 SPO2         DEBUG    [127, 81, 0, 0, 0, 15]
+2011-02-18 16:38:34,201 SPO2         DEBUG    [127, 81, 0, 0, 0, 21]
+2011-02-18 16:38:34,603 SPO2         DEBUG    [127, 81, 0, 0, 0, 24]
+2011-02-18 16:38:34,796 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:34 2011
+2011-02-18 16:38:34,813 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:34,814 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:34 2011
+2011-02-18 16:38:35,002 SPO2         DEBUG    [127, 81, 0, 0, 0, 38]
+2011-02-18 16:38:35,402 SPO2         DEBUG    [127, 81, 0, 0, 0, 42]
+2011-02-18 16:38:35,801 SPO2         DEBUG    [127, 81, 99, 0, 0, 52]
+2011-02-18 16:38:35,828 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:35 2011
+2011-02-18 16:38:35,845 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:35,847 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:35 2011
+2011-02-18 16:38:36,201 SPO2         DEBUG    [127, 81, 99, 0, 0, 65]
+2011-02-18 16:38:36,598 SPO2         DEBUG    [127, 81, 99, 0, 56, 68]
+2011-02-18 16:38:36,867 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:36 2011
+2011-02-18 16:38:36,885 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:36,886 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:36 2011
+2011-02-18 16:38:37,001 SPO2         DEBUG    [127, 81, 99, 0, 56, 77]
+2011-02-18 16:38:37,401 SPO2         DEBUG    [127, 81, 99, 0, 56, 81]
+2011-02-18 16:38:37,801 SPO2         DEBUG    [127, 81, 99, 0, 56, 81]
+2011-02-18 16:38:37,896 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:37 2011
+2011-02-18 16:38:37,913 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:37,914 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:37 2011
+2011-02-18 16:38:38,202 SPO2         DEBUG    [127, 81, 99, 0, 56, 85]
+2011-02-18 16:38:38,598 SPO2         DEBUG    [127, 81, 99, 0, 56, 89]
+2011-02-18 16:38:38,913 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:38 2011
+2011-02-18 16:38:38,938 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:38,939 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:38 2011
+2011-02-18 16:38:38,998 SPO2         DEBUG    [127, 81, 99, 0, 55, 94]
+2011-02-18 16:38:39,398 SPO2         DEBUG    [127, 81, 99, 0, 55, 99]
+2011-02-18 16:38:39,798 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:39,943 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:39 2011
+2011-02-18 16:38:39,960 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:39,961 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:39 2011
+2011-02-18 16:38:40,198 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:40,598 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:40,978 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:40 2011
+2011-02-18 16:38:40,986 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:38:40,997 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:40,998 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:40 2011
+2011-02-18 16:38:41,398 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:41,800 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:41,876 BP           INFO     BP: 180
+2011-02-18 16:38:41,877 BP           DEBUG    *** ONE-SHOT BP ***
+2011-02-18 16:38:41,878 BP           DEBUG    ***Start BP Measurement***
+2011-02-18 16:38:41,879 BP           DEBUG    ***Acquiring Cuff Pressure***
+2011-02-18 16:38:41,881 BP           INFO     DAQ Start
+2011-02-18 16:38:42,013 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:42 2011
+2011-02-18 16:38:42,031 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:42,032 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:42 2011
+2011-02-18 16:38:42,197 SPO2         DEBUG    [127, 81, 99, 0, 55, 95]
+2011-02-18 16:38:42,597 SPO2         DEBUG    [127, 81, 99, 0, 55, 94]
+2011-02-18 16:38:42,978 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:38:43,045 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:43 2011
+2011-02-18 16:38:43,062 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:43,063 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:43 2011
+2011-02-18 16:38:43,398 SPO2         DEBUG    [127, 81, 99, 0, 55, 95]
+2011-02-18 16:38:43,799 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:44,081 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:44 2011
+2011-02-18 16:38:44,103 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:44,104 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:44 2011
+2011-02-18 16:38:44,199 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:44,598 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:44,998 SPO2         DEBUG    [127, 81, 99, 0, 55, 95]
+2011-02-18 16:38:45,111 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:45 2011
+2011-02-18 16:38:45,131 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:45,132 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:45 2011
+2011-02-18 16:38:45,397 SPO2         DEBUG    [127, 81, 99, 0, 55, 94]
+2011-02-18 16:38:45,797 SPO2         DEBUG    [127, 81, 99, 0, 55, 93]
+2011-02-18 16:38:46,148 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:46 2011
+2011-02-18 16:38:46,168 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:46,169 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:46 2011
+2011-02-18 16:38:46,202 SPO2         DEBUG    [127, 81, 99, 0, 55, 88]
+2011-02-18 16:38:46,597 SPO2         DEBUG    [127, 81, 99, 0, 55, 87]
+2011-02-18 16:38:46,999 SPO2         DEBUG    [127, 81, 99, 0, 55, 82]
+2011-02-18 16:38:47,176 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:47 2011
+2011-02-18 16:38:47,192 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:47,193 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:47 2011
+2011-02-18 16:38:47,397 SPO2         DEBUG    [127, 81, 99, 0, 55, 81]
+2011-02-18 16:38:47,799 SPO2         DEBUG    [127, 81, 99, 0, 55, 80]
+2011-02-18 16:38:48,197 SPO2         DEBUG    [127, 81, 99, 0, 55, 82]
+2011-02-18 16:38:48,212 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:48 2011
+2011-02-18 16:38:48,230 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:48,231 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:48 2011
+2011-02-18 16:38:48,597 SPO2         DEBUG    [127, 81, 99, 0, 55, 89]
+2011-02-18 16:38:49,001 SPO2         DEBUG    [127, 81, 99, 0, 55, 99]
+2011-02-18 16:38:49,244 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:49 2011
+2011-02-18 16:38:49,261 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:49,262 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:49 2011
+2011-02-18 16:38:49,397 SPO2         DEBUG    [127, 81, 98, 0, 55, 100]
+2011-02-18 16:38:49,797 SPO2         DEBUG    [127, 81, 98, 0, 55, 100]
+2011-02-18 16:38:50,197 SPO2         DEBUG    [127, 81, 98, 0, 55, 100]
+2011-02-18 16:38:50,281 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:50 2011
+2011-02-18 16:38:50,304 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:50,305 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:50 2011
+2011-02-18 16:38:50,597 SPO2         DEBUG    [127, 81, 98, 0, 55, 99]
+2011-02-18 16:38:50,997 SPO2         DEBUG    [127, 81, 98, 0, 55, 99]
+2011-02-18 16:38:51,312 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:51 2011
+2011-02-18 16:38:51,330 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:51,331 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:51 2011
+2011-02-18 16:38:51,395 SPO2         DEBUG    [127, 81, 98, 0, 55, 98]
+2011-02-18 16:38:51,795 SPO2         DEBUG    [127, 81, 98, 0, 55, 97]
+2011-02-18 16:38:52,197 SPO2         DEBUG    [127, 81, 98, 0, 55, 97]
+2011-02-18 16:38:52,346 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:52 2011
+2011-02-18 16:38:52,364 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:52,365 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:52 2011
+2011-02-18 16:38:52,597 SPO2         DEBUG    [127, 81, 98, 0, 55, 96]
+2011-02-18 16:38:52,997 SPO2         DEBUG    [127, 81, 98, 0, 55, 100]
+2011-02-18 16:38:53,380 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:53 2011
+2011-02-18 16:38:53,400 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:53,401 SPO2         DEBUG    [127, 81, 98, 0, 55, 100]
+2011-02-18 16:38:53,402 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:53 2011
+2011-02-18 16:38:53,795 SPO2         DEBUG    [127, 81, 98, 0, 55, 99]
+2011-02-18 16:38:54,197 SPO2         DEBUG    [127, 81, 99, 0, 55, 98]
+2011-02-18 16:38:54,414 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:54 2011
+2011-02-18 16:38:54,434 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:54,435 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:54 2011
+2011-02-18 16:38:54,597 SPO2         DEBUG    [127, 81, 99, 0, 55, 97]
+2011-02-18 16:38:54,997 SPO2         DEBUG    [127, 81, 99, 0, 55, 97]
+2011-02-18 16:38:55,397 SPO2         DEBUG    [127, 81, 99, 0, 55, 98]
+2011-02-18 16:38:55,449 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:55 2011
+2011-02-18 16:38:55,466 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:55,467 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:55 2011
+2011-02-18 16:38:55,801 SPO2         DEBUG    [127, 81, 99, 0, 55, 100]
+2011-02-18 16:38:56,195 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:38:56,483 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:56 2011
+2011-02-18 16:38:56,500 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:56,501 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:56 2011
+2011-02-18 16:38:56,598 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:38:56,997 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:38:57,394 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:38:57,516 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:57 2011
+2011-02-18 16:38:57,533 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:57,534 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:57 2011
+2011-02-18 16:38:57,794 SPO2         DEBUG    [127, 81, 100, 0, 55, 98]
+2011-02-18 16:38:58,194 SPO2         DEBUG    [127, 81, 100, 0, 55, 97]
+2011-02-18 16:38:58,550 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:58 2011
+2011-02-18 16:38:58,573 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:58,574 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:58 2011
+2011-02-18 16:38:58,594 SPO2         DEBUG    [127, 81, 100, 0, 55, 97]
+2011-02-18 16:38:58,997 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:38:59,393 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:38:59,584 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:38:59 2011
+2011-02-18 16:38:59,604 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:38:59,605 ECG          DEBUG    DAQ started at: Fri Feb 18 16:38:59 2011
+2011-02-18 16:38:59,796 SPO2         DEBUG    [127, 81, 100, 0, 55, 98]
+2011-02-18 16:39:00,194 SPO2         DEBUG    [127, 81, 100, 0, 55, 97]
+2011-02-18 16:39:00,595 SPO2         DEBUG    [127, 81, 100, 0, 55, 96]
+2011-02-18 16:39:00,620 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:00 2011
+2011-02-18 16:39:00,638 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:00,639 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:00 2011
+2011-02-18 16:39:00,997 SPO2         DEBUG    [127, 81, 100, 0, 55, 96]
+2011-02-18 16:39:01,393 SPO2         DEBUG    [127, 81, 100, 0, 55, 97]
+2011-02-18 16:39:01,652 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:01 2011
+2011-02-18 16:39:01,671 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:01,672 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:01 2011
+2011-02-18 16:39:01,797 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:02,194 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:02,595 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:02,686 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:02 2011
+2011-02-18 16:39:02,706 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:02,707 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:02 2011
+2011-02-18 16:39:02,993 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:03,393 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:03,720 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:03 2011
+2011-02-18 16:39:03,738 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:03,739 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:03 2011
+2011-02-18 16:39:03,794 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:04,193 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:04,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:04,756 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:04 2011
+2011-02-18 16:39:04,773 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:04,774 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:04 2011
+2011-02-18 16:39:04,997 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:05,393 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:05,789 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:05 2011
+2011-02-18 16:39:05,798 SPO2         DEBUG    [127, 81, 100, 0, 55, 94]
+2011-02-18 16:39:05,812 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:05,813 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:05 2011
+2011-02-18 16:39:06,193 SPO2         DEBUG    [127, 81, 100, 0, 55, 93]
+2011-02-18 16:39:06,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 92]
+2011-02-18 16:39:06,822 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:06 2011
+2011-02-18 16:39:06,841 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:06,843 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:06 2011
+2011-02-18 16:39:06,997 SPO2         DEBUG    [127, 81, 100, 0, 55, 87]
+2011-02-18 16:39:07,393 SPO2         DEBUG    [127, 81, 100, 0, 55, 84]
+2011-02-18 16:39:07,794 SPO2         DEBUG    [127, 81, 100, 0, 55, 78]
+2011-02-18 16:39:07,854 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:07 2011
+2011-02-18 16:39:07,877 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:07,878 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:07 2011
+2011-02-18 16:39:08,193 SPO2         DEBUG    [127, 81, 100, 0, 55, 77]
+2011-02-18 16:39:08,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 75]
+2011-02-18 16:39:08,893 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:08 2011
+2011-02-18 16:39:08,909 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:08,910 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:08 2011
+2011-02-18 16:39:08,993 SPO2         DEBUG    [127, 81, 100, 0, 55, 75]
+2011-02-18 16:39:09,397 SPO2         DEBUG    [127, 81, 100, 0, 55, 75]
+2011-02-18 16:39:09,793 SPO2         DEBUG    [127, 81, 100, 0, 55, 72]
+2011-02-18 16:39:09,924 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:09 2011
+2011-02-18 16:39:09,941 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:09,942 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:09 2011
+2011-02-18 16:39:10,193 SPO2         DEBUG    [127, 81, 100, 0, 55, 72]
+2011-02-18 16:39:10,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 70]
+2011-02-18 16:39:10,956 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:10 2011
+2011-02-18 16:39:10,974 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:10,975 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:10 2011
+2011-02-18 16:39:10,998 SPO2         DEBUG    [127, 81, 100, 0, 55, 65]
+2011-02-18 16:39:11,395 SPO2         DEBUG    [127, 81, 100, 0, 55, 65]
+2011-02-18 16:39:11,792 SPO2         DEBUG    [127, 81, 100, 0, 55, 64]
+2011-02-18 16:39:11,992 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:11 2011
+2011-02-18 16:39:12,009 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:12,010 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:12 2011
+2011-02-18 16:39:12,195 SPO2         DEBUG    [127, 81, 100, 0, 55, 63]
+2011-02-18 16:39:12,595 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:39:12,993 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:39:13,032 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:13 2011
+2011-02-18 16:39:13,050 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:13,051 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:13 2011
+2011-02-18 16:39:13,393 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:39:13,794 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:39:14,060 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:14 2011
+2011-02-18 16:39:14,083 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:14,084 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:14 2011
+2011-02-18 16:39:14,193 SPO2         DEBUG    [127, 81, 100, 0, 55, 60]
+2011-02-18 16:39:14,595 SPO2         DEBUG    [127, 81, 100, 0, 55, 59]
+2011-02-18 16:39:14,993 SPO2         DEBUG    [127, 81, 100, 0, 55, 59]
+2011-02-18 16:39:15,097 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:15 2011
+2011-02-18 16:39:15,119 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:15,120 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:15 2011
+2011-02-18 16:39:15,393 SPO2         DEBUG    [127, 81, 100, 0, 55, 59]
+2011-02-18 16:39:15,797 SPO2         DEBUG    [127, 81, 100, 0, 55, 58]
+2011-02-18 16:39:16,128 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:16 2011
+2011-02-18 16:39:16,145 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:16,146 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:16 2011
+2011-02-18 16:39:16,191 SPO2         DEBUG    [127, 81, 100, 0, 55, 65]
+2011-02-18 16:39:16,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 80]
+2011-02-18 16:39:16,993 SPO2         DEBUG    [127, 81, 100, 0, 55, 87]
+2011-02-18 16:39:17,160 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:17 2011
+2011-02-18 16:39:17,177 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:17,178 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:17 2011
+2011-02-18 16:39:17,393 SPO2         DEBUG    [127, 81, 100, 0, 55, 94]
+2011-02-18 16:39:17,797 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:18,194 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:18,196 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:18 2011
+2011-02-18 16:39:18,218 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:18,219 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:18 2011
+2011-02-18 16:39:18,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:18,993 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:19,229 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:19 2011
+2011-02-18 16:39:19,247 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:19,248 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:19 2011
+2011-02-18 16:39:19,390 SPO2         DEBUG    [127, 81, 100, 0, 55, 93]
+2011-02-18 16:39:19,790 SPO2         DEBUG    [127, 81, 100, 0, 55, 92]
+2011-02-18 16:39:20,190 SPO2         DEBUG    [127, 81, 100, 0, 55, 87]
+2011-02-18 16:39:20,263 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:20 2011
+2011-02-18 16:39:20,281 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:20,282 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:20 2011
+2011-02-18 16:39:20,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 86]
+2011-02-18 16:39:20,990 SPO2         DEBUG    [127, 81, 100, 0, 55, 86]
+2011-02-18 16:39:21,296 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:21 2011
+2011-02-18 16:39:21,313 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:21,314 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:21 2011
+2011-02-18 16:39:21,389 SPO2         DEBUG    [127, 81, 100, 0, 55, 85]
+2011-02-18 16:39:21,789 SPO2         DEBUG    [127, 81, 100, 0, 55, 84]
+2011-02-18 16:39:22,025 BP           DEBUG    BP: none type returned
+2011-02-18 16:39:22,025 BP           DEBUG    ***Extracting Status of Operation***
+2011-02-18 16:39:22,137 BP           DEBUG    S1;A0;C00;M00;P123073092;R056;T    ;;F9this is the status of the patient
+2011-02-18 16:39:22,138 BP           DEBUG    Patient ready.
+2011-02-18 16:39:22,139 BP           DEBUG    Raw Systolic Pressure: 123
+2011-02-18 16:39:22,139 BP           DEBUG    Raw Diastolic Pressure: 92
+2011-02-18 16:39:22,140 BP           DEBUG    Systolic Pressure: 110
+2011-02-18 16:39:22,140 BP           DEBUG    Diastolic Pressure: 79
+2011-02-18 16:39:22,141 BP           DEBUG    deflating
+2011-02-18 16:39:22,190 SPO2         DEBUG    [127, 81, 100, 0, 55, 84]
+2011-02-18 16:39:22,330 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:22 2011
+2011-02-18 16:39:22,348 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:22,349 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:22 2011
+2011-02-18 16:39:22,594 SPO2         DEBUG    [127, 81, 100, 0, 55, 83]
+2011-02-18 16:39:22,990 SPO2         DEBUG    [127, 81, 100, 0, 55, 83]
+2011-02-18 16:39:23,364 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:23 2011
+2011-02-18 16:39:23,377 SPO2         DEBUG    SPO2: Checksum Failed, Dropping Data
+2011-02-18 16:39:23,387 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:23,388 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:23 2011
+2011-02-18 16:39:23,789 SPO2         DEBUG    [127, 81, 100, 0, 55, 83]
+2011-02-18 16:39:24,189 SPO2         DEBUG    [127, 81, 100, 0, 55, 88]
+2011-02-18 16:39:24,398 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:24 2011
+2011-02-18 16:39:24,415 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:24,416 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:24 2011
+2011-02-18 16:39:24,590 SPO2         DEBUG    [127, 81, 100, 0, 55, 87]
+2011-02-18 16:39:24,993 SPO2         DEBUG    [127, 81, 100, 0, 55, 93]
+2011-02-18 16:39:25,389 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:25,415 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:25 2011
+2011-02-18 16:39:25,434 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:25,435 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:25 2011
+2011-02-18 16:39:25,789 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:26,189 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:26,444 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:26 2011
+2011-02-18 16:39:26,468 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:26,469 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:26 2011
+2011-02-18 16:39:26,589 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:26,991 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:27,389 SPO2         DEBUG    [127, 81, 100, 0, 55, 98]
+2011-02-18 16:39:27,476 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:27 2011
+2011-02-18 16:39:27,498 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:27,499 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:27 2011
+2011-02-18 16:39:27,790 SPO2         DEBUG    [127, 81, 100, 0, 55, 93]
+2011-02-18 16:39:28,189 SPO2         DEBUG    [127, 81, 100, 0, 55, 96]
+2011-02-18 16:39:28,512 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:28 2011
+2011-02-18 16:39:28,529 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:28,530 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:28 2011
+2011-02-18 16:39:28,593 SPO2         DEBUG    [127, 81, 100, 0, 55, 99]
+2011-02-18 16:39:28,989 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:29,390 SPO2         DEBUG    [127, 81, 100, 0, 55, 100]
+2011-02-18 16:39:29,544 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:29 2011
+2011-02-18 16:39:29,561 ECG          DEBUG    Acquiring ECG readings...
+2011-02-18 16:39:29,562 ECG          DEBUG    DAQ started at: Fri Feb 18 16:39:29 2011
+2011-02-18 16:39:29,791 SPO2         DEBUG    [127, 81, 100, 0, 58, 100]
+2011-02-18 16:39:30,193 SPO2         DEBUG    [127, 81, 100, 0, 58, 100]
+2011-02-18 16:39:30,576 ECG          DEBUG    DAQ ended at: Fri Feb 18 16:39:30 2011
+2011-02-18 16:39:30,594 SPO2         DEBUG    [127, 81, 100, 0, 58, 99]
+2011-02-18 16:39:30,600 ECG          DEBUG    
+2011-02-18 16:39:30,602 ECG          DEBUG    ***Stop ECG Transmission***
+2011-02-18 16:39:30,610 ECG          DEBUG    
+2011-02-18 16:39:30,610 ECG          DEBUG    ***Stop ECG Transmission***
+2011-02-18 16:39:30,626 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 176, in flushout
+    return self.ecgreply()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 156, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-02-18 16:39:30,658 SPO2         INFO     DAQ Stop
+2011-02-18 16:39:30,676 BP           INFO     DAQ Stop
+2011-02-18 16:39:30,688 DAQState     INFO     Generate EDF Start
+2011-02-18 16:39:30,955 DAQState     INFO     Generate EDF Done
+2011-02-18 16:39:31,094 DAQState     INFO     State Machine: DAQState Stop
+2011-02-18 16:39:31,095 StandbyState INFO     State Machine: StandbyState Start
+2011-02-18 16:39:33,409 StandbyState INFO     State Machine: StandbyState Stop
+2011-02-18 16:39:33,410 ExitState    INFO     State Machine: ExitState Start
+2011-02-18 16:39:33,413 ExitState    INFO     Configurations Saved
+2011-02-18 16:39:33,580 ExitState    INFO     State Machine: ExitState Stop
+2011-02-18 16:39:33,581 root         INFO     RxboxEngine Exit

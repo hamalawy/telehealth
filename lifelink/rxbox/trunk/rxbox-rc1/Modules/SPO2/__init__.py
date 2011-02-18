@@ -33,7 +33,7 @@ class SPO2 (Module, SPO2Panel):
         self.heartrate_infolabel.SetLabel('Ready')
         self.spo2_infolabel.SetLabel('      Ready')
         config.read('rxbox.cfg')
-        self.spo2data=SPO2DAQ(self, port =config.get('SPO2','port'))
+        self.spo2data=SPO2DAQ(self, port =config.get('SPO2','port'),debug=True,logger=self._logger)
         self.spo2_get_thread = threading.Thread(target=self.get_spo2)
         self.spo2_thread_alive=True
         self.spo2_get_thread.start()

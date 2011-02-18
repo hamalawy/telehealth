@@ -5,10 +5,11 @@ from threading import Thread
 
 class SPO2DAQ:
     """manages data request and processes reply packets to/from the SPO2 module"""
-    def __init__(self, parent, port="/dev/ttyUSB0",baud=9600,timeout=5):
+    def __init__(self, parent, port="/dev/ttyUSB0",baud=9600,timeout=5,debug=True,logger=''):
         """ Initialize port settings and request according
             to the specified setting for ChipOx"""
-        
+        self._logger=logger
+        self.debug=True
         # Initialize Serial Port Settings
         self.SerialPort = port
         self.SerialBaudRate = baud
@@ -33,6 +34,12 @@ class SPO2DAQ:
         self.current_spo2=0
         self.current_bpm =0
         self.send_request()
+
+    def Print(self, string=''):
+        if self.debug and self._logger=='':
+            print string
+        elif self.debug:
+            self._logger.debug(string)
 
     def send_request(self):
         """ Continuously acquire SPO2 and BPM readings from the module """
@@ -97,21 +104,24 @@ class SPO2DAQ:
             self.reset()
             raw_data = self.get_reply()
             data_packet = raw_data
-            print str(data_packet)+' raw'
             if data_packet == None:
+                self.Print('None Type Returned')
                 self.spo2_temp=copy.copy(self.spo2_list)
                 self.bpm_temp=copy.copy(self.bpm_list)
-                self.spo2_temp.append(self.spo2_temp[-1])
-                self.bpm_temp.append(self.bpm_temp[-1])
+                self.spo2_temp.append(0)
+                self.bpm_temp.append(0)
                 self.spo2_temp.pop(0)
                 self.bpm_temp.pop(0)
                 self.spo2_list=copy.copy(self.spo2_temp)
                 self.bpm_list=copy.copy(self.bpm_temp)
+                self.current_spo2 = 0
+                self.current_bpm = 0
                 self.CloseSerial()
                 return
             data_packet = self.verify_checksum(data_packet)
-            print str(data_packet)+' part1'
+            #self.Print(str(data_packet)+' part1')
             if data_packet == None:
+                self.Print('SPO2: Checksum Failed, Dropping Data')
                 self.spo2_temp=copy.copy(self.spo2_list)
                 self.bpm_temp=copy.copy(self.bpm_list)
                 self.spo2_temp.append(self.spo2_temp[-1])
@@ -123,7 +133,8 @@ class SPO2DAQ:
                 self.CloseSerial()
                 return
             data_packet = self.byte_destuff(data_packet)
-            print str(data_packet)+' part2'
+            #self.Print(str(list(data_packet))+' part2')
+            self.Print(str(list(data_packet)))
             self.parse_packet(data_packet)
             self.spo2_temp=copy.copy(self.spo2_list)
             self.bpm_temp=copy.copy(self.bpm_list)
@@ -133,9 +144,11 @@ class SPO2DAQ:
             self.bpm_temp.pop(0)
             self.spo2_list=copy.copy(self.spo2_temp)
             self.bpm_list=copy.copy(self.bpm_temp)
+            #print self.spo2_list
+            #print self.bpm_list
             self.CloseSerial()
         else:
-            print self.status
+            self.Print( str(self.status) )
 
     def parse_packet(self,packet):
         """Checks if packet is not empty and the signal quality is < 100.
@@ -165,7 +178,7 @@ class SPO2DAQ:
             self.status = None
         except serial.SerialException:
             self.status =  "ERROR: Unable to open Com Port - "+ str(self.SerialPort)
-            print "Please check serial port settings or the device."
+            self.Print("Please check serial port settings or the device.")
 
     def CloseSerial(self):
         """Method closes an open serial port instance"""
@@ -209,6 +222,7 @@ class SPO2DAQ:
             return reply
            
 
+
     def verify_checksum(self,packet):
         """ verify_checksum(packet) -> data contained in the packet
 
@@ -233,7 +247,7 @@ class SPO2DAQ:
                # print 'Checksum Error.'
                 return None
         else:
-            print "Transmit Error: Incomplete Packet."
+            self.Print("Transmit Error: Incomplete Packet.")
             return None
 
     def checksum(self,packet):
