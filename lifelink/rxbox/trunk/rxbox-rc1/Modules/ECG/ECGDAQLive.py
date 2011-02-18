@@ -71,7 +71,7 @@ class ECGDAQ:
         self.timeout = timeout
         self.daqdur = daqdur
         self.debug = debug
-        self._logger = logger;
+        self._logger = logger
 
         self.dataset_counter = 0
         self.packet_num = 0

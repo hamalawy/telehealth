@@ -46,14 +46,14 @@ class BP (Module, BPPanel):
             self.bp_infolabel.SetLabel('Cannot Proceed:BP Unavailable')
             return
         #(config.get('BP','sys_coeff_a'),0,config.get('BP','sys_coeff_b'),0,config.get('BP','dias_coeff_a'),config.get('BP','dias_coeff_b'))
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(float(config.get('BP','sys_coeff_a')),0,float(config.get('BP','sys_coeff_b')),0,float(config.get('BP','dias_coeff_a')),float(config.get('BP','dias_coeff_b'))))
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(float(config.get('BP','sys_coeff_a')),0,float(config.get('BP','sys_coeff_b')),0,float(config.get('BP','dias_coeff_a')),float(config.get('BP','dias_coeff_b'))),debug=True,logger=self._logger)
         #self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(0.74212,0,19.00353,0,0.36265,45.688))
         #(0.981,0,-6.59,0,0.38741,38.45)
 
         #self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
 
         self.bp.OpenSerial()
-        print self.setBPmaxpressure_combobox.GetValue()[:3]
+        self._logger.info('BP: '+str(self.setBPmaxpressure_combobox.GetValue()[:3])) 
         self.bp.send_request(self.setBPmaxpressure_combobox.GetValue()[:3])
         self.setBPmaxpressure_combobox.Enable(False)
         self.bpNow_Button.SetToolTipString("Acquiring BP")
@@ -65,7 +65,7 @@ class BP (Module, BPPanel):
     def Stop(self):
         if self.bp.nibp.isOpen()== True:
             self.bp.stop()
-            print 'serial active'
+            self._logger.debug('BP serial deactivated')
         self._logger.info('DAQ Stop')
         return True
         
@@ -89,20 +89,22 @@ class BP (Module, BPPanel):
 
     def minor_check(self):
         config.read('rxbox.cfg')
-        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0))
+        self.bp = BPDAQ(self,port =config.get('BP','port'),coeff=(1,0,0,0,1,0),debug=True,logger=self._logger)
         status=self.bp.init_status_check()
         if status== False:
-            print 'initialization failed'
+            self._logger.debug('BP: Initialization Failed') 
             self.bp_infolabel.SetLabel('BP Unavailable:Restart Software')
             return
-        print 'bp init part 1 done'
+        self._logger.debug('BP init part 1 done')
 
         status=self.bp.init_firmware_version()
         if status== False:
             print 'initialization failed'
+            self._logger.debug('BP: Initialization Failed') 
             self.bp_infolabel.SetLabel('BP Unavailable:Restart Software')
             return
-        print 'bp init part 2 done'
+        
+        self._logger.debug('BP: init part 2 done')        
 
         self.bpNow_Button.Enable(True)
         self.bp_infolabel.SetLabel('BP Ready')
@@ -117,7 +119,7 @@ class BP (Module, BPPanel):
                 press =''
                 continue
             if press == None or press == '':
-                print 'none type returned'
+                self._logger.debug('BP: none type returned')
                 none_count+=1
                 if none_count<1:
                     continue
@@ -126,8 +128,7 @@ class BP (Module, BPPanel):
             try:
                 self.press = int(press[1:4])
             except:
-                print 'bp error'
-                print press
+                self._logger.debug('BP: BP packet mismatch, fixing')   
                 self.press=999
             if self.press== 999:
                 self.alive=False

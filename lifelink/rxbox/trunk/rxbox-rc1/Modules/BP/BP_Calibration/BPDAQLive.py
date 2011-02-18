@@ -48,7 +48,7 @@ class BPDAQ:
     def stop(self):
         command = '\x02X\x03' # combine packets into one string
         self.nibp.write(command)
-        print 'deflating'
+        #print 'deflating'
 
     def request(self, command):
         """
@@ -270,9 +270,12 @@ class BPDAQ:
                 bit_count=0
                 continue
             elif byte == '\x03':
-                self.list_reply.append(byte)
-                reply = reply + byte
-                flag_counter = 2
+                if flag_counter==1:
+                    self.list_reply.append(byte)
+                    reply = reply + byte
+                    flag_counter = 2
+                else:
+                    continue
             if flag_counter == 1:
                 reply = reply + byte
                 self.list_reply.append(byte)
@@ -282,6 +285,7 @@ class BPDAQ:
         if byte == '':
             return None
         else:
+            print self.list_reply
             return reply
 
     def string_to_packet(self, string):
