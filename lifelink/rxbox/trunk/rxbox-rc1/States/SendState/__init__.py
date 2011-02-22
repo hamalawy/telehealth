@@ -141,9 +141,12 @@ class SendState(State):
             afilename = [self._engine._myedf.edfilename]+self._panel['snapshot'].pics+[self._panel['snapshot2'].dicom_filename]
             attach = {}
             for i in afilename:
-                    f = open(i, 'r')
-                    attach[i] = f.read()
-                    f.close()
+                    try:
+                        f = open(i, 'r')
+                        attach[i] = f.read()
+                        f.close()
+                    except:
+                        continue
             dlg.Update(4,"Sending Data")
             t.request(headers, body, attach)
             dlg.Update(5,"Sent")
