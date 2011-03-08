@@ -349,7 +349,7 @@ class ECGDAQ:
             l3 = data['III'][-1]
             data['I'].append(l2-l3)
             if lead3:
-                data['VR'].append(0.5*(l3-l2))
+                data['VR'].append(0.5*l3-l2)
                 data['VL'].append(0.5*l2-l3)
                 data['VF'].append(0.5*(l2+l3))
         self.dataset_counter = new_dataset_counter
