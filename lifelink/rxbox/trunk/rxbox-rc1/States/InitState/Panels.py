@@ -79,13 +79,13 @@ class CommPanel2(CommPanel):
             self._engine.change_state('StandbyState')
             
     def onSend(self, event): # wxGlade: CommPanel.<event_handler>
-        self._engine.change_state('SendState')
+        self._engine.change_state('SendEDFState')
 
     def onCall(self, event): # wxGlade: CommPanel.<event_handler>
         if self._engine.state.__name__() == 'ReferState':
             self._engine.change_state('StandbyState')
         else:
-            self._engine.change_state('SendState','ReferState')
+            self._engine.change_state('SendVoIPState')
         
         
     def setGui(self, mode='unlock'):
