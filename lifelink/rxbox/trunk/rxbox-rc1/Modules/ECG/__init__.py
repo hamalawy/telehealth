@@ -134,8 +134,8 @@ class ECG(Module, ECGPanel):
                 ind = self.plotter.Plot(leadII[interval:], xs=ind)
                 minus = len(leadII) - 7500
                 if minus > 0: pop(end=minus)
-            except Exception, e:
-                self._logger.error(ERROR('DAQ Error'))
+            except Exception:
+                ERROR(comment='DAQ Error',logger=self._logger)
                 self.status = 'error'
                 self.alive = False
                 self.status = 'restart'
@@ -187,9 +187,9 @@ class ECG(Module, ECGPanel):
                 self._logger.info('DAQ Start')
                 self.status = 'start'
                 return True
-        except Exception, e:
+        except Exception:
             self.status = 'error'
-            self._logger.error(ERROR('DAQ Start Failed'))
+            ERROR(comment='DAQ Start Failed',logger=self._logger,frame=self._frame)
             wx.PostEvent(self._frame, ECGEvent())
         return False
         
@@ -202,9 +202,9 @@ class ECG(Module, ECGPanel):
             self._logger.info('DAQ Stop')
             self.status = 'stop'
             return True
-        except Exception, e:
+        except Exception:
             self.status = 'error'
-            self._logger.error(ERROR('DAQ Stop Failed'))
+            ERROR(comment='DAQ Stop Failed',logger=self._logger)
             wx.PostEvent(self._frame, ECGEvent())
         return False
 
