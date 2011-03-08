@@ -1,23 +1,136 @@
-2011-02-18 17:10:00,880 root         INFO     RxboxEngine Start
-2011-02-18 17:10:00,881 InitState    INFO     State Machine: InitState Start
-2011-02-18 17:10:01,084 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-02-18 17:10:01,205 BP           INFO     BP Module Initialized
-2011-02-18 17:10:01,209 SPO2         INFO     SPO2 Module Initialized
-2011-02-18 17:10:01,240 ECG          INFO     ECG Module Initialized
-2011-02-18 17:10:01,306 VoIP         INFO     VoIP Module Initialized
-2011-02-18 17:10:01,309 IM           INFO     IM Module Initialized
-2011-02-18 17:10:01,321 Snapshot     INFO     Snapshot Module Initialized
-2011-02-18 17:10:01,403 InitState    ERROR    Load Perspective
-2011-02-18 17:10:01,483 InitState    INFO     State Machine: InitState Stop
-2011-02-18 17:10:03,440 ECG          DEBUG    Packet Timeout
-2011-02-18 17:10:03,440 ECG          DEBUG    
-2011-02-18 17:10:03,441 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-02-18 17:10:03,445 ECG          DEBUG    Device Successfully Passed!
-2011-02-18 17:10:05,673 BP           DEBUG    deflating
-2011-02-18 17:10:05,790 BP           DEBUG    BP init part 1 done
-2011-02-18 17:10:05,854 BP           DEBUG    BP Firmware Acquired.
-2011-02-18 17:10:05,854 BP           DEBUG    EPROM Version:AR       3.41
-2011-02-18 17:10:05,855 BP           DEBUG    BP: init part 2 done
-2011-02-18 17:10:10,911 InitState    INFO     State Machine: InitState Stop
-2011-02-18 17:10:10,912 StandbyState INFO     State Machine: StandbyState Start
-2011-02-18 17:10:10,916 TestState    INFO     State Machine: TestState Start
+2011-03-08 18:10:57,872 root         INFO     RxboxEngine Start
+2011-03-08 18:10:57,874 InitState    INFO     State Machine: InitState Start
+2011-03-08 18:10:58,091 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-03-08 18:10:58,215 BP           INFO     BP Module Initialized
+2011-03-08 18:10:58,219 SPO2         INFO     SPO2 Module Initialized
+2011-03-08 18:10:58,256 ECG          INFO     ECG Module Initialized
+2011-03-08 18:10:58,331 VoIP         INFO     VoIP Module Initialized
+2011-03-08 18:10:58,334 IM           INFO     IM Module Initialized
+2011-03-08 18:10:58,346 Snapshot     INFO     Snapshot Module Initialized
+2011-03-08 18:10:58,428 InitState    ERROR    Load Perspective
+2011-03-08 18:10:58,526 InitState    INFO     State Machine: InitState Stop
+2011-03-08 18:11:01,182 ECG          DEBUG    Packet Timeout
+2011-03-08 18:11:01,183 ECG          DEBUG    
+2011-03-08 18:11:01,185 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-03-08 18:11:01,191 ECG          DEBUG    Device Successfully Passed!
+2011-03-08 18:11:02,407 BP           DEBUG    deflating
+2011-03-08 18:11:02,523 BP           DEBUG    BP init part 1 done
+2011-03-08 18:11:02,587 BP           DEBUG    BP Firmware Acquired.
+2011-03-08 18:11:02,588 BP           DEBUG    EPROM Version:AR       3.41
+2011-03-08 18:11:02,589 BP           DEBUG    BP: init part 2 done
+2011-03-08 18:11:08,159 InitState    INFO     State Machine: InitState Stop
+2011-03-08 18:11:08,160 StandbyState INFO     State Machine: StandbyState Start
+2011-03-08 18:11:08,164 TestState    INFO     State Machine: TestState Start
+2011-03-08 18:11:19,792 Snapshot     INFO     Start
+2011-03-08 18:11:24,449 Snapshot     INFO     Picture 2011_03_08_18_11_22_293276 taken
+2011-03-08 18:11:25,901 Snapshot     INFO     DICOM Generate
+2011-03-08 18:11:25,902 pydicom      DEBUG    Reading file 'DICOM/dcmtemplate.dcm'
+2011-03-08 18:11:25,903 pydicom      DEBUG    Reading preamble
+2011-03-08 18:11:25,972 pydicom      DEBUG    Reading file 'DICOM/dcmtemplate.dcm'
+2011-03-08 18:11:25,972 pydicom      DEBUG    Reading preamble
+2011-03-08 18:11:25,978 Snapshot     INFO     DICOM Test Passed!!!
+2011-03-08 18:11:26,073 pydicom      DEBUG    Reading file 'DICOM/dcmtemplate.dcm'
+2011-03-08 18:11:26,074 pydicom      DEBUG    Reading preamble
+2011-03-08 18:11:26,078 pydicom      DEBUG    Reading file 'DICOM/dcmtemplate.dcm'
+2011-03-08 18:11:26,079 pydicom      DEBUG    Reading preamble
+2011-03-08 18:11:26,093 Snapshot     INFO     Stop
+2011-03-08 18:11:27,331 TestState    INFO     State Machine: TestState Stop
+2011-03-08 18:11:27,332 DAQState     INFO     State Machine: DAQState Start
+2011-03-08 18:11:27,344 DAQState     INFO     Session uuid = 6e176a6e-496c-11e0-8fd0-00301bbf7b6b
+2011-03-08 18:11:27,376 ECG          DEBUG    
+2011-03-08 18:11:27,376 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-03-08 18:11:27,385 ECG          DEBUG    Device Successfully Passed!
+2011-03-08 18:11:27,395 ECG          INFO     ECM Start
+2011-03-08 18:11:27,396 ECG          INFO     DAQ Start
+2011-03-08 18:11:27,397 ECG          DEBUG    
+2011-03-08 18:11:27,399 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-03-08 18:11:27,403 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-03-08 18:11:27,404 ECG          DEBUG    
+2011-03-08 18:11:27,405 ECG          DEBUG    ***Start Offline ECM***
+2011-03-08 18:11:27,415 ECG          DEBUG    Start_Offline_ECM ACK
+2011-03-08 18:11:27,416 ECG          DEBUG    
+2011-03-08 18:11:27,416 ECG          DEBUG    ***Stop Offline ECM***
+2011-03-08 18:11:27,423 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-03-08 18:11:27,424 ECG          INFO     ECM Success!!!
+2011-03-08 18:11:27,435 ECG          DEBUG    
+2011-03-08 18:11:27,437 ECG          DEBUG    ***Configure Analog Request***
+2011-03-08 18:11:27,445 ECG          DEBUG    
+2011-03-08 18:11:27,446 ECG          DEBUG    ***Start ECG Transmission***
+2011-03-08 18:11:27,451 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-03-08 18:11:27,452 ECG          DEBUG    Acquiring ECG readings...
+2011-03-08 18:11:27,453 ECG          DEBUG    DAQ started at: Tue Mar  8 18:11:27 2011
+2011-03-08 18:11:28,268 SPO2         INFO     DAQ Start
+2011-03-08 18:11:28,335 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:28,456 ECG          DEBUG    DAQ ended at: Tue Mar  8 18:11:28 2011
+2011-03-08 18:11:28,474 ECG          DEBUG    Acquiring ECG readings...
+2011-03-08 18:11:28,475 ECG          DEBUG    DAQ started at: Tue Mar  8 18:11:28 2011
+2011-03-08 18:11:28,735 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:29,135 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:29,479 ECG          DEBUG    DAQ ended at: Tue Mar  8 18:11:29 2011
+2011-03-08 18:11:29,502 ECG          DEBUG    Acquiring ECG readings...
+2011-03-08 18:11:29,503 ECG          DEBUG    DAQ started at: Tue Mar  8 18:11:29 2011
+2011-03-08 18:11:29,535 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:29,935 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:30,335 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:30,506 ECG          DEBUG    DAQ ended at: Tue Mar  8 18:11:30 2011
+2011-03-08 18:11:30,524 ECG          DEBUG    Acquiring ECG readings...
+2011-03-08 18:11:30,525 ECG          DEBUG    DAQ started at: Tue Mar  8 18:11:30 2011
+2011-03-08 18:11:30,731 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:31,135 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:31,535 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-08 18:11:31,540 ECG          DEBUG    DAQ ended at: Tue Mar  8 18:11:31 2011
+2011-03-08 18:11:31,561 ECG          DEBUG    
+2011-03-08 18:11:31,563 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-08 18:11:31,570 ECG          DEBUG    
+2011-03-08 18:11:31,571 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-08 18:11:31,603 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 176, in flushout
+    return self.ecgreply()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 156, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-03-08 18:11:31,643 SPO2         INFO     DAQ Stop
+2011-03-08 18:11:31,655 BP           INFO     DAQ Stop
+2011-03-08 18:11:31,676 DAQState     INFO     Generate EDF Start
+2011-03-08 18:11:31,933 DAQState     INFO     Generate EDF Done
+2011-03-08 18:11:32,066 DAQState     INFO     State Machine: DAQState Stop
+2011-03-08 18:11:32,068 StandbyState INFO     State Machine: StandbyState Start
+2011-03-08 18:11:32,406 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-08 18:11:32,407 SendEDFState INFO     State Machine: SendEDFState Start
+2011-03-08 18:11:32,409 SendEDFState INFO     Create Record Mode
+2011-03-08 18:11:38,446 SendEDFState INFO     Sending EDF
+2011-03-08 18:11:52,832 SendEDFState INFO     Send EDF Successful!!!
+2011-03-08 18:11:52,833 SendEDFState INFO     Send Email Successful!!!
+2011-03-08 18:11:54,123 SendEDFState INFO     State Machine: SendEDFState Stop
+2011-03-08 18:11:54,125 StandbyState INFO     State Machine: StandbyState Start
+2011-03-08 18:11:55,373 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-08 18:11:55,375 SendVoIPState INFO     State Machine: SendVoIPState Start
+2011-03-08 18:11:55,377 SendVoIPState INFO     Create Record Mode
+2011-03-08 18:11:57,642 SendVoIPState INFO     Sending VoIP Ticket
+2011-03-08 18:12:06,687 SendVoIPState INFO     Send VoIP Ticket Successful!!!
+2011-03-08 18:12:06,689 SendVoIPState INFO     Send Email Successful!!!
+2011-03-08 18:12:36,275 SendVoIPState INFO     State Machine: SendVoIPState Stop
+2011-03-08 18:12:36,276 ReferState   INFO     State Machine: ReferState Start
+2011-03-08 18:12:36,706 VoIP         INFO     Start
+2011-03-08 18:12:36,888 IM           INFO     Start
+2011-03-08 18:12:41,042 IM           DEBUG    (18:12:41) RXBOX: hellow
+2011-03-08 18:12:45,283 VoIP         INFO     Stop
+2011-03-08 18:12:45,906 IM           INFO     Stop
+2011-03-08 18:12:45,932 ReferState   INFO     State Machine: ReferState Stop
+2011-03-08 18:12:45,933 StandbyState INFO     State Machine: StandbyState Start
+2011-03-08 18:12:56,160 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-08 18:12:56,161 UpdateState  INFO     State Machine: UpdateState Start
+2011-03-08 18:12:56,602 UpdateState  INFO     Connection Established: Ready for Update
+2011-03-08 18:12:57,269 UpdateState  INFO     State Machine: UpdateState Stop
+2011-03-08 18:12:57,270 StandbyState INFO     State Machine: StandbyState Start
+2011-03-08 18:13:11,936 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-08 18:13:11,938 ExitState    INFO     State Machine: ExitState Start
+2011-03-08 18:13:11,943 ExitState    INFO     Configurations Saved
+2011-03-08 18:13:12,061 ExitState    INFO     State Machine: ExitState Stop
+2011-03-08 18:13:12,062 root         INFO     RxboxEngine Exit

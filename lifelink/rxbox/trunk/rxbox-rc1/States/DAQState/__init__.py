@@ -104,7 +104,7 @@ class DAQState(State):
             #self.EDFtoDB(myedf)
             self._logger.info('Generate EDF Done')
         except:
-            self._logger.error(ERROR('EDF Generation Failed'))
+            ERROR(comment='EDF Generation Failed',logger=self._logger,frame=self._frame)
 
     def EDFtoDB(self, myedf):
         """Stores newly created EDF file to the rxbox database"""

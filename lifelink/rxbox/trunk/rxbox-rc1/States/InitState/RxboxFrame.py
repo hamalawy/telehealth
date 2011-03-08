@@ -1,9 +1,6 @@
 import wx
 import wx.aui
 from wx.lib.wordwrap import wordwrap
-import os
-import ConfigParser
-import urllib2
 from Panels import *
 
 ID_TransparentHint = wx.NewId()
@@ -276,70 +273,10 @@ class RxboxFrame(wx.Frame):
             self._mgr.LoadPerspective(self._perspectives[0])
       
     def OnLogFileSend(self, event):
-        self._engine.change_state('SendState','LogFileSend')
+        self._engine.change_state('SendLogState')
 
     def OnUpdate(self, event):
-
-        try:
-            con = urllib2.urlopen("http://www.google.com/")
-            data = con.read()
-            if not data:
-                return
-             #   self._logger('Connection Established: ready for Update')
-        except:
-            #self._logger('No internet Connection: Update Failed')
-            dlg = wx.MessageDialog(self, 'No Internet Connection Detected', 'Error', wx.OK|wx.ICON_HAND)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-
-
-
-        dlg = wx.MessageDialog(self, 'Are you sure you want to Update?', 'Update', \
-                                wx.YES_NO)
-        responce = dlg.ShowModal()
-        if responce == wx.ID_YES:
-            try:
-                self._engine.change_state('StandbyState')
-                dlg = wx.ProgressDialog("Updating Rxbox",
-                                       "Updating... Please Wait...",
-                                       maximum = 8,
-                                       parent=self,
-                                       style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
-                                        )
-
-                dlg.Update(1,"Making Back Up")
-                os.system('mv rxbox.cfg rxbox.bk')
-                os.system('mv Logs Logsbk')
-                dlg.Update(2,"Cleaning Up")
-                os.system('svn cleanup')
-                dlg.Update(3,"Updating Modules")
-                os.system('svn update --accept theirs-full')
-                dlg.Update(5,"Checking Config Files")
-                configorig = ConfigParser.ConfigParser()
-                confignew = ConfigParser.ConfigParser()
-                configorig.read('rxbox.bk')
-                confignew.read('rxbox.cfg')
-                origsections = configorig.sections()
-                for newsection in confignew.sections():
-                    if newsection not in origsections:
-                        print 'Added Section: %s'%newsection
-                        configorig.add_section(newsection)
-                    origoptions = configorig.options(newsection)
-                    for newoption in confignew.options(newsection):
-                        if newoption not in origoptions:
-                            print 'Added Option: %s'%newoption
-                            configorig.set(newsection,newoption,confignew.get(newsection, newoption))
-                configorig.write(open('rxbox.bk', 'w'))
-                dlg.Update(7,"Restoring Config Files")
-                os.system('rm -rf Logs')
-                os.system('mv Logsbk Logs')
-                dlg.Update(8,"Update Complete..Please Restart Rxbox to commit changes")
-                updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
-                wx.MessageBox('%sUpdate Complete..Please Restart Rxbox..'%updateinfo, 'Info')
-            except:
-                dlg.Destroy()
-            self._engine.change_state('ExitState')
+        self._engine.change_state('UpdateState')
 
     def OnBPcal(self,evt):
         print "BP Calibrations started"
@@ -364,7 +301,7 @@ class RxboxFrame(wx.Frame):
                             "Luther Carangian",
                             "Timothy Ebido" ]
 
-        info.License = wordwrap("blah " * 250 + "\n\n" +"yadda " * 100, 500, wx.ClientDC(self))
+        info.License = wordwrap("Rxbox 1.0 Telemedicine Appliance\nUP Intrumentation, Robotics, and Control Laboratory\nUP Philippine General Hospital\nNational Telehealth Center\nUP Manila\nUP Diliman\n", 500, wx.ClientDC(self))
 
         # Then we call wx.AboutBox giving it that info object
         wx.AboutBox(info)
