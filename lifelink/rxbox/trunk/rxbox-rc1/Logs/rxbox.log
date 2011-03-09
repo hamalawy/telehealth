@@ -1,45 +1,326 @@
-2011-03-09 12:12:17,419 root         INFO     RxboxEngine Start
-2011-03-09 12:12:17,420 InitState    INFO     State Machine: InitState Start
-2011-03-09 12:12:17,631 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-03-09 12:12:17,751 BP           INFO     BP Module Initialized
-2011-03-09 12:12:17,755 SPO2         INFO     SPO2 Module Initialized
-2011-03-09 12:12:17,786 ECG          INFO     ECG Module Initialized
-2011-03-09 12:12:17,862 VoIP         INFO     VoIP Module Initialized
-2011-03-09 12:12:17,865 IM           INFO     IM Module Initialized
-2011-03-09 12:12:17,877 Snapshot     INFO     Snapshot Module Initialized
-2011-03-09 12:12:17,951 InitState    ERROR    Load Perspective
-2011-03-09 12:12:18,036 InitState    INFO     State Machine: InitState Stop
-2011-03-09 12:12:21,038 ECG          DEBUG    Packet Timeout
-2011-03-09 12:12:21,039 ECG          DEBUG    
-2011-03-09 12:12:21,039 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-09 12:12:21,043 ECG          DEBUG    Device Successfully Passed!
-2011-03-09 12:12:22,246 BP           DEBUG    deflating
-2011-03-09 12:12:22,362 BP           DEBUG    BP init part 1 done
-2011-03-09 12:12:22,430 BP           DEBUG    BP Firmware Acquired.
-2011-03-09 12:12:22,431 BP           DEBUG    EPROM Version:AR       3.41
-2011-03-09 12:12:22,432 BP           DEBUG    BP: init part 2 done
-2011-03-09 12:12:27,525 InitState    INFO     State Machine: InitState Stop
-2011-03-09 12:12:27,526 StandbyState INFO     State Machine: StandbyState Start
-2011-03-09 12:12:27,530 TestState    INFO     State Machine: TestState Start
-2011-03-09 12:12:30,145 Snapshot     INFO     Start
-2011-03-09 12:12:33,114 Snapshot     INFO     Picture 2011_03_09_12_12_31_6178 taken
-2011-03-09 12:12:52,387 Snapshot     INFO     Picture 2011_03_09_12_12_50_279085 taken
-2011-03-09 12:12:55,842 Snapshot     INFO     Deleted: Pictures/2011_03_09_12_12_31_6178.jpg
-2011-03-09 12:12:58,391 Snapshot     INFO     Picture 2011_03_09_12_12_56_284991 taken
-2011-03-09 12:13:01,529 Snapshot     INFO     Picture 2011_03_09_12_12_59_420991 taken
-2011-03-09 12:13:03,081 Snapshot     INFO     Deleted: Pictures/2011_03_09_12_12_59_420991.jpg
-2011-03-09 12:13:05,542 Snapshot     INFO     Picture 2011_03_09_12_13_03_436786 taken
-2011-03-09 12:13:10,413 Snapshot     INFO     Picture 2011_03_09_12_13_08_300544 taken
-2011-03-09 12:13:15,593 Snapshot     INFO     Deleted: Pictures/2011_03_09_12_12_50_279085.jpg
-2011-03-09 12:13:15,612 Snapshot     INFO     Deleted: Pictures/2011_03_09_12_12_56_284991.jpg
-2011-03-09 12:13:15,628 Snapshot     INFO     Deleted: Pictures/2011_03_09_12_13_03_436786.jpg
-2011-03-09 12:13:15,642 Snapshot     INFO     Deleted: Pictures/2011_03_09_12_13_08_300544.jpg
-2011-03-09 12:13:16,975 Snapshot     INFO     DICOM Generate
-2011-03-09 12:13:16,975 pydicom      DEBUG    Reading file 'DICOM/dcmtemplate.dcm'
-2011-03-09 12:13:16,976 pydicom      DEBUG    Reading preamble
-2011-03-09 12:13:16,981 pydicom      DEBUG    Reading file 'DICOM/dcmtemplate.dcm'
-2011-03-09 12:13:16,982 pydicom      DEBUG    Reading preamble
-2011-03-09 12:13:16,988 Snapshot     INFO     DICOM Test Passed!!!
-2011-03-09 12:13:18,400 TestState    INFO     State Machine: TestState Stop
-2011-03-09 12:13:18,401 ExitState    INFO     State Machine: ExitState Start
-2011-03-09 12:13:18,404 ExitState    INFO     Configurations Saved
+2011-03-09 13:03:31,300 root         INFO     RxboxEngine Start
+2011-03-09 13:03:31,301 InitState    INFO     State Machine: InitState Start
+2011-03-09 13:03:31,514 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-03-09 13:03:31,644 BP           INFO     BP Module Initialized
+2011-03-09 13:03:31,649 SPO2         INFO     SPO2 Module Initialized
+2011-03-09 13:03:31,683 ECG          INFO     ECG Module Initialized
+2011-03-09 13:03:31,757 VoIP         INFO     VoIP Module Initialized
+2011-03-09 13:03:31,761 IM           INFO     IM Module Initialized
+2011-03-09 13:03:31,773 Snapshot     INFO     Snapshot Module Initialized
+2011-03-09 13:03:31,869 InitState    ERROR    Load Perspective
+2011-03-09 13:03:31,956 InitState    INFO     State Machine: InitState Stop
+2011-03-09 13:03:38,814 ECG          DEBUG    
+2011-03-09 13:03:38,815 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-03-09 13:03:38,838 ECG          DEBUG    Error: Self Test Error!
+2011-03-09 13:03:39,081 ECG          DEBUG    
+2011-03-09 13:03:39,082 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:03:39,086 ECG          DEBUG    REPLY: Stop_ECG_TRANSMISSION ACK
+2011-03-09 13:03:40,267 BP           DEBUG    deflating
+2011-03-09 13:03:40,390 BP           DEBUG    BP init part 1 done
+2011-03-09 13:03:40,458 BP           DEBUG    BP Firmware Acquired.
+2011-03-09 13:03:40,459 BP           DEBUG    EPROM Version:AR       3.41
+2011-03-09 13:03:40,460 BP           DEBUG    BP: init part 2 done
+2011-03-09 13:03:46,008 InitState    INFO     State Machine: InitState Stop
+2011-03-09 13:03:46,009 StandbyState INFO     State Machine: StandbyState Start
+2011-03-09 13:03:46,013 TestState    INFO     State Machine: TestState Start
+2011-03-09 13:03:51,277 TestState    INFO     State Machine: TestState Stop
+2011-03-09 13:03:51,278 DAQState     INFO     State Machine: DAQState Start
+2011-03-09 13:03:51,289 DAQState     INFO     Session uuid = 9fd6ab02-4a0a-11e0-a42a-00301bbf7b6b
+2011-03-09 13:03:54,401 ECG          DEBUG    Packet Timeout
+2011-03-09 13:03:54,401 ECG          DEBUG    
+2011-03-09 13:03:54,402 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-03-09 13:03:54,407 ECG          DEBUG    Device Successfully Passed!
+2011-03-09 13:03:54,416 ECG          INFO     ECM Start
+2011-03-09 13:03:54,417 ECG          INFO     DAQ Start
+2011-03-09 13:03:54,418 ECG          DEBUG    
+2011-03-09 13:03:54,420 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-03-09 13:03:54,428 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-03-09 13:03:54,429 ECG          DEBUG    
+2011-03-09 13:03:54,430 ECG          DEBUG    ***Start Offline ECM***
+2011-03-09 13:03:54,435 ECG          DEBUG    Start_Offline_ECM ACK
+2011-03-09 13:03:54,435 ECG          DEBUG    
+2011-03-09 13:03:54,436 ECG          DEBUG    ***Stop Offline ECM***
+2011-03-09 13:03:54,442 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-03-09 13:03:54,443 ECG          INFO     ECM Success!!!
+2011-03-09 13:03:54,453 ECG          DEBUG    
+2011-03-09 13:03:54,454 ECG          DEBUG    ***Configure Analog Request***
+2011-03-09 13:03:54,463 SPO2         INFO     DAQ Start
+2011-03-09 13:03:54,465 ECG          DEBUG    
+2011-03-09 13:03:54,466 ECG          DEBUG    ***Start ECG Transmission***
+2011-03-09 13:03:54,474 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-03-09 13:03:54,475 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:03:54,476 ECG          DEBUG    DAQ started at: Wed Mar  9 13:03:54 2011
+2011-03-09 13:03:54,596 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:54,795 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:54,995 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:55,196 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:55,394 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:55,484 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:03:55 2011
+2011-03-09 13:03:55,506 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:03:55,507 ECG          DEBUG    DAQ started at: Wed Mar  9 13:03:55 2011
+2011-03-09 13:03:55,595 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:55,795 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:55,995 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:56,194 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:56,394 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:56,520 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:03:56 2011
+2011-03-09 13:03:56,537 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:03:56,538 ECG          DEBUG    DAQ started at: Wed Mar  9 13:03:56 2011
+2011-03-09 13:03:56,594 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:56,795 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:56,994 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:57,194 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:57,394 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:57,549 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:03:57 2011
+2011-03-09 13:03:57,566 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:03:57,567 ECG          DEBUG    DAQ started at: Wed Mar  9 13:03:57 2011
+2011-03-09 13:03:57,595 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:57,794 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:57,994 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:58,194 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:58,394 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:58,580 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:03:58 2011
+2011-03-09 13:03:58,598 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:58,603 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:03:58,604 ECG          DEBUG    DAQ started at: Wed Mar  9 13:03:58 2011
+2011-03-09 13:03:58,796 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:58,995 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:59,195 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:59,394 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:59,594 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:03:59,610 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:03:59 2011
+2011-03-09 13:03:59,627 ECG          DEBUG    
+2011-03-09 13:03:59,628 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:03:59,636 ECG          DEBUG    
+2011-03-09 13:03:59,636 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:03:59,651 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 184, in flushout
+    if not self.ecgreply(): break
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 163, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-03-09 13:03:59,668 SPO2         INFO     DAQ Stop
+2011-03-09 13:03:59,686 BP           INFO     DAQ Stop
+2011-03-09 13:03:59,701 DAQState     INFO     Generate EDF Start
+2011-03-09 13:04:00,013 DAQState     INFO     Generate EDF Done
+2011-03-09 13:04:00,137 DAQState     INFO     State Machine: DAQState Stop
+2011-03-09 13:04:00,138 StandbyState INFO     State Machine: StandbyState Start
+2011-03-09 13:04:00,382 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-09 13:04:00,383 DAQState     INFO     State Machine: DAQState Start
+2011-03-09 13:04:00,395 DAQState     INFO     Session uuid = a54418fe-4a0a-11e0-a42a-00301bbf7b6b
+2011-03-09 13:04:03,460 ECG          DEBUG    Packet Timeout
+2011-03-09 13:04:03,461 ECG          DEBUG    
+2011-03-09 13:04:03,461 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-03-09 13:04:03,466 ECG          DEBUG    Device Successfully Passed!
+2011-03-09 13:04:03,476 ECG          INFO     DAQ Start
+2011-03-09 13:04:03,476 ECG          INFO     ECM Start
+2011-03-09 13:04:03,478 ECG          DEBUG    
+2011-03-09 13:04:03,479 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-03-09 13:04:03,488 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-03-09 13:04:03,489 ECG          DEBUG    
+2011-03-09 13:04:03,490 ECG          DEBUG    ***Start Offline ECM***
+2011-03-09 13:04:03,498 ECG          DEBUG    Start_Offline_ECM ACK
+2011-03-09 13:04:03,499 ECG          DEBUG    
+2011-03-09 13:04:03,501 ECG          DEBUG    ***Stop Offline ECM***
+2011-03-09 13:04:03,506 SPO2         INFO     DAQ Start
+2011-03-09 13:04:03,510 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-03-09 13:04:03,511 ECG          INFO     ECM Success!!!
+2011-03-09 13:04:03,522 ECG          DEBUG    
+2011-03-09 13:04:03,524 ECG          DEBUG    ***Configure Analog Request***
+2011-03-09 13:04:03,531 ECG          DEBUG    
+2011-03-09 13:04:03,532 ECG          DEBUG    ***Start ECG Transmission***
+2011-03-09 13:04:03,542 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-03-09 13:04:03,543 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:03,544 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:03 2011
+2011-03-09 13:04:03,634 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:03,834 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:04,034 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:04,234 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:04,434 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:04,557 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:04 2011
+2011-03-09 13:04:04,574 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:04,575 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:04 2011
+2011-03-09 13:04:04,631 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:04,834 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:05,031 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:05,231 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:05,432 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:05,585 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:05 2011
+2011-03-09 13:04:05,604 ECG          DEBUG    
+2011-03-09 13:04:05,604 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:04:05,613 ECG          DEBUG    
+2011-03-09 13:04:05,614 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:04:05,631 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:05,642 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 184, in flushout
+    if not self.ecgreply(): break
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 163, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-03-09 13:04:05,660 SPO2         INFO     DAQ Stop
+2011-03-09 13:04:05,672 BP           INFO     DAQ Stop
+2011-03-09 13:04:05,684 DAQState     INFO     Generate EDF Start
+2011-03-09 13:04:05,939 DAQState     INFO     Generate EDF Done
+2011-03-09 13:04:06,060 DAQState     INFO     State Machine: DAQState Stop
+2011-03-09 13:04:06,061 StandbyState INFO     State Machine: StandbyState Start
+2011-03-09 13:04:06,436 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-09 13:04:06,437 DAQState     INFO     State Machine: DAQState Start
+2011-03-09 13:04:06,448 DAQState     INFO     Session uuid = a8dfb40a-4a0a-11e0-a42a-00301bbf7b6b
+2011-03-09 13:04:09,554 ECG          DEBUG    Packet Timeout
+2011-03-09 13:04:09,555 ECG          DEBUG    
+2011-03-09 13:04:09,555 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-03-09 13:04:09,562 ECG          DEBUG    Device Successfully Passed!
+2011-03-09 13:04:09,571 ECG          INFO     ECM Start
+2011-03-09 13:04:09,572 ECG          INFO     DAQ Start
+2011-03-09 13:04:09,573 ECG          DEBUG    
+2011-03-09 13:04:09,574 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-03-09 13:04:09,583 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-03-09 13:04:09,583 ECG          DEBUG    
+2011-03-09 13:04:09,584 ECG          DEBUG    ***Start Offline ECM***
+2011-03-09 13:04:09,589 ECG          DEBUG    Start_Offline_ECM ACK
+2011-03-09 13:04:09,590 ECG          DEBUG    
+2011-03-09 13:04:09,590 ECG          DEBUG    ***Stop Offline ECM***
+2011-03-09 13:04:09,598 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-03-09 13:04:09,599 ECG          INFO     ECM Success!!!
+2011-03-09 13:04:09,608 ECG          DEBUG    
+2011-03-09 13:04:09,609 ECG          DEBUG    ***Configure Analog Request***
+2011-03-09 13:04:09,618 ECG          DEBUG    
+2011-03-09 13:04:09,619 ECG          DEBUG    ***Start ECG Transmission***
+2011-03-09 13:04:09,626 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-03-09 13:04:09,627 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:09,628 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:09 2011
+2011-03-09 13:04:09,716 SPO2         INFO     DAQ Start
+2011-03-09 13:04:09,852 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:10,050 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:10,250 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:10,452 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:10,641 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:10 2011
+2011-03-09 13:04:10,656 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:10,664 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:10,665 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:10 2011
+2011-03-09 13:04:10,851 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:11,050 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:11,251 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:11,451 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:11,653 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:11,682 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:11 2011
+2011-03-09 13:04:11,705 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:11,706 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:11 2011
+2011-03-09 13:04:11,851 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:12,051 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:12,251 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:12,450 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:12,650 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:12,709 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:12 2011
+2011-03-09 13:04:12,726 ECG          DEBUG    
+2011-03-09 13:04:12,727 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:04:12,734 ECG          DEBUG    
+2011-03-09 13:04:12,735 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:04:12,739 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 184, in flushout
+    if not self.ecgreply(): break
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 163, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-03-09 13:04:12,761 SPO2         INFO     DAQ Stop
+2011-03-09 13:04:12,772 BP           INFO     DAQ Stop
+2011-03-09 13:04:12,784 DAQState     INFO     Generate EDF Start
+2011-03-09 13:04:13,061 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:13,085 DAQState     INFO     Generate EDF Done
+2011-03-09 13:04:13,269 DAQState     INFO     State Machine: DAQState Stop
+2011-03-09 13:04:13,270 StandbyState INFO     State Machine: StandbyState Start
+2011-03-09 13:04:14,059 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-09 13:04:14,060 DAQState     INFO     State Machine: DAQState Start
+2011-03-09 13:04:14,072 DAQState     INFO     Session uuid = ad6afcdc-4a0a-11e0-a42a-00301bbf7b6b
+2011-03-09 13:04:17,153 ECG          DEBUG    Packet Timeout
+2011-03-09 13:04:17,153 ECG          DEBUG    
+2011-03-09 13:04:17,154 ECG          DEBUG    ***Integrated Self Test Inquiry***
+2011-03-09 13:04:17,158 ECG          DEBUG    Device Successfully Passed!
+2011-03-09 13:04:17,167 ECG          INFO     ECM Start
+2011-03-09 13:04:17,168 ECG          INFO     DAQ Start
+2011-03-09 13:04:17,169 ECG          DEBUG    
+2011-03-09 13:04:17,170 ECG          DEBUG    ***Set ECM Threshold Request***
+2011-03-09 13:04:17,179 ECG          DEBUG    Set ECM Threshold Request Confirmed
+2011-03-09 13:04:17,179 ECG          DEBUG    
+2011-03-09 13:04:17,180 ECG          DEBUG    ***Start Offline ECM***
+2011-03-09 13:04:17,188 ECG          DEBUG    Start_Offline_ECM ACK
+2011-03-09 13:04:17,189 ECG          DEBUG    
+2011-03-09 13:04:17,190 ECG          DEBUG    ***Stop Offline ECM***
+2011-03-09 13:04:17,195 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
+2011-03-09 13:04:17,196 ECG          INFO     ECM Success!!!
+2011-03-09 13:04:17,207 ECG          DEBUG    
+2011-03-09 13:04:17,208 ECG          DEBUG    ***Configure Analog Request***
+2011-03-09 13:04:17,219 ECG          DEBUG    
+2011-03-09 13:04:17,220 ECG          DEBUG    ***Start ECG Transmission***
+2011-03-09 13:04:17,226 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
+2011-03-09 13:04:17,227 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:17,228 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:17 2011
+2011-03-09 13:04:17,305 SPO2         INFO     DAQ Start
+2011-03-09 13:04:17,438 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:17,638 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:17,838 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:18,038 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:18,233 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:18 2011
+2011-03-09 13:04:18,240 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:18,265 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:18,267 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:18 2011
+2011-03-09 13:04:18,439 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:18,639 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:18,841 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:19,038 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:19,238 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:19,282 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:19 2011
+2011-03-09 13:04:19,303 ECG          DEBUG    Acquiring ECG readings...
+2011-03-09 13:04:19,304 ECG          DEBUG    DAQ started at: Wed Mar  9 13:04:19 2011
+2011-03-09 13:04:19,439 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:19,639 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:19,838 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:20,039 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:20,238 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:20,313 ECG          DEBUG    DAQ ended at: Wed Mar  9 13:04:20 2011
+2011-03-09 13:04:20,330 ECG          DEBUG    
+2011-03-09 13:04:20,331 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:04:20,339 ECG          DEBUG    
+2011-03-09 13:04:20,340 ECG          DEBUG    ***Stop ECG Transmission***
+2011-03-09 13:04:20,363 ECG          ERROR    DAQ Stop Failed
+Traceback (most recent call last):
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/__init__.py", line 201, in Stop
+    self.ECGData.flushout()
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 184, in flushout
+    if not self.ecgreply(): break
+  File "/home/rxboxpilot04/Rxbox1.0/Modules/ECG/ECGDAQLive.py", line 163, in ecgreply
+    temp = read(1)
+  File "/usr/lib/python2.6/dist-packages/serial/serialposix.py", line 311, in read
+    if self.fd is None: raise portNotOpenError
+SerialException: Port not open
+
+2011-03-09 13:04:20,390 SPO2         INFO     DAQ Stop
+2011-03-09 13:04:20,402 BP           INFO     DAQ Stop
+2011-03-09 13:04:20,415 DAQState     INFO     Generate EDF Start
+2011-03-09 13:04:20,441 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
+2011-03-09 13:04:20,703 DAQState     INFO     Generate EDF Done
+2011-03-09 13:04:20,834 DAQState     INFO     State Machine: DAQState Stop
+2011-03-09 13:04:20,835 StandbyState INFO     State Machine: StandbyState Start
+2011-03-09 13:04:22,795 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-09 13:04:22,796 ExitState    INFO     State Machine: ExitState Start
+2011-03-09 13:04:22,798 ExitState    INFO     Configurations Saved
+2011-03-09 13:04:22,799 ExitState    INFO     State Machine: ExitState Stop
+2011-03-09 13:04:22,800 root         INFO     RxboxEngine Exit
