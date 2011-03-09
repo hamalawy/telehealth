@@ -25,9 +25,7 @@ with open('webcam.cfg', 'wb') as configfile:
 print 'webcam %s/Modules/Snapshot/webcam.cfg'%os.getcwd()
 p = Popen('webcam %s/Modules/Snapshot/webcam.cfg'%os.getcwd(), shell=True)
 time.sleep(2)
-pid = p.pid + 1
-command = 'kill -15 ' + str(pid)
-os.system(command)
+os.system('kill -15 %d'%(p.pid + 1))
 p.kill()
 
 
