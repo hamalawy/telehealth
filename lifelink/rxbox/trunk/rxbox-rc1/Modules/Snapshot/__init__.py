@@ -24,8 +24,7 @@ class Snapshot (Module, SnapshotPanel):
         
         self.list = wx.ImageList(100,70, True)
         self.image_list.AssignImageList(self.list, wx.IMAGE_LIST_NORMAL)
-        self.list2 = False
-        self.image_list2 = False
+        self.image_listW = False
 
         self.pics = []
         """
@@ -43,22 +42,25 @@ class Snapshot (Module, SnapshotPanel):
         image = wx.ImageFromBitmap(img)
         image = image.Rescale(size[0]*70/size[1], 70, wx.IMAGE_QUALITY_HIGH)
         img = wx.BitmapFromImage(image)
-        
+
         self.pics.append(name)
-        il_max = self.list.Add(img)
-        il_max2 = self.list2.Add(img)
-        self.image_list.InsertImageStringItem(0,'', len(self.pics)-1)
-        self.image_list2.InsertImageStringItem(0,'', len(self.pics)-1)
+        self.list.Add(img)
+        end = self.list.GetImageCount()-1
+        self.image_list.InsertImageItem(end,end)
+        self.image_listW.InsertImageItem(end,end)
+        self.image_list.EnsureVisible(end)
+        self.image_listW.EnsureVisible(end)
 
-    def remove_image(self, index=0):
-        self.list.Remove(index)
-        self.list2.Remove(index)
-        self.image_list.DeleteItem(index)
-        self.image_list2.DeleteItem(index)
+    def remove_image(self, index):
         self.pics.pop(index)
+        self.image_list.DeleteItem(index)
+        self.image_listW.DeleteItem(index)
+        self.list.Remove(index)
+        for i in xrange(self.list.GetImageCount()):
+            self.image_list.SetItemImage(i,i)
+            self.image_listW.SetItemImage(i,i)
 
-    def onSnapshot(self, event): # wxGlade: SnapshotPanel.<event_handler>
-        
+    def onSnapshot(self, event): # wxGlade: SnapshotPanel.<event_handler>        
         output=str(commands.getoutput('ls /dev/video*'))
         if output[1:4]!='dev':
             dlg = wx.MessageDialog(self, 'Connect Webcam to the USB Port-->> ', 'Error', wx.OK|wx.ICON_HAND)
@@ -89,36 +91,27 @@ class Snapshot (Module, SnapshotPanel):
 
     def OnDelete(self, event): # wxGlade: SnapshotPanel.<event_handler>
         itemIndex = -1
-        count = 0
         while True:
-            itemIndex = self.image_list.GetNextItem(itemIndex,
+            itemIndex = self.image_list.GetNextItem(-1,
                                          wx.LIST_NEXT_ALL,
                                          wx.LIST_STATE_SELECTED)
-            if itemIndex == -1:
-                count += 1
-                if count == 2:
-                    break
+            if itemIndex == -1: break
             else:
-                print "Deleted: %s"%self.pics[itemIndex]
                 os.system('rm "%s"'%self.pics[itemIndex])
+                self._logger.info("Deleted: %s"%self.pics[itemIndex])
                 self.remove_image(itemIndex)
                 count = 0
                 
     def OnRemove(self, event): # wxGlade: SnapshotPanel.<event_handler>
         itemIndex = -1
-        count = 0
         while True:
-            itemIndex = self.image_list.GetNextItem(itemIndex,
+            itemIndex = self.image_list.GetNextItem(-1,
                                          wx.LIST_NEXT_ALL,
                                          wx.LIST_STATE_SELECTED)
-            if itemIndex == -1:
-                count += 1
-                if count == 2:
-                    break
+            if itemIndex == -1: break
             else:
-                print "Removed: %s"%self.pics[itemIndex]
+                self._logger.info("Removed: %s"%self.pics[itemIndex])
                 self.remove_image(itemIndex)
-                count = 0
 
     def OnRemoveAll(self, event): # wxGlade: SnapshotPanel.<event_handler>
         for i in xrange(len(self.pics)):
@@ -142,19 +135,17 @@ class SnapshotWindow(Module, SnapshotPanel2):
         SnapshotPanel2.__init__(self, *args, **kwds)
         
         self.pics = self._panel['snapshot'].pics
-        self.list = wx.ImageList(100,70, True)
-        self.image_list.AssignImageList(self.list, wx.IMAGE_LIST_NORMAL)
-        self._panel['snapshot'].list2 = self.list
-        self._panel['snapshot'].image_list2 = self.image_list
-        self.list2 = self._panel['snapshot'].list
-        self.image_list2 = self._panel['snapshot'].image_list
-        self.video_device = '/dev/video0'
+        self._panel['snapshot'].image_listW = self.image_list
+        self.image_list.AssignImageList(self._panel['snapshot'].list, wx.IMAGE_LIST_NORMAL)
+        self.video_device = self._config.get('webcam','port')
         self.webcam = WebcamControl(self, self.video_device[-1])
         self.ds=dicom_rxbox.RDicom()
         self.dicom_filelist=[]    
         self.patientpanel = self._panel['patientinfo']
         self.dicom_filename = ''
         
+        self.load_image = self._panel['snapshot'].load_image
+        self.remove_image = self._panel['snapshot'].remove_image
 
     def __name__(self):
         return 'Snapshot'
@@ -163,26 +154,6 @@ class SnapshotWindow(Module, SnapshotPanel2):
         self.webcam.close_phone()
         self.webcam.init_phone()
         self._logger.info('Start')
-        
-    def load_image(self, name):
-        img = wx.Bitmap(name, wx.BITMAP_TYPE_ANY)
-        size = img.GetSize() 
-        image = wx.ImageFromBitmap(img)
-        image = image.Rescale(size[0]*70/size[1], 70, wx.IMAGE_QUALITY_HIGH)
-        img = wx.BitmapFromImage(image)
-        
-        self.pics.append(name)
-        il_max = self.list.Add(img)
-        il_max2 = self.list2.Add(img)
-        self.image_list.InsertImageStringItem(0,'', len(self.pics)-1)
-        self.image_list2.InsertImageStringItem(0,'', len(self.pics)-1)
-
-    def remove_image(self, index=0):
-        self.list.Remove(index)
-        self.list2.Remove(index)
-        self.image_list.DeleteItem(index)
-        self.image_list2.DeleteItem(index)
-        self.pics.pop(index)
        
     def OnSnapshot(self, event): # wxGlade: SnapshotPanel2.<event_handler>
         """Main function for taking images
@@ -194,7 +165,6 @@ class SnapshotWindow(Module, SnapshotPanel2):
         self.webcam.close_phone()
         tnow = datetime.now()
         tnow = tnow.strftime("%Y_%m_%d_%H_%M_%S")+("_%s"%tnow.microsecond.__str__().replace('.',''))
-        print tnow
         self.process_config(tnow)
         os.system("python Modules/Snapshot/camera.py")
         self.load_image("Pictures/%s.jpg"%(tnow))
@@ -202,11 +172,22 @@ class SnapshotWindow(Module, SnapshotPanel2):
         self._logger.info('Picture %s taken'%tnow)
         self.webcam.init_phone()
 
+    def OnDelete(self, event): # wxGlade: SnapshotPanel.<event_handler>
+        itemIndex = -1
+        while True:
+            itemIndex = self.image_list.GetNextItem(-1,
+                                         wx.LIST_NEXT_ALL,
+                                         wx.LIST_STATE_SELECTED)
+            if itemIndex == -1: break
+            else:
+                os.system('rm "%s"'%self.pics[itemIndex])
+                self._logger.info("Deleted: %s"%self.pics[itemIndex])
+                self.remove_image(itemIndex)
+                count = 0
+
     def process_config(self, tnow):
-        
         filename = tnow + '.jpg'
         pathname = '%s/Modules/Snapshot/webcam.cfg'%os.getcwd()
-        print pathname
         config = ConfigParser.ConfigParser()
         config.read(pathname)
         config.set('ftp', 'file', filename)
@@ -216,24 +197,6 @@ class SnapshotWindow(Module, SnapshotPanel2):
         
         with open(pathname, 'wb') as configfile:
             config.write(configfile)   
-
-    def OnDelete(self, event): # wxGlade: SnapshotPanel2.<event_handler>
-        itemIndex = 0
-        count = 0
-        while True:
-            itemIndex = self.image_list.GetNextItem(itemIndex,
-                                         wx.LIST_NEXT_ALL,
-                                         wx.LIST_STATE_SELECTED)
-            print itemIndex
-            if itemIndex == -1:
-                count += 1
-                if count == 2:
-                    break
-            else:
-                print "Deleted: %s"%self.pics[itemIndex]
-                os.system('rm "%s"'%self.pics[itemIndex])
-                self.remove_image(itemIndex)
-                count = 0
 
     def generate_dicom(self,files):
         self._logger.info('DICOM Generate')
