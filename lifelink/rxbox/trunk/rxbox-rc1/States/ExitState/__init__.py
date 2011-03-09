@@ -17,7 +17,6 @@ class ExitState(State):
         self._logger.info('Configurations Saved')
         
         self._frame.Destroy()
-        wx.Yield()
         self._engine.change_state(None)
         
     def stop(self):

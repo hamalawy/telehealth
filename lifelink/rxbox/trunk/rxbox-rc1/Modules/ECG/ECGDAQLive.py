@@ -108,9 +108,16 @@ class ECGDAQ:
     
     def Check(self, port):
         self.ecgserial = serial.Serial(port, baudrate=self.baud, timeout=1, xonxoff=0)
-        self.flushout()
-        return self.selftest()
-        self.Close()
+        self.ecgrequest(SELFTEST_INQUIRY)
+        if len(self.ecgreply())>900: return False
+        FIX = [self.selftest, self.stop_ecg, self.selftest, self.stop_ecm,  self.selftest, self.stop_ecg, self.selftest]
+        for i in FIX:
+            self.flushout()
+            if i(): 
+                self.Close()
+                return True
+        self.Close()        
+        return False
 
     def Open(self):
         data = self.ecg_lead
@@ -121,10 +128,10 @@ class ECGDAQ:
         self.ecgserial = serial.Serial(self.port, baudrate=self.baud, timeout=self.timeout, xonxoff=0)
         FIX = [self.selftest, self.stop_ecg, self.selftest, self.stop_ecm,  self.selftest, self.stop_ecg, self.selftest]
         for i in FIX:
+            self.flushout()
             if i(): 
                 self.status = True
                 return True
-            self.flushout()
         self.status = False
         return False
 
@@ -169,11 +176,12 @@ class ECGDAQ:
             else:
                 buff += temp
                 buff2 += temp
-            if len(buff)>1000: return ''
+            if len(buff)>1000: break
         return array.array('B',buff).tolist()
 
     def flushout(self):
-        return self.ecgreply()
+        for i in xrange(10):
+            if not self.ecgreply(): break
 
     def firmware(self):
         self.Print()
