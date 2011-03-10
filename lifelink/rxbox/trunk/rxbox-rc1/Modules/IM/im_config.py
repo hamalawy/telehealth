@@ -27,6 +27,7 @@ class IM_Configurationmain(IM_config_frame):
         self.im_passwordtxt.SetValue(self.config.get('im','passwd'))
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         if self.imsim_checkbox.GetValue() == True:
             self.config.set('im','simulated','true')
         else:

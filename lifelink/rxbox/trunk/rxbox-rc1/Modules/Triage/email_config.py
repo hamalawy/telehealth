@@ -34,6 +34,7 @@ class EMAIL_Configurationmain(EMAIL_config_frame):
 
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         if self.emailsim_checkbox.GetValue() == True:
             self.config.set('email','simulated','true')
         else:

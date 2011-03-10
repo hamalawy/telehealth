@@ -12,6 +12,7 @@ class ExitState(State):
     def start(self):
         self._logger.info('State Machine: %s Start'%self.__name__())
         current_perspective = self._frame._mgr.SavePerspective()
+        self._config.read('rxbox.cfg')
         self._config.set('Perspective', 'onoff', current_perspective)
         self._config.write(open('rxbox.cfg', 'w'))
         self._logger.info('Configurations Saved')

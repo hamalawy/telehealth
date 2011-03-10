@@ -14,7 +14,7 @@ General Information Configuration
 
 class Geninfo_config_frame(wx.Frame):
     def __init__(self,parent, *args, **kwds):
-        # begin wxGlade: Geninfo_config_frame.__init__
+         # begin wxGlade: Geninfo_config_frame.__init__
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self,parent, *args, **kwds)
         self.panel_1 = wx.Panel(parent,-1)
@@ -32,6 +32,8 @@ class Geninfo_config_frame(wx.Frame):
         self.label_8_copy_1 = wx.StaticText(self.panel_1, -1, "RxBox ID                    ")
         self.gen_IDtxt = wx.TextCtrl(self.panel_1, -1, "")
         self.static_line_1_copy_4 = wx.StaticLine(self.panel_1, -1)
+        self.label_8_copy_1_copy = wx.StaticText(self.panel_1, -1, "Startup Scr              ")
+        self.startup_checkbox = wx.CheckBox(self.panel_1, -1, "")
         self.static_line_1_copy_1 = wx.StaticLine(self.panel_1, -1)
 
         self.__set_properties()
@@ -40,8 +42,8 @@ class Geninfo_config_frame(wx.Frame):
 
     def __set_properties(self):
         # begin wxGlade: Geninfo_config_frame.__set_properties
-
-        self.panel_1.SetMinSize((420, 520))
+        self.SetTitle("frame_1")
+        self.SetSize((420, 520))
         self.panel_3.SetMinSize((420, 20))
         self.panel_2.SetMinSize((40, 500))
         self.label_8_copy_copy.SetMinSize((140, 25))
@@ -51,6 +53,7 @@ class Geninfo_config_frame(wx.Frame):
         self.gen_modeltxt.SetMinSize((150, 25))
         self.label_8_copy_1.SetMinSize((140, 25))
         self.gen_IDtxt.SetMinSize((150, 25))
+        self.label_8_copy_1_copy.SetMinSize((140, 25))
         # end wxGlade
 
     def __do_layout(self):
@@ -60,6 +63,8 @@ class Geninfo_config_frame(wx.Frame):
         sizer_2_copy = wx.BoxSizer(wx.HORIZONTAL)
         sizer_9 = wx.BoxSizer(wx.VERTICAL)
         sizer_10 = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_3 = wx.BoxSizer(wx.VERTICAL)
+        sizer_12_copy_1_copy = wx.BoxSizer(wx.HORIZONTAL)
         sizer_11 = wx.BoxSizer(wx.VERTICAL)
         sizer_12_copy_1 = wx.BoxSizer(wx.HORIZONTAL)
         sizer_12_copy = wx.BoxSizer(wx.HORIZONTAL)
@@ -81,7 +86,11 @@ class Geninfo_config_frame(wx.Frame):
         sizer_12_copy_1.Add(self.gen_IDtxt, 0, 0, 0)
         sizer_11.Add(sizer_12_copy_1, 0, wx.EXPAND, 0)
         sizer_11.Add(self.static_line_1_copy_4, 0, wx.EXPAND, 0)
-        sizer_10.Add(sizer_11, 0, wx.EXPAND, 0)
+        sizer_3.Add(sizer_11, 0, wx.EXPAND, 0)
+        sizer_12_copy_1_copy.Add(self.label_8_copy_1_copy, 0, 0, 0)
+        sizer_12_copy_1_copy.Add(self.startup_checkbox, 0, 0, 0)
+        sizer_3.Add(sizer_12_copy_1_copy, 0, wx.EXPAND, 0)
+        sizer_10.Add(sizer_3, 0, wx.EXPAND, 0)
         sizer_9.Add(sizer_10, 0, wx.EXPAND, 0)
         sizer_9.Add(self.static_line_1_copy_1, 0, wx.EXPAND, 0)
         sizer_2_copy.Add(sizer_9, 1, wx.EXPAND, 0)

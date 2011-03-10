@@ -5,6 +5,9 @@ import os
 
 from States.State import *
 from RxboxFrame import *
+config = ConfigParser.ConfigParser()
+config.read('rxbox.cfg')
+
 
 class InitState(State):
     def __init__(self, engine, *args, **kwds):
@@ -97,8 +100,12 @@ class InitState(State):
         #init bp since bp needs to be active at init state
 #        if self._panel['bp'].minor_check() == False:
 #            print "BP not initialized, check connection"
-        print 'Hellow'
-        self._engine.change_state('TestState')
+        stat= config.get('GENINFO', 'testscreen')
+        if stat=='True':
+            self._engine.change_state('TestState')
+        else:
+            self._engine.change_state('StandbyState')
+        
 
     def port_priority(self,mainport,portlist):
         try:
