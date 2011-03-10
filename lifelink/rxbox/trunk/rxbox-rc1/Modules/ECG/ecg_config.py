@@ -57,6 +57,7 @@ class ECG_Configurationmain(ECG_config_frame):
 
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         if self.ecgsim_checkbox.GetValue() == True:
             self.config.set('ECG','simulated','true')
         else:

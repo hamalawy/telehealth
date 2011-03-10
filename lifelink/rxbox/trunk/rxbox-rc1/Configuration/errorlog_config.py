@@ -20,6 +20,7 @@ class ERRORLOG_Configurationmain(ERRORLOG_config_frame):
         self.errorlog_emailtxt.SetValue(self.config.get('ERRORLOG','email'))
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         self.config.set('ERRORLOG','email',self.errorlog_emailtxt.GetValue())
         configfile = open(path+'rxbox.cfg', 'wb')
         self.config.write(configfile)

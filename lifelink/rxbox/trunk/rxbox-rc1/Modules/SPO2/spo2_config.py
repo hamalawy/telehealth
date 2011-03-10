@@ -45,6 +45,7 @@ class SPO2_Configurationmain(SPO2_config_frame):
 
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         if self.spo2sim_checkbox.GetValue() == True:
             self.config.set('SPO2','simulated','true')
         else:

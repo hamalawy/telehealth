@@ -22,6 +22,7 @@ class DB_Configurationmain(DB_config_frame):
         self.db_passwordtxt.SetValue(self.config.get('Database','password'))
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         self.config.set('Database','password',self.db_passwordtxt.GetValue())
         configfile = open(path+'rxbox.cfg', 'wb')
         self.config.write(configfile)

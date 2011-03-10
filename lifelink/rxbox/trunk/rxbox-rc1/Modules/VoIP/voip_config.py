@@ -25,6 +25,7 @@ class VOIP_Configurationmain(VOIP_config_frame):
         self.voip_hostidtxt.SetValue(self.config.get('voip','hostid'))
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         if self.voipsim_checkbox.GetValue() == True:
             self.config.set('voip','simulated','true')
         else:

@@ -13,10 +13,11 @@ const char* WINDOW_TITLE = "SDL Start";
 int cont = 1;
 int filter = 1;
 int CENTER = WINDOW_HEIGHT/2;
-   
+int ScaleNum = 1;
+int ScaleDen = 1;   
 int main(int argc, char **argv)
 {
-   scanf("%d,%d,%d,%d,%d,%d,%s",&WINDOW_WIDTH,&WINDOW_HEIGHT,&XOFFSET,&CENTER,&cont,&filter,BMPIMAGE);
+   scanf("%d,%d,%d,%d,%d,%d,%d,%d,%s",&WINDOW_WIDTH,&WINDOW_HEIGHT,&XOFFSET,&CENTER,&cont,&filter,&ScaleNum,&ScaleDen,BMPIMAGE);
    
    SDL_Init( SDL_INIT_VIDEO );
 
@@ -38,8 +39,8 @@ int main(int argc, char **argv)
    
    scanf("%d,%d",&x,&y);
    if(x==WINDOW_WIDTH) return 0;
-   if(filter) y = CENTER - oBPfilterFS500(y, 2);
-   else y = CENTER - y;
+   if(filter) y = CENTER-oBPfilterFS500(y, 2)*0.00263*ScaleNum/ScaleDen/1.2*CENTER;
+   else y = CENTER-y*0.00263*ScaleNum/ScaleDen/1.2*CENTER;
    x2=x;
    y2=y;
    printf("Plotter Start\n");
@@ -55,9 +56,9 @@ int main(int argc, char **argv)
       }
       
       scanf("%d,%d",&x,&y);
-      if(x==WINDOW_WIDTH) break;
-      if(filter) y = CENTER - oBPfilterFS500(y, 2);
-      else y = CENTER - y;
+      if(x>=WINDOW_WIDTH) break;
+      if(filter) y = CENTER-oBPfilterFS500(y, 2)*0.00263*ScaleNum/ScaleDen/1.2*CENTER;
+      else y = CENTER-y*0.00263*ScaleNum/ScaleDen/1.2*CENTER;
 
       if(x<=XOFFSET || x2 > x){
     	 SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));

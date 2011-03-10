@@ -17,6 +17,7 @@ class BP_Configurationmain(BP_config_frame):
         self.get_data()
 
     def get_data(self):
+        
         if self.config.get('BP','simulated') == 'false':
             self.bpsim_checkbox.SetValue(False)
         else:
@@ -37,6 +38,7 @@ class BP_Configurationmain(BP_config_frame):
             self.bpdebug_checkbox.SetValue(True)
 
     def set_data(self):
+        self.config.read(path+'rxbox.cfg')
         if self.bpsim_checkbox.GetValue() == True:
             self.config.set('BP','simulated','true')
         else:

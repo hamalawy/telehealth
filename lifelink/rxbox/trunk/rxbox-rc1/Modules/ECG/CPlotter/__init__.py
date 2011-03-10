@@ -17,7 +17,8 @@ class CPlotter:
         self.center = CPlotterMode[self.mode][3]
         self.walen = CPlotterMode[self.mode][4]
         self.on = False
-        self.scale = 12.0/5.0/0.00263/CPlotterMode[self.mode][1]
+        self.scaleN = 380
+        self.scaleD = 331
         
         if self.panel:
         	self.hwnd = self.panel.GetHandle()
@@ -34,10 +35,11 @@ class CPlotter:
         if not self.on:
             self.on = True
             self.comm = subprocess.Popen("./Modules/ECG/CPlotter/plotter", shell=True, stdin=subprocess.PIPE)
-            self.comm.stdin.write("%d,%d,%d,%d,%d,%d,Modules/ECG/CPlotter/%s\n"%(CPlotterMode[self.mode][0],\
+            self.comm.stdin.write("%d,%d,%d,%d,%d,%d,%d,%d,Modules/ECG/CPlotter/%s\n"%(CPlotterMode[self.mode][0],\
                                                 CPlotterMode[self.mode][1],\
                                                 self.woffset,self.center,\
                                                 self.cont,self.filterOn,\
+                                                self.scaleN,self.scaleD,\
                                                 CPlotterMode[self.mode][5]))
                                                 
     def Plot(self, data, xs=0):
@@ -46,7 +48,7 @@ class CPlotter:
             for i in data:
                 self.comm.stdin.write("%d,%d\n"% \
                           (self.woffset+int(xs),\
-                           int(round((i)/self.scale))))
+                           int(i)))
                 xs = (xs+inc)%self.walen
         return xs
         
