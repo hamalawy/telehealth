@@ -1,52 +1,17 @@
-2011-03-10 16:28:24,192 root         INFO     RxboxEngine Start
-2011-03-10 16:28:24,193 InitState    INFO     State Machine: InitState Start
-2011-03-10 16:28:24,407 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-03-10 16:28:24,528 BP           INFO     BP Module Initialized
-2011-03-10 16:28:24,533 SPO2         INFO     SPO2 Module Initialized
-2011-03-10 16:28:24,568 ECG          INFO     ECG Module Initialized
-2011-03-10 16:28:24,638 VoIP         INFO     VoIP Module Initialized
-2011-03-10 16:28:24,641 IM           INFO     IM Module Initialized
-2011-03-10 16:28:24,653 Snapshot     INFO     Snapshot Module Initialized
-2011-03-10 16:28:24,753 InitState    ERROR    Load Perspective
-2011-03-10 16:28:24,840 InitState    INFO     State Machine: InitState Stop
-2011-03-10 16:28:32,785 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:33,787 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:33,788 ECG          DEBUG    
-2011-03-10 16:28:33,788 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-10 16:28:34,790 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:35,792 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:35,793 ECG          DEBUG    
-2011-03-10 16:28:35,794 ECG          DEBUG    ***Stop ECG Transmission***
-2011-03-10 16:28:37,163 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:38,164 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:38,165 ECG          DEBUG    
-2011-03-10 16:28:38,166 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-10 16:28:39,168 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:40,170 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:40,170 ECG          DEBUG    
-2011-03-10 16:28:40,171 ECG          DEBUG    ***Stop Offline ECM***
-2011-03-10 16:28:41,533 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:42,535 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:42,536 ECG          DEBUG    
-2011-03-10 16:28:42,536 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-10 16:28:43,538 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:44,540 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:44,541 ECG          DEBUG    
-2011-03-10 16:28:44,541 ECG          DEBUG    ***Stop ECG Transmission***
-2011-03-10 16:28:45,905 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:46,907 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:46,908 ECG          DEBUG    
-2011-03-10 16:28:46,909 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-10 16:28:47,911 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:48,926 ECG          DEBUG    Packet Timeout
-2011-03-10 16:28:48,927 ECG          DEBUG    
-2011-03-10 16:28:48,928 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-10 16:28:48,932 ECG          DEBUG    Device Successfully Passed!
-2011-03-10 16:28:49,544 BP           DEBUG    deflating
-2011-03-10 16:28:49,660 BP           DEBUG    BP init part 1 done
-2011-03-10 16:28:49,725 BP           DEBUG    BP Firmware Acquired.
-2011-03-10 16:28:49,726 BP           DEBUG    EPROM Version:AR       3.41
-2011-03-10 16:28:49,727 BP           DEBUG    BP: init part 2 done
-2011-03-10 16:28:55,646 InitState    INFO     State Machine: InitState Stop
-2011-03-10 16:28:55,647 StandbyState INFO     State Machine: StandbyState Start
-2011-03-10 16:28:55,651 TestState    INFO     State Machine: TestState Start
+2011-03-12 12:45:01,219 root         INFO     RxboxEngine Start
+2011-03-12 12:45:01,220 InitState    INFO     State Machine: InitState Start
+2011-03-12 12:45:01,483 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-03-12 12:45:01,606 BP           INFO     BP Module Initialized
+2011-03-12 12:45:01,610 SPO2         INFO     SPO2 Module Initialized
+2011-03-12 12:45:01,645 ECG          INFO     ECG Module Initialized
+2011-03-12 12:45:01,721 VoIP         INFO     VoIP Module Initialized
+2011-03-12 12:45:01,725 IM           INFO     IM Module Initialized
+2011-03-12 12:45:01,739 Snapshot     INFO     Snapshot Module Initialized
+2011-03-12 12:45:01,868 InitState    ERROR    Load Perspective
+2011-03-12 12:45:01,961 InitState    INFO     State Machine: InitState Stop
+2011-03-12 12:45:01,962 StandbyState INFO     State Machine: StandbyState Start
+2011-03-12 12:45:34,814 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-12 12:45:34,816 ExitState    INFO     State Machine: ExitState Start
+2011-03-12 12:45:34,825 ExitState    INFO     Configurations Saved
+2011-03-12 12:45:34,826 ExitState    INFO     State Machine: ExitState Stop
+2011-03-12 12:45:34,827 root         INFO     RxboxEngine Exit
