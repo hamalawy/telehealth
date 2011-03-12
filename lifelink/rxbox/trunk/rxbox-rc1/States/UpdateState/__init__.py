@@ -31,7 +31,9 @@ class UpdateState(State):
         responce = dlg.ShowModal()
         if responce == wx.ID_YES:
             try:
-                self._engine.change_state('StandbyState')
+                updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
+                version = int(updateinfo[updateinfo.find('Revision: ')+len('Revision: '):updateinfo.find('\nNode')])
+
                 dlg = wx.ProgressDialog("Updating Rxbox",
                                        "Updating... Please Wait...",
                                        maximum = 8,
@@ -66,7 +68,21 @@ class UpdateState(State):
                 os.system('rm -rf Logs')
                 os.system('mv Logsbk Logs')
                 dlg.Update(8,"Update Complete..Please Restart Rxbox to commit changes")
+
                 updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
+                fp = open('States/UpdateState/update.rxbox')
+                record = 0
+                inst = []
+
+                for line in fp:
+                    if not line.strip().isalnum() and record>version:
+                        inst.append(line.strip())
+                    elif line.strip().isalnum():
+                        record = int(line)
+
+                update = subprocess.Popen('gnome-terminal -x bash -c "%s"'%(';'.join(inst)),shell=True,stdout=subprocess.PIPE)
+                update.wait()
+
                 wx.MessageBox('%sUpdate Complete..Please Restart Rxbox..'%updateinfo, 'Info')
             except:
                 ERROR(logger=self._logger,comment='Update Failed',frame=self._frame)
