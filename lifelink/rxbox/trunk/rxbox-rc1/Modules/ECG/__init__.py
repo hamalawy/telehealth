@@ -25,29 +25,24 @@ class Lead12Panel2(Lead12Panel):
         self._frame = args[0]
         self._engine = self._frame._engine
         self._panel = self._frame._panel
-        
-        self.filter = True
+        self._config = self._engine._config
+        self.scale = [self._config.getint('ECG',i) for i in ['scaleNum','scaleDen','scaleAmp','scaleLen']]
+        self.filter = self._config.getboolean('ECG','filter')
+        self.freq = self._config.getint('ECG', 'freq')
     
     def Plot(self):
         self.data = self._frame._panel['ecg'].ECGData.ecg_lead
-        plot1 = CPlotter(panel=self.plotter_I, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['I'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_II, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['II'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_III, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['III'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_aVR, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['VR'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_aVL, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['VL'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_aVF, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['VF'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_V1, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['V1'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_V2, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['V2'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_V3, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['V3'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_V4, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['V4'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_V5, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['V5'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_V6, mode='small', sample_time=3, plot_timelength=3, cont=False, filterOn=self.filter, data=self.data['V6'][-1500:])
-        plot1 = CPlotter(panel=self.plotter_bigII, mode='extend', sample_time=15, plot_timelength=15, cont=False, filterOn=self.filter, data=self.data['II'][-7500:])
-        
+        size = len(self.data['II'])
+        time = 75.0/self.scale[3]
+        for tpanel,tdata in [[self.plotter_I,'I'],[self.plotter_II,'II'],[self.plotter_III,'III'],[self.plotter_aVR,'VR'],[self.plotter_aVL,'VL'],[self.plotter_aVF,'VF'],[self.plotter_V1,'V1'],[self.plotter_V2,'V2'],[self.plotter_V3,'V3'],[self.plotter_V4,'V4'],[self.plotter_V5,'V5'],[self.plotter_V6,'V6']]:
+            plot1 = CPlotter(panel=tpanel, mode='small', sample_time=time, plot_timelength=time, cont=False,\
+                             filterOn=self.filter, data=self.data[tdata][-int(self.freq*time):]+([] if int(self.freq*time)<size else [0]*(int(self.freq*time)-size)), scale=self.scale)
+        plot1 = CPlotter(panel=self.plotter_bigII, mode='extend', sample_time=5*time, plot_timelength=5*time, cont=False, filterOn=self.filter, data=self.data['II'][-1*min(size,int(self.freq*5*time)):]+ ([] if int(self.freq*5*time)<size else [0]*(int(self.freq*5*time)-size)), scale=self.scale)
+
     def OnPaneClose(self):
         del self._panel['lead12']
         self._frame.setGui('unlock')
-        
+        self._frame._panel['ecg'].Start()
 
 class ECG(Module, ECGPanel):
     def __init__(self, *args, **kwds):
@@ -77,10 +72,12 @@ class ECG(Module, ECGPanel):
         self.freq = self._config.getint('ECG', 'freq')
         self.daqdur = self._config.getfloat('ECG', 'daqdur')
         self.debug = self._config.getboolean('ECG', 'debug')
+        self.scale = [self._config.getint('ECG',i) for i in ['scaleNum','scaleDen','scaleAmp','scaleLen']]
 
         self.ECGData = ECGDAQ(port=self.port, baud=self.baud, mode=self.mode, freq=self.freq, timeout=self.timeout, daqdur=self.daqdur, debug=self.debug, logger=self._logger)
         
     def lead12_button_clicked(self, event): # wxGlade: ECGPanel.<event_handler>
+        self.Stop()
         self._logger.info('Lead 12 Button Clicked')
         self._frame.setGui('lock')
         self._panel['lead12'] = Lead12Panel2(self._frame, -1)
@@ -90,7 +87,7 @@ class ECG(Module, ECGPanel):
                           FloatingSize(wx.Size(916, 710)).CloseButton(True).MaximizeButton(True))
         self._frame._mgr.Update()
         self._panel['lead12'].Plot()
-        
+
     def ecm_statreset(self):
         [getattr(self, ('%s_bitmap') % i).SetBitmap(wx.Bitmap(("Icons/%s_initial.png") % i, wx.BITMAP_TYPE_ANY)) for i in ECGLEADKEY]
         """
@@ -148,7 +145,7 @@ class ECG(Module, ECGPanel):
         if self.status == 'restart':
             self.status = 'start'
             self.alive = True
-            self.plotter = CPlotter(panel=self.plot_panel, mode='normal', sample_time=self.daqdur, plot_timelength=3, cont=True, filterOn=self.filter, data=False)
+            self.plotter = CPlotter(panel=self.plot_panel, mode='normal', sample_time=self.daqdur, plot_timelength=75.0/self.scale[3], cont=True, filterOn=self.filter, data=False, scale=self.scale)
             self.ECGData.Open()
             self.getecgthread = threading.Thread(target=self.get_ecg_thread)
             self.getecgthread.start()
@@ -179,7 +176,7 @@ class ECG(Module, ECGPanel):
     def Start(self):
         try:
             self.ECGData.Open()
-            self.plotter = CPlotter(panel=self.plot_panel, mode='normal', sample_time=self.daqdur, plot_timelength=3, cont=True, filterOn=self.filter, data=False)
+            self.plotter = CPlotter(panel=self.plot_panel, mode='normal', sample_time=self.daqdur, plot_timelength=75.0/self.scale[3], cont=True, filterOn=self.filter, data=False, scale=self.scale)
             if self.ECGData.status:
                 self.alive = True
                 self.getecmthread = threading.Thread(target=self.get_ecm_thread)
@@ -221,14 +218,20 @@ class ECG(Module, ECGPanel):
             port_list_p[port_list.index(self._config.get('ECG', 'port'))] += 50
         except:
             pass
+
         port_list = zip(port_list_p,port_list)
         port_list.sort()
         port_list.reverse()
         for port in port_list:
-            print port
-            if self.ECGData.Check(port[1]):
+            try:
+                print port
+                if self.ECGData.Check(port[1]):
+                    self._logger.info('ECG Port set to %s'%port[1])
+                    return port[1]
+            except:
+                self._logger.info('ECG Port set to %s'%port[1])
                 return port[1]
-        return ''
+        return port_list[0][1]
 
     def setGui(self, mode='unlock'):
         if mode not in ['lock','unlock']:

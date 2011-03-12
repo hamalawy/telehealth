@@ -5,7 +5,7 @@ CPlotterMode = {'small':(308,162,4,80,297,'smallgrid.bmp'), \
                 'extend':(924,162,13,80,897,'extendgrid.bmp') }
 
 class CPlotter:
-    def __init__(self, panel=None, mode='normal', sample_time=1.0, plot_timelength=3, cont=True, filterOn = True, data=False):
+    def __init__(self, panel=None, mode='normal', sample_time=1.0, plot_timelength=3, cont=True, filterOn = True, data=False, scale=[1,1,1,1]):
         self.panel = panel
         self.mode = mode
         self.sample_time = sample_time
@@ -17,9 +17,9 @@ class CPlotter:
         self.center = CPlotterMode[self.mode][3]
         self.walen = CPlotterMode[self.mode][4]
         self.on = False
-        self.scaleN = 380
-        self.scaleD = 331
-        
+        self.scaleN = scale[0]
+        self.scaleD = scale[1]
+        self.scaleA = scale[2]
         if self.panel:
         	self.hwnd = self.panel.GetHandle()
         	os.environ['SDL_WINDOWID'] = str(self.hwnd)
@@ -35,11 +35,11 @@ class CPlotter:
         if not self.on:
             self.on = True
             self.comm = subprocess.Popen("./Modules/ECG/CPlotter/plotter", shell=True, stdin=subprocess.PIPE)
-            self.comm.stdin.write("%d,%d,%d,%d,%d,%d,%d,%d,Modules/ECG/CPlotter/%s\n"%(CPlotterMode[self.mode][0],\
+            self.comm.stdin.write("%d,%d,%d,%d,%d,%d,%d,%d,%d,Modules/ECG/CPlotter/%s\n"%(CPlotterMode[self.mode][0],\
                                                 CPlotterMode[self.mode][1],\
                                                 self.woffset,self.center,\
                                                 self.cont,self.filterOn,\
-                                                self.scaleN,self.scaleD,\
+                                                self.scaleN,self.scaleD,self.scaleA,\
                                                 CPlotterMode[self.mode][5]))
                                                 
     def Plot(self, data, xs=0):

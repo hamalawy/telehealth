@@ -6,7 +6,7 @@ def ERROR(comment='', logger=False, frame=False):
     if logger: logger.error(error_message)
     if frame:
         frame.RxFrame_StatusBar.SetStatusText(comment)
-        dlg = wx.MessageDialog(frame, comment, 'Error', wx.OK|wx.ICON_HAND)
+        dlg = wx.MessageDialog(frame, error_message, 'Error', wx.OK|wx.ICON_HAND)
         dlg.ShowModal()
         dlg.Destroy()
     return error_message
