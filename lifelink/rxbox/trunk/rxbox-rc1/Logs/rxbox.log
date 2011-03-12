@@ -1,20 +1,14 @@
-2011-03-12 14:47:29,460 root         INFO     RxboxEngine Start
-2011-03-12 14:47:29,461 InitState    INFO     State Machine: InitState Start
-2011-03-12 14:47:29,716 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-03-12 14:47:29,836 BP           INFO     BP Module Initialized
-2011-03-12 14:47:29,840 SPO2         INFO     SPO2 Module Initialized
-2011-03-12 14:47:29,875 ECG          INFO     ECG Module Initialized
-2011-03-12 14:47:29,951 VoIP         INFO     VoIP Module Initialized
-2011-03-12 14:47:29,955 IM           INFO     IM Module Initialized
-2011-03-12 14:47:29,967 Snapshot     INFO     Snapshot Module Initialized
-2011-03-12 14:47:30,057 InitState    ERROR    Load Perspective
-2011-03-12 14:47:30,150 InitState    INFO     State Machine: InitState Stop
-2011-03-12 14:47:30,150 StandbyState INFO     State Machine: StandbyState Start
-2011-03-12 14:47:47,100 StandbyState INFO     State Machine: StandbyState Stop
-2011-03-12 14:47:47,101 UpdateState  INFO     State Machine: UpdateState Start
-2011-03-12 14:47:48,275 UpdateState  INFO     Connection Established: Ready for Update
-2011-03-12 14:47:54,938 UpdateState  INFO     State Machine: UpdateState Stop
-2011-03-12 14:47:54,939 ExitState    INFO     State Machine: ExitState Start
-2011-03-12 14:47:54,945 ExitState    INFO     Configurations Saved
-2011-03-12 14:47:54,946 ExitState    INFO     State Machine: ExitState Stop
-2011-03-12 14:47:54,946 root         INFO     RxboxEngine Exit
+2011-03-12 22:49:13,079 root         ERROR    Engine Crashed
+Traceback (most recent call last):
+  File "RxboxEngine.py", line 89, in <module>
+    engine.run()
+  File "RxboxEngine.py", line 53, in run
+    self.rxboxDB.dbconnect()
+  File "/home/luke/workspace/Rxbox1.0Beta/Modules/rxboxdb.py", line 33, in dbconnect
+    db = "mysql")
+  File "/usr/lib/pymodules/python2.6/MySQLdb/__init__.py", line 81, in Connect
+    return Connection(*args, **kwargs)
+  File "/usr/lib/pymodules/python2.6/MySQLdb/connections.py", line 170, in __init__
+    super(Connection, self).__init__(*args, **kwargs2)
+OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: YES)")
+
