@@ -1,9 +1,2 @@
-600
-echo hi
-echo hello
-
-620
-echo luke
-echo wicent
-echo sy
-sudo aptitude install svn
+619
+echo Update Test

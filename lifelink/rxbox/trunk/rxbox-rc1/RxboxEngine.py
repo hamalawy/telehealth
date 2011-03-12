@@ -2,6 +2,7 @@ import wx
 import sys
 import traceback
 import logging.handlers
+import os
 
 from multiprocessing import Process
 
@@ -31,6 +32,7 @@ class RxboxEngine:
         self._app = wx.PySimpleApp(0)
         wx.InitAllImageHandlers()
         self._config = ConfigParser.ConfigParser()
+        os.system('mv rxbox.bk rxbox.cfg')
         self._config.read('rxbox.cfg')
         
         logging.basicConfig(level=logging.DEBUG,

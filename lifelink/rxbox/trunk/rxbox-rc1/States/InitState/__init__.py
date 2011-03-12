@@ -24,9 +24,6 @@ class InitState(State):
         ecgport=''
         spoport=''
         bpport=''
-        #load config backup
-        os.system('mv rxbox.bk rxbox.cfg')
-        self._config.read('rxbox.cfg')
         #stop all plotter program
         comm = subprocess.Popen("pidof plotter", shell=True, stdout=subprocess.PIPE)
         os.system('kill %s'%comm.stdout.read())

@@ -16,16 +16,6 @@ class UpdateState(State):
     def start(self):
         self._logger.info('State Machine: %s Start'%self.__name__())
         
-        try:
-            con = urllib2.urlopen("http://www.google.com/")
-            if not con.read(): return
-            self._logger.info('Connection Established: Ready for Update')
-        except:
-            ERROR(logger=self._logger,comment='Internet Connection Error: Update Failed',frame=self._frame)
-            return
-
-
-
         dlg = wx.MessageDialog(self._frame, 'Are you sure you want to Update?', 'Update', \
                                 wx.YES_NO)
         responce = dlg.ShowModal()
@@ -36,19 +26,26 @@ class UpdateState(State):
 
                 dlg = wx.ProgressDialog("Updating Rxbox",
                                        "Updating... Please Wait...",
-                                       maximum = 8,
+                                       maximum = 10,
                                        parent=self._frame,
                                        style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
                                         )
-
-                dlg.Update(1,"Making Back Up")
+                
+                error_msg = 'Update Failed: Internet Connection Error'
+                dlg.Update(1,"Checking Internet Connection")
+                con = urllib2.urlopen("http://www.google.com/")
+                if not con.read(): raise
+                self._logger.info('Connection Established: Ready for Update')
+                
+                error_msg = 'Update Failed'
+                dlg.Update(2,"Making Back Up")
                 os.system('mv rxbox.cfg rxbox.bk')
                 os.system('mv Logs Logsbk')
-                dlg.Update(2,"Cleaning Up")
+                dlg.Update(3,"Cleaning Up")
                 os.system('svn cleanup')
-                dlg.Update(3,"Updating Modules")
+                dlg.Update(4,"Updating Modules")
                 os.system('svn update --accept theirs-full')
-                dlg.Update(5,"Checking Config Files")
+                dlg.Update(6,"Checking Config Files")
                 configorig = ConfigParser.ConfigParser()
                 confignew = ConfigParser.ConfigParser()
                 configorig.read('rxbox.bk')
@@ -67,26 +64,20 @@ class UpdateState(State):
                 dlg.Update(7,"Restoring Config Files")
                 os.system('rm -rf Logs')
                 os.system('mv Logsbk Logs')
-                dlg.Update(8,"Update Complete..Please Restart Rxbox to commit changes")
-
-                updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
-                """
+                dlg.Update(8,"Installing dependencies")
                 fp = open('States/UpdateState/update.rxbox')
                 record = 0
-                inst = []
-
                 for line in fp:
                     if not line.strip().isalnum() and record>version:
-                        inst.append(line.strip())
+                        TERMINAL('gksudo %s'%line.strip(),self._logger)
                     elif line.strip().isalnum():
                         record = int(line)
+                dlg.Update(10,"Update Complete..Please Restart Rxbox to commit changes")
 
-                update = subprocess.Popen('gnome-terminal -x bash -c "%s"'%(';'.join(inst)),shell=True,stdout=subprocess.PIPE)
-                update.wait()
-                """
+                updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
                 wx.MessageBox('%sUpdate Complete..Please Restart Rxbox..'%updateinfo, 'Info')
             except:
-                ERROR(logger=self._logger,comment='Update Failed',frame=self._frame)
+                ERROR(logger=self._logger,comment=error_msg,frame=self._frame)
                 dlg.Destroy()
             self._engine.change_state('ExitState')
         
