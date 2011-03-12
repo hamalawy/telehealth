@@ -3,6 +3,7 @@ import datetime
 import wx
 import traceback
 import time
+import subprocess
 
 from States.State import *
 from Modules.EDF import *
@@ -58,7 +59,7 @@ class DAQState(State):
             #reset the gui
             dlg.Update(7,"Updating")
         except:
-            pass
+            ERROR(comment='DAQ Stop ERROR',logger=self._logger,frame=self._frame)
             
         self._panel['ecg'].ecm_statreset()
         self._panel['comm'].setGui('standby')
@@ -91,7 +92,12 @@ class DAQState(State):
                                             0, 300, 0, 300, 'None', 15, self._panel['bp'].bp.sys_list))
             Biosignal.append(BioSignal('bpdiastole', 'NIBP2010', 'mmHg', \
                                             0, 300, 0, 300, 'None', 15, self._panel['bp'].bp.dias_list))
-            ecg = [int(round(i + 16384)) for i in besselfilter(self._panel['ecg'].ECGData.ecg_lead['II'], ft=500)] 
+            #ecg = [int(round(i + 16384)) for i in besselfilter(self._panel['ecg'].ECGData.ecg_lead['II'], ft=500)] 
+            comm = subprocess.Popen("./Modules/ECG/FIRfilter/filter", shell=True, stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+            comm.stdin.write(self._panel['ecg'].ECGData.ecg_lead['II'].__str__()[1:-1]+',*')
+            scale = 1.0*self._panel['ecg'].scale[0]/self._panel['ecg'].scale[1]
+            ecg = [int(round(float(i)*scale)) for i in comm.stdout.read()[:-1].split(',')]
+
             Biosignal.append(BioSignal('II', 'CM', 'mV', -43, 43, 0, 32767, 'None', len(ecg), ecg))
             
             nDataRecord = 5
