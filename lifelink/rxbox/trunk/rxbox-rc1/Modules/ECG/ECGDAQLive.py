@@ -325,13 +325,16 @@ class ECGDAQ:
 
     def stop_ecg(self):
         """stop ecg transmission"""
-        self.Print()
-        self.Print("***Stop ECG Transmission***")
-        self.ecgrequest(STOP_ECG_TRANSMISSION)                
-        packet = self.ecgreply()
-        if packet[2]==0x00 and packet[3]==0x02 and packet[4]==(self.packet_num-1)%256:
-            self.Print("REPLY: Stop_ECG_TRANSMISSION ACK")
-            return True
+        try:
+            self.Print()
+            self.Print("***Stop ECG Transmission***")
+            self.ecgrequest(STOP_ECG_TRANSMISSION)                
+            packet = self.ecgreply()
+            if packet[2]==0x00 and packet[3]==0x02 and packet[4]==(self.packet_num-1)%256:
+                self.Print("REPLY: Stop_ECG_TRANSMISSION ACK")
+                return True
+        except:
+            pass
         return False
             
     def payload_parser(self, packet):

@@ -195,7 +195,6 @@ class ECG(Module, ECGPanel):
             self.alive = False
             self.getecmthread.join(8)
             self.getecgthread.join(8)
-            self.ECGData.flushout()
             self._logger.info('DAQ Stop')
             self.status = 'stop'
             return True
