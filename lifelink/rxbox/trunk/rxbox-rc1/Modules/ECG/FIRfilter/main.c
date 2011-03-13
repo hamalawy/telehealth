@@ -18,8 +18,7 @@ int main (void) {
             else continue;
         }
         number *= neg;
-        printf("%d,",number);
-//        printf("%d,",oBPfilterFS500(number, 2));
+        printf("%d,",oBPfilterFS500(number, 2));
     }
     stop:
     return 0;
