@@ -76,10 +76,11 @@ class UpdateState(State):
 
                 updateinfo = subprocess.Popen("svn info",shell=True,stdout=subprocess.PIPE).stdout.read()
                 wx.MessageBox('%sUpdate Complete..Please Restart Rxbox..'%updateinfo, 'Info')
+                self._engine.change_state('ExitState')
             except:
                 ERROR(logger=self._logger,comment=error_msg,frame=self._frame)
                 dlg.Destroy()
-            self._engine.change_state('ExitState')
+            
         
     def stop(self):
         self._logger.info('State Machine: %s Stop'%self.__name__())

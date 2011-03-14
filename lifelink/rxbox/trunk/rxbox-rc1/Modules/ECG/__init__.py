@@ -223,7 +223,6 @@ class ECG(Module, ECGPanel):
         port_list.reverse()
         for port in port_list:
             try:
-                print port
                 if self.ECGData.Check(port[1]):
                     self._logger.info('ECG Port set to %s'%port[1])
                     return port[1]

@@ -106,14 +106,11 @@ class ShowMain(MyFrame):
 
     def test_ecg(self):
         self.statlabel.SetLabel('Testing ECG.....')
-        print 'ecg'
         self.bmppanel=self.test_method[self.key][0]
         self.guipic=self.test_method[self.key]
         ecgport = self._panel['ecg'].get_port()
         try:
-            #ecgport = self._panel['ecg'].get_port()
             if ecgport:
-                #self._logger.info('ECG: %s'%ecgport)
                 self._config.set('ECG', 'port', '%s'%ecgport)
                 self._config.write(open('rxbox.cfg', 'w'))
                 self._config.read('rxbox.cfg')
@@ -123,12 +120,10 @@ class ShowMain(MyFrame):
             else: 
                 status=False
                 statmsg='ECG device Failed Initialization....No ECG device connected'
-                #self._logger.error(ERROR('ECG Dynamic Port Allocation Failed'))
         except:
             self._config.set('ECG', 'port', '%s'%ecgport)
             self._config.write(open('rxbox.cfg', 'w'))
-            statmsg='ECG device failed...Setting Default ECG port to '+ecgport
-            #self._logger.error(ERROR('ECG Dynamic Port Allocation Failed'))      
+            statmsg='ECG device failed...Setting Default ECG port to '+ecgport 
        
         self.status=self.status+'\n'+statmsg
         self.stat_txt.SetValue(self.status)
