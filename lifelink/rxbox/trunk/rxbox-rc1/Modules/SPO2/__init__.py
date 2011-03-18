@@ -57,6 +57,7 @@ class SPO2 (Module, SPO2Panel):
         port2check=port_list
         c=spo2_portcheck.Spo2_check(port2check)
         port=c.check()
+        self._logger.info('SPO2 Port is '+str(port))
         return port
 
     def minor_check(self):

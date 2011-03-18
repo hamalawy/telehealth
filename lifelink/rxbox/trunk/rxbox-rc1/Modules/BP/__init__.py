@@ -63,10 +63,11 @@ class BP (Module, BPPanel):
         return True
         
     def Stop(self):
-        if self.bp.nibp.isOpen()== True:
-            self.bp.stop()
-            self._logger.debug('BP serial deactivated')
-        self._logger.info('DAQ Stop')
+        if self.bp==True:
+            if self.bp.nibp.isOpen()== True:
+                self.bp.stop()
+                self._logger.debug('BP serial deactivated')
+            self._logger.info('DAQ Stop')
         return True
         
     def setGui(self, mode='unlock'):
@@ -85,6 +86,7 @@ class BP (Module, BPPanel):
         port2check=port_list
         c=bp_portcheck.Bp_check(port2check)
         port=c.check()
+        self._logger.info('BP Port is '+str(port))
         return port
 
     def minor_check(self):

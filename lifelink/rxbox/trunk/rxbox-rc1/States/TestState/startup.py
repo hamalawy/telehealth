@@ -5,7 +5,8 @@ import os
 path=os.getcwd()+'/States/TestState/start_box/'
 import subprocess
 import commands
-import urllib2
+
+from Modules.Util import *
 
 class ShowMain(MyFrame):
     def __init__(self, engine, *args, **kwds):
@@ -81,7 +82,7 @@ class ShowMain(MyFrame):
         self._config.write(open('rxbox.cfg', 'w'))
         self._config.read('rxbox.cfg')
 
-        print 'test begins'        
+        #print 'test begins'        
         for test in self.test_method.keys():
             self.key=test
             test()
@@ -138,7 +139,7 @@ class ShowMain(MyFrame):
         self.guipic=self.test_method[self.key]
         
         port2check=self.port_priority(self.spoport,self.ports)
-        print port2check
+        #print port2check
         spo2_port=self._panel['spo2'].find_port(port2check)
         
         if spo2_port!=None:
@@ -162,7 +163,7 @@ class ShowMain(MyFrame):
         self.guipic=self.test_method[self.key]
         
         port2check=self.port_priority(self.bpport,self.ports)
-        print port2check
+        #print port2check
         bp_port=self._panel['bp'].find_port(port2check)
         if bp_port!=None:
             self._config.set('BP', 'port', bp_port)
@@ -184,8 +185,8 @@ class ShowMain(MyFrame):
         self.bmppanel=self.test_method[self.key][0]
         self.guipic=self.test_method[self.key]
         
-        output=str(commands.getoutput('ls /dev/video*'))
-        if output[1:4]=='dev':
+        ready=self._panel['snapshot'].device_check()
+        if ready==True:
             status=True
             statmsg='Webcam Ready.....'
         else:
@@ -229,14 +230,11 @@ class ShowMain(MyFrame):
         self.statlabel.SetLabel('Testing Internet Connection.....')
         self.bmppanel=self.test_method[self.key][0]
         self.guipic=self.test_method[self.key]
-
-        try:
-            con = urllib2.urlopen("http://www.google.com/")
-            data = con.read()
-            if data:
-                status=True
-                statmsg='Internet Connection Establish.....'
-        except:
+        ready=check_internet()
+        if ready:
+            status=True
+            statmsg='Internet Connection Establish.....'
+        else:
             status=False
             statmsg='Internet Connection Unavailable.....'
 
@@ -253,7 +251,7 @@ class ShowMain(MyFrame):
             return portlist
 
     def onflicker(self,event):
-        print self.picstat
+        #print self.picstat
         if self.picstat==True:
             self.bmppanel.SetBitmap(wx.Bitmap(path+"none.png"))
             self.picstat=False
