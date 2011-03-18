@@ -59,6 +59,15 @@ class Snapshot (Module, SnapshotPanel):
         for i in xrange(self.list.GetImageCount()):
             self.image_list.SetItemImage(i,i)
             self.image_listW.SetItemImage(i,i)
+    
+    def device_check(self):
+        output=str(commands.getoutput('ls /dev/video*'))
+        if output[1:4]=='dev':
+            self._logger.info('Webcam Ready')
+            return True
+        else:
+            self._logger.info('Webcam Not Connected')
+            return None
 
     def onSnapshot(self, event): # wxGlade: SnapshotPanel.<event_handler>        
         output=str(commands.getoutput('ls /dev/video*'))
@@ -67,7 +76,7 @@ class Snapshot (Module, SnapshotPanel):
             dlg.ShowModal()
             dlg.Destroy()
             return
-
+        
         self._frame._mgr.GetPane("snapshot2").Float().Show()
         self._frame._mgr.Update()
         wx.Yield()

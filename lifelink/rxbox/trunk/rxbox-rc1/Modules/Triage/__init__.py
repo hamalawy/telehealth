@@ -33,7 +33,8 @@ class Triage(mailer.EmailReader, mailer.EmailSender):
         self.send_message(sendto, headers, body, attachments)
     
         return self.localticketid
-
+    
+    
     def wait(self, localticketid = None):
     	print 'Waiting for MsgHandler Response'
     	response = {'ticketid': -1, 'case_id': '', 'uploadurl': '', 'piority': ''}
