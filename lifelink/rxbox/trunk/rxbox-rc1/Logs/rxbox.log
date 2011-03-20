@@ -1,265 +1,65 @@
-2011-03-18 12:19:54,227 root         INFO     RxboxEngine Start
-2011-03-18 12:19:54,228 InitState    INFO     State Machine: InitState Start
-2011-03-18 12:19:54,477 SnapshotControl INFO     SnapshotControl Module Initialized
-2011-03-18 12:19:54,606 BP           INFO     BP Module Initialized
-2011-03-18 12:19:54,610 SPO2         INFO     SPO2 Module Initialized
-2011-03-18 12:19:54,638 ECG          INFO     ECG Module Initialized
-2011-03-18 12:19:54,721 VoIP         INFO     VoIP Module Initialized
-2011-03-18 12:19:54,724 IM           INFO     IM Module Initialized
-2011-03-18 12:19:54,735 Snapshot     INFO     Snapshot Module Initialized
-2011-03-18 12:19:54,808 InitState    ERROR    Load Perspective
-2011-03-18 12:19:54,889 InitState    INFO     State Machine: InitState Stop
-2011-03-18 12:19:58,680 BP           INFO     BP Port is /dev/ttyUSB1
-2011-03-18 12:19:58,697 BP           DEBUG    deflating
-2011-03-18 12:19:58,815 BP           DEBUG    BP init part 1 done
-2011-03-18 12:19:58,879 BP           DEBUG    BP Firmware Acquired.
-2011-03-18 12:19:58,880 BP           DEBUG    EPROM Version:AR       3.41
-2011-03-18 12:19:58,881 BP           DEBUG    BP: init part 2 done
-2011-03-18 12:20:00,336 ECG          DEBUG    Packet Timeout
-2011-03-18 12:20:00,337 ECG          DEBUG    
-2011-03-18 12:20:00,338 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-18 12:20:00,344 ECG          DEBUG    Device Successfully Passed!
-2011-03-18 12:20:00,347 ECG          INFO     ECG Port set to /dev/ttyUSB2
-2011-03-18 12:20:00,471 SnapshotControl INFO     Webcam Ready
-2011-03-18 12:20:01,113 SPO2         INFO     SPO2 Port is /dev/ttyUSB0
-2011-03-18 12:20:06,190 InitState    INFO     State Machine: InitState Stop
-2011-03-18 12:20:06,192 StandbyState INFO     State Machine: StandbyState Start
-2011-03-18 12:20:06,197 TestState    INFO     State Machine: TestState Start
-2011-03-18 12:22:55,285 TestState    INFO     State Machine: TestState Stop
-2011-03-18 12:22:55,286 DAQState     INFO     State Machine: DAQState Start
-2011-03-18 12:22:55,328 DAQState     INFO     Session uuid = 65b0831c-5117-11e0-8859-00301bbf7b6b
-2011-03-18 12:22:58,358 ECG          DEBUG    Packet Timeout
-2011-03-18 12:22:58,359 ECG          DEBUG    
-2011-03-18 12:22:58,360 ECG          DEBUG    ***Integrated Self Test Inquiry***
-2011-03-18 12:22:58,365 ECG          DEBUG    Device Successfully Passed!
-2011-03-18 12:22:58,373 ECG          INFO     ECM Start
-2011-03-18 12:22:58,374 ECG          INFO     DAQ Start
-2011-03-18 12:22:58,375 ECG          DEBUG    
-2011-03-18 12:22:58,377 ECG          DEBUG    ***Set ECM Threshold Request***
-2011-03-18 12:22:58,387 ECG          DEBUG    Set ECM Threshold Request Confirmed
-2011-03-18 12:22:58,387 ECG          DEBUG    
-2011-03-18 12:22:58,388 ECG          DEBUG    ***Start Offline ECM***
-2011-03-18 12:22:58,395 ECG          DEBUG    Start_Offline_ECM ACK
-2011-03-18 12:22:58,395 ECG          DEBUG    
-2011-03-18 12:22:58,396 ECG          DEBUG    ***Stop Offline ECM***
-2011-03-18 12:22:58,403 ECG          DEBUG    REPLY: Stop_Offline_ECM ACK
-2011-03-18 12:22:58,404 ECG          INFO     ECM Success!!!
-2011-03-18 12:22:58,411 ECG          DEBUG    
-2011-03-18 12:22:58,413 ECG          DEBUG    ***Configure Analog Request***
-2011-03-18 12:22:58,423 ECG          DEBUG    
-2011-03-18 12:22:58,423 ECG          DEBUG    ***Start ECG Transmission***
-2011-03-18 12:22:58,428 ECG          DEBUG    REPLY: Start_ECG_TRANSMISSION ACK
-2011-03-18 12:22:58,428 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,429 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,481 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,483 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,484 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,546 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,548 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,548 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,614 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,617 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,617 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,677 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,679 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,681 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,745 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,748 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,749 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,810 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,812 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,813 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,876 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,879 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,880 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,943 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:58,946 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:58,947 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:58 2011
-2011-03-18 12:22:59,007 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,010 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,011 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,075 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,077 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,078 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,142 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,145 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,146 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,205 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,208 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,209 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,251 SPO2         INFO     DAQ Start
-2011-03-18 12:22:59,273 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,276 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,277 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,339 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,342 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,343 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,404 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,407 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,409 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,472 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,474 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,475 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,538 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,540 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,541 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,601 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,603 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,604 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,668 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,670 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,671 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,734 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,736 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,737 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,801 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,803 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,804 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,868 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,870 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,871 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,933 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:22:59,936 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:22:59,936 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:23:00,000 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:23:00,002 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,002 ECG          DEBUG    DAQ started at: Fri Mar 18 12:22:59 2011
-2011-03-18 12:23:00,065 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,067 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,068 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,133 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,135 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,136 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,197 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,199 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,200 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,264 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,266 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,266 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,329 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,331 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,332 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,397 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,399 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,400 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,461 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,463 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,464 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,528 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,529 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,530 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,593 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,595 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,596 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,658 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,660 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,661 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,726 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,728 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,729 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,791 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,793 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,794 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,855 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,857 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,858 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,921 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,923 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,924 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,988 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:00,990 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:00,991 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:00 2011
-2011-03-18 12:23:01,054 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,056 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,057 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,119 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,121 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,122 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,185 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,187 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,188 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,251 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,253 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,254 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,317 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,319 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,320 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,383 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,385 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,386 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,449 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,451 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,452 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,515 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,517 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,518 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,581 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,583 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,584 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,647 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,649 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,650 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,713 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,715 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,716 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,779 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,781 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,782 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,845 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,847 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,848 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,912 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,914 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,914 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,978 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:01,980 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:01,981 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:01 2011
-2011-03-18 12:23:02,044 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,046 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,046 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,109 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,111 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,112 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,176 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,178 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,178 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,241 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,244 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,245 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,309 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,311 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,312 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,374 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,375 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,376 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,442 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,444 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,445 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,508 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,510 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,511 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,572 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,573 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,574 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,639 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,641 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,642 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,705 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,708 ECG          DEBUG    Acquiring ECG readings...
-2011-03-18 12:23:02,708 ECG          DEBUG    DAQ started at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,766 ECG          DEBUG    DAQ ended at: Fri Mar 18 12:23:02 2011
-2011-03-18 12:23:02,768 ECG          DEBUG    
-2011-03-18 12:23:02,769 ECG          DEBUG    ***Stop ECG Transmission***
-2011-03-18 12:23:04,259 SPO2         DEBUG    None Type Returned
-2011-03-18 12:23:04,723 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
-2011-03-18 12:23:05,124 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
-2011-03-18 12:23:05,523 SPO2         DEBUG    [127, 81, 0, 0, 0, 0]
-2011-03-18 12:23:05,773 ECG          DEBUG    Packet Timeout
-2011-03-18 12:23:05,774 ECG          DEBUG    
-2011-03-18 12:23:05,774 ECG          DEBUG    ***Stop ECG Transmission***
-2011-03-18 12:23:05,818 ECG          INFO     DAQ Stop
-2011-03-18 12:23:05,837 SPO2         INFO     DAQ Stop
-2011-03-18 12:23:05,860 DAQState     INFO     Generate EDF Start
-2011-03-18 12:23:06,076 DAQState     INFO     Generate EDF Done
-2011-03-18 12:23:06,208 DAQState     INFO     State Machine: DAQState Stop
-2011-03-18 12:23:06,209 StandbyState INFO     State Machine: StandbyState Start
+2011-03-21 02:11:19,289 root         INFO     RxboxEngine Start
+2011-03-21 02:11:19,290 InitState    INFO     State Machine: InitState Start
+2011-03-21 02:11:19,420 SnapshotControl INFO     SnapshotControl Module Initialized
+2011-03-21 02:11:19,480 BP           INFO     BP Module Initialized
+2011-03-21 02:11:19,482 SPO2         INFO     SPO2 Module Initialized
+2011-03-21 02:11:19,495 ECG          INFO     ECG Module Initialized
+2011-03-21 02:11:19,536 VoIP         INFO     VoIP Module Initialized
+2011-03-21 02:11:19,537 IM           INFO     IM Module Initialized
+2011-03-21 02:11:19,543 Snapshot     INFO     Snapshot Module Initialized
+2011-03-21 02:11:19,596 InitState    ERROR    Load Perspective
+2011-03-21 02:11:19,648 InitState    INFO     State Machine: InitState Stop
+2011-03-21 02:11:20,116 BP           INFO     BP Port is None
+2011-03-21 02:11:21,174 ECG          INFO     ECG Port set to /dev/ttyUSB
+2011-03-21 02:11:21,257 root         ERROR    Change State Error
+Traceback (most recent call last):
+  File "RxboxEngine.py", line 79, in change_state
+    self.state = getattr(States, state)(self, *args)
+  File "/home/luke/workspace/Rxbox1.0Beta/States/TestState/__init__.py", line 11, in __init__
+    self._frame2 = ShowMain(self._engine, None, -1, "")
+  File "/home/luke/workspace/Rxbox1.0Beta/States/TestState/startup.py", line 46, in __init__
+    self.start_system_check()
+  File "/home/luke/workspace/Rxbox1.0Beta/States/TestState/startup.py", line 88, in start_system_check
+    test()
+  File "/home/luke/workspace/Rxbox1.0Beta/States/TestState/startup.py", line 143, in test_spo2
+    spo2_port=self._panel['spo2'].find_port(port2check)
+  File "/home/luke/workspace/Rxbox1.0Beta/Modules/SPO2/__init__.py", line 59, in find_port
+    port=c.check()
+  File "/home/luke/workspace/Rxbox1.0Beta/Modules/SPO2/spo2_portcheck.py", line 12, in check
+    self.spo2 = SPO2DAQ(self,port =x,timeout=1)
+  File "/home/luke/workspace/Rxbox1.0Beta/Modules/SPO2/SPO2DAQLive.py", line 36, in __init__
+    self.send_request()
+  File "/home/luke/workspace/Rxbox1.0Beta/Modules/SPO2/SPO2DAQLive.py", line 58, in send_request
+    self.reset()
+  File "/home/luke/workspace/Rxbox1.0Beta/Modules/SPO2/SPO2DAQLive.py", line 64, in reset
+    self.SerPort.flushInput()
+AttributeError: SPO2DAQ instance has no attribute 'SerPort'
+
+2011-03-21 02:11:21,257 StandbyState INFO     State Machine: StandbyState Start
+2011-03-21 02:11:27,616 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-21 02:11:27,617 StandbyState INFO     State Machine: StandbyState Start
+2011-03-21 02:11:29,599 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-21 02:11:29,600 SendVoIPState INFO     State Machine: SendVoIPState Start
+2011-03-21 02:11:29,601 SendVoIPState INFO     Create Record Mode
+2011-03-21 02:11:35,851 SendVoIPState INFO     Sending VoIP Ticket
+2011-03-21 02:11:43,196 SendVoIPState INFO     Send VoIP Ticket Successful!!!
+2011-03-21 02:11:43,197 SendVoIPState INFO     Send Email Successful!!!
+2011-03-21 02:11:49,390 SendVoIPState INFO     State Machine: SendVoIPState Stop
+2011-03-21 02:11:49,390 ReferState   INFO     State Machine: ReferState Start
+2011-03-21 02:11:49,662 VoIP         INFO     Start
+2011-03-21 02:12:01,638 IM           INFO     Start
+2011-03-21 02:12:10,440 VoIP         INFO     Stop
+2011-03-21 02:12:11,324 IM           INFO     Stop
+2011-03-21 02:12:11,342 ReferState   INFO     State Machine: ReferState Stop
+2011-03-21 02:12:11,343 SendLogState INFO     State Machine: SendLogState Start
+2011-03-21 02:12:11,344 SendLogState INFO     LogFile Mode
+2011-03-21 02:12:15,619 SendLogState INFO     Sending Log
+2011-03-21 02:12:29,378 SendLogState INFO     Send Log Successful!!!
+2011-03-21 02:12:29,379 SendLogState INFO     Send Email Successful!!!
+2011-03-21 02:12:34,780 SendLogState INFO     State Machine: SendLogState Stop
+2011-03-21 02:12:34,780 StandbyState INFO     State Machine: StandbyState Start
+2011-03-21 02:12:36,563 StandbyState INFO     State Machine: StandbyState Stop
+2011-03-21 02:12:36,563 ExitState    INFO     State Machine: ExitState Start
+2011-03-21 02:12:36,565 ExitState    INFO     Configurations Saved
+2011-03-21 02:12:36,566 ExitState    INFO     State Machine: ExitState Stop
+2011-03-21 02:12:36,566 root         INFO     RxboxEngine Exit

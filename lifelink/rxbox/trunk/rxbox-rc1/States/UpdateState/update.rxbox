@@ -1,2 +1,8 @@
+610
+echo Test 1
+echo Test 2
+aptitude install svn
 619
 echo Update Test
+620
+echo ECE198 Presentation Demo
